@@ -1,0 +1,172 @@
+<script type="text/javascript">
+
+  var initialproductListForm = "";
+    
+  function tabSetup(){
+         <% if @fnaRequest.statusCd.to_s == "FNASIGNED" || @fnaRequest.statusCd.to_s == "FNASUBMIT" || @fnaRequest.statusCd.to_s == "SYNCDONE" %>
+                setReadOnly($('input[type="text"]'), true);
+                setReadOnly($('input[type="tel"]'), true);
+                setReadOnly($('input[type="num"]'), true);
+                setReadOnly($('input[type="email"]'), true);
+                $('select').selectmenu('disable').trigger("refresh");
+                $('input[type="radio"]').checkboxradio('disable').trigger("refresh");
+                $('input[type="checkbox"]').checkboxradio('disable').trigger("refresh");
+                $('input[type="button"]').off('click');
+                $('input[type="button"]').button('disable').trigger("refresh");
+                $('a[href="#clear"]').hide();
+                <% end %>
+        
+    };
+
+  function submitForm(){
+      $(':input').each(function(){
+          $(this).val($.trim($(this).val()))
+      });
+
+      if($('#productListForm').serialize() != (MyPageData.getData)) {
+          $.ajax({                                    
+              url: "/app/FNARequest/submitProductListDetails",
+              method: 'POST',
+              async: false,
+              data: $('#productListForm').serialize(),
+              headers: {
+                  'Transition-Enabled': false
+              },
+              success: function(data) {
+                <% if !["FNASIGNED", "FNASUBMIT", "SYNCDONE"].include?(@fnaRequest.statusCd.to_s) %>
+                     var taberrors = data;
+                     errorsData = taberrors.split("|");
+                     errorsExist = errorsData[0];
+                     warningsExist = errorsData[1];
+                     warnings = errorsData[2]; 
+                    
+                     $("input[name='<%= getObjectMapping(@fnaRequest) %>[addtnField3Str]']").val(errorsExist); 
+                     $("input[name='<%= getObjectMapping(@fnaRequest) %>[addtnField4Str]']").val(warningsExist); 
+                      var errorData = "";
+                      $.each($.parseJSON(warnings), function(fieldName, errorMessage) {
+                          $.each(errorMessage, function(errIndex, message) {
+                              $.each(message, function(Index, msg) {
+                                   errorData += "<div><br>" + msg + "</div>";
+                           });
+                       });
+                    });
+
+                    $("div[id= 'error-container']").html(errorData);
+                    $("input[name='<%= getObjectMapping(@fnaRequest) %>[addtnField5Str]']").val(errorData);
+                    if (warningsExist == "true") {
+                          $("<div>").simpledialog2({
+                          mode: 'blank',
+                          blankContent: $("#error-container").html() +"<a rel='close' data-role='button' href='#' style='margin-top: 2%;'>" + '<%= getLabelValue("MESSAGE_OK") %>' + "</a>"
+                      });
+                    }
+                  $("a#submit").hide();
+            <% else %>
+                  $("a#submit").hide();     
+            <% end %>
+              }
+          });
+      }
+  }
+   
+
+    $(document).ready(function() {
+      MyPageData = {};
+      MyPageData.getData = ($('#productListForm').serialize());
+      $('#nextpre').show();
+      tabExchange($('.active-btn').attr("data-url"));
+      $('#nextTab').removeClass("ui-state-disabled");
+
+      $('.NeedsTableQ1').find('tr:odd').css("background-color","#FAFAFA").end().find('tr:even').css("background-color","#E6ECED");
+      $('.NeedsTableQ2').find('tr:odd').css("background-color","#FAFAFA").end().find('tr:even').css("background-color","#E6ECED");
+      $('.NeedsTableProducts').find('tr:odd').css("background-color","#FAFAFA").end().find('tr:even').css("background-color","#E6ECED");
+
+    // Ashwini 02-08-2017 : Hide E-signature Tab if chamges are made in Basic Into tab 
+     $('#productListForm').on('keyup change', 'input, select, textarea', function(){
+       $("#productListForm").data("changed",true)
+       $("#icon-arrow").hide();
+       $("#esignature").hide();
+       $("#changeProductFrom").val("true");
+    });
+
+      // Ashwini:01-09-2017: Alternate Tab HIDE/SHOW for ILAS products
+      $('#products-recommended').click(function(){
+        $('#fna-recommended-products').show();
+        $('#fna-alternate-products').hide();
+        $('#alternate-products-hide').hide();
+        $('#recommended-products-hide').show();
+        $('#products-recommended p').addClass('active');
+        $('#alternate-products p').removeClass('active');
+
+      });
+
+      $('#alternate-products').click(function(){
+        $('#fna-recommended-products').hide();
+        $('#fna-alternate-products').show();
+        $('#alternate-products-hide').show();
+        $('#recommended-products-hide').hide();
+        $('.illustrationdisplay').removeClass('alternate-products-hide-on-load');
+        $('#products-recommended p').removeClass('active');
+        $('#alternate-products p').addClass('active');
+
+      });
+
+
+    });
+               
+
+  // Ashwini:07-06-2017: put seletced products on Product Introduction Page in productIntroduced field
+  // Ashwini:20-07-2017: Updated to get the value of product guid
+  $(document).on("change",".multiple-productSelect",function(){
+    values = [];
+      $(this).find("input[type='checkbox']:checked").each(function(i,v){
+          guid = $(this).attr("data-id");
+          values.push(guid);
+      });
+      $(this).find('[name*="productIntroduced"][type="hidden"]').val(values.join(','));
+  });
+
+    //Ashwini 04-10-2017: Alert message on first check/uncheck of checkbox 
+  var productIntroFlag = '<%=$flagProductIntro%>';
+  var resetProductIntroCheckBox = '<%=$flagProductIntroNew%>';
+  $('.PLAN').change(function(){
+      if (productIntroFlag == "true" && resetProductIntroCheckBox =="true"){
+        showDialog("", "<%= getLabelValue('PRODUCT_INTRO_WARNING_TEXT') %>", 'warning', 0, 'capture');
+        productIntroFlag = "false";
+        $.ajax({                                    
+            url: "/app/FNARequest/checkProductIntro",
+            method: 'POST',
+            async: false,
+            success: function(data) {
+              }
+        });
+      }   
+  });
+
+
+function submitForm1(){
+    $(':input').each(function(){
+        $(this).val($.trim($(this).val()))
+    });
+
+    if(initialproductListForm!= $('#productListForm').serialize()) {
+        $.ajax({                                    
+            url: "/app/FNARequest/loaddata",
+            method: 'POST',
+            async: false,
+            data: $('#productListForm').serialize(),
+            headers: {
+                'Transition-Enabled': false
+            },
+            success: function(data) {
+                   create = data;
+                        
+                        $("#FnaProductSelectionProduct").html("").html(create);
+                        $("#FnaProductSelectionProduct").trigger('create');
+            }
+        });
+    }
+  
+    
+}
+
+</script>

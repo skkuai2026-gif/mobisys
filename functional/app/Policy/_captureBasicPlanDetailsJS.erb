@@ -1,0 +1,135 @@
+<script type ="text/javascript">
+//Method to compute base plan value
+function calculateBasePlanValue() {
+	$('select[name="<%=getObjectMapping(@policyProduct)%>[productFamilyCd]"]').selectmenu('enable');
+	$('select[name="<%=getObjectMapping(@policyProduct)%>[productPlanOptionCd]"]').selectmenu('enable');
+	$('select[name="<%=getObjectMapping(@policyProduct)%>[productId]"]').selectmenu('enable');
+	$('select[name="<%=getObjectMapping(@policyProduct)%>[paymentFrequencyCd]"]').selectmenu('enable');
+	$('select[name="<%=getObjectMapping(@policyProduct)%>[premiumPayingTerm]"]').selectmenu('enable');
+	$.ajax({
+		url: "/app/Policy/ajaxCalculatePremium",
+		method: 'POST',
+		data: $('#planForm').serialize(),
+		success: function(data) {
+			var policyProduct = JSON.parse(data);
+			$.each(policyProduct, function(key, val) {
+				var selectObject = $("select[name='<%= getObjectMapping(@policyProduct) %>["+key+"]']");
+				if (selectObject.find('option[value="'+val +'"]').length <= 0) {
+			  		selectObject.append("<option value="+val+">"+val+"</option>");
+				}
+			  	selectObject.val(val);
+			  	selectObject.selectmenu('refresh');
+
+			  	$("input[name='<%= getObjectMapping(@policyProduct) %>["+key+"]']").val(val);
+			  	$("input[name='<%= getObjectMapping(@policyProduct) %>["+key+"]'][class*='amountField']").trigger('blur');
+			  	$("input[name='<%= getObjectMapping(@policyProduct) %>["+key+"]'][type='radio']").checkboxradio('refresh');
+			});
+			$('select[name="<%=getObjectMapping(@policyProduct)%>[productFamilyCd]"]').selectmenu('disable');
+			$('select[name="<%=getObjectMapping(@policyProduct)%>[productPlanOptionCd]"]').selectmenu('disable');
+			$('select[name="<%=getObjectMapping(@policyProduct)%>[productId]"]').selectmenu('disable');
+			defaultPPTerm();
+		}
+	});
+}
+
+
+//Method to enable/ disable premium payment section
+function enablePrePaymentSection() {
+	pdfRequiredFl = $('input[name="<%=getObjectMapping(@policyProduct)%>[pdfRequiredFl]"]')
+	premiumPayingTerm = $('select[name="<%=getObjectMapping(@policyProduct)%>[premiumPayingTerm]"]').val(); 
+	if (pdfRequiredFl.filter(':checked').val() == "YES") {
+		$('input[name="<%=getObjectMapping(@policyProduct)%>[pdfFrequencyVal]"]').val('1'); 
+		$('input[name="<%=getObjectMapping(@policyProduct)%>[pdfPeriod]"]').val(premiumPayingTerm);
+		$('input[name="<%=getObjectMapping(@policyProduct)%>[pdfAmount]"]').parents('div[class="half"]').show();
+		$('input[name="<%=getObjectMapping(@policyProduct)%>[pdfFrequencyVal]"]').parents('div[data-role="dualfieldcontain"]').show();
+	}
+	else {
+		$('input[name="<%=getObjectMapping(@policyProduct)%>[pdfFrequencyVal]"]').val(''); 
+		$('input[name="<%=getObjectMapping(@policyProduct)%>[pdfPeriod]"]').val('');
+		$('input[name="<%=getObjectMapping(@policyProduct)%>[pdfAmount]"]').val('');
+		$('input[name="<%=getObjectMapping(@policyProduct)%>[pdfAmount]"]').parents('div[class="half"]').hide();
+		$('input[name="<%=getObjectMapping(@policyProduct)%>[pdfFrequencyVal]"]').parents('div[data-role="dualfieldcontain"]').hide();
+	}
+}
+
+
+//Method to render fields readonly based on rider SA flag
+function filterSAFlDetails(object, SAFl) {
+ 	if(SAFl =='PREMIUM') {
+  		setReadOnly($("input[name='"+object+"[baseSumAssured]']"), true);
+  		setReadOnly($("input[name='"+object+"[baseAnnualPremium]']"), true);
+  		setReadOnly($("input[name='"+object+"[modalPremium]']"), false);
+
+  	}
+  	else if(SAFl == 'SA') {
+  		setReadOnly($("input[name='"+object+"[baseSumAssured]']"), false);
+  		setReadOnly($("input[name='"+object+"[baseAnnualPremium]']"), true);
+  		setReadOnly($("input[name='"+object+"[modalPremium]']"), true);
+  	}
+  	else if(SAFl == 'DUAL') {
+  		setReadOnly($("input[name='"+object+"[baseSumAssured]']"), false);
+  		setReadOnly($("input[name='"+object+"[baseAnnualPremium]']"), false);
+  		setReadOnly($("input[name='"+object+"[modalPremium]']"), true);
+  	}
+  	else if(SAFl == 'ANNUALPREMIUM') {
+  		setReadOnly($("input[name='"+object+"[baseSumAssured]']"), true);
+  		setReadOnly($("input[name='"+object+"[baseAnnualPremium]']"), false);
+  		setReadOnly($("input[name='"+object+"[modalPremium]']"), true);
+  	}
+  	else if(SAFl == 'COMPUTEDSA') {
+  		setReadOnly($("input[name='"+object+"[baseSumAssured]']"), false);
+  		setReadOnly($("input[name='"+object+"[baseAnnualPremium]']"), false);
+  		setReadOnly($("input[name='"+object+"[modalPremium]']"), false);
+  	}
+  	else if((SAFl == 'MONTHLYINCOME') || (SAFl == 'ANNUALINCOME')) {
+  		setReadOnly($("input[name='"+object+"[baseSumAssured]']"), true);
+  		setReadOnly($("input[name='"+object+"[baseAnnualPremium]']"), true);
+  		setReadOnly($("input[name='"+object+"[modalPremium]']"), true);
+  	}
+}
+
+
+$(document).ready(function(){
+	filterSAFlDetails('<%=getObjectMapping(@policyProduct)%>', '<%= @premiumSAFl %>');
+
+	enablePrePaymentSection();
+
+	$('input[name="<%=getObjectMapping(@policyProduct)%>[capturedPremiumAmt]"]').change( function(){
+		if (isNaN(this.value)) {
+			showDialog("", "<%= getLabelValue('VALID_PREMIUM') %>", 'warning', 0, 'capture');
+			this.value = this.value.replace(/[^0-9.]/g, '');  
+		}
+		else {
+			calculateBasePlanValue();
+		}
+	});
+
+	$('input[name="<%=getObjectMapping(@policyProduct)%>[baseSumAssured]"]').change( function() {
+		if (isNaN(this.value)) {
+			showDialog("", "<%= getLabelValue('VALID_BASE_SUM') %>", 'warning', 0, 'capture');
+			this.value = this.value.replace(/[^0-9.]/g, '');  
+		}
+		else {
+			calculateBasePlanValue();
+		}
+	});
+
+	<% @modelBasedReadonlyFields.split(",").each do |readonlyField| %>
+		setReadOnly($("input[name='<%= getObjectMapping(@policyProduct) %>[<%= readonlyField %>]']"), true);
+		$('select[name="<%=getObjectMapping(@policyProduct)%>[<%= readonlyField %>]"]').selectmenu().selectmenu('disable');
+	<% end %>
+
+
+	<% 
+    if @mandatoryFields
+        if @mandatoryFields[@policyProduct]
+            @mandatoryFields[@policyProduct].each do |field| 
+    %>
+            $("label[for='<%=getObjectMapping(@policyProduct)%>[<%= field %>]']").append('<label for=" *" class="mandatory1">&nbsp;*</label>');
+    <% 
+            end
+        end
+    end
+    %>
+});
+</script>

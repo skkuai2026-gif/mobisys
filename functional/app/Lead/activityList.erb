@@ -1,0 +1,143 @@
+<div data-role="page">
+	<link rel="stylesheet" href="/public/css/c2l_dashboard.css">
+	<style type="text/css">
+	.ui-navbar a {
+		height: 100%;
+		padding: 5px;
+	}
+
+	a.selectedTab {
+		background: #00589a !important;
+		color: #FFFFFF !important;
+		border: none !important;
+	}
+
+	a.unselectedTab {
+		font-family: sans-serif;
+		font-size: 18pt !important;
+		font-weight: normal;
+	}
+	</style>
+
+	<div data-role="header" id="header" data-position="inline">
+		<a href="/app/Menu/leads" rel="external" data-direction="reverse" data-role="none">
+			<img src="/public/images/SalesIllustration/icon_BackArrow-Red.png">
+		</a>
+		<h1><%= getLabelValue('pendingActList') %></h1>
+	</div>
+
+	<div data-role="content" id="content">
+		<div class="illustrationdisplay">
+			<div data-role="navbar">
+			    <ul>
+		      		<li>
+		      			<a href="#" class="durationChange unselectedTab" id="DAILY" data-type="DAILY" data-index="<%= @index.to_i %>"> <%= getLabelValue('DAILY')%> </a> 
+		      		</li>
+		      		<li>
+		      			<a href="#" class="durationChange unselectedTab" id="WEEKLY" data-type="WEEKLY" data-index="<%= @index.to_i %>"> <%= getLabelValue('WEEKLY')%> </a>
+		      		</li>
+		      		<li>
+		      			<a href="#" class="durationChange unselectedTab" id="MONTHLY" data-type="MONTHLY" data-index="<%= @index.to_i %>"> <%= getLabelValue('MONTHLY')%> </a>
+		      		</li>
+			    </ul>
+		  	</div><br>
+
+			<div data-role="header">
+				<h1> <%= @header %> From <%= @fromDate.strftime('%d/%m/%Y') %> to <%= @toDate.strftime('%d/%m/%Y') %></h1>
+				<a href="#" class="durationChange ui-btn-left" data-type="<%= @type %>" data-index="<%= @index.to_i - 1 %>">
+					<%= getLabelValue('PREVIOUS') %>
+				</a>
+				<a href="#" class="durationChange ui-btn-right" data-type="<%= @type %>" data-index="<%= @index.to_i + 1 %>">
+					<%= getLabelValue('NEXT') %>
+				</a>
+			</div>
+		</div>
+
+
+		<form method="POST" action="/app/Lead/activityList" name="activitySearchForm" id="activitySearchForm" data-ajax="false">
+			<input type="hidden" id="index" name="index" value="<%= @index.to_i %>">
+			<input type="hidden" id="type" name="type" value="<%= @type %>">
+
+ 			<table data-role="table" class="ui-responsive table-stroke">
+                <thead>
+                    <tr>
+                        <th data-priority="1" style="width:25%"><%= getLabelValue('name')%></th>
+                        <th data-priority="2" style="width:25%"><%= getLabelValue('activityType')%></th>
+                        <th data-priority="3" style="width:25%"><%= getLabelValue('activityDt')%></th>
+                        <th data-priority="4" style="width:25%"><%= getLabelValue('closureDate')%></th>
+                    </tr>
+                </thead>
+                <tbody>
+                	<tr>
+                        <td data-priority="1">
+                            <input name="leadName" id="leadName" value="<%= @params['leadName'] %>" type="search" placeholder="<%= getLabelValue('name')%>">
+                        </td>
+                        <td data-priority="2">
+                            <input name="activityType" id="activityType" value="<%= @params['activityType'] %>" type="search" placeholder="<%= getLabelValue('activityType')%>">
+                        </td>
+                        <td data-priority="3">
+                            <input name="activityDt" id="activityDt" value="<%= @params['activityDt'] %>" type="search" placeholder="<%= getLabelValue('activityDt')%>" readonly="true">
+                        </td>
+                        <td data-priority="4">
+                            <input name="closureDate" id="closureDate" value="<%= @params['closureDate'] %>" type="search" placeholder="<%= getLabelValue('closureDate')%>" readonly="true">
+                        </td>
+                    </tr>
+                	<% if @searchResult.length < 1 && !@params.empty? %>
+                        <tr><td colspan="4" style="text-align:center;">No Records</td></tr>
+                    <% else 
+                        @searchResult.each do |leadActivity| %>
+	                        <tr>
+	                            <td>
+	                                <a href="<%= url_for :action => :showLead, :id => leadActivity[:leadObject] %>?leadActivity=<%= leadActivity[:activityObject] %>" rel="external"><%= leadActivity[:leadName] %></a>
+	                            </td>
+	                            <td>	
+                                	<a href="<%= url_for :action => :showLead, :id => leadActivity[:leadObject] %>?leadActivity=<%= leadActivity[:activityObject] %>" rel="external"><%= leadActivity[:activityType] %></a>
+	                            </td>
+	                            <td>
+	                                <a href="<%= url_for :action => :showLead, :id => leadActivity[:leadObject] %>?leadActivity=<%= leadActivity[:activityObject] %>" rel="external"><%= leadActivity[:activityDt] %></a>
+	                            </td>
+	                            <td>
+	                                <a href="<%= url_for :action => :showLead, :id => leadActivity[:leadObject] %>?leadActivity=<%= leadActivity[:activityObject] %>" rel="external"><%= leadActivity[:closureDate] %></a>
+	                            </td>
+	                            <td>
+	                            </td>
+	                        </tr>
+                    <%  end
+                    end %>
+                </tbody>
+            </table>
+        </form>
+	</div>
+</div>
+
+<script type="text/javascript">
+$(document).ready(function(){
+	$("#<%= @type %>").addClass("selectedTab");
+
+    $('input').keypress(function (e) {
+        if (e.which == 13) {
+            $('#activitySearchForm').submit();
+            return false;
+        }
+    });
+
+    $('input').change(function(){
+        $('#activitySearchForm').submit();
+    });
+
+    $('#activityDt').click(function(){
+        captureDate('Enter date', 'activityDt');
+    });
+
+    $('#closureDate').click(function(){
+        captureDate('Enter date', 'closureDate');
+    });
+
+    $(".durationChange").click(function(){
+    	$("#type").val($(this).data("type"));
+    	$("#index").val($(this).data("index"));
+    	$("input").not("[type='hidden']").val("");
+    	$('#activitySearchForm').submit();
+    });
+});
+</script>

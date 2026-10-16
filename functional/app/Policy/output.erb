@@ -1,0 +1,374 @@
+<div data-role="page" id="page">
+    <link rel="stylesheet" href="/public/css/Eapp/c2l_EAPP.css">
+	<style type="text/css">
+		h2{
+			color: #005AA4;
+		}
+
+		h4{
+			margin-bottom: 0.5em;
+			margin-top: 0em;
+		}
+
+		.ui-btn {
+			background-color: #CCCCCC !important;
+		}
+
+		.illustrationtable{
+            margin-top: 20px;
+            font-size:16px; 
+            text-shadow:none; 
+            font-weight:none;
+            border: 1px solid #37489e;
+            border-spacing:1px;
+            border-collapse: collapse;
+            width: 98%;
+        }
+
+        .illustrationtable tbody tr td{
+            border: 1px solid #37489e;
+            text-align:center;
+            color:#000;
+            vertical-align: middle;
+        }
+
+        .illustrationtableheader tr th{
+            border: 1px solid #37489e;
+            text-align:center;
+            vertical-align: middle;
+            padding:5px 0px 8px 0px;
+        }
+
+        .illustrationtableheader tr th label {
+            font-weight: bold !important;
+            font-size:16px;
+        }
+
+        .illustrationtableheader {
+            background: #37489e; 
+            color:#fff; 
+        }
+
+        ul.illustrationButtons li{
+            display: inline-block;
+            list-style-type: none;
+            padding-right: 40px;
+        }
+	</style>
+    <div data-role="header" id="header" data-position="inline">
+        <h1 style="margin:0 30%";><%= getLabelValue('proposalStatusCd') %></h1>
+    </div>
+
+    <div data-role="content" id="content">
+		<div class="illustrationdisplay ui-body ui-body-a ui-corner-all">
+			<div class="ui-grid-d">
+			    <div class="ui-block-a"><h2><%= getLabelValue('policyNum') %> :</h2></div>
+			    <div class="ui-block-b"><h2><%= @policy.policyNum %></h2></div>
+			</div><br>
+
+
+			<div class="ui-grid-d">
+			    <div class="ui-block-a"><h2><%= getLabelValue('uwDecisionCd') %> :</h2></div>
+			    <div class="ui-block-b"><h2><%= @uwDecisionCd %></h2></div>
+			</div><br>
+
+			<% if @facetData[:showResults] %>
+				<% if @facetData[:PolicyUWResultExclusion] && @exclusionList.size > 0 %>
+					<h2><%= getLabelValue('Exclusion')%> :</h2>
+					<table data-role="table" class="ui-responsive table-stroke illustrationtable">
+				        <thead class="illustrationtableheader">
+				            <tr>
+				                <th style="border-right-color: white;"><%= getLabelValue('Customer') %></th>
+				                <th style="border-right-color: white;"><%= getLabelValue('baseProductId') %></th>
+				                <% if @facetData[:renderEvent] %>
+				                	<th style="border-right-color: white;"><%= getLabelValue('eventCd') %></th>
+				                <% end %>
+				                <% if @facetData[:renderBenefit] %>
+				                	<th style="border-right-color: white;"><%= getLabelValue('benefitName') %></th>
+				                <% end %>
+				                <% if @facetData[:renderCause] %>
+				                	<th style="border-right-color: white;"><%= getLabelValue('causeCd')  %></th>
+				                <% end %>
+				                <% if @facetData[:renderIcdCd] %>
+				                	<th style="border-right-color: white;"><%= getLabelValue('icdCd')  %></th>
+				                <% end %>
+				                <th></th>
+				            </tr>
+				        </thead>
+				        <tbody class="illustrationtablebody">
+				        	<% @exclusionList.each_with_index do |exclusion, index| %>
+					            <tr>
+					                <td><%= exclusion[:partyName] %></td>
+					                <td><%= exclusion[:productName] %></td>
+				                	<% if @facetData[:renderEvent] %>
+					                	<td><%= exclusion[:event] %></td>
+					                <% end %>
+				                	<% if @facetData[:renderBenefit] %>
+					                	<td><%= exclusion[:benefit] %></td>
+					                <% end %>
+					                <% if @facetData[:renderCause] %>
+					                	<td><%= exclusion[:cause] %></td>
+					                <% end %>
+					                <% if @facetData[:renderIcdCd] %>
+					                	<td><%= exclusion[:icdCd] %></td>
+					                <% end %>
+
+					                <td><a href="#exclusionExtra" data-rel="popup" class="ui-btn ui-corner-all ui-shadow ui-btn-inline" data-transition="pop" data-position-to="window" data-exclusionID="<%= index %>">View More</a></td>
+					            </tr>
+				            <% end %>
+				        </tbody>
+				    </table><br>
+
+
+					<div data-role="popup" id="exclusionExtra">
+						<table data-role="table" class="ui-responsive table-stroke illustrationtable" style="margin: 5px;">
+					        <thead class="illustrationtableheader">
+					            <tr>
+				                <% if @facetData[:renderReasonCd] %>
+					                <th style="border-right-color: white;"><%= getLabelValue('reason') %></th>
+				                <% end %>
+				                <% if @facetData[:renderRemarksKey] %>
+					                <th style="border-right-color: white;"><%= getLabelValue('remarks') %></th>
+				                <% end %>
+				                <% if @facetData[:renderExclusionTypeCd] %>
+					                <th style="border-right-color: white;"><%= getLabelValue('Exclusion type') %></th>
+				                <% end %>
+				                <% if @facetData[:renderLoadingTypeCd] %>
+					                <th style="border-right-color: white;"><%= getLabelValue('Lien type') %></th>
+				                <% end %>
+				                <% if @facetData[:renderExtraFlatAmt] %>
+					                <th style="border-right-color: white;"><%= getLabelValue('Exclusion value')  %></th>
+				                <% end %>
+				                <% if @facetData[:renderPeriodTypeCd] %>
+					                <th style="border-right-color: white;"><%= getLabelValue('Period type')  %></th>
+				                <% end %>
+				                <% if @facetData[:renderExtraFlatDuration] %>
+					                <th style="border-right-color: white;"><%= getLabelValue('Period')  %></th>
+				                <% end %>
+				                <% if @facetData[:renderPeriodUnit] %>
+					                <th><%= getLabelValue('Unit') %></th>
+				                <% end %>
+					            </tr>
+					        </thead>
+					        <tbody class="illustrationtablebody">
+					            <% @exclusionList.each_with_index do |exclusion, index| %>
+						            <tr id="exclusion<%= index %>">
+						            	<% if @facetData[:renderReasonCd] %>
+							                <td><%= exclusion[:reasonCd] %></td>
+					                	<% end %>
+				                		<% if @facetData[:renderRemarksKey] %>
+							                <td><%= exclusion[:remarksKey] %></td>
+					                	<% end %>
+				                		<% if @facetData[:renderExclusionTypeCd] %>
+							                <td><%= exclusion[:exclusionTypeCd] %></td>
+					                	<% end %>
+				                		<% if @facetData[:renderLoadingTypeCd] %>
+							                <td><%= exclusion[:loadingTypeCd] %></td>
+					                	<% end %>
+				                		<% if @facetData[:renderExtraFlatAmt] %>
+							                <td><%= exclusion[:extraFlatAmt] %></td>
+					                	<% end %>
+				                		<% if @facetData[:renderPeriodTypeCd] %>
+							                <td><%= exclusion[:periodTypeCd] %></td>
+					                	<% end %>
+				                		<% if @facetData[:renderExtraFlatDuration] %>
+							                <td><%= exclusion[:extraFlatDuration] %></td>
+					                	<% end %>
+				                		<% if @facetData[:renderPeriodUnit] %>
+							                <td><%= exclusion[:periodUnit] %></td>
+					                	<% end %>
+						            </tr>
+			                	<% end %>
+					        </tbody>
+					    </table>
+					</div>
+				<% end %>
+
+
+				<% if @facetData[:PolicyUWResultLoading] && @coverageLoadingList.size > 0 %>
+					<h2><%= getLabelValue('Coverage & Loading')%> :</h2>
+					<table data-role="table" class="ui-responsive table-stroke illustrationtable">
+				        <thead class="illustrationtableheader">
+				            <tr>
+				                <th style="border-right-color: white;"><%= getLabelValue('name') %></th>
+				                <th style="border-right-color: white;"><%= getLabelValue('baseProductId') %></th>
+				                <th style="border-right-color: white;"><%= getLabelValue('planOptionCd') %></th>
+				                <th style="border-right-color: white;"><%= getLabelValue('sumAssured') %></th>
+				                <th style="border-right-color: white;"><%= getLabelValue('productTerm') %></th>
+				                <th style="border-right-color: white;"><%= getLabelValue('ppTerm') %></th>
+				                <th style="border-right-color: white;"><%= getLabelValue('modalPremium') %></th>
+				                <th style="border-right-color: white;"><%= getLabelValue('extraPremium') %></th>
+				                <th></th>
+				            </tr>
+				        </thead>
+				        <tbody class="illustrationtablebody">
+				            <% @coverageLoadingList.each_with_index do |coverageLoading, index| %>
+					            <tr id="exclusion<%= index %>">
+					                <td><%= coverageLoading[:partyName] %></td>
+					                <td><%= coverageLoading[:productName] %></td>
+					                <td><%= coverageLoading[:productPlanOptionCd] %></td>
+					                <td><%= coverageLoading[:baseSumAssured] %></td>
+					                <td><%= coverageLoading[:productTerm] %></td>
+					                <td><%= coverageLoading[:premiumPayingTerm] %></td>
+					                <td><%= coverageLoading[:modalPremium] %></td>
+					                <td><%= coverageLoading[:extraPremium] %></td>
+
+					                <td><a href="#loadingExtra" data-rel="popup" class="ui-btn ui-corner-all ui-shadow ui-btn-inline" data-transition="pop" data-position-to="window" data-popupID="loading<%= index %>">View Loading</a></td>
+					            </tr>
+				            <% end %>
+				        </tbody>
+				    </table><br>
+
+
+				    <div data-role="popup" id="loadingExtra">
+						<table data-role="table" class="ui-responsive table-stroke illustrationtable" style="margin: 5px;">
+					        <thead class="illustrationtableheader">
+					            <tr>
+			                		<% if @facetData[:renderExtraTypeCd] %>
+						                <th style="border-right-color: white;"><%= getLabelValue('extraTypeCd') %></th>
+					                <% end %>
+			                		<% if @facetData[:renderLoadingTypeCd] %>
+						                <th style="border-right-color: white;"><%= getLabelValue('loadingTypeCd') %></th>
+					                <% end %>
+			                		<% if @facetData[:renderExtraFlatAmt] %>
+						                <th style="border-right-color: white;"><%= getLabelValue('flatExtra') %></th>
+					                <% end %>
+			                		<% if @facetData[:renderExtraFlatDuration] %>
+						                <th style="border-right-color: white;"><%= getLabelValue('flatExtraDuration') %></th>
+					                <% end %>
+			                		<% if @facetData[:renderExtraPercent] %>
+						                <th style="border-right-color: white;"><%= getLabelValue('% extra')  %></th>
+					                <% end %>
+			                		<% if @facetData[:renderExtraPercDuration] %>
+						                <th><%= getLabelValue('flatExtraDuration') %></th>
+					                <% end %>
+					            </tr>
+					        </thead>
+					        <tbody class="illustrationtablebody">
+					            <% 
+					            @coverageLoadingList.each_with_index do |coverageLoading, index|
+					            	coverageLoading[:policyProductExtra].each do |policyProductExtra|
+					            %>		
+						            <tr class="loading<%= index %>">
+						                <% if @facetData[:renderExtraTypeCd] %>
+						                	<td><%= policyProductExtra[:extraTypeCd] %></td>
+						                <% end %>
+				                		<% if @facetData[:renderLoadingTypeCd] %>
+						                	<td><%= policyProductExtra[:loadingTypeCd] %></td>
+						                <% end %>
+				                		<% if @facetData[:renderExtraFlatAmt] %>
+						                	<td><%= policyProductExtra[:extraFlatAmt] %></td>
+						                <% end %>
+				                		<% if @facetData[:renderExtraFlatDuration] %>
+						                	<td><%= policyProductExtra[:extraFlatDuration] %></td>
+						                <% end %>
+				                		<% if @facetData[:renderExtraPercent] %>
+						                	<td><%= policyProductExtra[:extraPercent] %></td>
+						                <% end %>
+				                		<% if @facetData[:renderExtraPercDuration] %>
+						                	<td><%= policyProductExtra[:extraPercDuration] %></td>
+						                <% end %>
+						            </tr>
+					            <% 
+					            	end
+					            end	
+					            %>
+					        </tbody>
+					    </table><br>
+					</div>
+				<% end %>
+
+
+				<% if @facetData[:PolicyUWResultDocument] && @requirementList.size > 0 %>
+					<h2><%= getLabelValue('requirements')%> :</h2>
+					<table data-role="table" class="ui-responsive table-stroke illustrationtable">
+				        <thead class="illustrationtableheader">
+				            <tr>
+				                <th style="border-right-color: white;"><%= getLabelValue('Customer') %></th>
+		                		<% if @facetData[:renderCategoryCd] %>
+				                	<th style="border-right-color: white;"><%= getLabelValue('docCategoryCd') %></th>
+				            	<% end %>
+		                		<% if @facetData[:renderDocumentCd] %>
+				                	<th><%= getLabelValue('documentCd') %></th>
+				                <% end %>
+				            </tr>
+				        </thead>
+				        <tbody class="illustrationtablebody">
+				            <% @requirementList.each do |requirement| %>
+					            <tr>
+					                <td><%= requirement[:partyName].to_s %></td>
+			                		<% if @facetData[:renderCategoryCd] %>
+						                <td><%= requirement[:docCategoryCd].to_s %></td>
+				                	<% end %>
+			                		<% if @facetData[:renderDocumentCd] %>
+						                <td><%= requirement[:documentCd].to_s %></td>
+				                	<% end %>
+					            </tr>
+		                	<% end %>
+				        </tbody>
+				    </table><br>
+				<% end %>
+			<% end %>
+
+
+			<% if @taskExceptionsList != nil && !@taskExceptionsList.empty? %>
+				<div class="ui-grid-d" style="width: 98%;">
+					<% if @policy.policyNum.to_s == "" %>
+					    <div class="ui-block-a"><h2><%= getLabelValue('exceptions')%> :</h2></div>
+					<% else %>
+						<div class="ui-block-a"><h2><%= getLabelValue('remarks')%> :</h2></div>
+					<% end %>	
+				    <div class="ui-block-b" style="width: 80%;">
+				    	<ul style="padding-left: 1em;">
+							<% @taskExceptionsList.each do |taskException| %>  
+								<li><h2><%= taskException.exceptionMessage %></h2></li>
+							<% end %>
+							<% if @staticMessage.to_s != "" %>
+								<li><h2><%= getLabelValue(@staticMessage) %></h2></li>
+							<% end %>	
+						</ul>
+				    </div>
+				</div><br>
+			<% end %>
+
+
+			<% if @facetData[:showResults] && (@facetData[:PolicyUWResultExclusion] || @facetData[:PolicyUWResultLoading] || @facetData[:PolicyUWResultDocument]) %>
+				<div class="ui-grid-c">
+				    <div class="ui-block-a"></div>
+				    <div class="ui-block-b">
+				    	<a href="<%= url_for :action => :sendCounterOfferResponse, :id => @policy.object.to_s, :query => 
+	{:submit => '', :response => 'ACCEPT'} %>" rel="external" data-role="button" style="min-width: 100px; background-color: #CCCCCC;"><%= getLabelValue("ACCEPT") %></a>
+				    </div>
+				    <div class="ui-block-c">
+				    	<a href="<%= url_for :action => :sendCounterOfferResponse, :id => @policy.object.to_s, :query => 
+	{:submit => '', :response => 'DECLINE'} %>" rel="external" data-role="button" style="min-width: 100px; background-color: #CCCCCC;"><%= getLabelValue("DECLINE") %></a>
+				    </div>
+				    <div class="ui-block-d"></div>
+				</div><br>
+			<% else %>
+				<div class="ui-grid-d">
+				    <div class="ui-block-a"></div>
+				    <div class="ui-block-b"></div>
+				    <div class="ui-block-c">
+				    	<a href="<%= url_for :action => :showProposal, :id => @policy.object.to_s, :query => 
+	{:submit => ''} %>" rel="external" data-role="button" style="min-width: 100px; background-color: #CCCCCC;"><%= getLabelValue("OK") %></a>
+				    </div>
+				    <div class="ui-block-d"></div>
+				    <div class="ui-block-e"></div>
+				</div><br>
+			<% end %>
+		</div>
+	</div>	
+</div>
+
+<script type="text/javascript">
+	$(document).ready(function(){
+		$("a[data-rel='popup']").click(function(){
+			$("#exclusionExtra tbody tr").hide();
+			$("#exclusionExtra tbody tr#"+$(this).attr("data-popupID")).show();
+
+			$("#loadingExtra tbody tr").hide();
+			$("#loadingExtra tbody tr."+$(this).attr("data-popupID")).show();
+		});
+	});
+</script>

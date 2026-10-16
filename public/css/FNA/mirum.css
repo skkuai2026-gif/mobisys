@@ -1,0 +1,506 @@
+/*
+Slide numbers refer to SunLife_eFNA_UI.ppt
+*/
+
+/*
+    EAPP HTML Web Source / Basic Details Tab.htm
+*/
+/* Slide 2 */
+
+/* Header back arrow */
+.headerButtons img  {
+    width: 30px;
+    height: 30px;
+}
+.headerButtons img:first-child  {
+    margin-top: 5px;
+}
+
+/* Header logo */
+.header-sun-life-logo {
+    margin: 19px 0 0 0;
+    padding: 0;
+}
+.header-sun-life-logo img {
+    width: 174px;
+    height: 26px;
+}
+
+/* Header right  */
+.headerRightButtons {
+    margin: 24px 0 20px 0;
+    padding: 0 45px 0 0;
+}
+
+/* Step Navigation */
+.eapp-navbar {
+    background-color: #EDB41A;
+    background: radial-gradient(circle, #FFE399 0%, #EDB41A 100%);
+
+}
+.eapp-navbar ul {
+    padding-left: 16px;
+}
+.eapp-navbar li {
+    margin: 10px 10px 0px 10px;
+    background-color: transparent !important;
+}
+.eapp-navbar .tabLinks{
+    background-color: transparent !important;
+}
+.eapp-navbar li span {
+    font-size: 14px;
+    font-weight: bold;
+    margin: 6px 0 0 0;
+    text-align: center;
+    text-transform: uppercase;
+    min-height: 25px;
+}
+
+/* Slide 3 */
+.ui-content {
+    background-color: #dadbd9;
+}
+
+/* Slide 4 */
+/*
+.ui-grid-n,
+.illustrationdisplay {
+    background-color: white;
+}
+*/
+
+/* Slide 5 */
+.illustrationdisplay .legend {
+    border-bottom: 1px solid #3e85c3 ;
+    margin-right: 2%;
+}
+.illustrationdisplay .legend .strongLabel {
+    color: black;
+    font-size: 18px !important;
+}
+
+/* Slide 6 */
+.ui-body .readonly {
+    opacity: 0.7 !important;
+    background-color: #c1c1c1 !important;
+    margin-top: 10px !important;
+}
+.ui-btn,
+.ui-select .ui-btn {
+    border: 1px solid #757575;
+    color: #757575;
+    font-size: 14px;
+    font-weight: normal;
+    text-shadow: none;
+}
+input.ui-input-text,
+textarea.ui-input-text {
+    background-color: #fff !important;
+    font-size: 14px;
+}
+.ui-disabled, .ui-state-disabled, button[disabled], .ui-select .ui-btn.ui-state-disabled {
+    /* Ashwini: 25-07-2017: Changed the behaviour of the UI when forms are disabled after signature (Removed Background color from the Chechbox)*/
+    /*background-color: #e6eced !important;*/
+    /*background-color: #e6eced ;*/
+    opacity: 0.7 !important;
+}
+
+/* Slide 7 */
+.fieldLabel {
+    color: #424242;
+}
+.ui-mobile label, div.ui-controlgroup-label {
+    font-size: 14px;
+}
+
+.fieldLabel.fieldLabel-hasContent {
+    color: #3e85c3;
+}
+
+/* Slide 8 */
+.datepickerimg {
+    height: 24px;
+}
+
+/*
+    EAPP HTML Web Source / FNA.htm
+*/
+/* Slide 10 */
+
+.ui-checkbox label.ui-btn {
+    border: 1px solid #3e85c3;
+    border-radius: 0;
+    color:#003656 !important;
+    font-size: 14px;
+    font-weight: normal;
+    top: 5px ;
+    position: relative;
+}
+
+
+.ui-btn-icon-left {
+    padding-left: 18px ;
+}
+
+
+
+.ui-icon-check, .ui-btn.ui-checkbox-on.ui-checkbox-on {
+    /*background-color:#fbefcc;*/S
+}
+
+.ui-checkbox label.ui-btn:after {
+    background-color: #fff;
+    background-image: url("public/images/FNA/radio-unselected.png");
+    background-size: 17px 17px;
+    opacity: initial;
+    height: 17px;
+    width: 17px;
+}
+
+.ui-icon-check:after, html .ui-btn.ui-checkbox-on.ui-checkbox-on:after {
+    background-image: url("/public/images/FNA/radio-selected.png");
+    background-size: 17px 17px;
+    border: none;
+}
+
+/* Slide 11 */
+/* an inline style has been used for each signature pad */
+/* this is controlled by signature pad jQuery plugin */
+/*.sigPad canvas {
+    background-color: #e6eced !important;
+}*/
+
+.sigPad canvas {
+    background-color: #e6eced ;
+}
+
+.sigPad.error canvas {
+    background-color: #d30000 !important;
+}
+
+/*
+    EAPP HTML Web Source / showProposal.htm
+*/
+/* Slide 13 */
+/* Accordion icon */
+.ui-alt-icon.ui-icon-minus:after,
+.ui-alt-icon .ui-icon-minus:after,
+.ui-alt-icon.ui-icon-plus:after,
+.ui-alt-icon .ui-icon-plus:after {
+    background-color: transparent;
+    background-size: 22px 22px;
+    border-radius: initial;
+    width: 22px;
+    height: 22px;
+}
+
+/* Accordion icon minus */
+.ui-alt-icon.ui-icon-minus:after,
+.ui-alt-icon .ui-icon-minus:after {
+    background-image: url("/public/images/FNA/icon-accordion-down.png");
+}
+
+/* Accordion icon plus */
+.ui-alt-icon.ui-icon-plus:after,
+.ui-alt-icon .ui-icon-plus:after {
+    background-image: url("/public/images/FNA/icon-accordion-up.png");
+}
+/* Jump to top icons */
+.ui-alt-icon.ui-icon-carat-u:after,
+.ui-alt-icon .ui-icon-carat-u:after {
+    background-color: transparent;
+    background-image: url("/public/images/FNA/icon-move-to-top.png");
+    background-size: 18px 18px;
+    border-radius: initial;
+    width: 18px;
+    height: 18px;
+}
+
+/* Error WarningError.png*/
+
+a.unselectedTab {
+    background-color: #003656 !important;
+    border: 0;
+    border-left: 5px solid white !important;
+    color: #fff !important;
+    font-size: 16px !important;
+    font-weight:normal;
+    padding-top: 16px;
+    padding-bottom: 16px;
+    text-shadow: none !important;
+    text-transform: uppercase;
+}
+
+.ui-navbar li:first-child a.unselectedTab {
+    border-left: none !important;
+}
+
+a.selectedTab,
+.ui-navbar li a.ui-btn-active {
+    /*background-color: #edb41a ;*/
+    color: #424242 !important;
+}
+
+/* Slide 14 */
+/* error icon - error_list.png */
+.errortab {
+    border-bottom: 4px solid #D30000  !important;
+}
+.error_icon:after {
+    background-image: url("/public/images/FNA/field-invalid.png");
+    background-size: 16px 16px;
+    margin-left: -5px;
+}
+
+/* Slide 15 */
+.ui-simpledialog-screen-modal {
+    opacity: .5;
+}
+
+.ui-simpledialog-container {
+    background-color: #fff;
+    border: 1px solid #000;
+    color: #003656;
+    text-shadow: none;
+    padding: 0 5px 5px 5px;
+}
+
+.ui-simpledialog-container > ul {
+    margin: 0;
+    padding: 15px;
+}
+
+.ui-simpledialog-container ul,
+.ui-simpledialog-container li {
+    list-style: none;
+}
+.ui-simpledialog-container ul li {
+    line-height: 24px;
+    font-size: 16px;
+}
+.ui-simpledialog-container  ul li ul {
+    padding-left: 0;
+    margin: 0 0 30px 0;
+}
+
+.ui-simpledialog-container  ul li ul li {
+    font-size: 12px;
+}
+
+.ui-simpledialog-container .ui-link {
+    border: 1px solid #000 !important;
+    background-color: #33616b !important;
+    text-shadow: none;
+}
+
+/*
+    UI Resources / loginScreen.htm
+*/
+/* Slide 17 */
+#bg-image {
+    max-width: 100%;
+    width: 100%;
+    height: 100%;
+}
+
+#content.ui-content section {
+    background-color: #00303C;
+    border-right: 1px solid #000;
+}
+
+#content.ui-content section div {
+    position: relative;
+    margin: 0 auto;
+}
+
+#content.ui-content .login-title {
+    position: absolute;
+    top: 0;
+    left: 20%;
+    background-color: transparent;
+    border: 4px solid #eaab00;
+    padding: 35px 55px;
+    margin-left: 0;
+    margin-right: 0;
+    margin-top: 0%;
+    width: 256px;
+    height: 26px;
+}
+
+@media screen and (min-width: 800px) {
+    #content.ui-content .login-title {
+        left: 30%;
+    }
+}
+
+#content.ui-content nav {
+    background-color: #eaab00;
+    text-shadow: none;
+}
+
+#content.ui-content nav .login-logo {
+    width: 140px;
+}
+
+#content .ui-input-text, .ui-input-search {
+    margin: 0;
+}
+
+#content .ui-input-text input, .ui-input-search input {
+    background-color:#fff;
+    font-size: 16px;
+}
+
+#content.ui-content nav label,
+#content.ui-content nav input {
+    color: #003946;
+}
+
+#content.ui-content nav .ui-input-text {
+    border: 1px solid #757575;
+    border-radius: 0;
+    box-shadow: none;
+}
+
+#content.ui-content nav form label {
+    padding-top: 25px;
+}
+
+#content.ui-content nav form a.ui-link.ui-btn {
+    background-color: #33616B;
+    border: none;
+    border-radius: 2px;
+    color: #fff;
+    font-weight: bold;
+    margin-top: 25px;
+    text-shadow: none;
+}
+
+/*
+    UI Resources / landingPage.htm
+*/
+/* Slide 19 */
+#header {
+    background-color:#fff !important;
+    border-top: 0;
+    border-bottom: 3px solid #3e85c3 !important;
+    text-align: center;
+}
+
+#header > img {
+    margin: 20px 0;
+    height: 26px;
+    width: 174px;
+}
+
+/* icon change */
+.landingPage #main-options {
+    min-height: 500px;
+    width: 100%;
+    text-align: center;
+}
+
+.landingPage #main-options .ui-block-a {
+    margin: 0 auto;
+    margin-top: 22%;
+    float: none;
+}
+
+.landingPage #main-options .ui-block-a .ui-link img {
+    border: 4px solid #eaab00;
+    height: 28px;
+    margin: 0 0 30px -74px;
+    padding: 36px 100px;
+    width: 110px;
+}
+
+.landingPage #main-options .ui-block-a .ui-link.ui-btn {
+    background-color:#edb41a;
+    border-radius: 3px;
+    border-style: none;
+    border-top: 0;
+    color: #003656;
+    text-shadow: none;
+    max-width: 200px;
+}
+
+.landingPage #content {
+    background-image: url("/public/images/FNA/fna-background.jpg");
+    background-repeat: no-repeat;
+    background-size: 100%;
+}
+
+
+/*
+    UI Resources / FNA & RPQ.htm
+*/
+/* Slide 21 */
+
+.fnaAndRpq #header img:first-child  {
+    margin: 20px !important;
+    height:20px;
+    width:20px;
+}
+
+.fnaAndRpq #main-options {
+    min-height: 500px;
+    width: 100%;
+    text-align: center;
+}
+
+.fnaAndRpq #main-options .ui-block-a,
+.fnaAndRpq #main-options .ui-block-b {
+    margin-top: 22%;
+    margin-bottom: 22%;
+    width: 50%;
+}
+
+.fnaAndRpq #main-options .ui-block-a .ui-link img,
+.fnaAndRpq #main-options .ui-block-b .ui-link img {
+    padding: 36px 100px;
+    width: 108px;
+}
+
+.fnaAndRpq #main-options .ui-block-a .imgCaption,
+.fnaAndRpq #main-options .ui-block-b .imgCaption {
+    /*background-color:#edb41a;
+    border-radius: 3px;
+    border-style: none;
+    color: #003656;
+    display: inline-block;
+    font-size: 14px;
+    max-width: 200px;
+    margin: 0;
+    padding: 10px 20px;
+    text-shadow: none;*/
+    background-color:#efbc33!important;
+    border-radius: 7px;
+    border-style: none;
+    color: #003946 !important;
+    display: inline-block;
+    font-size: 14px !important;
+    max-width: 200px;
+    margin: 0;
+    text-shadow: none !important;
+    font-weight: 700;
+    text-align: center;
+    line-height: 1.3;
+    padding: .8em 1.5em !important;
+}
+
+.fnaAndRpq #content {
+    background-image: url("/public/images/FNA/fna-and-rpq-background.jpg");
+    background-repeat: no-repeat;
+    background-size: 100%;
+}
+
+/*
+    UI Resources / Search Illustration_Search.htm
+*/
+/* Slide 23 */
+#header a img {
+    margin: 14px 0 0 14px ;
+    height: 20px;
+    width: 20px;
+}

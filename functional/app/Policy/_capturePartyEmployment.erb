@@ -1,0 +1,83 @@
+<div id="<%= getObjectMapping(@party)%>[partyEmployment]">
+	<div class="illustrationdisplay">
+		<div class="legend">
+			<label class="strongLabel">
+				<%= getLabelValue('employmentHeader') %>
+				<a href="#" class="scrollTopButton ui-icon-carat-u ui-btn-icon-notext ui-alt-icon ui-btn-inline"/>
+				<a href="#" class="expandButton ui-icon-plus ui-btn-icon-notext ui-alt-icon ui-btn-inline"/>
+				<a href="#" class="collapseButton ui-icon-minus ui-btn-icon-notext ui-alt-icon ui-btn-inline"/>
+			</label>
+		</div>
+
+		<div class="panelContent">
+			<div data-role="dualfieldcontain">
+				<% if @facetData[:renderOccupationTypeCd] %>
+					<div class="half">
+						<%= renderLabel('occupationTypeCd', 'occupationTypeCd', nil, @partyEmployment) %>
+						<%= getLookup('OCCUPATIONTYPE','occupationTypeCd',@partyEmployment.occupationTypeCd, @partyEmployment) %>
+					</div>
+				<% end %>
+			</div>
+
+			<div data-role="dualfieldcontain">
+				<% if @facetData[:renderEmployerName] %>
+					<div class="half">
+						<%= renderLabel('employerName', 'employerName', nil, @partyEmployment)   %>
+						<%= renderInputField('employerName', @partyEmployment.employerName, 'EmployerName', @partyEmployment, ' maxlength="150" ') %>
+					</div>
+				<% end %>
+				<% if @facetData[:renderPepCd] %>
+					<div class="half">
+						<%= renderLabel('serviceCategory', 'serviceCategory', nil, @partyEmployment) %>
+						<%= renderRadioButton('pepCd', @partyEmployment.pepCd, "#{getObjectMapping(@partyEmployment)}_insuredYes", 'YES', @partyEmployment) %>
+		              	<%= renderLabel("#{getObjectMapping(@partyEmployment)}_insuredYes", 'YES','radioWidth') %>
+		              	<%= renderRadioButton('pepCd', @partyEmployment.pepCd, "#{getObjectMapping(@partyEmployment)}_insuredNo", 'NO', @partyEmployment) %>
+		              	<%= renderLabel("#{getObjectMapping(@partyEmployment)}_insuredNo", 'NO','radioWidth') %>
+					</div>
+				<% end %>
+			</div>
+
+
+			<div data-role="dualfieldcontain">
+				<% if @facetData[:renderAnnualIncome] %>
+					<div class="half">
+						<%= renderLabel('annualIncome', 'annualIncome', nil, @partyEmployment)   %>
+						<%= renderAmountField('annualIncome', @partyEmployment.annualIncome, 'Gross Monthly Income', @partyEmployment,' maxlength="20" ') %>
+						<%= attachMask("#{getObjectMapping(@partyEmployment)}[annualIncome]") %>
+					</div>
+				<% end %>
+			</div>
+
+			<% if @facetData[:renderOccupationClassPanel] %>
+				<div data-role="dualfieldcontain">
+					<% if @facetData[:renderIndustrycd] %>
+						<div class="half">
+							<%= renderLabel('industryCd', 'industryCd', nil, @partyEmployment) %>
+							<%= getLookup('INDUSTRY','industryCd',@partyEmployment.industryCd, @partyEmployment) %>
+						</div>
+					<% end %>
+		          	<% if @facetData[:renderNatureofduty] %>
+						<div class="half">
+							<%= renderLabel('natureOfDuty', 'natureOfDuty', nil, @partyEmployment) %>
+							<span class = "<%= getObjectMapping(@partyEmployment)%>[natureOfDutyLookup]" name="<%= getObjectMapping(@partyEmployment)%>[natureOfDutyLookup]">	
+								<%= getLookup('DYNAMICLOOKUP','natureOfDuty',@partyEmployment.natureOfDuty, @partyEmployment,@natureOfDutyLookups)%>
+							</span>
+						</div>
+					<% end %>
+				</div>
+
+				<div data-role="dualfieldcontain">
+					<% if @facetData[:renderOccupationclass] %>
+						<div class="half">
+							<%= renderLabel('occupationClass', 'occupationClass', nil, @partyEmployment) %>
+							<span class = "<%= getObjectMapping(@partyEmployment)%>[occupationClassLookup]"  name = '<%= getObjectMapping(@partyEmployment)%>[occupationClassLookup]'>
+								<%= getLookup('DYNAMICLOOKUP','occupationClass',@partyEmployment.occupationClass, @partyEmployment,@occupationClassLookups) %>
+							</span>
+						</div>
+					<% end %>
+				</div>
+			<% end %>
+		</div>
+	</div>
+</div>
+<%= render :partial => "capturePartyEmploymentJS" %>

@@ -1,0 +1,528 @@
+<script>
+
+function tabSetup(){
+   $('label[for="TOTAL_EXPECTED_COVERAGE"]').css("top", "-10px");
+   
+   $('label[for="TOTAL_EXISTING_COVERAGE"]').css("top", "-10px");
+   $('label[for="MEDICAL_SHORTFALL"]').css("top", "-10px");  
+   $('label[for="HINCOME_SHORTFALL_RISK_PROT_NEEDS"]').css("top", "-10px"); 
+   $('label[for="HINSURANCE_SHORTFALL_RISK_PROT_NEEDS"]').css("top", "-10px"); 
+   $('label[for="SFB_SHORTFALL_RISK_PROT_NEEDS"]').css("top", "-10px"); 
+   $('label[for="CIINSURANCE_SHORTFALL_RISK_PROT_NEEDS"]').css("top", "-10px"); 
+   $('label[for="ADDINSURANCE_SHORTFALL_RISK_PROT_NEEDS"]').css("top", "-10px"); 
+
+    <% if @fnaRequest.statusCd.to_s == "FNASIGNED" || @fnaRequest.statusCd.to_s == "FNASUBMIT" || @fnaRequest.statusCd.to_s == "SYNCDONE"  %>
+                setReadOnly($('input[type="text"]'), true);
+                setReadOnly($('input[type="tel"]'), true);
+                setReadOnly($('input[type="num"]'), true);
+                setReadOnly($('input[type="email"]'), true);
+                $('select').selectmenu('disable').trigger("refresh");
+                $('input[type="radio"]').checkboxradio('disable').trigger("refresh");
+                $('input[type="checkbox"]').checkboxradio('disable').trigger("refresh");
+                $('input[type="button"]').off('click');
+                $('input[type="button"]').button('disable').trigger("refresh");
+                $('a[href="#clear"]').hide();
+                $('label[for="<%=getObjectMapping(@fnaRequest)%>[inflationRate]"]').css("top", "-10px");
+                $('label[for="<%=getObjectMapping(@fnaRequest)%>[returnRate]"]').css("top", "-10px");
+                $('label[for="<%=getObjectMapping(@fnaOtherProtectionNeed)%>[hincomeNeededAmt]"]').css("top", "-10px");
+                $('label[for="<%=getObjectMapping(@fnaOtherProtectionNeed)%>[hincomeCoveredAmt]"]').css("top", "-10px");
+                $('label[for="<%=getObjectMapping(@fnaOtherProtectionNeed)%>[hinsuranceNeededAmt]"]').css("top", "-10px");
+                $('label[for="<%=getObjectMapping(@fnaOtherProtectionNeed)%>[hinsuranceCoveredAmt]"]').css("top", "-10px");
+                $('label[for="<%=getObjectMapping(@fnaOtherProtectionNeed)%>[sfbNeededAmt]"]').css("top", "-10px");
+                $('label[for="<%=getObjectMapping(@fnaOtherProtectionNeed)%>[sfbCoveredAmt]"]').css("top", "-10px");
+                $('label[for="<%=getObjectMapping(@fnaOtherProtectionNeed)%>[ciInsuranceNeededAmt]"]').css("top", "-10px");
+                $('label[for="<%=getObjectMapping(@fnaOtherProtectionNeed)%>[ciInsuranceCoveredAmt]"]').css("top", "-10px");
+                $('label[for="<%=getObjectMapping(@fnaOtherProtectionNeed)%>[addInsuranceNeededAmt]"]').css("top", "-10px");
+                $('label[for="<%=getObjectMapping(@fnaOtherProtectionNeed)%>[addInsuranceCoveredAmt]"]').css("top", "-10px");
+
+
+                <% end %>
+
+}   
+  
+  function numbersonly(evt){
+    var charCode = (evt.which) ? evt.which : event.keyCode
+    if (charCode > 31 && (charCode < 48 || charCode > 57))
+        return false;
+    return true;
+  }
+
+  
+function isNumberKey(evt)
+       {
+          var charCode = (evt.which) ? evt.which : evt.keyCode;
+          if (charCode != 46 && charCode > 31 
+            && (charCode < 48 || charCode > 57))
+             return false;
+
+          return true;
+       }
+
+
+function checkifNum(val,id)
+{
+   if (isNaN(val) || val < 0) {
+        $("input[id='" + id + "']").val("");
+        var dialogContent = '<span>'+"<%= getLabelValue('ERR_CONTACT') %>"+'</span>';
+        $("#policyNo-validation-div").html("").html(dialogContent).trigger('create');
+        if (typeof $.mobile.sdCurrentDialog === 'undefined') {
+            $("<div>").simpledialog2({
+                mode : 'blank',
+                blankContent : $("#policyNo-validation-div").html() +"<a rel='close' data-role='button' href='#' style='margin-top: 2%;'>" + '<%= getLabelValue("MESSAGE_CLOSE") %>' + "</a>"
+            });
+        }
+          // showDialog("", "<%#= getLabelValue('ERR_CONTACT') %>", 'warning', 0, 'capture');
+          $("input[id='" + id + "']").focus();
+      }
+      else{
+            if (val != "") {
+              var returnValue = val.indexOf(".");
+              if (returnValue != -1){
+              $("input[id='" + id + "']").val("");
+              var dialogContent = '<span>'+"<%= getLabelValue('ERR_CONTACT') %>"+'</span>';
+              $("#policyNo-validation-div").html("").html(dialogContent).trigger('create');
+              if (typeof $.mobile.sdCurrentDialog === 'undefined') {
+              $("<div>").simpledialog2({
+                mode : 'blank',
+                blankContent : $("#policyNo-validation-div").html() +"<a rel='close' data-role='button' href='#' style='margin-top: 2%;'>" + '<%= getLabelValue("MESSAGE_CLOSE") %>' + "</a>"
+              });
+          }
+              // showDialog("", "<%#= getLabelValue('ERR_CONTACT') %>", 'warning', 0, 'capture');
+              $("input[id='" + id + "']").focus();
+              }
+
+            }        
+        }
+}
+
+
+function checkifNumdeci(val,id)
+{
+   if (isNaN(val) || val < 0) {
+          $("input[id='" + id + "']").val("");
+              var dialogContent = '<span>'+"<%= getLabelValue('ERR_CONTACT') %>"+'</span>';
+              $("#policyNo-validation-div").html("").html(dialogContent).trigger('create');
+              if (typeof $.mobile.sdCurrentDialog === 'undefined') {
+              $("<div>").simpledialog2({
+                mode : 'blank',
+                blankContent : $("#policyNo-validation-div").html() +"<a rel='close' data-role='button' href='#' style='margin-top: 2%;'>" + '<%= getLabelValue("MESSAGE_CLOSE") %>' + "</a>"
+              });
+          }
+          // showDialog("", "<%#= getLabelValue('ERR_CONTACT') %>", 'warning', 0, 'capture');
+          $("input[id='" + id + "']").focus();
+      }
+}
+
+
+$('input[name="<%=getObjectMapping(@fnaRequest)%>[inflationRate]"]').change( function(){
+  if(this.value < 0 || this.value > 999.99){
+        var dialogContent = '<span>'+"<%= getLabelValue('INFLATION_RATE_RANGE') %>"+'</span>';
+        $("#policyNo-validation-div").html("").html(dialogContent).trigger('create');
+        if (typeof $.mobile.sdCurrentDialog === 'undefined') {
+            $("<div>").simpledialog2({
+                mode : 'blank',
+                blankContent : $("#policyNo-validation-div").html() +"<a rel='close' data-role='button' href='#' style='margin-top: 2%;'>" + '<%= getLabelValue("MESSAGE_CLOSE") %>' + "</a>"
+            });
+     }
+    // showDialog("", "<%#= getLabelValue('INFLATION_RATE_RANGE') %>", 'warning', 0, 'capture');
+    $('input[name="<%=getObjectMapping(@fnaRequest)%>[inflationRate]"]').val('3');
+    $('input[name="<%=getObjectMapping(@fnaRequest)%>[inflationRate]"]').focus();
+  }
+   else {
+    if (this.value == "" || this.value == null){
+     $('input[name="<%=getObjectMapping(@fnaRequest)%>[inflationRate]"]').val('3'); 
+    }
+  }
+});
+
+
+$('input[name="<%=getObjectMapping(@fnaRequest)%>[returnRate]"]').change( function(){
+  if(this.value < 0 || this.value > 999.99){
+        var dialogContent = '<span>'+"<%= getLabelValue('RETURN_RATE_RANGE') %>"+'</span>';
+        $("#policyNo-validation-div").html("").html(dialogContent).trigger('create');
+        if (typeof $.mobile.sdCurrentDialog === 'undefined') {
+            $("<div>").simpledialog2({
+                mode : 'blank',
+                blankContent : $("#policyNo-validation-div").html() +"<a rel='close' data-role='button' href='#' style='margin-top: 2%;'>" + '<%= getLabelValue("MESSAGE_CLOSE") %>' + "</a>"
+            });
+     }
+    // showDialog("", "<%#= getLabelValue('RETURN_RATE_RANGE') %>", 'warning', 0, 'capture');
+    $('input[name="<%=getObjectMapping(@fnaRequest)%>[returnRate]"]').val('4');
+    $('input[name="<%=getObjectMapping(@fnaRequest)%>[returnRate]"]').focus();
+  }
+  else {
+    if (this.value == "" || this.value == null){
+     $('input[name="<%=getObjectMapping(@fnaRequest)%>[returnRate]"]').val('4'); 
+    }
+  }
+});
+
+
+
+   $('input[name="<%=getObjectMapping(@fnaOtherProtectionNeed)%>[hincomeNeededAmt]"]').blur(function(){
+    var hincomeNeededAmt = $('input[name="<%=getObjectMapping(@fnaOtherProtectionNeed)%>[hincomeNeededAmt]"]').val().replace(/,/g , "");
+    if(hincomeNeededAmt == null || hincomeNeededAmt == ""){
+    $('input[name="HINCOME_SHORTFALL_RISK_PROT_NEEDS"]').val('0');
+    }else{
+    $('input[name="HINCOME_SHORTFALL_RISK_PROT_NEEDS"]').val(format("#,##0.##",hincomeNeededAmt));
+    }
+    var hincomeCoveredAmt = $('input[name="<%=getObjectMapping(@fnaOtherProtectionNeed)%>[hincomeCoveredAmt]"]').val().replace(/,/g , "");
+     if (!hincomeCoveredAmt){
+     var hincomeCoveredAmt = 0;
+     }
+     var HIncomeShortFall = parseInt(hincomeNeededAmt) - parseInt(hincomeCoveredAmt) ;
+     if (HIncomeShortFall < 0){
+      var HIncomeShortFall = 0;
+     }
+     
+    if(hincomeNeededAmt == null || hincomeNeededAmt == ""){
+    $('input[name="HINCOME_SHORTFALL_RISK_PROT_NEEDS"]').val('0');
+    }else{
+    $('input[name="HINCOME_SHORTFALL_RISK_PROT_NEEDS"]').val(format("#,##0.##",HIncomeShortFall));
+    }
+   });
+
+
+
+  $('input[name="<%=getObjectMapping(@fnaOtherProtectionNeed)%>[hincomeCoveredAmt]"]').blur(function(){
+     var hincomeNeededAmt = $('input[name="<%=getObjectMapping(@fnaOtherProtectionNeed)%>[hincomeNeededAmt]"]').val().replace(/,/g , "");
+     var hincomeCoveredAmt = $('input[name="<%=getObjectMapping(@fnaOtherProtectionNeed)%>[hincomeCoveredAmt]"]').val().replace(/,/g , "");
+     if (!hincomeCoveredAmt || hincomeCoveredAmt == null ){
+     var hincomeCoveredAmt = 0;
+     }
+     if(hincomeNeededAmt == null || hincomeNeededAmt == ""){
+     
+      $('input[name="HINCOME_SHORTFALL_RISK_PROT_NEEDS"]').val('0');
+     }else{
+     var HIncomeShortFall = parseInt(hincomeNeededAmt) - parseInt(hincomeCoveredAmt) ;
+     if (HIncomeShortFall < 0){
+      var HIncomeShortFall = 0;
+     }
+     $('input[name="HINCOME_SHORTFALL_RISK_PROT_NEEDS"]').val(format("#,##0.##",HIncomeShortFall));
+     }
+    });
+
+
+  $('input[name="<%=getObjectMapping(@fnaOtherProtectionNeed)%>[hinsuranceNeededAmt]"]').blur(function(){
+     var hinsuranceNeededAmt = $('input[name="<%=getObjectMapping(@fnaOtherProtectionNeed)%>[hinsuranceNeededAmt]"]').val().replace(/,/g , "");
+      if(hinsuranceNeededAmt == null || hinsuranceNeededAmt == ""){
+      $('input[name="HINSURANCE_SHORTFALL_RISK_PROT_NEEDS"]').val('0');
+      }else{
+      $('input[name="HINSURANCE_SHORTFALL_RISK_PROT_NEEDS"]').val(format("#,##0.##",hinsuranceNeededAmt));
+      }
+     
+     var hinsuranceCoveredAmt = $('input[name="<%=getObjectMapping(@fnaOtherProtectionNeed)%>[hinsuranceCoveredAmt]"]').val().replace(/,/g , "");
+     if(!hinsuranceCoveredAmt){
+     var hinsuranceCoveredAmt = 0;
+     } 
+     var HInsuranceShortFall = parseInt(hinsuranceNeededAmt) - parseInt(hinsuranceCoveredAmt) ;
+      if (HInsuranceShortFall < 0){
+      var HInsuranceShortFall = 0;
+     }
+     if(hinsuranceNeededAmt == null || hinsuranceNeededAmt == ""){
+      $('input[name="HINSURANCE_SHORTFALL_RISK_PROT_NEEDS"]').val('0');
+      }else{
+      $('input[name="HINSURANCE_SHORTFALL_RISK_PROT_NEEDS"]').val(format("#,##0.##",HInsuranceShortFall));
+     }
+  });
+
+   
+
+  $('input[name="<%=getObjectMapping(@fnaOtherProtectionNeed)%>[hinsuranceCoveredAmt]"]').blur(function(){
+     var hinsuranceNeededAmt = $('input[name="<%=getObjectMapping(@fnaOtherProtectionNeed)%>[hinsuranceNeededAmt]"]').val().replace(/,/g , "");
+     var hinsuranceCoveredAmt = $('input[name="<%=getObjectMapping(@fnaOtherProtectionNeed)%>[hinsuranceCoveredAmt]"]').val().replace(/,/g , "");
+     if (!hincomeCoveredAmt || hincomeCoveredAmt == null){
+     var hincomeCoveredAmt = 0;
+     }
+     if (hinsuranceNeededAmt == null || hinsuranceNeededAmt == "" ){
+      $('input[name="HINSURANCE_SHORTFALL_RISK_PROT_NEEDS"]').val('0');
+     }else{
+     var HInsuranceShortFall = parseInt(hinsuranceNeededAmt) - parseInt(hinsuranceCoveredAmt) ;
+      if (HInsuranceShortFall < 0){
+      var HInsuranceShortFall = 0;
+     }
+     $('input[name="HINSURANCE_SHORTFALL_RISK_PROT_NEEDS"]').val(format("#,##0.##",HInsuranceShortFall));
+   }
+  });
+
+
+  $('input[name="<%=getObjectMapping(@fnaOtherProtectionNeed)%>[sfbNeededAmt]"]').blur(function(){
+    var sfbNeededAmt = $('input[name="<%=getObjectMapping(@fnaOtherProtectionNeed)%>[sfbNeededAmt]"]').val().replace(/,/g , "");
+      if(sfbNeededAmt == null || sfbNeededAmt == ""){
+      $('input[name="SFB_SHORTFALL_RISK_PROT_NEEDS"]').val('0');
+      }else{
+      $('input[name="SFB_SHORTFALL_RISK_PROT_NEEDS"]').val(format("#,##0.##",sfbNeededAmt));
+      }
+   
+    var sfbCoveredAmt = $('input[name="<%=getObjectMapping(@fnaOtherProtectionNeed)%>[sfbCoveredAmt]"]').val().replace(/,/g , "");
+    if(!sfbCoveredAmt){
+     var sfbCoveredAmt = 0;
+     }
+     var SFBShortFall = parseInt(sfbNeededAmt) - parseInt(sfbCoveredAmt) ;
+      if (SFBShortFall < 0){
+      var SFBShortFall = 0;
+     }
+      if(sfbNeededAmt == null || sfbNeededAmt == ""){
+      $('input[name="SFB_SHORTFALL_RISK_PROT_NEEDS"]').val('0');
+      }else{
+      $('input[name="SFB_SHORTFALL_RISK_PROT_NEEDS"]').val(format("#,##0.##",SFBShortFall));
+      }
+  });
+
+
+  $('input[name="<%=getObjectMapping(@fnaOtherProtectionNeed)%>[sfbCoveredAmt]"]').blur(function(){
+     var sfbNeededAmt = $('input[name="<%=getObjectMapping(@fnaOtherProtectionNeed)%>[sfbNeededAmt]"]').val().replace(/,/g , "");
+     var sfbCoveredAmt = $('input[name="<%=getObjectMapping(@fnaOtherProtectionNeed)%>[sfbCoveredAmt]"]').val().replace(/,/g , "");
+     if(!sfbCoveredAmt || sfbCoveredAmt == null){
+     var sfbCoveredAmt = 0;
+     }
+     if(sfbNeededAmt == null || sfbNeededAmt == ""){
+       $('input[name="SFB_SHORTFALL_RISK_PROT_NEEDS"]').val('0');
+     }else{
+     var SFBShortFall = parseInt(sfbNeededAmt) - parseInt(sfbCoveredAmt) ;
+      if (SFBShortFall < 0){
+      var SFBShortFall = 0;
+     }
+     $('input[name="SFB_SHORTFALL_RISK_PROT_NEEDS"]').val(format("#,##0.##",SFBShortFall));   
+   }
+  });
+
+  $('input[name="<%=getObjectMapping(@fnaOtherProtectionNeed)%>[ciInsuranceNeededAmt]"]').blur(function(){
+     var ciInsuranceNeededAmt = $('input[name="<%=getObjectMapping(@fnaOtherProtectionNeed)%>[ciInsuranceNeededAmt]"]').val().replace(/,/g , "");
+     if(ciInsuranceNeededAmt == null || ciInsuranceNeededAmt == ""){
+      $('input[name="CIINSURANCE_SHORTFALL_RISK_PROT_NEEDS"]').val('0');
+      }else{
+      $('input[name="CIINSURANCE_SHORTFALL_RISK_PROT_NEEDS"]').val(format("#,##0.##",ciInsuranceNeededAmt));
+      }
+     
+     var ciInsuranceCoveredAmt = $('input[name="<%=getObjectMapping(@fnaOtherProtectionNeed)%>[ciInsuranceCoveredAmt]"]').val().replace(/,/g , "");
+     if(!ciInsuranceCoveredAmt){
+     var ciInsuranceCoveredAmt = 0;
+     }
+     var CIInsuranceShortFall = parseInt(ciInsuranceNeededAmt) - parseInt(ciInsuranceCoveredAmt) ;
+     if (CIInsuranceShortFall < 0){
+      var CIInsuranceShortFall = 0;
+     }
+     if(ciInsuranceNeededAmt == null || ciInsuranceNeededAmt == ""){
+      $('input[name="CIINSURANCE_SHORTFALL_RISK_PROT_NEEDS"]').val('0');
+      }else{
+      $('input[name="CIINSURANCE_SHORTFALL_RISK_PROT_NEEDS"]').val(format("#,##0.##",CIInsuranceShortFall));
+      }
+    
+  });
+
+  $('input[name="<%=getObjectMapping(@fnaOtherProtectionNeed)%>[ciInsuranceCoveredAmt]"]').blur(function(){
+     var ciInsuranceNeededAmt = $('input[name="<%=getObjectMapping(@fnaOtherProtectionNeed)%>[ciInsuranceNeededAmt]"]').val().replace(/,/g , "");
+     var ciInsuranceCoveredAmt = $('input[name="<%=getObjectMapping(@fnaOtherProtectionNeed)%>[ciInsuranceCoveredAmt]"]').val().replace(/,/g , "");
+     if(!ciInsuranceCoveredAmt || ciInsuranceCoveredAmt == null ){
+     var ciInsuranceCoveredAmt = 0;
+     }
+    if(ciInsuranceNeededAmt == null || ciInsuranceNeededAmt == ""){
+       $('input[name="CIINSURANCE_SHORTFALL_RISK_PROT_NEEDS"]').val('0');
+    }else{
+     var CIInsuranceShortFall = parseInt(ciInsuranceNeededAmt) - parseInt(ciInsuranceCoveredAmt) ;
+     if (CIInsuranceShortFall < 0){
+      var CIInsuranceShortFall = 0;
+     }
+     $('input[name="CIINSURANCE_SHORTFALL_RISK_PROT_NEEDS"]').val(format("#,##0.##",CIInsuranceShortFall)); 
+     } 
+  });
+
+  $('input[name="<%=getObjectMapping(@fnaOtherProtectionNeed)%>[addInsuranceNeededAmt]"]').blur(function(){ 
+    var addInsuranceNeededAmt = $('input[name="<%=getObjectMapping(@fnaOtherProtectionNeed)%>[addInsuranceNeededAmt]"]').val().replace(/,/g , "");
+     if(addInsuranceNeededAmt == null || addInsuranceNeededAmt == ""){
+      $('input[name="ADDINSURANCE_SHORTFALL_RISK_PROT_NEEDS"]').val('0');
+      }else{
+      $('input[name="ADDINSURANCE_SHORTFALL_RISK_PROT_NEEDS"]').val(format("#,##0.##",addInsuranceNeededAmt));
+      }
+    var addInsuranceCoveredAmt = $('input[name="<%=getObjectMapping(@fnaOtherProtectionNeed)%>[addInsuranceCoveredAmt]"]').val().replace(/,/g , "");
+    if(!addInsuranceCoveredAmt){
+     var addInsuranceCoveredAmt = 0;
+     }
+     var ADDInsuranceShortFall = parseInt(addInsuranceNeededAmt) - parseInt(addInsuranceCoveredAmt) ;
+     if (ADDInsuranceShortFall < 0){
+      var ADDInsuranceShortFall = 0;
+     }
+      if(addInsuranceNeededAmt == null || addInsuranceNeededAmt == ""){
+      $('input[name="ADDINSURANCE_SHORTFALL_RISK_PROT_NEEDS"]').val('0');
+      }else{
+      $('input[name="ADDINSURANCE_SHORTFALL_RISK_PROT_NEEDS"]').val(format("#,##0.##",ADDInsuranceShortFall));
+      }
+    
+  });
+
+  $('input[name="<%=getObjectMapping(@fnaOtherProtectionNeed)%>[addInsuranceCoveredAmt]"]').blur(function(){
+     var addInsuranceNeededAmt = $('input[name="<%=getObjectMapping(@fnaOtherProtectionNeed)%>[addInsuranceNeededAmt]"]').val().replace(/,/g , "");
+     var addInsuranceCoveredAmt = $('input[name="<%=getObjectMapping(@fnaOtherProtectionNeed)%>[addInsuranceCoveredAmt]"]').val().replace(/,/g , "");
+     if(!addInsuranceCoveredAmt || addInsuranceCoveredAmt == ""){
+     var addInsuranceCoveredAmt = 0;
+     } 
+     if(addInsuranceNeededAmt == null || addInsuranceNeededAmt == ""){
+       $('input[name="ADDINSURANCE_SHORTFALL_RISK_PROT_NEEDS"]').val('0');
+    }else{
+    var ADDInsuranceShortFall = parseInt(addInsuranceNeededAmt) - parseInt(addInsuranceCoveredAmt) ;
+     if (ADDInsuranceShortFall < 0){
+      var ADDInsuranceShortFall = 0;
+     }
+    $('input[name="ADDINSURANCE_SHORTFALL_RISK_PROT_NEEDS"]').val(format("#,##0.##",ADDInsuranceShortFall)); 
+    }  
+  });
+
+   
+  function calculatehealthprotectionneeds(){
+   
+    var hincomeNeededAmt = $('input[name="<%=getObjectMapping(@fnaOtherProtectionNeed)%>[hincomeNeededAmt]"]').val().replace(/,/g , "");
+    var hincomeCoveredAmt = $('input[name="<%=getObjectMapping(@fnaOtherProtectionNeed)%>[hincomeCoveredAmt]"]').val().replace(/,/g , "");
+    var HIncomeShortFall = $('input[name="HINCOME_SHORTFALL_RISK_PROT_NEEDS"]').val().replace(/,/g , "");
+
+    var hinsuranceNeededAmt = $('input[name="<%=getObjectMapping(@fnaOtherProtectionNeed)%>[hinsuranceNeededAmt]"]').val().replace(/,/g , "");
+    var hinsuranceCoveredAmt = $('input[name="<%=getObjectMapping(@fnaOtherProtectionNeed)%>[hinsuranceCoveredAmt]"]').val().replace(/,/g , "");
+    var HInsuranceShortFall = $('input[name="HINSURANCE_SHORTFALL_RISK_PROT_NEEDS"]').val().replace(/,/g , "");
+
+    var sfbNeededAmt = $('input[name="<%=getObjectMapping(@fnaOtherProtectionNeed)%>[sfbNeededAmt]"]').val().replace(/,/g , "");
+    var sfbCoveredAmt = $('input[name="<%=getObjectMapping(@fnaOtherProtectionNeed)%>[sfbCoveredAmt]"]').val().replace(/,/g , "");
+    var SFBShortFall = $('input[name="SFB_SHORTFALL_RISK_PROT_NEEDS"]').val().replace(/,/g , "");
+
+    var ciInsuranceNeededAmt = $('input[name="<%=getObjectMapping(@fnaOtherProtectionNeed)%>[ciInsuranceNeededAmt]"]').val().replace(/,/g , "");
+    var ciInsuranceCoveredAmt = $('input[name="<%=getObjectMapping(@fnaOtherProtectionNeed)%>[ciInsuranceCoveredAmt]"]').val().replace(/,/g , "");
+    var CIInsuranceShortFall = $('input[name="CIINSURANCE_SHORTFALL_RISK_PROT_NEEDS"]').val().replace(/,/g , "");
+
+    var addInsuranceNeededAmt = $('input[name="<%=getObjectMapping(@fnaOtherProtectionNeed)%>[addInsuranceNeededAmt]"]').val().replace(/,/g , "");
+    var addInsuranceCoveredAmt = $('input[name="<%=getObjectMapping(@fnaOtherProtectionNeed)%>[addInsuranceCoveredAmt]"]').val().replace(/,/g , "");
+    var ADDInsuranceShortFall = $('input[name="ADDINSURANCE_SHORTFALL_RISK_PROT_NEEDS"]').val().replace(/,/g , "");
+    calculateFnaHealthProtectionNeed(hincomeNeededAmt, hincomeCoveredAmt, hincomeCoveredAmt, hinsuranceNeededAmt, hinsuranceCoveredAmt, HInsuranceShortFall, sfbNeededAmt, sfbCoveredAmt, SFBShortFall, ciInsuranceNeededAmt, ciInsuranceCoveredAmt, CIInsuranceShortFall, addInsuranceNeededAmt, addInsuranceCoveredAmt, ADDInsuranceShortFall)   
+    }
+
+function calculateFnaHealthProtectionNeed(hincomeNeededAmt, hincomeCoveredAmt, HIncomeShortFall, hinsuranceNeededAmt, hinsuranceCoveredAmt, HInsuranceShortFall, sfbNeededAmt, sfbCoveredAmt, SFBShortFall, ciInsuranceNeededAmt, ciInsuranceCoveredAmt, CIInsuranceShortFall, addInsuranceNeededAmt, addInsuranceCoveredAmt, ADDInsuranceShortFall){
+
+      $(':input').each(function(){
+            $(this).val($.trim($(this).val()))
+        });
+
+        
+            $.ajax({                                    
+                url: "/app/FNARequest/calculateFnaHealthProtectionNeed",
+                method: 'POST',
+                async: false,
+                data: {'hincomeNeededAmt': hincomeNeededAmt , 'hincomeCoveredAmt': hincomeCoveredAmt , 'HIncomeShortFall' :HIncomeShortFall , 'hinsuranceNeededAmt': hinsuranceNeededAmt ,'hinsuranceCoveredAmt': hinsuranceCoveredAmt , 'HInsuranceShortFall': HInsuranceShortFall, 'sfbNeededAmt': sfbNeededAmt, 'sfbCoveredAmt': sfbCoveredAmt, 'SFBShortFall': SFBShortFall, 'ciInsuranceNeededAmt': ciInsuranceNeededAmt, 'ciInsuranceCoveredAmt': ciInsuranceCoveredAmt, 'CIInsuranceShortFall': CIInsuranceShortFall, 'addInsuranceNeededAmt': addInsuranceNeededAmt, 'addInsuranceCoveredAmt': addInsuranceCoveredAmt, 'ADDInsuranceShortFall':ADDInsuranceShortFall , 'object': '<%= @fnaRequest.object %>' },
+                    headers: {
+                        'Transition-Enabled': false
+                    },
+                    success: function(data) {
+                       console.log(data);
+                       var calData = $.parseJSON(data);                
+                       abc = calData.split("|");
+                       neededAmt = abc[0];
+                       coveredAmt  = abc[1];
+                       shortFall = abc[2];
+                       console.log(neededAmt);
+                       console.log(coveredAmt);
+                       console.log(shortFall);
+                       $('input[name="TOTAL_EXPECTED_COVERAGE"]').val(format("#,##0.##",neededAmt));
+                       $('input[name="TOTAL_EXISTING_COVERAGE"]').val(format("#,##0.##",coveredAmt));
+                       $('input[name="MEDICAL_SHORTFALL"]').val(format("#,##0.##",shortFall)); 
+
+                       
+                    }
+            });
+      }
+
+  $(document).ready(function() {
+      $('#nextpre').show();
+      tabExchange($('.active-btn').attr("data-url"));
+      $('#nextTab').removeClass("ui-state-disabled");
+      // tabExchange($('.active-btn').attr("data-url"));
+            
+    // Tejashree 03-08-2017 : Hide E-signature Tab if chamges are made in Basic Into tab 
+     $('#FnaOtherProtectionNeedForm').on('keyup change', 'input, select, textarea', function(){
+       $("#FnaOtherProtectionNeedForm").data("changed",true)
+       $("#icon-arrow").hide();
+       $("#esignature").hide();
+       $("#changeHealthNeed").val("true");
+      });
+     MyPageData = {};
+      MyPageData.getData = ($('#FnaOtherProtectionNeedForm').serialize());
+    });
+
+  function submitForm(){
+        //Used to trim all the input fields before save
+        //alert("767686");
+        <% if @fnaRequest.statusCd.to_s == "FNASIGNED" || @fnaRequest.statusCd.to_s == "FNASUBMIT" || @fnaRequest.statusCd.to_s == "SYNCDONE"  %>
+        <% else %>
+         var initialFnaOtherProtectionNeedForm = "";
+          $(':input').each(function(){
+              $(this).val($.trim($(this).val()))
+          });
+
+           if($('#FnaOtherProtectionNeedForm').serialize() != (MyPageData.getData)) {
+              $.ajax({                                    
+                  url: "/app/FNARequest/submitFnaOtherProtectionNeed",
+                  method: 'POST',
+                  async: false,
+                  data: $('#FnaOtherProtectionNeedForm').serialize(),
+                      headers: {
+                          'Transition-Enabled': false
+                      },
+                      success: function(data) {
+                          
+                      }
+              });
+          }
+          <% end %>
+      }
+
+      // function set_comma_sep(val){
+
+        
+      //   return val
+
+      // }
+
+
+function changeTab(clickObject) {
+      
+      submitForm();
+      var dataURL = clickObject.data("url");
+      //Append additional data params
+      if (clickObject.data("addl-params-key")) {
+          requestData = $.extend(requestData, additionalData[clickObject.data("addl-params-key")]);
+      
+      }
+      /*Load tab content start*/
+      $.ajax({ 
+          url: "/app/FNARequest/"+dataURL,
+          data: {'id':'<%= @fnaRequest.object.to_s %>'},
+          async: false,
+          headers: {
+              'Transition-Enabled': false
+          },
+          success: function(data) {
+              
+              $("#tabDetailsContainer").html(data);
+              $("#tabDetailsContainer").trigger('create');
+              tabSetup();
+              $(document).ready(function(){
+                  $('.scrollTopButton').click(function() {
+                      $("html, body").animate({ scrollTop: 0 }, "slow");
+                  });
+
+                  $('.expandButton').hide();
+
+                  $('.collapseButton').click(function() {
+                      $(this).parents(".legend").siblings(".panelContent").hide();
+                      $(this).hide();
+                      $(this).siblings('.expandButton').show();
+                  });
+
+                  $('.expandButton').click(function() {
+                      $(this).parents(".legend").siblings(".panelContent").show();
+                      $(this).hide();
+                      $(this).siblings('.collapseButton').show();
+                  });
+              });
+              //getTabErrors();
+          }
+      });
+      /*Load tab content end*/
+  }
+</script>

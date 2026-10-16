@@ -1,0 +1,129 @@
+<script type="text/javascript">
+function changePartyHolderAddressTab(tabName, party){
+	$("div[id='"+party+"[homeAddressContainer]']").hide();
+	$("div[id='"+party+"[permanentAddressContainer]']").hide();
+	$("div[id='"+party+"[officeAddressContainer]']").hide();
+	$("div[id='"+party+"["+tabName+"]']").show();
+	$("div[id='"+party+"[home-permanent-business-bar]'] li[name='homeAddressLi']>a").removeClass("selectedTab");
+	$("div[id='"+party+"[home-permanent-business-bar]'] li[name='permanentAddressLi']>a").removeClass("selectedTab");
+	$("div[id='"+party+"[home-permanent-business-bar]'] li[name='officeAddressLi']>a").removeClass("selectedTab");
+	str = "div[id='"+party+"[home-permanent-business-bar]'] li[name='" + tabName.substring(0,tabName.indexOf("Container")) + "Li']>a";
+	$(str).addClass("selectedTab");
+}
+
+
+$(document).ready(function(){
+	changePartyHolderAddressTab('homeAddressContainer', '<%=getObjectMapping(@party)%>');
+	
+	$("div[id='<%=getObjectMapping(@party)%>[home-permanent-business-bar]'] li[name='officeAddressLi']").hide();
+
+	<% if @beneficiary %>
+		$("div[id='<%=getObjectMapping(@party)%>[home-permanent-business-bar]'] li[name='officeAddressLi']").show();
+	<% else %>
+		var occType = $('select[name="<%=getObjectMapping(@partyEmployment)%>[occupationTypeCd]"]').val();
+		if (occType == "BUSINESS" || occType == "EMPLOYED") {
+			$("div[id='<%=getObjectMapping(@party)%>[home-permanent-business-bar]'] li[name='officeAddressLi']").show();
+		}
+
+		$('select[name="<%=getObjectMapping(@partyEmployment)%>[occupationTypeCd]"]').change(function(){
+			if ($(this).val() == "BUSINESS" || $(this).val() == "EMPLOYED") {
+				$("div[id='<%=getObjectMapping(@party)%>[home-permanent-business-bar]'] li[name='officeAddressLi']").show();
+			}
+			else {
+				$("div[id='<%=getObjectMapping(@party)%>[home-permanent-business-bar]'] li[name='officeAddressLi']").hide();
+			}
+		});
+	<% end %>
+
+	
+	<% if @beneficiary && !@appointee %>
+	var partyTypeCd = $('input[name="<%=getObjectMapping(@party)%>[partyTypeCd]"]').val();
+	<% else %>
+	var partyTypeCd = $('select[name="<%=getObjectMapping(@party)%>[partyTypeCd]"]').val();
+	<% end %>
+	
+	if (partyTypeCd == 'INDIVIDUAL'){
+		changePartyHolderAddressTab('homeAddressContainer', '<%=getObjectMapping(@party)%>');
+	}
+	else if (partyTypeCd == 'ORGANIZATION'){
+		changePartyHolderAddressTab('officeAddressContainer', '<%=getObjectMapping(@party)%>');
+	}
+
+	$('select[name="<%=getObjectMapping(@party)%>[partyTypeCd]"]').change(function(){
+		if (this.value == 'INDIVIDUAL'){
+			changePartyHolderAddressTab('homeAddressContainer', '<%=getObjectMapping(@party)%>');
+		}
+		else if (this.value == 'ORGANIZATION'){
+			changePartyHolderAddressTab('officeAddressContainer', '<%=getObjectMapping(@party)%>');
+		}
+	});
+
+	$("select[id*='[copyFromAddr1]']").each(function(){
+		$("select[id='"+$(this).attr("id")+"'] option[value='RESIDENTIAL']").remove();
+		$("select[id='"+$(this).attr("id")+"'] option[value='PERMANENT']").remove();
+		$("select[id='"+$(this).attr("id")+"'] option[value='OFFICE']").remove();
+	});
+
+	$("select[id*='[copyFromAddr2]']").each(function(){
+		$("select[id='"+$(this).attr("id")+"'] option[value='PROPOSERRESIDENTIAL']").remove();
+		$("select[id='"+$(this).attr("id")+"'] option[value='PERMANENT']").remove();
+		$("select[id='"+$(this).attr("id")+"'] option[value='OFFICE']").remove();
+	});
+
+	$("select[id*='[copyFromAddr3]']").each(function(){
+		$("select[id='"+$(this).attr("id")+"'] option[value='PROPOSERRESIDENTIAL']").remove();
+		$("select[id='"+$(this).attr("id")+"'] option[value='OFFICE']").remove();
+	});
+
+	<% if @party.copyFromAddr1 != nil && @party.copyFromAddr1 != "" %>
+		$('div[id="<%=getObjectMapping(@party)%>[home-address-details]"]').hide();
+	<% end %>		
+	
+	<% if @party.copyFromAddr2 != nil && @party.copyFromAddr2 != "" %>
+		$('div[id="<%=getObjectMapping(@party)%>[permanent-address-details]"]').hide();
+	<% end %>			
+	
+	<% if @party.copyFromAddr3 != nil && @party.copyFromAddr3 != "" %>
+		$('div[id="<%=getObjectMapping(@party)%>[office-address-details]"]').hide();
+	<% end %>	
+
+	$("select[id='<%=getObjectMapping(@party)%>[copyFromAddr1]']").change(function(){
+		if ($(this).val() != "")
+			$('div[id="<%=getObjectMapping(@party)%>[home-address-details]"]').hide();
+		else
+			$('div[id="<%=getObjectMapping(@party)%>[home-address-details]"]').show();
+	});
+
+	$("select[id='<%=getObjectMapping(@party)%>[copyFromAddr2]']").change(function(){
+		if ($(this).val() != "")
+			$('div[id="<%=getObjectMapping(@party)%>[permanent-address-details]"]').hide();
+		else
+			$('div[id="<%=getObjectMapping(@party)%>[permanent-address-details]"]').show();
+	});
+	
+	$("select[id='<%=getObjectMapping(@party)%>[copyFromAddr3]']").change(function(){
+		if ($(this).val() != "")
+			$('div[id="<%=getObjectMapping(@party)%>[office-address-details]"]').hide();
+		else
+			$('div[id="<%=getObjectMapping(@party)%>[office-address-details]"]').show();
+	});
+     
+	// making auto populated fields readonly
+	/*if ('<%= @policy.quotationRefGuid %>' != '' && '<%= @party.roleCd %>' != "NOMINEE" && '<%= @party.roleCd %>' != "APPOINTEE" && '<%= @party.roleCd %>' != "PAYER"){
+		setReadOnly($('input[name="<%=getObjectMapping(@homeAddress)%>[addressLine1Lang1]"]'), true);
+		setReadOnly($('input[name="<%=getObjectMapping(@homeAddress)%>[addressLine2Lang1]"]'), true);
+		setReadOnly($('input[name="<%=getObjectMapping(@homeAddress)%>[addressLine3Lang1]"]'), true);
+		setReadOnly($('input[name="<%=getObjectMapping(@homeAddress)%>[addressLine4Lang1]"]'), true);
+		setReadOnly($('input[name="<%=getObjectMapping(@homeAddress)%>[pinCode]"]'), true);
+		
+		$('select[name="<%=getObjectMapping(@homeAddress)%>[countryCd]"]').attr('disabled', true);
+		$('select[name="<%=getObjectMapping(@homeAddress)%>[countryCd]"]').trigger("create");
+		
+		$('select[name="<%=getObjectMapping(@homeAddress)%>[districtCd]"]').attr('disabled', true);
+		$('select[name="<%=getObjectMapping(@homeAddress)%>[districtCd]"]').trigger("create");
+		
+		$('select[name="<%=getObjectMapping(@homeAddress)%>[cityCd]"]').attr('disabled', true);
+		$('select[name="<%=getObjectMapping(@homeAddress)%>[cityCd]"]').trigger("create");
+	}*/
+});
+</script>

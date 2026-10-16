@@ -1,0 +1,71 @@
+<style>
+.main-content-wrapper{
+background-color: white;
+}
+</style>
+
+<%if @parentColRenderLevelDO != nil %>
+   <div class="leftnavigation">
+   	    <div class="level1header">
+   	    	<label class="level1label0"><%=@parentColRenderLevelDO.header1%></label>
+        	<br>
+        	<label class="level1label1"><%=@parentColRenderLevelDO.header2%></label>
+        </div>
+        <div class="sec-nav">
+        	<%@parentColRenderLevelChildDOList.each do|parentColRenderLevelDO|%>
+			    <%if @setLevelCd == parentColRenderLevelDO.levelCd%>
+			    	<% if parentColRenderLevelDO.header1.size < 30 %>
+			    	    <li class="sec-nav-li-selected">
+			             <%= parentColRenderLevelDO.header1%>
+			            </li>
+			        <%else%>
+			            <li class="sec-nav-li-selected-small">
+			             <%= parentColRenderLevelDO.header1%>
+			            </li>
+			        <%end%>
+			    <%else%>
+				    <a href="javascript:doOnLevelClick('<%=parentColRenderLevelDO.levelCd%>','rootDiv');">
+				      <% if (parentColRenderLevelDO.header1.size < 30) %>           
+				           <li class="sec-nav-li">
+				             <%= parentColRenderLevelDO.header1 %>
+				           </li>
+				        <%else%>          
+				            <li class="sec-nav-li-small">
+				             <%= parentColRenderLevelDO.header1 %>
+				            </li>
+				        <%end%>
+				    </a>
+			    <%end%>
+			<%end%>
+	   </div>
+	</div>
+<%end%>
+
+<div id="contentpane_<%=@collateralRenderLevelDO.guid%>" class="rightcontentpane">
+    <div class="ui-grid-a">
+    	<% @collateralRenderLevelChildDOList.each_with_index do |collateralRenderLevelChildDO,index| %>
+	    	<div
+		      <% if index % 2 == 0 %>
+		         class="ui-block-a"
+		      <%elsif index%2 == 1 %>
+		         class="ui-block-b"
+		       <%end%>
+		       style="padding:25px 0px;"
+	        >
+	         <% if collateralRenderLevelChildDO.contentEmbedTypeCd == "EXTERNAL" %> 
+	              <a href="#" id="<%=collateralRenderLevelChildDO.levelCd %>_id" >
+	                </a>
+	                <!-- probably will need a script to open the above link. check with online -->
+	            <%end%>
+	           <div style="width:57px;float:left"><!-- ;position:relative; top:40px -->
+	           	 <img src="<%=@collateralMap[collateralRenderLevelChildDO.icon].fileName%>" alt="<%=@collateralMap[collateralRenderLevelChildDO.icon].header%>" style= "height:53px; width: 57px;" class="dropshadow"/>
+	           	</div>
+	           	<!-- <br> -->
+	            <div class="iconlayouttext">
+	             <span class="iconlayoutheader"><%=collateralRenderLevelChildDO.header1%></span><br>        
+	             <%=collateralRenderLevelChildDO.contentPart1 %>
+	            </div>
+	        </div>
+	    <%end%>
+	</div>
+</div>

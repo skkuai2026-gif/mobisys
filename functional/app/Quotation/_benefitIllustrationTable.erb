@@ -1,0 +1,227 @@
+<div data-role="table" class="illustrationdisplay" >
+	<div style="float:left"><h1><%= @productDesc%></h1></div>
+	<div style="float:right"><img src = "/public/images/SalesIllustration/small_fwd.jpg"/></div>
+	<div style="clear:both"></div>
+	<%= getLabelValue('BENEFITTHEADER')%>
+	<br/><br/>
+	<table width="100%" cellpadding="0" cellspacing="0" id="si_Table" class="illustrationtable">
+						
+		<% if (@listCalculation.size > 0) %>
+			<tr class="illustrationtableheader">
+				<td rowspan="2" align="center"><%= getLabelValue('EOY')%></td>
+				<td rowspan="2" align="center"><%= getLabelValue('age')%></td>
+				<td colspan="3" align="center"><%= getLabelValue('ACCOUNTVALUEHEADER')%></td>
+				<td colspan="3" align="center"><%= getLabelValue('BENEFITVALUEHEARDER')%></td>
+			</tr>
+			<tr  class="illustrationtableheader">
+				<td align="center"><%= getLabelValue('LOW')%>**</td>
+				<td align="center"><%= getLabelValue('MEDIUM')%>**</td>
+				<td align="center"><%= getLabelValue('HIGH')%>**</td>
+				<td align="center"><%= getLabelValue('LOW')%>**</td>
+				<td align="center"><%= getLabelValue('MEDIUM')%>**</td>
+				<td align="center"><%= getLabelValue('HIGH')%>**</td>
+			</tr>
+		<%end%>
+<!--end displaying the header-->
+		<%
+		deathBenefitCount = 1
+		age_count = 0
+		@listCalculation.each_with_index do |calcRes,index|
+			finalMap = Hash.new
+ 			tabArrayList = Array.new
+			
+			if(@isMonthly)
+				if(!(calcRes.id % 12 == 0))
+					next
+				end
+			end
+			colCount = 0
+			fieldsToBeDisplPostRates = Array.new
+			
+			calcCol = calcRes.fieldValueList
+			calcCol.each do |calc_col|						
+				accountBenefitValuefirst = Array.new
+				colCount+=1
+				facetDO = @elemMap[calc_col.fieldCd]
+				if(facetDO.outputDisplayTypeCd != nil)
+					if (facetDO.computationOrder != nil && facetDO.computationOrder == colCount)
+						if !tabArrayList.include?(facetDO.computationOrder)
+							tabArrayList.push(facetDO.computationOrder)
+							accountBenefitValuefirst.push(calc_col.fieldValue)
+							finalMap[facetDO.computationOrder.to_s] = accountBenefitValuefirst
+						end
+					elsif (facetDO.computationOrder != nil)
+						fieldsToBeDisplPostRates.push(calc_col)
+					end
+				end
+			end %>
+<!--now display the remaining fields which are to be displayed after the per rate per cycle records -->
+			<%
+				fieldsToBeDisplPostRates.each_with_index do |calcCol, ind|
+				accountBenefitValuesecond = Array.new					
+				facetDO = @elemMap[calcCol.fieldCd]
+				if(facetDO.outputDisplayTypeCd != nil)
+					if !tabArrayList.include?(facetDO.computationOrder)
+						tabArrayList.push(facetDO.computationOrder)	
+						accountBenefitValuesecond.push(calcCol.fieldValue)
+						finalMap[facetDO.computationOrder.to_s] = accountBenefitValuesecond
+					end
+				end
+			end %>
+<!--per rate per cycle records -->
+			<% fieldResults = calcRes.fieldResultList
+			fieldResults.each do |innerCalc| 						
+				calcCol = innerCalc.fieldValueList
+				calcCol.each do |calc_col|
+					facetDO = @elemMap[calc_col.fieldCd]	
+					#puts "test all facet >>#{facetDO}"						
+					if facetDO.outputDisplayTypeCd != nil
+						if calc_col.fieldValue != nil
+							tabArrayList.push(facetDO.computationOrder)								
+							if finalMap.has_key?(facetDO.computationOrder.to_s)
+								finalMap[facetDO.computationOrder.to_s].push(calc_col.fieldValue)
+							else
+								finalMap[facetDO.computationOrder.to_s] = []
+								finalMap[facetDO.computationOrder.to_s].push(calc_col.fieldValue)
+							end
+						end #cal_col if ends here
+					end # facetdo if  ends here
+				end # calcCol do ends here
+			end %> <!-- fieldresult do ends here-->
+			<tr  class="llustrationtablerow" >
+				<%
+				tabArrayList.uniq!
+				tabArrayList.sort!
+				tabArrayList = ['18','59','450','470']
+				deathBenefitComputationOrder = tabArrayList[2]
+
+				tb450 = Array.new
+				tb450 = finalMap['450']
+				tabArrayList.each do|tabArray|
+					if finalMap.has_key?(tabArray.to_s)
+						if tabArray == '450' || tabArray == '470'
+							tb = finalMap[tabArray.to_s]
+							if @baseQuotationProduct.currencyCd == "IDR"
+								tb[0] = (tb[0]/1000).round(2)
+								tb[1] = (tb[1]/1000).round(2)
+								tb[2] = (tb[2]/1000).round(2)
+							else
+								tb[0] = (tb[0]).round(2)
+								tb[1] = (tb[1]).round(2)
+								tb[2] = (tb[2]).round(2)
+							end
+
+							if tabArray == '470'								
+								if tb450[0] < 0									
+									tb[2] = -0.000000001								
+								end
+								if tb450[1] < 0									
+									tb[1] = -0.000000001
+								end
+								if tb450[2] < 0									
+									tb[0] = -0.000000001
+								end
+							end
+						elsif tabArray == '59'
+							tb = finalMap[tabArray.to_s]
+							tb[0] = tb[0] + age_count
+						else
+							tb = finalMap[tabArray.to_s]
+						end
+						if deathBenefitComputationOrder == tabArray
+							@benefitTable[deathBenefitCount] = tb
+							deathBenefitCount += 1
+						end
+					end
+					tb.reverse!
+					tb.each do |tab| %>
+						<% if tab < 0 %>
+							<td align="right">***</td>
+						<%else%>
+							<td align="right"><%=tab%></td>
+						<%end%>
+					<% end
+				end %>
+				<% age_count += 1 %>
+			</tr>
+		<%end%> <!-- @listCalculation do ends here-->
+		<%
+		@benefitTable.each_value do |death_benefit_array|
+  			@deathBenefitArray.push(death_benefit_array)
+		end %>
+	</table>
+	<br/><br/>	
+	<%= getLabelValue('Note')%>:
+	<br/><br/>
+	<ul class="benefitNote">
+		<li>&nbsp;&nbsp;&nbsp; Ilustrasi di atas menggambarkan Manfaat Investasi (Nilai Investasi) dan Manfaat Meninggal (Uang Pertanggungan + Nilai Investasi) dari FWD Sprint Link dan tidak mengikat.<br/><br/></li>
+		<li>&nbsp;&nbsp; Asumsi tingkat pertumbuhan investasi yang digunakan adalah sebagai berikut:<br/>
+			<%if @baseQuotationProduct.currencyCd == "IDR"%>
+				<table border = "1" style ="border-spacing: 0px; display:inline-block;">
+					<tr>
+						<td>Jenis Investasi</td>
+						<td>Rendah</td>
+						<td>Sedang</td>
+						<td>Tinggi</td>
+					</tr>
+					<tr>
+						<td>FWD SprInt Fixed Income Fund</td>
+						<td>6%</td>
+						<td>9%</td>
+						<td>14%</td>
+					</tr>
+					<tr>
+						<td>FWD SprInt Money Market Fund</td>
+						<td>5%</td>
+						<td>8%</td>
+						<td>12%</td>
+					</tr>
+				</table>
+
+				<table border = "1" style ="border-spacing: 0px; display:inline-block; float: left;margin-right:60px;">
+					<tr>
+						<td>Jenis Investasi</td>
+						<td>Rendah</td>
+						<td>Sedang</td>
+						<td>Tinggi</td>
+					</tr>
+					<tr>
+						<td>FWD SprInt Balance Fund</td>
+						<td>8%</td>
+						<td>10%</td>
+						<td>16%</td>
+					</tr>
+					<tr>
+						<td>FWD SprInt Equity Fund</td>
+						<td>6%</td>
+						<td>12%</td>
+						<td>18%</td>
+					</tr>
+				</table>
+			<%end%>
+			<%if @baseQuotationProduct.currencyCd == "USD" %>
+				<table border = "1" style ="border-spacing: 0px;">
+					<tr>
+						<td>Jenis Investasi</td>
+						<td>Rendah</td>
+						<td>Sedang</td>
+						<td>Tinggi</td>
+					</tr>
+					<tr>
+						<td>FWD Sprint USD Bond Fund</td>
+						<td>3%</td>
+						<td>5%</td>
+						<td>8%</td>
+					</tr>
+				</table>
+			<%end%>
+			<br/><br/>
+		</li>
+		<li>&nbsp; Menunjukkan bahwa Nilai Investasi pada tahun tersebut tidak mencukupi untuk membayar biaya-biaya yang timbul, dan oleh karena itu Polis menjadi batal. Anda harus membayar Premi secara teratur untuk menghindari batalnya Polis karena Nilai Investasi tidak cukup untuk membayar biaya-biaya yang timbul.<br/><br/></li> 
+	</ul>
+</div><!--table div ends here-->
+<div data-role ="table" class="illustrationdisplay" style="height:500px;" >
+	<div name="lineGraph" style ="width:70%;float:left;">
+		<!--<canvas id="myCanvas" width="600" height="250">[No canvas support]</canvas> -->
+	</div>
+</div>

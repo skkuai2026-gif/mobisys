@@ -1,0 +1,87 @@
+<div id="summaryPopUp">
+	<% if summaryPopupView %>
+		<div class="heading"><%= getLabelValue('Summary') %></div>
+		<div class="popup-close-cust">
+			<a href="#" rel='close' onclick="javascript: summaryPopupClose()" class="icon-close"></a>
+		</div>
+		<%if $rhoconfig[:application_view_mode] == 'mobile' %>
+			<div style="max-height:58.5vh;width: 100%; overflow-y: auto; ">
+		<%else%>
+			<div style="max-height:45.6vh;width: 100%; overflow-y: auto; ">
+		<%end%>
+	<% end %>
+		<table data-role="table" id="temp-table" data-mode="reflow" class="ui-responsive table-stroke">
+			<thead>
+				<tr>
+					<th><%= getLabelValue('applicant') %></th>
+					<th><%= getLabelValue('productID') %></th>
+					<% if planColumn %>
+						<th><%= getLabelValue('planOptionCd') %></th>
+					<% end %>
+					<th style="text-align: right;"><%= getLabelValue('sumAssured') %></th>
+					<th style="text-align: right;"><%= getLabelValue('modalPremium') %></th>
+				</tr>
+			</thead>
+			<% total_modal_premium = 0.0 %>
+			<tbody>
+			<% summaryResult.each do |row| %>
+				<tr>
+					<td><span class = "cell-content-mobile"><%= row[:fullname] %><span></td>
+					<td><span class = "cell-content-mobile"><%= row[:product] %></span></td>
+					<% if planColumn %>
+						<td><span class = "cell-content-mobile"><%= row[:plan] %></span></td>
+					<% end %>
+					<td style="text-align: right;"><span class = "cell-content-mobile"><%= row[:sum_assured] %></span> </td>
+					<td style="text-align: right;"><span class = "cell-content-mobile"><%= row[:modal_premium] %></span> </td>
+				</tr><% total_modal_premium += row[:modal_premium].gsub(",", "").to_f %>
+			<% end %>
+				<tr>
+				<%if $rhoconfig[:application_view_mode] == 'mobile' %>
+					<% if planColumn %>
+						<th style= "display:none"></th>
+						<th style= "display:none"></th>
+						<th style= "display:none"></th>
+						<th style= "display:none"></th>
+						<th style= "display:none"></th>
+					<%else%>
+						<th style= "display:none"></th>
+						<th style= "display:none"></th>
+						<th style= "display:none"></th>
+						<th style= "display:none"></th>
+					<%end%>	
+					<th  class="text-right"><%= getLabelValue('totalModalPremium') %><span class = "cell-content-mobile"> <%=maskDecimal(total_modal_premium,"###,###,###.##")%><span></th>
+				<%else%>
+					<% if planColumn %>
+						<th colspan="4" class="text-right"><%= getLabelValue('totalModalPremium') %></th>
+					<% else %>
+						<th colspan="3" class="text-right"><%= getLabelValue('totalModalPremium') %></th>
+					<% end %>
+					<td style="text-align: right;"><%=maskDecimal(total_modal_premium,"###,###,###.##")%></td>
+				<%end%>
+				
+				
+				</tr>
+			</tbody>
+		</table>
+	<% if summaryPopupView %>
+		</div>
+		<div class="summary-btn-bg" style="position: absolute;">
+			<% summaryButtons.each do |single_button| %>
+				<%= single_button %>
+			<% end %>
+		</div>
+	<% else %>
+		<style type="text/css">
+			.main-content-full {
+				left: 0px !important;
+				bottom: 0px;
+			}
+		</style>
+		<div class='footer-bg'>
+			<input type="hidden" id="footerDivision" value="<%= (100.00/summaryButtons.size).round(2).to_s+'%'%>">
+			<% summaryButtons.each do |single_button| %>
+				<%= single_button %>
+			<% end %>
+		</div>
+	<% end %>
+</div>

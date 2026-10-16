@@ -1,0 +1,344 @@
+<%= renderHiddenField('productTypeCd', @policyProduct.productTypeCd, nil, @policyProduct) %>
+<%= renderHiddenField('productSeq', @policyProduct.productSeq, nil, @policyProduct) %>
+<%= renderHiddenField('productVersion', @policyProduct.productVersion, nil, @policyProduct) %>
+<%= renderHiddenField('productFamilyCd', @policyProduct.productFamilyCd, nil, @policyProduct) %>
+<%= renderHiddenField('productId', @policyProduct.productId, nil, @policyProduct) %>
+<%= renderHiddenField('productPlanOptionCd', @policyProduct.productPlanOptionCd, nil, @policyProduct) %>
+<%= renderHiddenField('premiumSAFl', @policyProduct.premiumSAFl, nil, @policyProduct) %>
+<% saLabel = renderProductLabel('SALABEL', @product) %>
+<% annualPremiumLabel = renderProductLabel('ANNUALPREMIUMLABEL', @product) %>
+
+<div id="basicPlanDetails">
+	<div class="legend"><%= renderLabel('basePlanDetails','basePlanDetails','strongLabel') %></div>
+
+	<% if @facetData[:renderProductFamilyCd] || @facetData[:renderProductId] %>
+		<div data-role="dualfieldcontain">
+			<% if @facetData[:renderProductFamilyCd] %>
+				<div class="half">            
+					<%= renderLabel('productFamilyCd', 'productFamilyCd', nil, @policyProduct) %>
+					<%= getLookup('DYNAMICLOOKUP', 'productFamilyCd', @policyProduct.productFamilyCd, @policyProduct, @productFamilyLookup, 'disabled') %>
+				</div>
+			<% end %>
+
+			<% if @facetData[:renderProductId] %>
+				<div class="half">
+					<%= renderLabel('productId', 'productCd', nil, @policy) %>
+					<%= getLookup('DYNAMICLOOKUP', 'productId', @policyProduct.productId, @policyProduct, @productLookup, 'disabled') %>
+				</div>
+			<% end %>
+		</div>
+	<% end %>
+
+
+	<% if @facetData[:renderProductPlanOptionCd] || @facetData[:renderCurrencyPanel] %>
+		<div data-role="dualfieldcontain">
+			<% if @facetData[:renderProductPlanOptionCd] %>
+				<div class="half">
+					<%= renderLabel('productPlanOptionCd', 'planOptionCd', nil, @policy) %>
+					<%= getLookup('DYNAMICLOOKUP', 'productPlanOptionCd', @policyProduct.productPlanOptionCd, @policyProduct, @productPlanLookup, 'disabled') %>
+				</div>
+			<% end %>
+
+			<% if @facetData[:renderCurrencyPanel] %>
+				<% if @facetData[:renderCurrencyCd] %>
+					<div class="half">    
+						<%= renderLabel('currencyCd', 'currencyCd', '', @policyProduct) %>
+						<%= getLookup('DYNAMICLOOKUP', 'currencyCd', @policyProduct.currencyCd, @policyProduct, @currencyLookup) %>
+					</div>
+				<% end %>
+			<% end %>
+		</div>
+	<% end %>
+
+
+	<% if @facetData[:renderPaymentTypeCd] || @facetData[:renderPaymentFrequencyCd] %>
+		<div data-role="dualfieldcontain">
+			<% if @facetData[:renderPaymentTypeCd] %>
+				<div class="half">
+					<%= renderLabel('paymentTypeCd', 'paymentTypeCd', '', @policyProduct) %>
+					<%= getLookup('DYNAMICLOOKUP', 'paymentTypeCd', @policyProduct.paymentTypeCd, @policyProduct, @paymentTypeLookup)%>
+				</div> 
+			<% end %>
+
+			<% if @facetData[:renderPaymentFrequencyCd] %>
+				<div class="half">
+					<%= renderLabel('paymentFrequencyCd','paymentFrequencyCd', '', @policyProduct) %>
+					<%= getLookup('DYNAMICLOOKUP', 'paymentFrequencyCd', @policyProduct.paymentFrequencyCd, @policyProduct, @paymentFrequencyLookup)%>
+				</div>
+			<% end %>
+		</div>
+	<% end %>
+
+
+	<% if @facetData[:renderProductTerm] || @facetData[:renderPremiumPayingTerm] %>
+		<div data-role="dualfieldcontain">
+			<% if @facetData[:renderProductTerm] %>
+				<div class="half">
+                    <%= renderLabel('productTerm', 'benefitPeriod', '', @policyProduct) %>
+					<% if $enableTermDiv == false %>
+                        <%= getLookup('TERMVALUE', 'productTerm', @policyProduct.productTerm, @policyProduct)%>
+                    <% elsif $enableTermDiv == true %>
+                        <%= getLookup('DYNAMICLOOKUP', 'productTerm', @policyProduct.productTerm, @policyProduct,@termArray)%>
+                    <% end %>
+				</div>
+			<% end %>
+
+			<% if @facetData[:renderPremiumPayingTerm] %>
+				<div class="half">
+					<%= renderLabel('premiumPayingTerm', 'premiumPayingTerm', '', @policyProduct) %>
+                    <% if $premiumPayingTerm == true %>
+                        <%= getLookup('TERMVALUE', 'premiumPayingTerm', @policyProduct.premiumPayingTerm.to_s, @policyProduct) %>
+                    <% elsif $premiumPayingTerm == false %>
+                        <span name ="premiumPayingTermDiv">
+                            <%= getLookup('DYNAMICLOOKUP', 'premiumPayingTerm', @policyProduct.premiumPayingTerm.to_s, @policyProduct, @ppTermArray) %>
+                        </span>
+                    <% end %>
+				</div>
+			<% end %>
+		</div>
+	<% end %>
+
+
+	<% if @facetData[:renderCapturePremiumPanel] %>
+		<% if @facetData[:renderCapturedPremiumAmt] %>
+			<div data-role="dualfieldcontain">
+				<div class="half">
+					<%= renderLabel('capturedPremiumAmt','capturedPremiumAmt','', @policyProduct) %>
+					<%= renderAmountField('capturedPremiumAmt', @policyProduct.capturedPremiumAmt, nil, @policyProduct, ' maxlength="20"')%>
+					<%= attachMask("#{getObjectMapping(@policyProduct)}[capturedPremiumAmt]") %>
+				</div>
+			</div>
+		<% end %>
+	<% end %>
+
+
+	<% if @facetData[:renderBaseSumAssured] || @facetData[:renderCoi] %>
+		<div data-role="dualfieldcontain">
+			<% if @facetData[:renderBaseSumAssured] %>
+				<div class="half">
+					<%= renderLabel('baseSumAssured', saLabel, '', @policyProduct)   %>
+					<%= renderAmountField('baseSumAssured', @policyProduct.baseSumAssured, 'baseSumAssured',@policyProduct,' maxlength="20"') %>
+					<%= attachMask("#{getObjectMapping(@policyProduct)}[baseSumAssured]") %>
+				</div>
+			<% end %>
+
+			<% if @facetData[:renderCoi] %>
+				<div class="half">
+					<%= renderLabel('coi', 'coi', '' , @policyProduct)   %>
+					<%= renderAmountField('coi', @policyProduct.coi, 'coi',@policyProduct,' maxlength="20"')  %>
+					<%= attachMask("#{getObjectMapping(@policyProduct)}[coi]") %>
+				</div>
+			<% end %>
+		</div>
+	<% end %>
+
+
+	<% if @facetData[:renderBaseAnnualPremium] || @facetData[:renderModalPremium] %>
+		<div data-role="dualfieldcontain">
+			<% if @facetData[:renderBaseAnnualPremium] %>
+				<div class="half">
+					<%= renderLabel('baseAnnualPremium', annualPremiumLabel, '', @policyProduct) %>
+					<%= renderAmountField('baseAnnualPremium', @policyProduct.baseAnnualPremium, 'baseAnnualPremium',@policyProduct,' maxlength="20"') %>
+					<%= attachMask("#{getObjectMapping(@policyProduct)}[baseAnnualPremium]") %>
+				</div>
+			<% end %>
+
+			<% if @facetData[:renderModalPremium] %>
+				<div class="half"> 
+					<%= renderLabel('modalPremium', 'modalPremium', '', @policyProduct) %>
+					<%= renderAmountField('modalPremium', @policyProduct.modalPremium, 'modalPremium',@policyProduct,' maxlength="20"') %>
+					<%= attachMask("#{getObjectMapping(@policyProduct)}[modalPremium]") %>
+				</div>
+			<% end %>
+		</div>
+	<% end %>
+
+
+	<% if @premiumSAFl == 'MONTHLYINCOME' && (@facetData[:renderAnnualIncome] || @facetData[:renderMonthlyIncome]) %>
+		<div data-role="dualfieldcontain">
+			<% if @facetData[:renderAnnualIncome] %>
+				<div class="half">
+					<%= renderLabel('annualIncome',"annualIncome", '', @policyProduct)%>
+					<%= renderAmountField('annualIncome',@policyProduct.annualIncome,'annualIncome',@policyProduct, "maxlength='20'")%>
+					<%= attachMask("#{getObjectMapping(@policyProduct)}[annualIncome]") %>
+				</div>
+			<% end %>
+
+			<% if @facetData[:renderMonthlyIncome] %>
+				<div class="half">
+					<%= renderLabel('monthlyIncome',"monthlyIncome", '', @policyProduct)%>
+					<%= renderAmountField('monthlyIncome',@policyProduct.monthlyIncome,'monthlyIncome',@policyProduct, "maxlength='20'")%>
+					<%= attachMask("#{getObjectMapping(@policyProduct)}[monthlyIncome]") %>
+				</div>
+			<% end %>
+		</div>
+	<% end %>
+
+
+	<% if @facetData[:renderOtherPremiumPanel] %>
+		<% if @facetData[:renderMinTargetPremium] || @facetData[:renderMaxTargetPremium] %>
+			<div data-role="dualfieldcontain">
+				<% if @facetData[:renderMinTargetPremium] %>
+					<div class="half">
+						<%= renderLabel('minTargetPremium','minTargetPremium', '', @policyProduct) %>
+						<%= renderAmountField('minTargetPremium', @policyProduct.minTargetPremium, nil, @policyProduct, ' maxlength="20"')%>
+						<%= attachMask("#{getObjectMapping(@policyProduct)}[minTargetPremium]") %>
+					</div>
+				<% end %>
+
+				<% if @facetData[:renderMaxTargetPremium] %>
+					<div class="half">
+						<%= renderLabel('maxTargetPremium','maxTargetPremium', '', @policyProduct) %>
+						<%= renderAmountField('maxTargetPremium', @policyProduct.maxTargetPremium, nil, @policyProduct, ' maxlength="20"')%>
+						<%= attachMask("#{getObjectMapping(@policyProduct)}[maxTargetPremium]") %>
+					</div>
+				<% end %>
+			</div>
+		<% end %>
+
+		<% if @facetData[:renderRecommendedPremium] || @facetData[:renderUnapliedPremium] %>
+			<div data-role="dualfieldcontain"> 
+				<% if @facetData[:renderRecommendedPremium] %>
+					<div class="half">
+						<%= renderLabel('recommendedPremium','recommendedPremium', '', @policyProduct) %>
+						<%= renderAmountField('recommendedPremium', @policyProduct.recommendedPremium, nil, @policyProduct, "maxlength='20'")%>
+						<%= attachMask("#{getObjectMapping(@policyProduct)}[recommendedPremium]") %>
+					</div> 
+				<% end %>
+
+				<% if @facetData[:renderUnapliedPremium] %>
+					<div class="half"> 
+						<%= renderLabel('unapliedPremium','unapliedPremium', '', @policyProduct) %>
+						<%= renderAmountField('unapliedPremium', @policyProduct.unapliedPremium, nil, @policyProduct, ' maxlength="20"')%>
+						<%= attachMask("#{getObjectMapping(@policyProduct)}[unappliedPremium]") %>
+					</div>
+				<% end %>
+			</div> 
+		<% end %>  
+	<% end %>
+
+
+	<% if (@addtnField1LabelFacet && @addtnField1TypeFacet && @addtnField1LookupFacet) || (@addtnField2LabelFacet && @addtnField2TypeFacet && @addtnField2LookupFacet) %>
+		<div data-role="dualfieldcontain">
+			<% if @addtnField1LabelFacet && @addtnField1TypeFacet && @addtnField1LookupFacet %>
+				<div class="half">
+					<%= renderLabel('addtnField1', @addtnField1LabelFacet.actionValue, nil, @policyProduct) %>
+					<% if @addtnField1TypeFacet && @addtnField1TypeFacet.actionValue == "TEXT" %>
+						<%= renderAmountField('addtnField1', @policyProduct.addtnField1, nil, @policyProduct, "maxlength='20'") %>
+					<% elsif @addtnField1TypeFacet && @addtnField1TypeFacet.actionValue == "COMBO" %>
+						<%= getLookup(@addtnField1LookupFacet.actionValue, 'addtnField1', @policyProduct.addtnField1, @policyProduct, nil, "maxlength='20'") %>
+					<% end %>
+				</div>
+			<% end %>
+
+			<% if @addtnField2LabelFacet && @addtnField2TypeFacet && @addtnField2LookupFacet %>
+				<div class="half">
+					<%= renderLabel('addtnField2', @addtnField2LabelFacet.actionValue, nil, @policyProduct) %>
+					<% if @addtnField2TypeFacet && @addtnField2TypeFacet.actionValue == "TEXT" %>
+						<%= renderAmountField('addtnField2', @policyProduct.addtnField2, nil, @policyProduct, 'maxlength="20"') %>
+					<% elsif @addtnField2TypeFacet && @addtnField2TypeFacet.actionValue == "COMBO" %>
+						<%= getLookup(@addtnField2LookupFacet.actionValue, 'addtnField2', @policyProduct.addtnField2, @policyProduct, nil, "maxlength='20'") %>
+					<% end %>
+				</div>
+			<% end %>  
+		</div>
+	<% end %>
+
+
+	<% if (@addtnField3LabelFacet && @addtnField3TypeFacet && @addtnField3LookupFacet) || (@addtnField4LabelFacet && @addtnField4TypeFacet && @addtnField4LookupFacet) %>
+		<div data-role="dualfieldcontain">
+			<% if @addtnField3LabelFacet && @addtnField3TypeFacet && @addtnField3LookupFacet %>
+				<div class="half">
+					<%= renderLabel('addtnField3', @addtnField3LabelFacet.actionValue, nil, @policyProduct) %>
+					<% if @addtnField3TypeFacet && @addtnField3TypeFacet.actionValue == "TEXT" %>
+						<%= renderAmountField('addtnField3', @policyProduct.addtnField3, nil, @policyProduct, "maxlength='20'") %>
+					<% elsif @addtnField3TypeFacet && @addtnField3TypeFacet.actionValue == "COMBO" %>
+						<%= getLookup(@addtnField3LookupFacet.actionValue, 'addtnField3', @policyProduct.addtnField3, @policyProduct, nil, "maxlength='20'") %>
+					<% end %>
+				</div>
+			<% end %>
+
+			<% if @addtnField4LabelFacet && @addtnField4TypeFacet && @addtnField4LookupFacet %>
+				<div class="half">
+					<%= renderLabel('addtnField4', @addtnField4LabelFacet.actionValue, nil, @policyProduct) %>
+					<% if @addtnField4TypeFacet && @addtnField4TypeFacet.actionValue == "TEXT" %>
+						<%= renderAmountField('addtnField4', @policyProduct.addtnField4, nil, @policyProduct, "maxlength='20'") %>
+					<% elsif @addtnField4TypeFacet && @addtnField4TypeFacet.actionValue == "COMBO" %>
+						<%= getLookup(@addtnField4LookupFacet.actionValue, 'addtnField4', @policyProduct.addtnField4, @policyProduct, nil, "maxlength='20'") %>
+					<% end %>
+				</div>
+			<% end %>
+		</div>
+	<% end %>
+
+
+	<% if (@addtnField5LabelFacet && @addtnField5TypeFacet && @addtnField5LookupFacet) || (@addtnField6LabelFacet && @addtnField6TypeFacet && @addtnField6LookupFacet) %>
+		<div data-role="dualfieldcontain">
+			<% if @addtnField5LabelFacet && @addtnField5TypeFacet && @addtnField5LookupFacet %>
+				<div class="half">
+					<%= renderLabel('addtnField5', @addtnField5LabelFacet.actionValue, nil, @policyProduct) %>
+					<% if @addtnField5TypeFacet && @addtnField5TypeFacet.actionValue == "TEXT" %>
+						<%= renderAmountField('addtnField5', @policyProduct.addtnField5, nil, @policyProduct, "maxlength='20'") %>
+					<% elsif @addtnField5TypeFacet && @addtnField5TypeFacet.actionValue == "COMBO" %>
+						<%= getLookup(@addtnField5LookupFacet.actionValue, 'addtnField5', @policyProduct.addtnField5, @policyProduct, nil, "maxlength='20'") %>
+					<% end %>
+				</div>
+			<% end %>
+
+			<% if @addtnField6LabelFacet && @addtnField6TypeFacet && @addtnField6LookupFacet %>
+				<div class="half">
+					<%= renderLabel('addtnField6', @addtnField6LabelFacet.actionValue, nil, @policyProduct) %>
+					<% if @addtnField6TypeFacet && @addtnField6TypeFacet.actionValue == "TEXT" %>
+						<%= renderAmountField('addtnField6', @policyProduct.addtnField6, nil, @policyProduct, "maxlength='20'") %>
+					<% elsif @addtnField6TypeFacet && @addtnField6TypeFacet.actionValue == "COMBO" %>
+						<%= getLookup(@addtnField6LookupFacet.actionValue, 'addtnField6', @policyProduct.addtnField6, @policyProduct, nil, "maxlength='20'") %>
+					<% end %>
+				</div>
+			<% end %> 
+		</div>
+	<% end %>
+
+
+	<% if @facetData[:renderPDFPanel] %>
+		<% if @facetData[:renderPdfRequiredFl] || @facetData[:renderPdfAmount] %>
+			<div data-role="dualfieldcontain">
+				<% if @facetData[:renderPdfRequiredFl] %>
+					<div class="half">
+						<%= renderLabel('pdfRequiredFl', 'pdfRequiredFl', '', @policyProduct) %>
+						<%= renderRadioButton('pdfRequiredFl', @policyProduct.pdfRequiredFl, 'pdfReqYes', 'YES', @policyProduct,'onchange=enablePrePaymentSection();') %>
+						<%= renderLabel('pdfReqYes', 'YES', 'radioWidth', nil) %>
+						<%= renderRadioButton('pdfRequiredFl', @policyProduct.pdfRequiredFl, 'pdfReqNo', 'NO', @policyProduct,'onchange=enablePrePaymentSection();') %>
+						<%= renderLabel('pdfReqNo', 'NO', 'radioWidth', nil) %>
+					</div>
+				<% end %>
+
+				<% if @facetData[:renderPdfAmount] %>
+					<div class="half">
+						<%= renderLabel('pdfAmount',"pdfAmount", '', @policyProduct)%>
+						<%= renderAmountField('pdfAmount', @policyProduct.pdfAmount, nil, @policyProduct, "maxlength ='20'") %>
+						<%= attachMask("#{getObjectMapping(@policyProduct)}[pdfAmount]") %>
+					</div>
+				<% end %>
+			</div>
+		<% end %>
+
+		<% if @facetData[:renderPdfFrequencyVal] || @facetData[:renderPdfPeriod] %>
+			<div data-role="dualfieldcontain">
+				<% if @facetData[:renderPdfFrequencyVal] %>
+					<div class="half">
+						<%= renderLabel('pdfFrequencyVal',"pdfFrequencyVal", '', @policyProduct)%>
+						<%= renderAmountField('pdfFrequencyVal', @policyProduct.pdfFrequencyVal, nil, @policyProduct, "maxlength ='3'") %>
+					</div>
+				<% end %>
+
+				<% if @facetData[:renderPdfPeriod] %>
+					<div class="half">
+						<%= renderLabel('pdfPeriod',"pdfPeriod", '', @policyProduct)%>
+						<%= renderAmountField('pdfPeriod', @policyProduct.pdfPeriod, nil, @policyProduct, "maxlength ='3'") %>
+					</div>
+				<% end %>
+			</div>
+		<% end %>
+	<% end %>	
+</div>
+<%= render :partial => "captureBasicPlanDetailsJS" %>

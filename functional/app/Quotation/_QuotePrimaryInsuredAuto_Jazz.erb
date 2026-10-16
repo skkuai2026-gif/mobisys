@@ -1,0 +1,17 @@
+<%= panelTagStart(false) %>
+	<%= subPanelTagStart("MAINDRIVERDTLS","false") %>
+		<%= modelTagStart("primaryQuotationParty", @insured, @quotation) %>
+			<% partyPkg = 'com.c2lbiz.symbiosys.insurance.businesscommon.dataobjects.party' %>
+			<%= prdFieldDataTag("#{partyPkg}.PartyDO",'partySameAsCd','') %>
+			<div id ="displayPrimary">
+				<%= prdFieldDataTag("#{partyPkg}.PartyDO","dob,age" , '' , 'birthDt,age') %>
+
+				<%= prdFieldDataTag("#{partyPkg}.PartyDO","genderCd,maritalStatus,contactNum,emailAddress") %>
+			</div>
+			<div style="display: none;">
+				<%= inputTag("roleCd") %>
+				<%= inputTag("partyTypeCd") %>
+			</div>
+		<% modelTagEnd %>
+	<%= subPanelTagEnd %>
+<%= panelTagEnd %>

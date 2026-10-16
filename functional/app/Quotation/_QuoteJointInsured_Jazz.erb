@@ -1,0 +1,48 @@
+<%= panelTagStart(false) %>
+	<%= prdFieldDataTag("#{@quotationPckg}.PolicyDO",'jointLife','JOINTINSUREDDETAILS') %>
+	<div id="displayJointLife">
+	<%= subPanelTagStart("jointLifeDetails",false,'JOINTINSUREDDETAILS') %>
+			<%= modelTagStart("jointLifeQuotationParty", @jointLife, @quotation) %>
+				<% partyPckg = 'PolicyJointLifeDO' %>
+				<%= prdFieldDataTag("#{partyPckg}","title,otherTitle",'','titleCd') %>
+				
+				<%= subPanelTagStart("language1","false","",false) if @renderMultiLanguagePanel %>
+					<%= prdFieldDataTag("#{partyPckg}","firstname,middlename,lastname,extensionName",'#none,MIDDLENAMEREQUIRED,#none,#none','firstName1,middleName1,lastName1,extensionName1') %>
+				<% if @renderMultiLanguagePanel %>
+					<div class="labelHeader breakLine"></div>
+				<%= subPanelTagEnd %>
+				<% end %>
+
+				<%= subPanelTagStart("language2","false","MULTILINGUALPARTYNAME",false) %>
+					<%= prdFieldDataTag("#{partyPckg}","firstname2,middlename2,lastname2,extensionName2",'#none,MIDDLENAMEREQUIRED,#none,#none','firstName2,middleName2,lastName2,extensionName2') %>
+					<div class="labelHeader breakLine"></div>
+				<%= subPanelTagEnd %>
+
+				<%= prdFieldDataTag("#{partyPckg}","dob,age",'','birthDt,age') %>
+
+				<%= prdFieldDataTag("#{partyPckg}","genderCd,relationCd,otherRelation",'','') %>
+
+				<%= prdFieldDataTag("#{partyPckg}","industryCd,natureOfDuty,occupationCd",'JOINTLAOCCUPATION','industryCd,natureOfDuty,occupationClass') %>
+
+				<%= prdFieldDataTag("#{partyPckg}","smoker,nsap",'JOINTLASMOKER,JOINTLANSAP','') %>
+
+				<%= prdFieldDataTag("#{partyPckg}","coverageCountryCd,coverageCityCd",'JOINTLACOVERAGELOCATION','') %>
+
+				<%= prdFieldDataTag("#{partyPckg}","contactNum,emailAddress",'','') %>
+
+				<div style="display: none;">
+					<%= inputTag("roleCd") %>
+					<%= inputTag("partyTypeCd") %>
+				
+					<<% if !MobiSys::BrowserHelper.renderPanel?("PRIMARYSMOKER", $currentProduct) %>
+						<%= inputTag("smoker") %>
+					<% end %>
+				</div>
+			<% modelTagEnd %>
+	<%= subPanelTagEnd %>
+	</div>
+<%= panelTagEnd %>
+
+<%= setupFilterUsingFieldTargetValueMap('TitleGenderSI', false, "jointLifeQuotationParty") %>
+<%= setupFilterUsingFieldTargetValueMap('CoverageCountryCity', true, "jointLifeQuotationParty") %>
+<%= setupFilterUsingFieldTargetValueMap('RelationGender', true, "jointLifeQuotationParty") %>

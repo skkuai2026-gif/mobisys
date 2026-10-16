@@ -1,0 +1,25 @@
+<div class="illustrationdisplay">
+	<div class="legend"><%= renderLabel('supplementaryInsured','supplementaryInsured','strongLabel') %></div>
+</div>
+
+<% if @policy.quotationRefGuid == nil || @policy.quotationRefGuid == "" %>
+  	<fieldset class="ui-grid-b">
+	    <div class="ui-block-a-equi"></div>
+	    <div class="ui-block-b-equi"> 
+	       	<% if @policy.quotationRefGuid == nil || @policy.quotationRefGuid == "" %>
+	        	<input type="button" value="<%= getLabelValue('ADDSUPPLEMENTLIFE')%>" id="addSupplementaryInsured" data-role="button" data-theme="a"> 
+	      	<% end %>   
+	  	</div>
+		<div class="ui-block-c-equi"> </div>
+  	</fieldset>
+<% end %>
+
+
+<form method="POST" action="<%= url_for :action => :submitSupplementaryInsuredDetails %>" name="supplementaryInsuredForm" id="supplementaryInsuredForm">
+  	<%= renderObject(@policy)%>
+	
+  	<div class="allSupplementaryInsureds" data-role='collapsibleset'>
+  		<%= @insured_form %>
+	</div>
+</form>
+<%= render(:partial => 'captureSupplementaryInsuredJS')%>

@@ -1,0 +1,65 @@
+<%= panelTagStart(false) %>
+	<%= prdFieldDataTag("#{@policyPckg}.PolicyDO",'jointLife','JOINTINSUREDDETAILS') %>
+	<%= modelTagStart('jointLifePolicyPartyRole', @jointLifePolicyPartyRole, @policy)%>
+		<div style="display: none;">
+			<%= inputTag("roleCd") %>
+			<%= inputTag("refGuid") %>
+			<%= inputTag("removed") %>
+		</div>
+	<% modelTagEnd %>
+	
+	<div id="jointLifeContainer">
+		<%= modelTagStart("PolicyJointLifeDO", @jointLife, @policy) %>
+			<%
+				partyPckg = 'PolicyJointLifeDO'
+				@tagName = 'PolicyJointLifeDO'
+			%>
+			<%= navbarTagStart(@jointLifeNavbarIds,@jointLifeNavbarLabels) %>
+				<% if @navbarToBeLoaded=="#{@tabToBeLoaded}-jointLifeDetailsTabContainer" %>
+					<%= tabTagStart("#{@tabToBeLoaded}-jointLifeDetailsTabContainer") %>
+						<%= render(:partial => 'NBPartyRender_Jazz', :locals => {:facetkeyprefix => 'JOINTLA' , :partyPckg => partyPckg , :party => @jointLife }) %>
+						<% if @renderjointLifeNationalityPanel %>
+							<%= render(:partial => 'NBPartyNationality_Jazz', :locals => {:partyPckg => partyPckg}) %>
+						<% end %>
+						<% if @renderjointLifeIdentityPanel %>
+							<%= render(:partial => 'NBPartyIdentity_Jazz', :locals => { :partyPckg => partyPckg, :tagId => 'jointLifePartyIdentity', :partyIdentity1 => @jointLifeIdentity1, :partyIdentity2 => @jointLifeIdentity2, :party => @jointLife}) %>
+						<% end %>
+						<% if @renderjointLifeOccupationPanel %>
+							<%= render(:partial => 'NBPartyEmployment_Jazz', :locals => {:partyPckg => partyPckg, :partyEmployment => @jointLifeEmployment, :party => @jointLife, :tagId => 'jointLifePartyEmployment'}) %>
+						<% end %>
+					<%= tabTagEnd %>
+				<% end %>
+
+				<% if @navbarToBeLoaded=="#{@tabToBeLoaded}-jointLifeContactDetailsTabContainer" %>
+					<%= tabTagStart("#{@tabToBeLoaded}-jointLifeContactDetailsTabContainer") %>
+						<% if @renderjointLifeAddressPanel %>
+							<div style="display: none;">
+								<% if @renderjointLifeOccupationPanel %>
+									<%= modelTagStart('jointLifePartyEmployment', @jointLifeEmployment, @jointLife) %>
+										<%= inputTag("occupationTypeCd") %>
+							  		<% modelTagEnd %>
+							  	<% end %>
+							</div>
+							<%= render(:partial => 'NBPartyAddress_Jazz', :locals => {:party => @jointLife, :party_res_address => @jointLifeHomeAddress, 
+						  :party_office_address => @jointLifeBusinessAddress, :party_per_address => @jointLifePermanentAddress, 
+						  :partyPckg => partyPckg, :resTagId => 'jointLifePartyAddressHome', :ofcTagId  => 'jointLifePartyAddressOffice',
+						  :perTagId => 'jointLifePartyAddressPermanent', :renderHomeAddressPanel => @renderjointLifeHomeAddressPanel, :renderPermanentAddressPanel => @renderjointLifePermanentAddressPanel, :renderOfficeAddressPanel => @renderjointLifeOfficeAddressPanel}) %>
+						<% end %>
+
+						<% if @renderjointLifeContactPanel %>
+							<%= render(:partial => 'NBPartyContact_Jazz', :locals => {:partyPckg => partyPckg, :party_resi_contact => @jointLifeContactHome, 
+						  :party_off_contact => @jointLifeContactOffice, :party_mob_contact => @jointLifeContactMobile,
+						  :party => @jointLife, :emailModelId => 'jointLifePartyEmail', :partyEmailObject => @jointLifeEmail, 
+						  :resiTagId => 'jointLifePartyContactResidential', :offTagId => 'jointLifePartyContactOffice', :mobTagId => 'jointLifePartyContactMobile'}) %>
+						<% end %>
+					<%= tabTagEnd %>
+				<% end %>
+			<%= navbarTagEnd %>
+		<% modelTagEnd %>
+	</div>
+<%= panelTagEnd %>
+
+<%= setupFilterUsingFieldTargetValueMap('TitleGender', false, "PolicyJointLifeDO") %>
+<%= setupFilterUsingFieldTargetValueMap('CoverageCountryCity', true, "PolicyJointLifeDO") %>
+<%= setupFilterUsingFieldTargetValueMap('RelationGender', true, "PolicyJointLifeDO") %>
+<%= setupFilterUsingFieldTargetValueMap('CITIZENSHIPRACE', true, "PolicyJointLifeDO") %>

@@ -1,0 +1,9 @@
+<%= modelTagStart("basePlan", @baseProduct, @policy) %>
+<%= panelTagStart(false) %>
+	<%= subPanelTagStart("basePlanDetails","false","",true) %>
+		<%= render(:partial => 'NBProposalBasePlanBasic_Jazz') %>
+		<%= render(:partial => 'NBProposalPlanAddtnl_Jazz') %>
+	<%= subPanelTagEnd %>
+<%= panelTagEnd %>
+	<%= render(:partial => 'NBProposalFund_Jazz') %>
+<% modelTagEnd %>

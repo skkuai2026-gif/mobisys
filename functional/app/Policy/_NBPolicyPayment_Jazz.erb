@@ -1,0 +1,111 @@
+<%= navbarTagStart(@paymentNavbarIds,@paymentNavbarLabels) %>
+	<% if @navbarToBeLoaded == '' || @navbarToBeLoaded == "#{@tabToBeLoaded}-initialPaymentContainer" %>
+		<%= tabTagStart("#{@tabToBeLoaded}-initialPaymentContainer") %>
+			<%= modelTagStart('inward',@inward) %>
+				<%= prdFieldDataTag("InwardDO",'payerTypeCd,payerPartyRefGuid') %>
+				<%= modelTagStart('inwardPolicy',@inwardPolicy, @inward) %>
+					<div style="display: none;">
+						<%= inputTag('policyNum') %>
+						<%= inputTag('acctTypeCd') %>
+					</div>
+				<% modelTagEnd %>
+				<div id="initialPayer" name="initialPayer">
+					<%= panelTagStart(false) %>
+						<%= subPanelTagStart("payerDetail",false) %>	
+			    			<%= render :partial => 'NBPayer_Jazz' , :locals => {:payerId => 'initialPayer', :payer => @inwardPayer, :payerPolicyPartyRoleId => 'initialPayerPolicyPartyRole', :payerPolicyPartyRole => @inwardPartyRole, :payerIdentity1 => @inwardPayerIdentity1, :payerIdentity2 => @inwardPayerIdentity2, :payerEmployment => @inwardPayerEmployment, :payer_res_address => @inwardPayerHomeAddress, :payer_office_address => @inwardPayerBusinessAddress, :payer_per_address => @inwardPayerPermanentAddress, :payer_resi_contact => @inwardPayerContactHome, :payer_off_contact => @inwardPayerContactOffice, :payer_mob_contact => @inwardPayerContactMobile, :payerEmailObject => @inwardPayerEmail } %>
+			    		<%= subPanelTagEnd %>	
+			    	<%= panelTagEnd %>
+				</div>
+				<%= fieldDataEntryGridTagStart('firstPremPolicyPaymentDtl','InwardDetailsDO',nil, nil, nil,nil,'delete','',nil,true,true,false,false,false) %>
+					<%= panelTagStart(true) %>
+						<% @inward.InwardDetailsList.each_with_index do |inwardDetail, count| %>
+							<% inwardDetail.instrumentDt = getScreenDate(inwardDetail.instrumentDt)%>
+							<%= subPanelTagStart("#{getLabelValue('initialPayment')} #{count+ 1}") %>
+								<% if count == 0 %>
+									<div class='add-section' style="margin: 0 5px 10px 5px;padding: 0,5px,0,5px;width: 99%;">
+								<% else %>
+									<div class='add-section' style="margin: 0 5px 10px 5px;padding: 30px 5px,0,5px;width: 99%;">
+								<% end %>
+						    		<% gridID = "grid_#{count + 1 }_firstPremPolicyPaymentDtl" %>
+						    		<%= modelTagStart(gridID, inwardDetail, @inward,count + 1) %>
+								        <i class='close-add-section icon-close' onClick='javascript:catchevent(this);' id='<%=gridID%>_removed'></i>
+								        <%= prdFieldDataTag("InwardDetailsDO",'paymentMethodCd,paymentSubTypeCd,micrNum,accountName,bankCd,bankBranch,instrumentDt,inwardNum,inwardAmount') %>
+										<span id='<%=gridID%>_qrcode' class="qrcode"><img style="height: 200px;width: 200px;" src="/public/jazz/images/qrcode.png"></span>
+										<%= setupFilterUsingFieldTargetValueMap('PAYMENTMETHOD', true, gridID) %>
+								    <% modelTagEnd %>
+								</div>
+							<%= subPanelTagEnd %>
+						<% end %>
+					<%= panelTagEnd %>
+				<%= fieldDataEntryGridTagEnd('firstPremPolicyPaymentDtl', @inward.InwardDetailsList, 'addInitialpayment',true,true) %>
+				<input type="hidden" name="inwardDetailCount" id="inwardDetailCount" value='<%= @inward.InwardDetailsList.size %>'/>
+
+				<div style="display: none;">
+					<%= inputTag("inwardStatusCd") %>
+					<%= inputTag("inwardTypeCd") %>
+					<%= inputTag("inwardSubTypeCd") %>
+					<%= inputTag("inwardDt") %>
+					<%= inputTag("agentId") %>
+					<%= inputTag("isMicrApplicable") %>
+				</div>
+			<% modelTagEnd%>
+		<%= tabTagEnd %>
+	<% elsif @navbarToBeLoaded == "#{@tabToBeLoaded}-renewalPaymentContainer" %>
+		<%= tabTagStart("#{@tabToBeLoaded}-renewalPaymentContainer") %>
+			<%= modelTagStart('renewalPayment', @renewalPayment, @policy) %>
+				<%= prdFieldDataTag("RenewalPolicyPaymentDO",'paymentMethodCd,payerTypeCd,payerPartyRefGuid') %>
+				<div style="display: none;">
+					<%= inputTag('paymentInstructionTypeCd')%>
+					<%= inputTag('partyFinAccRefGuid')%>
+				</div>
+			<% modelTagEnd %>
+			<div id="renewalPayer" name="renewalPayer">
+				<%= panelTagStart(false) %>
+					<%= subPanelTagStart("payerDetails",false) %>
+		    			<%= render :partial => 'NBPayer_Jazz' , :locals => {:payerId => 'renewalPayer', :payer => @renewalPayer, :payerPolicyPartyRoleId => 'renewalPayerPolicyPartyRole', :payerPolicyPartyRole => @renewalPartyRole, :payerIdentity1 => @renewalPayerIdentity1, :payerIdentity2 => @renewalPayerIdentity2, :payerEmployment => @renewalPayerEmployment, :payer_res_address => @renewalPayerHomeAddress, :payer_office_address => @renewalPayerBusinessAddress, :payer_per_address => @renewalPayerPermanentAddress, :payer_resi_contact => @renewalPayerContactHome, :payer_off_contact => @renewalPayerContactOffice, :payer_mob_contact => @renewalPayerContactMobile, :payerEmailObject => @renewalPayerEmail } %>
+		    		<%= subPanelTagEnd %>	
+		    	<%= panelTagEnd %>
+			</div>
+			<div id = renewal_paymentDetails>
+				<%= panelTagStart(false) %>
+					<%= subPanelTagStart("paymentDetails",false) %>
+						<%= modelTagStart('renewalFinancialAccount', @renewalFinancialAccount) %>
+							<div id= "renewalPaymentDetails">
+								<%= prdFieldDataTag("RenewalPartyFinancialAccountDO",'accountName,accountNum,micrNum,bankCd,branchName,cardTypeCd,cardExpiryYear,cardExpiryMnth') %>
+							</div>
+
+							<div style="display: none;">
+								<%= inputTag('paymentMethodCd')%>
+								<%= inputTag("isMicrApplicable") %>
+							</div>
+						<% modelTagEnd %>
+					<%= subPanelTagEnd %>	
+			    <%= panelTagEnd %>
+			</div>
+		<%= tabTagEnd %>
+	<% elsif @navbarToBeLoaded == "#{@tabToBeLoaded}-refundPaymentContainer" %>
+		<%= tabTagStart("#{@tabToBeLoaded}-refundPaymentContainer") %>
+			<%= modelTagStart('refundPayment', @refundPayment, @policy) %>
+				<%= prdFieldDataTag("RefundPolicyPaymentDO",'paymentMethodCd') %>
+				<div style="display: none;">
+					<%= inputTag('paymentInstructionTypeCd')%>
+					<%= inputTag('partyFinAccRefGuid')%>
+					<%= inputTag('payerTypeCd')%>
+					<%= inputTag('payerPartyRefGuid')%>
+				</div>
+				<%= modelTagStart('refundPayer', @refundPayer, @policy)%>
+					<%= modelTagStart('refundFinancialAccount', @refundFinancialAccount, @refundPayer) %>
+						<div style="display: none;">
+							<%= inputTag('paymentMethodCd')%>
+							<%= inputTag("isMicrApplicable") %>
+						</div>
+						<div id="refundPaymentDetails">
+							<%= prdFieldDataTag("RefundPartyFinancialAccountDO",'accountName,accountNum,micrNum,bankCd,branchName,cardTypeCd') %>
+						</div>
+					<% modelTagEnd %>
+				<% modelTagEnd %>
+			<% modelTagEnd %>
+		<%= tabTagEnd %>
+	<% end %>
+	<input type="hidden" name="existingLivesRoleCd" value="<%= @parties.uniq.join(',') %>">
+<%= navbarTagEnd %>

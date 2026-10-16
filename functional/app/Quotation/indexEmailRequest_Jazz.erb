@@ -1,0 +1,9 @@
+<%= pageTagStart('search-email-request','Symbiosys - Sales Illustration') %>
+	<%= headerTag("SEARCHEMAILSREQUESTED","","","/app/Quotation/search") %>
+	<%= formTagStart("quotationSearchForm","#{url_for :action => :searchEmailRequest}") %>
+		<div data-role="main" class="ui-content">
+			<%= menuTag('SALESILLUSTRATION',true) %>
+			<%= searchTag("quotationRefNum,primaryInsuredName,emailId,updatedDt,status","SearchEmailRequestDO", @searchResultList, false, false) %>
+	    </div>
+	<%= formTagEnd %>
+<%= pageTagEnd %>

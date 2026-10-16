@@ -1,0 +1,44 @@
+<hr>
+<%= renderObject(@inwardDetail, @inward) %>
+<div data-role="fieldcontain">
+   <%= renderLabel('refVoucherNo', 'REFVOUCHERNO', nil, @inwardDetail) %>
+   <%= renderInputField('refVoucherNo', @inwardDetail.refVoucherNo, 'ref Voucher No.', @inwardDetail) %>
+</div>
+<fieldset data-role="controlgroup">
+  <div class="ui-grid-b">            
+    <div class="ui-block-a"> <%= renderLabel('paymentMethodCd', 'PAYMENTMETHOD', nil, @inwardDetail) %> </div>
+    <div class="ui-block-b"> <%= getLookup('PAYMENTMETHOD','paymentMethodCd', @inwardDetail.paymentMethodCd, @inwardDetail) %> </div>
+    <div class="ui-block-c"> </div>
+  </div>
+</fieldset>
+
+<div data-role="fieldcontain">
+  <%= renderLabel('inwardAmount', 'AMOUNT', nil, @inwardDetail) %>
+  <%= renderAmountField('inwardAmount', @inwardDetail.inwardAmount, 'Amount', @inwardDetail) %>
+</div>
+
+<fieldset data-role="controlgroup">
+  <div class="ui-grid-b">            
+    <div class="ui-block-a"> <%= renderLabel('bankCd', 'BANKDETAILS', nil, @inwardDetail) %> </div>
+    <div class="ui-block-b"> <%= renderInputField('bankCd', @inwardDetail.bankCd, 'Bank cd', @inwardDetail) %> </div>
+    <div class="ui-block-c"> <%= renderInputField('bankBranch', @inwardDetail.bankBranch, 'Branch cd', @inwardDetail) %> </div>
+  </div>
+</fieldset>
+
+<fieldset data-role="controlgroup">
+  <div class="ui-grid-b">            
+    <div class="ui-block-a"> <%= renderLabel('accountNum', 'ACCOUNTDETAILS', nil, @inwardDetail) %> </div>
+    <div class="ui-block-b"> <%= renderInputField('accountNum', @inwardDetail.accountNum, 'Account num', @inwardDetail) %> </div>
+    <div class="ui-block-c"> <%= renderInputField('micrNum', @inwardDetail.micrNum, 'MICR Num', @inwardDetail) %> </div>
+  </div>
+</fieldset>
+
+<fieldset data-role="controlgroup">
+  <div class="ui-grid-b">            
+  <div class="ui-block-a"> <%= renderLabel('inwardNum', 'INSTRUMENTDETAILS', nil, @inwardDetail) %> </div>
+  <div class="ui-block-b"> <%= renderInputField('inwardNum', @inwardDetail.inwardNum, 'Inward num', @inwardDetail) %></div>
+  <div class="ui-block-b"> <%= renderDateField('instrumentDt', @inwardDetail.instrumentDt, 'Instrument date', @inwardDetail) %></div>
+</div>
+</fieldset>     
+  
+  

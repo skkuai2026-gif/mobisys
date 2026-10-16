@@ -1,0 +1,53 @@
+<%= subPanelTagStart("#{getLabelValue('BENEFICIARY')} #{@displayCount.to_i}", false) %>
+<div class='add-section'>
+	<%
+		partyPckg = 'PolicyNomineeDO'
+		@tagName = "grid_#{@nomineeLifeCount}_nomineeParty"
+	%>
+	<%= modelTagStart("grid_#{@nomineeLifeCount}_nomineePolicyPartyRole", @policyPartyRole, @policy)%>
+		<%= prdFieldDataTag(partyPckg,'partySameAsCd,refGuid',"",'partySameAs,refGuid') %>
+		<%= prdFieldDataTag(partyPckg,'nomineeTypeCd') %>
+		<%= prdFieldDataTag(partyPckg,'effectiveFromDt,effectiveToDt') %>
+		<%= prdFieldDataTag(partyPckg,'percentage,irrevocableFl') %>
+
+		<div style="display: none;">
+			<%= inputTag("roleCd") %>
+			<%= inputTag("nomineeRefGuid") %>
+		</div>
+	<% modelTagEnd %>
+
+	<%= modelTagStart(@tagName, @nomineeParty, @policy, @nomineeLifeCount) %>
+		<i class='close-add-section icon-close' onClick='javascript:catchevent(this);' id='grid_<%=@nomineeLifeCount%>_nomineeDetails_removed'></i>
+
+		<div id='<%=@tagName%>_partyDetails'>
+			<%= render(:partial => 'NBPartyRender_Jazz', :locals => { :facetkeyprefix => 'NOMINEE', :partyPckg => partyPckg, 
+				:party => @nomineeParty }) %>
+		</div> 
+
+		<% if @renderPolicyNomineeNationalityPanel %> 
+			<%= render(:partial => 'NBPartyNationality_Jazz', :locals => {:partyPckg => partyPckg, :party => @nomineeParty}) %>
+		<% end %>
+
+		<% @nomineePartyHomeAddress      = @nomineeParty.getPartyAddress("RESIDENTIAL", true) %>
+		<% @nomineePartyPermanentAddress = @nomineeParty.getPartyAddress("PERMANENT", true) %>
+		<% @nomineePartyBusinessAddress  = @nomineeParty.getPartyAddress("OFFICE", true) %>
+
+		<%= render(:partial => 'NBPartyAddress_Jazz', :locals => {:partyPckg => partyPckg, :party => @nomineeParty, :party_res_address => @nomineePartyHomeAddress, :party_per_address => @nomineePartyPermanentAddress, :party_office_address => @nomineePartyBusinessAddress, :resTagId => @tagName + "nomineePartyContactResidential",:ofcTagId => @tagName + "nomineePartyContactOffice", :perTagId => @tagName + "nomineePartyAddressPermanent", :renderHomeAddressPanel => @renderPolicyNomineeHomeAddressPanel, :renderPermanentAddressPanel => @renderPolicyNomineePermanentAddressPanel,:renderOfficeAddressPanel => @renderPolicyNomineeOfficeAddressPanel}) %>
+
+		<% if @renderPolicyNomineeContactPanel %>
+			<% @nomineeContactHome   = @nomineeParty.getPartyContact("RESIDENTIAL", true) %>
+			<% @nomineeContactOffice = @nomineeParty.getPartyContact("OFFICE", true) %>
+			<% @nomineeContactMobile = @nomineeParty.getPartyContact("MOBILE", true) %>
+			<% @nomineeEmail         = @nomineeParty.getPartyEmail(true) %>
+
+			<%= render(:partial => 'NBPartyContact_Jazz', :locals => {:partyPckg => partyPckg, :party => @nomineeParty, :party_resi_contact => @nomineeContactHome, :party_off_contact => @nomineeContactOffice, :party_mob_contact => @nomineeContactMobile, :resiTagId => @tagName + "nomineePartyContactResidential", :offTagId => @tagName + "nomineePartyContactOffice",:mobTagId => @tagName + "nomineePartyContactMobile", :emailModelId => @tagName + "nomineePartyEmail", :partyEmailObject => @nomineeEmail }) %>
+		<% end %>
+		<div style="display: none;">
+			<%= inputTag("roleCd") %>
+		</div>
+		<%= setupFilterUsingFieldTargetValueMap('TitleGender', false, @tagName) %>
+		<%= setupFilterUsingFieldTargetValueMap('CoverageCountryCity', true, @tagName) %>
+		<%= setupFilterUsingFieldTargetValueMap('RelationGender', true, @tagName) %> 
+	<% modelTagEnd %>
+</div>
+<%= subPanelTagEnd %>

@@ -1,0 +1,26 @@
+
+    function sendview() {   
+        document.viewForm.submit();                    
+        $("a[name='view']").attr('onclick', 'return false;');        
+    }
+
+    $(document).ready(function(){
+        $('.scrollTopButton').click(function() {
+            $("html, body").animate({ scrollTop: 0 }, "slow");
+        });
+
+        $('.expandButton').hide();
+
+        $('.collapseButton').click(function() {
+            $(this).parents(".legend").siblings(".panelContent").hide();
+            $(this).hide();
+            $(this).siblings('.expandButton').show();
+        });
+
+        $('.expandButton').click(function() {
+            $(this).parents(".legend").siblings(".panelContent").show();
+            $(this).hide();
+            $(this).siblings('.collapseButton').show();
+        });
+
+    });

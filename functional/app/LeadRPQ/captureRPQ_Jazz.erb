@@ -1,0 +1,217 @@
+<%= pageTagStart('Capture Lead RPQ','Symbiosys - Lead RPQ') %>
+	<%= headerTag("LeadRPQ","add",@leadRPQ.rpqId, "","#{@quickLinkLabels}","#{@quickLinkActions}")%>
+	<%= formTagStart("rpqResponseForm","#{url_for :action => :executeSubmit}") %>
+		<%= tabbarTagStart(@tabName, @tabLabel, @tabIcons,true) %>
+			<%= modelTagStart("leadRPQ", @leadRPQ) %>
+				<% if @tabToBeLoaded == "tab_basic" %>
+					<%= tabTagStart("tab_basic") %>
+						<%= panelTagStart(false) %>
+							<%= subPanelTagStart("PERSONALINFORMATION",false) %>
+								<%= layoutFieldTag("title,firstname,middlename,lastname") %>
+								<%= layoutFieldTag("genderCd,maritalStatus,dob,age") %>
+								<%= layoutFieldTag("occupationCd,incomeGroup,nationality") %>
+							<%= subPanelTagEnd %>
+							<%= subPanelTagStart("CONTACTINFORMATION",false) %>
+								<%= layoutFieldTag("residenceNumber,officeNumber,mobileNumber") %>
+							<%= subPanelTagEnd %>
+							<%= subPanelTagStart("PERSONALINFORMATION",false) %>
+								<%= layoutFieldTag("address1,address2,address3,address4") %>
+								<%= layoutFieldTag("country,pincode,state,city") %>
+							<%= subPanelTagEnd %>
+							<div style="display: none;">
+								<%= inputTag('fromTime') %>
+								<%= inputTag('toTime') %>
+								<%= inputTag('natureOfDuty') %>
+								<%= inputTag('leadSource') %>
+								<%= inputTag('leadSourceOther') %>
+							</div>
+						<%= panelTagEnd %>
+					<%= tabTagEnd %>
+				<% end %>
+				<% if @tabToBeLoaded == "tab_questionnaire" %>
+					<%= tabTagStart("tab_questionnaire") %>
+						<%= panelTagStart(false) %>
+							<%= subPanelTagStart("RPQANALYSIS",false) %>
+								<div class="questionnaireDiv">
+									<% @questionKeys.each_with_index do |labelKey, i| %>
+									<div class="project-data-full">
+										<div class="row-details">
+											<%= labelTag(labelKey) %>
+											<div class='clearfix'></div>
+									 		<div class="ui-grid-a">
+									 			<div class="ui-block-a">
+									 				<% resp = nil 
+									 				   questionKeyObj = ""
+									 				%>
+									 				<% if !@saved_response.nil? %>
+									 					<% resp = @saved_response.select{|resp| resp.question.include? labelKey.to_s }.map{ |only_resp| only_resp.score } unless @saved_response.nil? %>
+									 				<% end %>
+									 				<!-- If Response exists, retrieve object -->
+									 				<%	if @saved_response.length > 0
+									 						questionKeyObj = @saved_response.select{|resp| resp.question.include? labelKey.to_s }.map{ |only_resp| only_resp.object }.first unless @saved_response.nil?
+									 					end
+									 				%>
+									 				<% if resp.to_s != "" %>
+									 					<%= getQuestionnaireCheckbox(labelKey.to_s, labelKey.to_s, resp, nil, nil, nil) %>
+									 					<input type="hidden" name='<%= "RPQResponse[][object]"%>' value="<%= questionKeyObj %>"/>
+									 				<% else %>
+									 					<%= getQuestionnaireCheckbox(labelKey.to_s, labelKey, nil, nil, nil, nil) %>
+									 				<% end %>
+									 			</div> 
+									 		</div>
+									 	</div>
+									</div>
+							 		<% end %>
+								</div>
+							<%= subPanelTagEnd %>
+						<%= panelTagEnd %>
+					<%= tabTagEnd %>
+				<% end %>
+				<% if @tabToBeLoaded == "tab_signature" %>
+					<%= tabTagStart("tab_signature") %>
+					<%
+						errorHash = Hash.new
+						if @errors!=nil && !@errors.empty?
+							[@leadRPQ].each do |obj|
+								if obj.to_s != ""
+									@errors.each do |tabId, tabErrors|								        	
+							            errorHash[obj.guid] = Hash.new
+							            unless tabErrors[obj.guid].to_s == "" || tabErrors[obj.guid].empty?
+								            if tabErrors[obj.guid].has_key?("agentSignatureDt") && tabErrors[obj.guid]["agentSignatureDt"].to_s != "" && !tabErrors[obj.guid]["agentSignatureDt"].empty?
+								                errorHash[obj.guid]["agentSignatureDt"] = tabErrors[obj.guid]["agentSignatureDt"]
+								                errorHash[obj.guid]["agentSignatureDt_errorStyle"] = "error-msg"
+								            end
+								            if tabErrors[obj.guid].has_key?("signatureDt") && tabErrors[obj.guid]["signatureDt"].to_s != "" && !tabErrors[obj.guid]["signatureDt"].empty?
+								                errorHash[obj.guid]["signatureDt"] = tabErrors[obj.guid]["signatureDt"]
+								                errorHash[obj.guid]["signatureDt_errorStyle"] = "error-msg"
+								            end
+								        end
+								    end
+						        end
+						    end
+						end
+					%>
+						<%= panelTagStart(false) %>
+							<% if @leadRPQ.rpqScore.to_i > 0 %>
+								<% @lookupvalue = Lookupvalue.find_by_sql("SELECT * from Lookupvalue where VALUEFROM <= '#{@total_score}' AND  VALUETO >= '#{@total_score}' AND KEY = 'RPQ_RESULT'").first %>
+								<% if @lookupvalue.cd == "CONSERVATIVE" %>
+									<% productRisk = "Low" %>
+								<% elsif @lookupvalue.cd == "BALANCED" %>
+									<% productRisk = "Medium" %>
+								<% else %>
+									<% productRisk = "High" %>
+								<% end %>
+								<%= subPanelTagStart("RPQEVALUATIONDIV",false) %>
+									<div class="project-data-full">
+									    <div class="row-details">
+									        <p class="col-left">
+									            <%= getLabelValue('TOTALRPQSCORE') %>
+									        </p>
+											<p class="col-right">
+												<%= @total_score %>
+											</p>
+										</div>
+									</div>
+									<div class="project-data-full">
+									    <div class="row-details">
+									        <p class="col-left">
+									            <%= getLabelValue('RISKLEVEL') %>
+									        </p>
+											<p class="col-right">
+												<%= @lookupvalue.cd.capitalize %>
+											</p>
+										</div>
+									</div>
+									<div class="project-data-full">
+									    <div class="row-details">
+									        <p class="col-left">
+									            <%= getLabelValue('SUITABLEPRODUCTRISK') %>
+									        </p>
+											<p class="col-right">
+												<%= productRisk %>
+											</p>
+										</div>
+									</div>
+									<div class="project-data-full">
+									    <div class="row-details">
+									        <p class="col-left">
+									            <%= getLabelValue('INVESTORRISKPROFILE') %>
+									        </p>
+											<p class="col-right">
+												<%= getLabelValue(@lookupvalue.desc) %>
+											</p>
+										</div>
+									</div>
+								<%= subPanelTagEnd %>
+
+								<%= subPanelTagStart("Candidate Statement of Understanding and Policyholders",false) %>
+									<% if @application.value == "en" %>
+										<div class="project-data-full full-width-label" >
+											<div class="row-details">
+												<%= labelTag("I acknowledge that C2LBIZ may recommend specific funds suited to my risk profile. If I choose funds with higher risk profile than recommended, I hereby agree that it will be my own responsibility and risk.") %>
+												
+												<%= labelTag("I understand that suggestions and recomendations provided by C2LBIZ are based on information/data that I provided, and are designed to help me assess my investment needs according to my risk profile.") %>
+
+												<%= labelTag("I fully understand that suggestions and recommendations provided by C2LBIZ are general suggestion based on my current risk profile and only intended for reference use only, therefore cannot be considered as a contract or agreement which binds both C2LBIZ and myself.") %>
+
+												<%= labelTag("I hereby authorize C2LBIZ to use and exchange information about me as necessary to the conduct of performing investment-related services on my behalf, and the release of this information to its affiliates and subsidiaries only where services extend to savings and insurance planning.") %>
+
+											</div>
+										</div>
+									<% else %>
+										<div class="project-data-full full-width-label">
+											<div class="row-details">
+												<%= labelTag("Saya memahami bahwa C2LBIZ telah merekomendasikan jenis investasi sesuai dengan profil risiko Saya. Jika Saya memilih jenis investasi dengan profil risiko yang lebih tinggi dari yang direkomendasikan, Saya setuju bahwa hal tersebut sepenuhnya menjadi tanggung jawab dan risiko Saya sendiri.") %>
+												<%= labelTag("Saya mengerti bahwa saran dan rekomendasi yang diberikan C2LBIZ didasarkan atas informasi/data yang Saya berikan yang dirancang untuk membantu Saya menilai kebutuhan investasi yang sesuai dengan profil risiko Saya.") %>
+												<%= labelTag("Saya sepenuhnya mengerti bahwa saran dan rekomendasi yang diberikan C2LBIZ adalah saran umum berdasarkan profil risiko Saya saat ini dan dimaksudkan hanya keperluan referensi saja, karenanya tidak dapat ditafsirkan atau dianggap sebagai suatu kontrak atau perjanjian yang mengikat antara Saya dengan C2LBIZ.") %>
+												<%= labelTag("Saya setuju untuk memberi kuasa kepada C2LBIZ untuk menggunakan dan mempertukarkan informasi pribadi Saya yang diperlukan untuk melakukan layanan terkait investasi atas nama Saya, dan mendistribusikan informasi ini kepada pihak-pihak terkait perencanaan asuransi dan keuangan.") %>
+											</div>
+										</div>
+				              		<% end %> 
+								<%= subPanelTagEnd %>
+
+								<%= subPanelTagStart("signature",false) %>
+									<div class="content-fullform">
+				                    	<%= signatureTag("agentSignatureCd", "agentSignature") %>
+				                    	<div class='project-data' style="float: left">
+					                    	<div class='row-details'>
+					                            <%= labelTag("signatureDt") %>
+					                            <p class='col-right'>
+					                                <%= inputTag("agentSignatureDt") %>
+					                                <%= errorTag("agentSignatureDt") %>
+					    						</p>
+					    					</div>
+					    				</div>
+			                    		<%= signatureTag("signatureCd", "applicantSignature") %>
+			                    		<div class='project-data' style="float: left">
+				                    		<div class='row-details'>
+					                            <%= labelTag("signatureDt") %>
+					                            <p class='col-right'>
+					                                <%= inputTag("signatureDt") %>
+					                                <%= errorTag("signatureDt") %>
+					    						</p>
+					    					</div>
+					    				</div>
+				                    </div>
+				                <%= subPanelTagEnd %>
+							<% end %>
+						<%= panelTagEnd %>
+					<%= tabTagEnd %>
+				<% end %>
+				<div style="display: none;">
+					<%= inputTag("rpqId") %>
+					<%= inputTag("leadId") %>
+					<%= inputTag("fnaId") %>
+					<%= inputTag("statusCd") %>
+					<%= inputTag("visitedTabs") %>
+				</div>
+			<% modelTagEnd %>
+		<%= tabbarTagEnd(true) %>
+		<div style="display: none;">
+			<input type="hidden" name="str" id="str" value='<%= @str %>'/>
+			<input type="hidden" name="selectedProductId" id="selectedProductId" value='<%= @selectedProductId %>'/>
+			<input type="hidden" id="additionalOptionsFl" value='true'/>
+		</div>
+	<%= formTagEnd %>
+<%= pageTagEnd %>
+<script type="text/javascript" charset="utf-8" src="/app/LeadRPQ/captureRPQ_Jazz.js"></script>

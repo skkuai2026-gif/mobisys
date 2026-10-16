@@ -1,0 +1,20 @@
+<%= pageTagStart("","Symbiosys") %>
+    <%= headerTag(getLabelValue('TANDC')) %>
+    <div data-role="main" class="ui-content">
+        <div class="main-content-wrapper main-content-full">
+            <div class="project-content-bg">
+                <div class="div-with-border no-padding-bottom preferences-content">
+                    <div class="content-fullform">  
+                        <div class="row-details">
+                            <p class="" style="font-size: 18px;"><%= getLabelValue('DISCLAIMER') %></p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="footer-bg">
+            <a href="<%= url_for :action=>:disclaimerSubmit,:id=>'agree'%>" style="width: 49.75%;" data-transition="slide" rel="external"><%= getLabelValue('AGREE') %></a>
+            <a href="<%= url_for :action=>:disclaimerSubmit,:id=>'donotagree'%>" style="width: 49.75%;" data-transition="slide" rel="external"><%= getLabelValue('DONOTAGREE') %></a>
+        </div>
+    </div>
+<%= pageTagEnd %>

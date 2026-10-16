@@ -1,0 +1,22 @@
+<%= pageTagStart("") %>
+    <%= headerTag(getLabelValue('genIllustration')) %>
+    <div data-role="main" class="ui-content">
+        <div class="main-content-wrapper main-content-full">
+            <div id="tablediv">
+                <div class="sync-list-right">
+                    <div class="sync-loading">
+                        <div class="sync-loader-handle" style="width: 1%"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+<%= pageTagEnd %>
+<script type="text/javascript">
+    function update_progress(percent)
+    {
+        var span = "<div class='sync-list-right'><div class='sync-loading'><div class='sync-loader-handle' style='width: "+parseInt(percent)+"%'></div></div></div>";
+            $('#tablediv').html(span);
+            return false;
+    }
+</script>

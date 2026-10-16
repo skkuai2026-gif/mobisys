@@ -1,0 +1,22 @@
+<%#= layoutFieldTag("#{@quotationPckg}.PolicyDO",'autoRegistrationNum,autoMakeCd,autoModelCd,issueDt') %>
+<%= panelTagStart(false) %>
+	<%= subPanelTagStart("vehicleDtls","false") %>
+		<%= layoutFieldTag('autoRegistrationNum,autoMakeCd,autoModelCd,issueDt,quotationDt') %>
+
+		<%= qstFieldDataTag('autoRegistrationYear', 'AUTOQUESTSET_PW', @quotationQuestionContainer, @quotation, @quotationResponseHash) %>
+	<%= subPanelTagEnd %>
+<%= panelTagEnd %>
+
+<div style="display: none;">
+	<%= inputTag("currentPartyRole") %>
+	<%= inputTag("quotationRefNum") %>
+</div>
+
+<%= modelTagStart("basePlan", @baseProduct, @quotation) %>
+	<div style="display: none;">
+		<%= inputTag("productTypeCd") %>
+		<%= inputTag("productVersion") %>
+		<%= inputTag("productSeq") %>
+		<%= prdFieldDataTag("#{@quotationPckg}.PolicyProductDO",'productFamilyCd,productId,productPlanOptionCd') %>
+	</div>
+<% modelTagEnd %>

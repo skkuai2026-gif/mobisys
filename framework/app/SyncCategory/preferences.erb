@@ -1,0 +1,108 @@
+<div data-role="page">
+	<link rel="stylesheet" href="/public/css/c2l_syncronize.css">
+	<div data-role="header" id="header" data-position="inline">
+		 <% if ($isMaxDbUpgrade == 'NO' || $isMaxDbUpgrade == nil) && $dbUpdateMandatory == false %>
+			<a href="<%= $rhoconfig[:post_login_path] %>" rel="external" name="cancel" data-direction="reverse" data-role="none">
+				<img src="/public/images/SalesIllustration/icon_BackArrow-Red.png">
+			</a>
+		<% end %>
+		<h1><%= getLabelValue('SYNC') %></h1>
+	</div>
+	<div data-role="content" id="preferences">
+		<div class="content-panel ui-body ui-body-a ui-corner-all">
+			<form method="POST" name="syncPreferencesForm" action="<%=url_for :action=>:synchronize %>">
+				<div class="ui-body ui-body-a ui-corner-all">
+					<% @synccategoriesHM.each do |categoryCd,syncCategories|%>
+		            	<h4 class="ui-bar ui-bar-a ui-corner-all"><%=getLabelValue(categoryCd)%></h4>
+						<% syncCategories.each do |syncCategory| %>
+		                    <%if @synList.include? syncCategory.subCategoryCd %>
+		                        <% enableText = "" %>
+		                        <% if ($showSync && syncCategory.categoryCd.to_s == "PRIMARYDATA") || ($syncCollateral.to_s == 'true' && syncCategory.subCategoryCd.to_s == "COLLATERAL")%>
+		                            <% syncCategory.enabled = "ON" %>
+		                        <% end %>
+		                        <% if ($isMaxDbUpgrade != 'NO' && syncCategory.categoryCd.to_s == "PRIMARYDATA") || ($collateralUpdateMandatory.to_s == 'true' && syncCategory.subCategoryCd.to_s == "COLLATERAL") %>
+		                           <% enableText = "disabled" %>
+		                        <% end %>
+		                        <% if $rhoconfig[:create_db_seed] == "YES" %>
+		                        	<% enableText = "" %>
+		                        <% end %>
+		                       	<div data-role="fieldcontain">
+									<div class="ui-grid-a ui-responsive">
+										<div class="ui-block-a">
+											<label for="<%= syncCategory.subCategoryCd %>"><%=getLabelValue(syncCategory.subCategoryCd)%></label>
+										</div>
+										<div class="ui-block-b">
+											<%=getSwitch('SWITCH','syncCategory['+syncCategory.subCategoryCd+']',syncCategory.enabled, nil, nil, enableText)%>
+										</div>
+									</div>
+								</div>
+		                    <% end %>      
+						<% end %>
+	                <% end %> 
+				</div>
+				<fieldset class="ui-grid-b">
+					<div class="ui-block-a-equi">&nbsp;</div>
+					<div class="ui-block-b-equi"> 
+						<a href="#" name="email" data-role="button" data-theme="a" class="button-center">
+							<%= getLabelValue('SYNC')%>
+						</a> 
+					</div>
+					<div class="ui-block-c-equi">&nbsp;</div>
+				</fieldset>
+			</form>
+		</div>
+	</div>
+
+	<script>
+		$(document).ready(function(){
+			$("a[name='email']").click( function() {
+				sync = false;
+				$("select[name*='syncCategory']").each(function(i){
+					$(this).removeAttr('disabled');
+
+					if($(this).val()=="ON")
+					{                      
+						sync = true;
+					}
+				});
+
+				if(!sync){
+					showDialog("", "<%= getLabelValue('SELECTSYNCOPTION')%>", 'error', 0, 'preferences');  
+				}
+
+				if(sync && checkNetwork()){                    
+					document.syncPreferencesForm.submit();
+				}        
+			});
+		});
+
+		function checkNetwork(){
+			returnValue = false;        
+			$.ajax({
+				url: "/app/Quotation/checkNetwork",
+				headers: {
+     				'Transition-Enabled': false
+   				},
+				success: function(data) {
+					try{
+						if (data == "NETWORK")
+						{
+							returnValue = true;
+						}
+						else
+						{
+							returnValue = false;
+						}
+					}catch(e){alert(e);}
+				},
+				async: false                    
+			});          
+
+			if(!returnValue){
+				showDialog("", "<%= getLabelValue('CHECKNETWORK')%>", 'error', 0, 'preferences');
+			}
+
+			return returnValue;
+		}
+	</script>
+</div>

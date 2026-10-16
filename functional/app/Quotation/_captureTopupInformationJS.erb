@@ -1,0 +1,302 @@
+<script>
+var adHocTopupCount = parseInt("<%= @adHocTopupCount %>") + 1;
+var contributionTopUpCount = parseInt("<%= @contributionTopUpCount %>") + 1;
+
+function addTopup(topUpTypeCd){
+    quotationObjectName = '<%= getObjectMapping(@quotation) %>';
+
+    var count=0;
+    if(topUpTypeCd=="ADHOCTOPUP") {
+        count=adHocTopupCount;
+    }
+    if(topUpTypeCd=="TRANSFERTOPUP") {
+        count=contributionTopUpCount;
+    }
+    $.ajax({
+        url: "/app/Quotation/addTopup",
+        data: {
+            'quotationObject': '<%= @quotation.object.to_s %>', 
+            'topupObjects': count, 
+            'quotationObjectName':quotationObjectName, 
+            'topUpTypeCd':topUpTypeCd
+        },
+        success: function(data) {
+            if(topUpTypeCd=="ADHOCTOPUP") {
+                 adHocTopupCount = adHocTopupCount + 1;
+                $("#adHocTopupsList").append(data); 
+                $("#adHocTopupsList").listview("refresh");
+                $("#adHocTopupsList").trigger('create');
+            }
+            if(topUpTypeCd=="TRANSFERTOPUP") {
+                contributionTopUpCount = contributionTopUpCount + 1;
+                $("#contributionTopupsList").append(data);
+                $("#contributionTopupsList").listview("refresh");
+                $("#contributionTopupsList").trigger('create'); 
+            }
+            enableTopupFields();
+        }
+    });
+}
+
+function removeTopup(topup){
+    $('input[name="'+topup+'[removed]"]').val('YES');
+    $('input[name="'+topup+'[removed]"]').parents("li").hide();
+}
+
+function enableInitialTopupFields(){
+    var initialTopupFl = $('input[name="<%=getObjectMapping(@quotation)%>[initialTopupFl]"]');
+    
+    if (initialTopupFl.filter(':checked').val() == "YES")
+    {
+        $('input[name="<%=getObjectMapping(@initialTopup)%>[topUpAmount]"]').parents('div[class="half"]').show();
+    }
+    else
+    {
+        $('input[name="<%=getObjectMapping(@initialTopup)%>[topUpAmount]"]').parents('div[class="half"]').hide();
+        $('input[name="<%=getObjectMapping(@initialTopup)%>[topUpAmount]"]').val('');
+    }
+}
+
+function enableRegularTopupFields(){
+    regularTopupFl = $('input[name="<%=getObjectMapping(@quotation)%>[regularTopupFl]"]');
+    var ppt= "";
+    if ($('input[name="<%=getObjectMapping(@baseProduct)%>[premiumPayingTerm]"]').length){
+        ppt = $('input[name="<%=getObjectMapping(@baseProduct)%>[premiumPayingTerm]"]').val();
+    }
+    if ($('select[name="<%=getObjectMapping(@baseProduct)%>[premiumPayingTerm]"]').length){
+        ppt = $('select[name="<%=getObjectMapping(@baseProduct)%>[premiumPayingTerm]"]').val();
+    }
+
+    if (regularTopupFl.fieldexists()){
+        if (regularTopupFl.filter(':checked').val() == "YES")
+        {
+            if ($('input[name="<%=getObjectMapping(@regularTopup)%>[topUpPeriod]"]').val()=="")
+            {
+                $('input[name="<%=getObjectMapping(@regularTopup)%>[topUpPeriod]"]').val(ppt);
+            }
+
+
+            if ($('input[name="<%=getObjectMapping(@regularTopup)%>[topupFrequencyVal]"]').val()=="")
+            {
+                $('input[name="<%=getObjectMapping(@regularTopup)%>[topupFrequencyVal]"]').val('1');
+            }
+            
+            $('input[name="<%=getObjectMapping(@regularTopup)%>[topUpPeriod]"]').parents('div[class="half"]').show();
+            $('input[name="<%=getObjectMapping(@regularTopup)%>[topUpAmount]"]').parents('div[data-role="dualfieldcontain"]').show();
+        }
+        else  
+        {
+            $('input[name="<%=getObjectMapping(@regularTopup)%>[topUpPeriod]"]').val('');
+            $('input[name="<%=getObjectMapping(@regularTopup)%>[topUpAmount]"]').val('');
+            $('input[name="<%=getObjectMapping(@regularTopup)%>[topupFrequencyVal]"]').val('');
+            $('input[name="<%=getObjectMapping(@regularTopup)%>[topUpPeriod]"]').parents('div[class="half"]').hide();
+            $('input[name="<%=getObjectMapping(@regularTopup)%>[topUpAmount]"]').parents('div[data-role="dualfieldcontain"]').hide();
+        }
+    }
+}
+
+function enableTargetFundFields(){
+    targetFundFl = $('input[name="<%=getObjectMapping(@baseProduct)%>[targetFundFl]"]');
+    if (targetFundFl.fieldexists()){
+        if (targetFundFl.filter(':checked').val() == "YES")
+        {
+            $('div[name="targetFundDiv"]').show();
+        }
+        else
+        {
+            $('div[name=targetFundDiv] select option:eq(0)')[0].selected = true;
+            $('div[name=targetFundDiv] select').selectmenu("refresh", true);
+            $('div[name="targetFundDiv"]').hide();
+            $('div[name=targetFundDiv] input').val('');
+        }
+        
+    }
+}
+
+function enableTopupFields(){
+    topupOptionCd = $('select[name="<%= getObjectMapping(@quotation)%>[topupOptionCd]"]');
+    if (topupOptionCd.fieldexists()){
+        if (topupOptionCd.val()){
+            if (topupOptionCd.val() == 'EXCESSWITHOUTPH' )
+            {
+
+                $('div[name="initialTopUpDiv"]').show();
+                $('div[name="regularTopUpDiv"]').show();
+                $('div[name="targetFundFlDiv"]').hide();
+
+                $("#targetFundNo").prop('checked', true).checkboxradio("refresh").trigger("change");
+                $('input[name="<%=getObjectMapping(@baseProduct)%>[targetFundFl]"]').removeProp("checked").checkboxradio("refresh");
+
+            }
+            else if (topupOptionCd.val() == 'TFCALCULATIONWITHOUTPH' )
+            {
+                $('div[name="initialTopUpDiv"]').hide();
+                $('div[name="regularTopUpDiv"]').hide();
+                $('div[name="targetFundFlDiv"]').show();
+
+                $("#regularTopupNo").prop('checked', true).checkboxradio("refresh").trigger("change");
+                $('input[name="<%=getObjectMapping(@quotation)%>[regularTopupFl]"]').removeProp("checked").checkboxradio("refresh");
+
+                $("#initialTopupNo").prop('checked', true).checkboxradio("refresh").trigger("change");
+                $('input[name="<%=getObjectMapping(@quotation)%>[initialTopupFl]"]').removeProp("checked").checkboxradio("refresh");
+
+            }
+            else if (topupOptionCd.val() == 'EXCESSWITHPH' )
+            {
+                $('div[name="initialTopUpDiv"]').show();
+                $('div[name="regularTopUpDiv"]').show();
+                $('div[name="targetFundFlDiv"]').hide();
+                
+                $("#targetFundNo").prop('checked', true).checkboxradio("refresh").trigger("change");
+                $('input[name="<%=getObjectMapping(@baseProduct)%>[targetFundFl]"]').removeProp("checked").checkboxradio("refresh");
+
+            }
+            else if (topupOptionCd.val() == 'TFCALCULATIONWITHPH' )
+            {
+                $('div[name="initialTopUpDiv"]').hide();
+                $('div[name="regularTopUpDiv"]').hide();
+                $('div[name="targetFundFlDiv"]').show();
+                
+                $("#regularTopupNo").prop('checked', true).checkboxradio("refresh").trigger("change");
+                $('input[name="<%=getObjectMapping(@quotation)%>[regularTopupFl]"]').removeProp("checked").checkboxradio("refresh");
+
+                $("#initialTopupNo").prop('checked', true).checkboxradio("refresh").trigger("change");
+                $('input[name="<%=getObjectMapping(@quotation)%>[initialTopupFl]"]').removeProp("checked").checkboxradio("refresh");
+
+            }
+            else if (topupOptionCd.val() == 'EXCESSANDTFCALCULATIONWITHPH' )
+            {
+                $('div[name="initialTopUpDiv"]').show();
+                $('div[name="regularTopUpDiv"]').show();
+                $('div[name="targetFundFlDiv"]').show();
+
+            }
+        }
+        else
+        {
+            $('div[name="initialTopUpDiv"]').hide();
+            $('div[name="regularTopUpDiv"]').hide();
+            $('div[name="targetFundFlDiv"]').hide();
+
+            $("#regularTopupNo").prop('checked', true).checkboxradio("refresh").trigger("change");
+            $('input[name="<%=getObjectMapping(@quotation)%>[regularTopupFl]"]').removeProp("checked").checkboxradio("refresh");
+
+            $("#initialTopupNo").prop('checked', true).checkboxradio("refresh").trigger("change");
+            $('input[name="<%=getObjectMapping(@quotation)%>[initialTopupFl]"]').removeProp("checked").checkboxradio("refresh");
+
+            $("#targetFundNo").prop('checked', true).checkboxradio("refresh").trigger("change");
+            $('input[name="<%=getObjectMapping(@baseProduct)%>[targetFundFl]"]').removeProp("checked").checkboxradio("refresh");
+
+        }
+
+    }
+}
+
+$(document).ready(function(){
+    
+    enableInitialTopupFields();
+    enableRegularTopupFields();
+    enableTargetFundFields();
+    enableTopupFields();
+
+    $('input[name*="[topUpAmount]"]').change( function(){
+        if (isNaN(this.value))
+        {
+            showDialog("", "<%= getLabelValue('VALID_ADHOC_TOPUP_AMT')%>", 'warning', 0, 'capture');
+            this.value = this.value.replace(/[^0-9.]/g, '');  
+        }
+    }); 
+
+    $('input[name*="[policyYearFrom]"]').change( function(){
+        if (isNaN(this.value))
+        {
+            showDialog("", "<%= getLabelValue('VALID_ADHOC_TOPUP_FROM_YEAR')%>", 'warning', 0, 'capture');
+            this.value = this.value.replace(/[^0-9.]/g, '');  
+        }
+    }); 
+
+    $('input[name*="[policyYearTo]"]').change( function(){
+        if (isNaN(this.value))
+        {
+            showDialog("", "<%= getLabelValue('VALID_ADHOC_TOPUP_TO_YEAR')%>", 'warning', 0, 'capture');
+            this.value = this.value.replace(/[^0-9.]/g, '');  
+        }
+    }); 
+
+    $('input[name="<%=getObjectMapping(@regularTopup)%>[topUpAmount]"]').change( function(){
+        if (isNaN(this.value)){
+            showDialog("", "<%= getLabelValue('VALID_REG_TOPUP_AMT')%>", 'warning', 0, 'capture');
+            this.value = this.value.replace(/[^0-9.]/g, '');  
+        }
+    }); 
+
+    $('input[name="<%=getObjectMapping(@regularTopup)%>[topupFrequencyVal]"]').change( function(){
+        if (isNaN(this.value))
+        {
+            showDialog("", "<%= getLabelValue('VALID_REG_TOPUP_FREQ')%>", 'warning', 0, 'capture');
+            this.value = this.value.replace(/[^0-9.]/g, '');  
+        }
+    }); 
+
+    $('input[name="<%=getObjectMapping(@initialTopup)%>[topUpAmount]"]').change( function(){
+        if (isNaN(this.value))
+        {
+            showDialog("", "<%= getLabelValue('VALID_INITIAL_AMT')%>", 'warning', 0, 'capture');
+            this.value = this.value.replace(/[^0-9.]/g, '');  
+        }
+    }); 
+
+
+    $('select[name="<%=getObjectMapping(@quotation)%>[topupOptionCd]"]').change( function(){
+        enableTopupFields();
+    });
+
+    $('input[name="<%=getObjectMapping(@quotation)%>[initialTopupFl]"]').change(function(){
+        enableInitialTopupFields();
+    });
+
+    $('input[name="<%=getObjectMapping(@quotation)%>[regularTopupFl]"]').change(function(){
+        enableRegularTopupFields();
+    });
+
+    <% if @facetData[:renderTopupfrequencyval] %>  
+        $('input[name="<%=getObjectMapping(@regularTopup)%>[topupFrequencyVal]"]').val(1);
+    <% end %>  
+
+    $('input[name="<%=getObjectMapping(@baseProduct)%>[targetFundFl]"]').change(function(){
+        enableTargetFundFields();
+    });
+
+    $('.addTopupButton').click(function(){
+        addTopup($(this).data('topuptypecd'));
+    });
+
+    //Mark fields mandatory based on Validation Metadata
+    <% 
+    if @mandatoryFields
+        if @mandatoryFields[@regularTopup]
+            @mandatoryFields[@regularTopup].each do |field| 
+    %>
+            $("label[for='<%=getObjectMapping(@regularTopup)%>[<%= field %>]']").append('<label for=" *" class="mandatory1">&nbsp;*</label>');
+    <% 
+            end
+        end
+      
+    end
+    %>
+     <% 
+    if @mandatoryFields
+        if @mandatoryFields[@initialTopup]
+            @mandatoryFields[@initialTopup].each do |field| 
+    %>
+            $("label[for='<%=getObjectMapping(@initialTopup)%>[<%= field %>]']").append('<label for=" *" class="mandatory1">&nbsp;*</label>');
+    <% 
+            end
+        end
+      
+    end
+    %>
+
+});
+
+</script>

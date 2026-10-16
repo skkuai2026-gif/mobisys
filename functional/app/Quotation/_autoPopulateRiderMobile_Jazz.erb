@@ -1,0 +1,53 @@
+<% riderPackage = 'com.c2lbiz.symbiosys.insurance.businesscommon.dataobjects.policy.PolicyRiderDO' %>
+<%= panelTagStart(false) %>
+	<% riders.each_with_index do |rider, index| %>
+			<% headerFieldName = getLabelValue(rider.productLongName) %>
+
+		<%= subPanelTagStart(headerFieldName, true, '',true)%>
+		<div id="rider-fields-<%= rider.guid%>">
+			<% gridID = "grid_#{riderObjects.to_i+index}_riderDetails" %>
+			<%= modelTagStart(gridID, rider, @quotation, riderObjects.to_i+index) %>
+		 	<!-- <a href="#popup-benefits-details-<%#= rider.guid%>">
+				
+				<p class=""><%#= getLabelValue(rider.productLongName) %></p>
+			</a> -->
+				
+					
+				
+					<div class="fields-container" >
+					<%= prdFieldDataTag("#{riderPackage}","selected,productPlanOptionCd,baseSumAssured,modalPremium,productTerm,premiumPayingTerm,baseAnnualPremium","","isObjectSelected") %>
+
+					<%
+						listOfHiddenFields = "productLongName,insuredPartyRefGuid,productSeq,partyRoleCd,productFamilyCd,productId,productTypeCd,productVersion,compAnnualPremium,compHalfYlyPremium,compQtlyPremium,compMonthlyPremium,annualizedPremium,builtInRiderFl,premiumSAFl,readOnlyFields,riderDisableField,sortOrder,insuredNames,impactedFields,parentproductSeq,applicablePlanOptions,combinedEntryAge"
+					%>
+					<div style="display: none;">
+						<% listOfHiddenFields.split(',').each do |hiddenFieldName| %>
+							<%=	inputTag(hiddenFieldName, nil, nil, nil, nil, nil, 'HIDDEN') %>
+						<% end %>
+					</div>
+					<% riderProductExtras = @riderLoadingHash[rider.object] %>
+					<% if riderProductExtras && !riderProductExtras.empty? %>
+						<div class="project-data">
+							<p class="click-more-benefits"><%= getLabelValue("MORE") %></p>
+						</div>
+						<% riderProductExtras.each_with_index do |riderProductExtra, index| %>
+							<div class="div-more-benefits" style="display: none;" id="riderLoadingDiv-<%=rider.guid%>" data-options = '{"mode":"blank", "blankContent":true, "blankContentAdopt":true, "headerClose":false}'>
+								<!--divider-->
+								<div class="more-divider"></div>
+								<!--/divider-->
+								<%= modelTagStart('riderExtraDetails', riderProductExtra, rider) %>
+									<%= prdFieldDataTag("PolicyRiderExtraDO","extraTypeCd,extraFlatAmt,extraFlatDuration,extraPercent,extraPercDuration") %>
+								<% modelTagEnd %>
+							</div>
+						<% end %>
+					<% end %>
+					</div>
+					
+				
+			<% modelTagEnd %>  
+				</div>
+		<%= subPanelTagEnd %>
+		
+	<% end %>
+<%= panelTagEnd %>
+<%= MobiSys::BrowserHelper.attachMaskAll(true) %>

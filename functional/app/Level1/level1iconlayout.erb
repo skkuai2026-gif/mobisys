@@ -1,0 +1,219 @@
+<div data-role="page" data-url="<%= Rho::RhoConfig.start_path %>/">
+<% randomId = rand.to_s[2..-1] %>
+
+<!-- Content div -->
+<div class="contentdiv">
+
+<!-- Menu -->
+  <div style="width:100%;">
+   <ul id="css3menu1" class="topmenu" style="width:100%;">
+      <li class="topfirst" style="width:20%;">
+        <a href="/app/Level0/entrypoint" style="padding:0;">
+          <img src="<%=@collateralHM['HDFCLOGO'].fileName%>" alt="<%=@collateralHM['HDFCLOGO'].header%>" height="57px"/>
+        </a>
+      </li>
+      <% 
+        last = @level0s.length-1
+        @level0s.each_with_index{|level0,index|
+         
+          if index == last
+            menuString = "lastmenu"
+          else
+            menuString = "topmenu"
+          end
+      %>
+          <li class="<%=menuString%>" style="width:16%;">
+            <%
+              if level0.menu == "YES"
+                %>
+                <a href="#">
+                <%
+              elsif level0.menu == "NO"
+                %>
+                <a href="/app/Level0/{<%=level0.object%>}/click?level0id=<%=level0.object%>">
+                <%
+              end
+              
+              if level0.levelCd == @level0.levelCd
+                %>
+                  <label class="level0label0selected"><%= level0.name1 %></label>
+                <%
+              else
+                %>
+                  <label class="level0label0"><%= level0.name1 %></label>
+                <%
+              end
+            %>
+              <BR>
+              <label class="level0label1"><%= level0.name2 %></label>
+            </a>
+            <%
+              if level0.menu == "YES"
+                %>
+                  <ul>
+                    <%
+                      @level1s.each do |level1|
+                        if level1.level0_levelCd == level0.levelCd
+                          %>
+                          <li style="position:relative;display:inline-block;">
+                            <a href="/app/Level1/{<%=level0.object%>}/click?level1id=<%=level1.object%>">
+                              <img src="<%=@collateralHM[level1.icon].fileName%>" alt="<%=@collateralHM[level1.icon].header%>"/>
+                            </a>
+                          </li>
+                          <% 
+                        end 
+                      end 
+                    %>
+                  </ul>
+                <%
+              end
+            %>
+          </li>
+          <% 
+        } 
+      %>
+    </ul>
+  </div>
+<!-- end Menu -->
+  
+<!-- Left Navigation panels -->
+<div class="leftnavigation">
+  <div class="level1header">
+    <label class="level1label0"><%= @level0.name1 %></label>
+    <br>
+    <label class="level1label1"><%= @level0.name2 %></label>
+  </div>
+
+  <div class="sec-nav">
+    <% 
+      @level1s_level0.each do |level1| 
+        if level1.levelCd == @level1_clicked.levelCd 
+          if level1.name.length < 30
+            %>          
+              <li class="sec-nav-li-selected">
+                <%= level1.name %>
+              </li>
+            <%
+          else # level1.name.length > 30
+            %>          
+              <li class="sec-nav-li-selected-small">
+                <%= level1.name %>
+              </li>
+            <%
+          end
+        else 
+          %>
+            <a href="/app/Level1/{<%=@level0.object%>}/click?level1id=<%=level1.object%>">
+              <%
+                if level1.name.length < 30
+                  %>          
+                    <li class="sec-nav-li">
+                      <%= level1.name %>
+                    </li>
+                  <%
+                else # level1.name.length > 30
+                  %>          
+                    <li class="sec-nav-li-small">
+                      <%= level1.name %>
+                    </li>
+                  <%
+                end
+              %>
+            </a>
+          <%
+        end
+      end 
+    %>
+  </div>
+</div>
+<!-- End Left Navigation panels -->
+
+<!-- Right Content panels -->    
+<div id="contentpane_<%=randomId%>" class="rightcontentpane">
+
+  <!-- Grid of Level 2 objects -->    
+          
+  <div class="ui-grid-a">
+    <% 
+      @level2s_first.each_with_index{|level2,index|
+      
+        %>
+        <div 
+          <% if index%2 == 0 %>
+              class="ui-block-a"
+          <% elsif index%2 == 1 %>
+              class="ui-block-b"
+          <% end %>
+        >
+          
+          
+                
+
+                 <%if level2.collateralView == "EXTERNAL"
+                    %>
+                    <a href="#" id="<%=level2.levelCd%>_id" >
+                      <script>
+                        $('#<%=level2.levelCd%>_id').click(function () {  
+                          $.get("/app/Collateral/showpopup?levelCd=<%=level2.levelCd%>",function(data) {});
+                        }); 
+                      </script>
+                    <%
+                  else
+                  
+                  end%>
+                  <div style="width:57px;float:left;">
+                <img src="<%=@collateralHM[level2.icon].fileName%>"  style="height:53px; width: 57px;" class="dropshadow" />
+                </div>
+                    <br>
+
+          <div class="iconlayouttext">
+          <span class="iconlayoutheader"><%=level2.header %></span>  <br>        
+          <%=level2.text %>
+          </div>
+                          
+        </div>
+        
+        
+        <%
+      }
+    %>
+  </div>
+</div>
+<script>
+  touchScroll('contentpane_<%=randomId%>');
+</script>
+
+</div>
+
+  <!-- Footer div -->
+<!--
+  <div class="footer-docs" >
+    <TABLE width=100%>
+      <TR>
+        <TD> <a href="/app/Level0/entrypoint" style="color:#FFF; text-decoration:none;">Home</a> </TD>
+        <TD> | </TD>
+        <TD> <a href="#" id="<%#=randomId%>" style="color:#FFF; text-decoration:none;">About&nbsp;Us</a> </TD>
+                  <script>
+                    $("#<%#=randomId%>").click(function () {  
+                      $.get("/app/Collateral/showpopup?medianame=<%#=@collateralHM['ABOUTUS'].collateralCd%>",function(data) {});
+                    }); 
+                  </script>
+        <TD> | </TD>
+        <TD> <a href="<%#= :back %>" style="color:#FFF; text-decoration:none;">Back</a> </TD>
+        <TD> | </TD>
+        <TD> <a href="/app" style="color:#FFF; text-decoration:none;">Admin</a> </TD>
+        <TD width=100%> &nbsp; </TD>        
+        <TD> <a href="/app/Level0/exit" style="color:#FFF; text-decoration:none;">Exit</a> </TD>
+      </TR>
+    </TABLE>
+  </div>    
+-->
+  <!-- End Footer div -->
+    
+    <script>
+      $(document).ready(function () {  
+         // alert('called');
+          
+      });  
+    </script>
+</div>

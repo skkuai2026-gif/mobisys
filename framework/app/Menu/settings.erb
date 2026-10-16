@@ -1,0 +1,49 @@
+<div data-role="page">
+	<link rel="stylesheet" href="/public/css/c2l_dashboard.css">
+	<style type="text/css">
+		li > a {
+			padding-left: 3em !important;
+			min-height: 1em !important;	
+		}
+		li > a > img {
+			height: 30px;
+			padding-left: 0.5em;
+			padding-top: 6px;
+		}
+	</style>
+
+
+	<div data-role="header" id="header" data-position="inline">
+		<a href="/app/Menu/landingPage" rel="external" data-direction="reverse" data-role="none">
+			<img src="/public/images/SalesIllustration/icon_BackArrow-Red.png">
+		</a>
+		<h1><%= getLabelValue('SETTINGS') %></h1>
+	</div>
+
+	<div data-role="content" id="content">
+		<ul data-role="listview" data-inset="true">
+			<li>
+				<a href="/app/LabelValue/languageSettings" rel="external">
+					<img src="/public/images/SalesIllustration/100-Language-Setting.png">
+					<%= getLabelValue('Language Settings') %>
+				</a>
+			</li>
+			<% if $rhoconfig.has_key?(:can_change_online_server) && $rhoconfig[:can_change_online_server]=='YES' %>
+				<li>
+					<a href="/app/Menu/onlineServer" rel="external">
+						<img src="/public/images/SalesIllustration/100-About-Device.png">
+						<%= getLabelValue('onlineServer') %>
+					</a>
+				</li>
+				<li>
+					<a href="/app/Menu/offlineServer" rel="external">
+						<img src="/public/images/SalesIllustration/100-About-Device.png">
+						<%= getLabelValue('OFFLINESERVER') %>
+					</a>
+				</li>
+			<% end %>
+		</ul>
+	</div>
+</div>
+
+

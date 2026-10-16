@@ -1,0 +1,189 @@
+<div data-role="page" data-url="<%= Rho::RhoConfig.start_path %>/">
+    
+    <script type="text/javascript" src="/public/js/format.min.js"></script>
+    <link rel="stylesheet" href="/public/css/Eapp/c2l_EAPP.css">
+    <script type="text/javascript" src="/public/js/Eapp/c2l_EAPP.js"></script>
+    <script type="text/javascript" src="/public/js/jquery.fancybox.pack.js"></script>
+    <link rel="stylesheet" href="/public/css/jquery.fancybox.css" type="text/css" media="screen" />
+    <style type="text/css">
+    /*.scroll-top-wrapper {
+        position: fixed;
+      opacity: 0;
+      visibility: hidden;
+      overflow: hidden;
+      text-align: center;
+      z-index: 99999999;
+        background-color: #777777;
+      color: #eeeeee;
+      width: 50px;
+      height: 48px;
+      line-height: 48px;
+      right: 30px;
+      bottom: 30px;
+      padding-top: 2px;
+      border-top-left-radius: 10px;
+      border-top-right-radius: 10px;
+      border-bottom-right-radius: 10px;
+      border-bottom-left-radius: 10px;
+      -webkit-transition: all 0.5s ease-in-out;
+      -moz-transition: all 0.5s ease-in-out;
+      -ms-transition: all 0.5s ease-in-out;
+      -o-transition: all 0.5s ease-in-out;
+      transition: all 0.5s ease-in-out;
+    }
+    .scroll-top-wrapper:hover {
+      background-color: #888888;
+    }
+    .scroll-top-wrapper.show {
+        visibility:visible;
+        cursor:pointer;
+      opacity: 1.0;
+    }
+    .scroll-top-wrapper i.fa {
+      line-height: inherit;
+    }*/
+   
+    </style>
+    <script>
+        var modalPremiumsList = new Array(); 
+        var objectMapping = new Array();
+        var objectCount = 0;
+        var JUVENILEOCCUPATIONCLASS = 2;
+        var JUVENILEOCCUPATIONCLASSFORPA = 1;
+    </script> 
+
+    <div class="scroll-top-wrapper ">
+        <span class="scroll-top-inner">
+            <i class="fa fa-2x fa-arrow-circle-up"></i>
+        </span>
+    </div>
+    <div data-role="header" id="header" data-position="inline"  >
+        <a href="/app/Quotation/productPage" rel="external" id = "back" name="back" data-direction="reverse" data-role="none">
+            <img src="/public/images/SalesIllustration/icon_BackArrow-Red.png">
+        </a>
+        
+        <h1 style="margin:0 30%";><%= renderLabel('SALESILLUSTRATION','SALESILLUSTRATION')%></h1>
+        <div class="ui-btn-right">
+            <div class="headerRightButtons">
+                <a data-role="button" id="premiumId" href="#" style="min-width:100px;">
+                    <%= getLabelValue('premiumPercTableTypeMapSeq')  %>
+                </a>
+
+                <a href="#" name="viewIllustration" data-role="button" style="min-width:100px;">
+                    <%= getLabelValue('VIEWILLUSTRATION')   %>
+                </a>
+
+                <% if @quotation.signature == nil || @quotation.signature == "" %>
+                    <a href="javascript: submitForm();" name="save" data-role="button" style="min-width:118px;">
+                        <%= getLabelValue('SAVEVALIDATE')%>
+                    </a>
+                <%end%>
+                <span id ='errordiv' style ="display:none"> 
+                    <a href="#" name = "error_dialog" id="error_dialog" style="min-width:100px;">
+                        <img src="/public/images/SalesIllustration/error_list.png">
+                    </a>
+                </span>
+            </div>
+        </div>
+    </div>
+    <div data-role="content" id="capture" style="-webkit-transform: none;">  
+    <form method="POST" action="<%= url_for :action => :execute %>" name="quotationForm" id="quotationForm">
+        <%= renderObject(@quotation) %>
+
+        <%= renderHiddenField('agentId', @quotation.agentId, 'agentId', @quotation) %>
+        <%= renderHiddenField('channel', @quotation.channel, 'channel', @quotation) %>
+        <%= renderHiddenField('subChannel', @quotation.subChannel, 'subChannel', @quotation) %>
+        <%= renderHiddenField('parentAgency', @quotation.parentAgency, 'parentAgency', @quotation) %>
+        <%= renderHiddenField('currentPartyRole', @quotation.currentPartyRole, 'currentPartyRole', @quotation) %>
+        <%= renderHiddenField('unselectedRiders', @quotation.unselectedRiders, 'unselectedRiders', @quotation) %>
+        <%= renderHiddenField('productId', @quotation.productId, 'productId', @quotation) %>
+        <%= renderHiddenField('quotAddtnlField1', @quotation.quotAddtnlField1, 'quotAddtnlField1', @quotation) %>
+
+        <div id='singleErrorDiv' style = "display:none"></div>
+        <div id='totalErrorDiv' style = "display:none"></div>
+        <input type="hidden" name="id" value="<%= @quotation.object %>" />
+        
+        <% @facetData = $globalFacetHash[:primary] %>
+        <%= render :partial => "primaryDetails"%>
+
+        <% if @facetDataBasic[:renderInsuredPanel] %>
+            <% @facetData = $globalFacetHash[:payor] %>
+            <%= render :partial => "capturePayorDetails"  %>
+        <% else %>
+            <%= renderHiddenField('proposerLASame', 'COPYFROMINSURED', 'proposerLASame', @quotation) %>
+            <%= renderHiddenField('roleCd', @policyHolder.roleCd, 'roleCd', @policyHolder) %>
+        <% end %>
+
+        <% @facetData = $globalFacetHash[:insured] %>
+        <%= render :partial => "captureInsuredInformation"  %>
+
+        <% if @facetDataBasic[:renderJointLifePanel] %>
+            <% @facetData = $globalFacetHash[:jointLife] %>
+            <div class="illustrationdisplay">
+                <div class="legend"><%= renderLabel('jointLife','jointLife','strongLabel') %></div>
+                <% if @facetData[:renderJointLifeChk] %>
+                    <div data-role="dualfieldcontain">
+                        <div class="half"> 
+                            <%= renderLabel('jointLife', 'jointLife', nil, @quotation, " style='width:100%;'") %>
+                            <%= renderCheckBox('jointLife', @quotation.jointLife, 'Selected', @quotation) %>
+                        </div>
+                    </div>
+                <% end %>
+            </div>
+            <%= render :partial => "jointLifeInformation" %>
+        <% end %>
+
+        <% if @facetDataBasic[:renderSupplementaryPanel] %>
+            <% @facetData = $globalFacetHash[:supplementLife] %>
+            <%= render :partial => "captureSupplementLife" %>
+        <% end %>
+
+        <%= renderObject(@baseProduct, @quotation) %>
+        <div name="refreshBasePlan">
+           <% @facetData = $globalFacetHash[:plan] %>
+            <%= render :partial => "capturePlanInformation" %>
+        </div>
+
+        <% if @facetDataBasic[:renderProductExtraPanel] %>
+           <% @facetData = $globalFacetHash[:extraPlan] %>
+            <%= render :partial => "captureExtraPlanInformation" %>
+            <%#= render :partial => "hybridinformation" %>
+        <% end %>
+        
+        <% if @facetDataBasic[:renderFundPanel] %>
+           <% @facetData = $globalFacetHash[:fund] %>
+            <%= render :partial => "captureFundInformation"%>
+        <% end %>
+
+        <% if @facetDataBasic[:renderTopupoptioncdPanel] || @facetDataBasic[:renderInitialTopuppanel] || @facetDataBasic[:renderRegularTopupPanel] || @facetDataBasic[:renderTargetFunfPanel] || @facetDataBasic[:renderAdhocTopupPanel]  || @facetDataBasic[:renderContributionTopupPanel] %>
+           <% @facetData = $globalFacetHash[:topup] %>
+            <%= render :partial => "captureTopupInformation" %>
+        <% end %>
+
+        <% if @facetDataBasic[:renderWithdrawalPanel] %>
+           <% @facetData = $globalFacetHash[:withdrawal] %>
+            <%= render :partial => "captureWithdrawalInformation" %>
+        <% end %>
+
+        <% if @product.getFacet('RIDERASSOCIATION') %> 
+            <div name="riderDetailsDiv">
+               <% @facetData = $globalFacetHash[:rider] %>
+                <%= render :partial => "captureRiderDetails" %>
+            </div>    
+        <%end%>
+        
+    </form>
+    <div style="display:none">
+        <div id="data">
+            <%= render :partial => "productPage" %>
+        </div>
+    </div>
+    
+    <div style="display:none">
+        <div id="premium">
+            <%= render :partial => "premiumPage" %>
+        </div>
+    </div>
+    <%= render(:file => 'Quotation/newcaptureillustrationJS.erb')%>
+    </div>
+</div>

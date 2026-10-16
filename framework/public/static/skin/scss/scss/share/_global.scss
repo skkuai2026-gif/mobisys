@@ -1,0 +1,279 @@
+body {
+	font-family : $body-font-family;
+	
+}
+
+p {
+        margin-bottom: 15px;       
+}
+
+a {
+        text-decoration: none;
+}
+
+a:link {
+        color: $primary-color;   
+}
+
+/* For debug only, to be removed */
+#debug {
+	position: absolute;
+	z-index: 999;
+	background-color: #fff;
+	display:none;
+}
+
+#template {
+  display: none;
+}
+
+#alert {
+        position: absolute;
+        display:none;
+        width: 100%;
+        height:100%;
+        top:0px;
+        z-index:999;
+        .background {
+               position: absolute;
+               width: 100%;
+               height:100%; 
+               background-color:#000;
+               opacity: 0.7;
+        }
+        .message {
+                position: absolute;
+                width: 50%;
+                background-color: rgba(246, 139, 31, 1);
+                color: #fff;
+                padding: 50px;
+                text-align: center;
+                margin-top:25%;
+                margin-left:25%;
+        }
+        .button {
+                width: 100px;
+                margin-left:auto;
+                margin-right:auto;
+        }
+}
+
+.radius{
+        -moz-border-radius: 5px;
+        -webkit-border-radius: 5px;
+        border-radius: 5px;
+}
+
+.content {
+  position: absolute;
+  top:$bar-height;
+  bottom:$bar-height;
+}
+
+.clear {
+  clear:both;
+}
+.float-right{
+        float: right;
+}
+.float-left{
+        float:left;
+}
+
+.fix-postion{
+        position: absolute;
+}
+.left-panel {
+	background-image:url($image-path+"share/bg-datapanel.png");
+	width:390px;
+	left:30px;
+	background-repeat: repeat-y;
+	
+	nav {
+        	float: left;
+        	width: 60px;
+        	ul{
+                	margin-top: 8px;
+        	}
+        	li{
+        	        
+        	}
+		a {
+                	width: 60px;
+                	display: block;
+		}
+	}
+}
+.button,a.button{
+        cursor: pointer;
+        color: #666;
+        border: 1px solid #E0E0E0;
+        padding: 5px 25px;
+        display: block;
+        text-align: center; 
+        -webkit-border-radius: 0px;
+        -moz-border-radius: 0px;
+        border-radius: 0px;
+        -webkit-box-shadow: #666 0px 0px 0px;
+        -moz-box-shadow: #666 0px 0px 0px;
+        box-shadow: #666 0px 0px 0px;
+        background: #FFFFFF;
+        background: -webkit-gradient(linear, 0 0, 0 bottom, from(#FFFFFF), to(#E0E0E0));
+        background: -webkit-linear-gradient(#FFFFFF, #E0E0E0);
+        background: -moz-linear-gradient(#FFFFFF, #E0E0E0);
+        background: -ms-linear-gradient(#FFFFFF, #E0E0E0);
+        background: -o-linear-gradient(#FFFFFF, #E0E0E0);
+        background: linear-gradient(#FFFFFF, #E0E0E0);
+        margin: 20px;
+        font-size: 15px;
+        line-height: 21px;
+        &:hover{
+                
+                border: 1px solid $primary-color;
+                color: $primary-color;
+        }
+        
+}
+.background {
+	width:100%;
+	min-width:$body-min-width;
+	overflow:hidden;
+	
+	> div {
+		position: absolute;
+		width: 100%;
+	}
+	
+	.image {
+		width: 100%;
+		background-position: center;
+		background-size: cover;
+	}
+	
+}
+
+/* Shadowbox style */
+
+#sb-body-inner {
+        
+		overflow: scroll;
+        -webkit-overflow-scrolling:touch; 
+		
+		/*
+        &.no-scroll {
+                overflow: hidden;
+        }*/
+}
+#sb-body {
+        background-color: #fff; 
+}
+
+
+/* popup box */
+#set-box{
+        background-color: #fff; 
+        width: 740px;
+        margin-left: auto;
+        margin-right: auto;
+        position:relative;
+        .col-left{
+                float: left;
+                width: 368px;
+        }
+        .col-right{
+                width: 312px;
+                float: right;
+                padding: 30px;
+        }
+        h1,h2,h3,h4,h5,h6{
+                color: $primary-color;
+                margin-bottom: 15px;
+                font-weight: 100;
+                font-family: $body-font-family;
+                
+        }
+        h4{
+                margin-bottom: 30px;
+				font-size: 18px;
+        }
+        input[type="text"], input[type="email"]{
+                background: #f0f0f0;
+                border: 0px;
+                height: 50px;
+                line-height: 30px;
+                font-size: 21px;
+                padding: 10px;
+                width: 100%;
+                font-family: $body-font-family;
+                font-weight:lighter;
+                @extend .radius;
+        }
+        input[type="checkbox"]{
+                margin-right: 5px;
+        }
+        .term{
+                font-size: smaller;
+                font-style: italic;
+                margin: 30px 0px 30px 0px
+        }
+        a.close{
+                position:absolute;
+                right: 10px;
+                top:10px;
+                background-repeat: no-repeat;
+                background-position: left top;
+                width: 15px;
+                height: 16px;
+        }
+        
+        ::-webkit-input-placeholder {
+            font-style: italic;
+            font-family: $body-font-family;
+            font-weight: lighter;
+        }
+        
+        :-moz-placeholder { /* Firefox 18- */
+            font-style: italic;
+            font-family: $body-font-family;
+            font-weight: lighter;  
+        }
+        
+        ::-moz-placeholder {  /* Firefox 19+ */
+            font-style: italic;
+            font-family: $body-font-family;
+            font-weight: lighter;  
+        }
+        
+        :-ms-input-placeholder {  
+            font-style: italic;
+            font-family: $body-font-family;
+            font-weight: lighter;  
+        }
+        
+}
+
+
+input:not([type="image"]), textarea {
+	box-sizing: border-box;
+}
+
+/*.sb-wrapper-inner-fixsize {
+	position: fixed;
+	top: 50%;
+	left: 50%;
+	margin-left: -410px;
+	margin-top: -250px;
+	width: 820px !important;
+	height: 500px !important;
+}*/
+
+.sb-wrapper-fixsize, .sb-wrapper-inner-fixsize {
+	left: 50% !important;
+	margin-left: -370px !important;
+	width: 740px !important;
+	height: 368px !important;
+}
+
+#data-panel section ul li.no-border, #result-panel section ul li.no-border {
+	border-bottom: 0px;
+}

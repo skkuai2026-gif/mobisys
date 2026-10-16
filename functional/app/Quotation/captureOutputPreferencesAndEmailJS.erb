@@ -1,0 +1,129 @@
+<script type="text/javascript">
+function sendemail() {
+    if( checkForm() && checkNetwork()){
+        
+        document.emailForm.submit();                    
+        $("a[name='email']").attr('onclick', 'return false;');
+        $("a[name='print']").attr('onclick', 'return false;');
+    }        
+}
+function sendview() {
+    
+    document.viewForm.submit();                    
+    $("a[name='view']").attr('onclick', 'return false;');        
+}
+function checkNetwork(){
+    returnValue = false;        
+    $.ajax({
+        url: "/app/Quotation/checkNetwork",
+        success: function(data) {
+            data = data.replace("<div>","");
+            data = data.replace("</div>","");
+            try{
+                if (data == "NETWORK")
+                {
+                    returnValue = true;
+                }
+                else
+                {
+                    returnValue = false;
+                }
+            }catch(e){alert(e);}
+        },
+        async: false                    
+    });          
+
+    if(!returnValue){
+        showDialog("", "<%= getLabelValue('CHECKNETWORK')%>", 'error', 0, 'email');
+    }
+    return returnValue;
+}
+
+function checkForm(){
+    var returnValue = true;
+
+    toField = $("input[name='EmailRequest[toEmail]']").val();
+
+    shortChecked = $("input[name='EmailRequest[shortIllustration]']").is(':checked');
+
+    longChecked = $("input[name='EmailRequest[longIllustration]']").is(':checked');
+
+
+    errors = "";
+
+    if (toField == "")
+    {
+        errors += "<%= getLabelValue('TOEMAILMANDATORY')%>\n";
+        returnValue = false;
+    }
+
+    if(!returnValue){      
+        showDialog("", errors, 'error', 0, 'email');
+    }
+    return returnValue
+}
+
+function testEmail(value)
+{
+    emails = value.replace(" ","").replace(",",";");
+    emailList = emails.split(";"); 
+    returnValue = true;
+    for(i=0; i < emailList.length; i++)
+    {    
+        if (emailList[i] != "")
+        {
+            emailPattern=new RegExp("[A-Za-z0-9._-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,4}");
+            returnValue = emailPattern.test(emailList[i]);
+            if(!returnValue)
+            { 
+                break;        
+            }
+        }
+    }
+
+    return returnValue;
+}
+
+$(document).ready(function(){
+    $('.scrollTopButton').click(function() {
+        $("html, body").animate({ scrollTop: 0 }, "slow");
+    });
+
+    $('.expandButton').hide();
+
+    $('.collapseButton').click(function() {
+        $(this).parents(".legend").siblings(".panelContent").hide();
+        $(this).hide();
+        $(this).siblings('.expandButton').show();
+    });
+
+    $('.expandButton').click(function() {
+        $(this).parents(".legend").siblings(".panelContent").show();
+        $(this).hide();
+        $(this).siblings('.collapseButton').show();
+    });
+
+    $('input[name="<%=getObjectMapping(@emailRequest)%>[toEmail]"]').change( function(){
+
+        if(!testEmail(this.value))
+        {
+            $(this).val('');
+        }
+
+    });
+
+    $('input[name="<%=getObjectMapping(@emailRequest)%>[ccEmail]"]').change( function(){
+
+        if(!testEmail(this.value))
+        {
+            $(this).val('');
+        }
+
+    });
+
+    $('a[href*="mailto"]').hide();
+
+});
+
+
+</script>

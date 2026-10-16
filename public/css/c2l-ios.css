@@ -1,0 +1,113 @@
+.contentdiv {
+  height:725px;
+  background-color:#ffffff;
+}
+
+.leftnavigation {
+  float:left; 
+  width:250px; 
+  background-color:#004e87; 
+  height:661px;
+}
+
+.rightcontentpane {
+  float:right; 
+  width:750px;
+  height:661px;
+  overflow: auto; 
+  background-color:#ffffff;
+}
+
+.level2leftnavigation {
+  float:left; 
+  width:100px; 
+  height:660px;
+}
+
+.level2rightcontentpane{
+  float:right; 
+  width:900px;
+  height:660px;
+  overflow: auto; 
+  background-color:#ffffff;
+}
+
+.landingpagecontent{
+  height:650px;
+  background-color:#ffffff;
+}
+
+.landingpagetop{
+  padding: 20px 40px 0px 20px; 
+  width:1000px;
+  background-color:#ffffff;
+}
+
+.level0header{
+  float:left; 
+  width:260px;
+  height:100%;
+  background-color:#ffffff;
+  display:block;
+  text-transform:uppercase;
+}
+
+.level0text{
+  float:right;
+  width:700px;
+  margin-right:20px;
+  background-color:#ffffff;
+  text-align:justify;
+  text-shadow:none;
+  color: rgb(114,114,114);
+  font-family:soho_medium;
+  font-size: 12px;
+  line-height: 14px;
+}
+
+.landingpagemenu{
+  float:left;
+  display:block;
+  width:950px;
+  height:530px;
+  padding:20px;
+  overflow: auto;
+  background-color:#ffffff;
+}
+
+.maincontentvideoplayerdiv {  
+  height: 520px;
+  vertical-align: bottom;
+  background-color:#ffffff;
+}
+
+.maincontentvideoplayer {
+  width:750px;
+}
+
+.bottomlayoutlevel2datadiv {
+  background-color:#ffffff; 
+  height:561px;
+}
+
+.bottomlayoutlevel2menudiv {
+  background-color:#ffffff; 
+  height:70px;
+}
+
+.bottomlayoutlevel2menutable {
+  border:0; 
+  color:#ffffff;
+  cellspacing:5; 
+  cellpadding:5;
+}
+
+.toplayoutlevel2menudiv {
+  background-color:#ffffff; 
+  height:50px;
+}
+
+.toplayoutlevel2datadiv {
+  background-color:#ffffff; 
+  height:561px;
+}

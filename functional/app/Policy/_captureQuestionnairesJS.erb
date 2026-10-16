@@ -1,0 +1,71 @@
+<script type="text/javascript">
+var initialQuestionnaireForm = "";
+
+function setupGetQuestionnaire(object, onLoad){
+	if (object.length == 0) {
+		return false;
+	}
+	showLoadingMessage();
+
+	<% if @policy.policyNum.to_s == "" %>
+	    if (!onLoad) {
+		    submitForm();
+	    }
+    <% end %>
+	object.parent().siblings().children('a').removeClass('selectedTab');
+	object.addClass('selectedTab');
+	geturl = object.data("url");
+	lifeid = object.data('id').toString();
+	$.ajax({
+		url: "/app/Policy/"+geturl,
+		async: false,
+		data: {'policyObject': '<%= @policy.object.to_s %>', 'lifeGuid': lifeid},
+		headers: {
+        	'Transition-Enabled': false
+        },
+		success: function(data) {
+			hideLoadingMessage();
+			$('#questionnaire-container').html(data).trigger('create').show();
+			if (!onLoad) {
+				getTabErrors();
+			}
+			initialQuestionnaireForm = $('#questionnaireForm').serialize();
+		    <% if @policy.policyNum.to_s != "" %>
+				setReadOnly($('input[type="text"]'), true);
+			    $('select').selectmenu('disable').trigger("refresh");
+			    $('input[type="radio"]').checkboxradio('disable').trigger("refresh");
+			    $('input[type="checkbox"]').checkboxradio('disable').trigger("refresh");
+			    $('input[type="button"]').off('click');
+			    $('input[type="button"]').button('disable').trigger("refresh");
+			<% end %>    
+		}
+	});
+}
+
+
+function submitForm() {
+	if(initialQuestionnaireForm != $('#questionnaireForm').serialize()) {
+		$('span[id="errordiv"]').hide();
+		$.ajax({                                    
+			url: "/app/Policy/submitQuestionnaire",
+			method: 'POST',
+			async: false,
+			data: $('#questionnaireForm').serialize(),
+			headers: {
+	        	'Transition-Enabled': false
+	        },
+			success: function(data) {
+				$("a#submit").hide();
+			}
+		});
+	}
+}
+
+
+$(document).ready(function(){
+	$("#questionnaires-info li>a").click(function(){
+		setupGetQuestionnaire($(this), false);	
+	});
+    setupGetQuestionnaire($("#questionnaires-info li[name='life1Li']>a"), true);
+});
+</script> 

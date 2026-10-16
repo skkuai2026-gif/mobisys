@@ -1,0 +1,132 @@
+<script type ="text/javascript">
+//Method to get rider plans based on product sequence
+function filterRiderPlan(object, productSeq, policyObject) {
+	$.ajax({
+		url: "/app/Policy/filterRiderPlan",
+		data: {
+			'productSeq': productSeq,
+			'policyObject': policyObject,
+			'riderObject': object
+		},
+        headers: {
+          'Transition-Enabled': false
+        },
+		success: function(data){
+			$("select[name='"+object+"[productPlanOptionCd]']").html(data);
+			$("select[name='"+object+"[productPlanOptionCd]']").val("");
+			$("select[name='"+object+"[productPlanOptionCd]']").selectmenu('refresh');
+
+		}
+	}); 
+}
+
+
+$(document).ready(function(){
+	if($('input[name="<%=getObjectMapping(@rider)%>[removed]"]').val()=="YES") {
+		$('div[name="'+"<%=@rider.object %>"+'"]').hide();
+	}
+
+	filterSAFlDetails('<%=getObjectMapping(@rider)%>', '<%= @premiumSAFl %>');
+
+	<% 
+	if @newRiderFields != nil && @newRiderFields[@rider.productSeq.to_i]
+			@newRiderFields[@rider.productSeq.to_i].split(",").each do |readonlyField| %>
+				setReadOnly($("input[name='<%= getObjectMapping(@rider) %>[<%= readonlyField %>]']"), true);
+				$('select[name="<%=getObjectMapping(@rider)%>[<%= readonlyField %>]"]').selectmenu().selectmenu('disable');
+			<% end %>
+	<% end %>
+
+	$('select[name="<%=getObjectMapping(@rider)%>[productSeq]"]').change(function(){
+		if ($(this).val() != "") {
+			filterRiderPlan('<%= getObjectMapping(@rider) %>', $(this).val(), '<%= @policy.object %>');
+		}
+	});
+
+
+	//Hide/ Show enable/ disable supplementary insured select menu based on party role selection
+	if ($('select[name="<%=getObjectMapping(@policyProductInsured)%>[roleCd]"]').val() != "SUPPLEMENTARY") {
+		$('select[name="<%=getObjectMapping(@policyProductInsured)%>[insuredPartyRefGuid]"]').parents(".half").hide();
+	}
+
+	$('select[name="<%=getObjectMapping(@policyProductInsured)%>[roleCd]"]').change(function(){
+		if ($(this).val() != "SUPPLEMENTARY") {
+			$('select[name="<%=getObjectMapping(@policyProductInsured)%>[insuredPartyRefGuid]"]').val("").selectmenu("refresh");
+			$('select[name="<%=getObjectMapping(@policyProductInsured)%>[insuredPartyRefGuid]"]').selectmenu("disable");
+			$('select[name="<%=getObjectMapping(@policyProductInsured)%>[insuredPartyRefGuid]"]').parents(".half").hide();
+			clearRiderDetails('<%= getObjectMapping(@rider) %>');
+		}
+		else {
+			$('select[name="<%=getObjectMapping(@policyProductInsured)%>[insuredPartyRefGuid]"]').selectmenu("enable");	
+			$('select[name="<%=getObjectMapping(@policyProductInsured)%>[insuredPartyRefGuid]"]').parents(".half").show();
+		}
+	});
+
+
+	$('select[name="<%=getObjectMapping(@policyProductInsured)%>[insuredPartyRefGuid]"]').change(function(){
+		clearRiderDetails('<%= getObjectMapping(@rider) %>');
+	});
+
+
+	$('input[name="<%=getObjectMapping(@rider)%>[baseSumAssured]"]').change(function(){
+  		if(isNaN(this.value)) {
+  			showDialog("", "<%= getLabelValue('VALID_RIDER_SUM_ASSURED') %>", 'warning', 0, 'capture');
+  			this.value = this.value.replace(/[^0-9.]/g, '');
+  		}
+  	});
+
+  	$('input[name="<%=getObjectMapping(@rider)%>[modalPremium]"]').change( function(){
+    	if(isNaN(this.value)) {
+        	showDialog("", "<%= getLabelValue('VALID_MODAL_PRE_RIDER')%>", 'warning', 0, 'capture');
+        	this.value = this.value.replace(/[^0-9.]/g, '');  
+      	}
+  	});
+
+  	$('input[name="<%=getObjectMapping(@rider)%>[productTerm]"]').change(function(){
+  		if(isNaN(this.value)) {
+  			showDialog("", "<%= getLabelValue('VALID_RIDER_PRODUCT_TERM') %>", 'warning', 0, 'capture');
+  			this.value = this.value.replace(/[^0-9.]/g, '');
+  		}
+  	});
+
+  	$('input[name="<%=getObjectMapping(@rider)%>[premiumPayingTerm]"]').change(function(){
+  		if (isNaN(this.value)) {
+  			showDialog("", "<%= getLabelValue('VALID_RIDER_PPT') %>", 'warning', 0, 'capture');
+  			this.value = this.value.replace(/[^0-9.]/g, '');
+  		}
+  	});
+
+	if ('<%= @policy.quotationRefGuid %>' != '') {
+		setReadOnly($('input[name="<%=getObjectMapping(@rider)%>[productTerm]"]'), true);
+		setReadOnly($('input[name="<%=getObjectMapping(@rider)%>[premiumPayingTerm]"]'), true);
+		setReadOnly($('input[name="<%=getObjectMapping(@rider)%>[baseSumAssured]"]'), true);
+		setReadOnly($('input[name="<%=getObjectMapping(@rider)%>[coi]"]'), true);
+		setReadOnly($('input[name="<%=getObjectMapping(@rider)%>[baseAnnualPremium]"]'), true);
+		setReadOnly($('input[name="<%=getObjectMapping(@rider)%>[modalPremium]"]'), true);
+
+		$('select[name="<%=getObjectMapping(@rider)%>[productSeq]"]').attr('disabled', true);
+		$('select[name="<%=getObjectMapping(@rider)%>[productSeq]"]').trigger("create");
+
+		$('select[name="<%=getObjectMapping(@rider)%>[productPlanOptionCd]"]').attr('disabled', true);
+		$('select[name="<%=getObjectMapping(@rider)%>[productPlanOptionCd]"]').trigger("create");
+
+		$('select[name="<%=getObjectMapping(@policyProductInsured)%>[roleCd]"]').attr('disabled', true);
+		$('select[name="<%=getObjectMapping(@policyProductInsured)%>[roleCd]"]').trigger("create");
+
+		$('select[name="<%=getObjectMapping(@policyProductInsured)%>[insuredPartyRefGuid]"]').attr('disabled', true);
+		$('select[name="<%=getObjectMapping(@policyProductInsured)%>[insuredPartyRefGuid]"]').trigger("create");
+	}
+
+
+	<% 
+    if @mandatoryFields
+        if @mandatoryFields[@rider]
+            @mandatoryFields[@rider].each do |field| 
+    %>
+            $("label[for='<%=getObjectMapping(@rider)%>[<%= field %>]']").append('<label for=" *" class="mandatory1">&nbsp;*</label>');
+    <% 
+            end
+        end
+    end
+    %>
+});
+</script>

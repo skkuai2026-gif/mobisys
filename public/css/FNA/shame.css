@@ -1,0 +1,188 @@
+/* Overrides */
+input:focus:not(.readonly) ~ label, input:invalid ~ label {
+	color: #000 !important;
+}
+
+.third.with-spacer .fieldLabel.ui-input-text {
+	width: 50%;
+    color: #000;
+}
+
+.fieldLabel.fieldLabel-hasContent {
+	color: #000 !important;
+}
+
+.half {
+    padding: 2px 2% 0 0 !important;
+}
+
+.illustrationdisplay {
+	margin: 0px !important;
+    width: 100% !important;
+    left: 0 !important;
+    padding: 0 !important;
+    background-color: transparent !important;
+}
+
+label.readonly {
+	background-color: transparent !important;
+}
+
+/* Page level */
+.header {
+	margin-right: 15px;
+	padding: 10px 0px;
+}
+
+.header .title {
+	font-size: 18px;
+	font-weight: bold;
+	margin-right: 10px;
+}
+
+.header .description {
+	font-size: 14px;
+	font-style: italic;
+}
+
+.required-note {
+	font-size: 12px;
+	font-style: italic;
+	display: block;
+    height: 20px;
+    line-height: 25px;
+}
+
+.set-right {
+	float: right;
+}
+
+.card {
+	padding: 15px;
+    background-color: #fff;
+    margin-bottom: 10px;
+    border-radius: 5px;
+}
+
+.highlight-value {
+	font-weight: bold;
+}
+
+.rates-header label {
+	display: inline-block;
+	margin-right: 10px;
+}
+
+.rates-header a {
+	text-decoration: underline;
+	color: blue;
+	font-style: italic;
+	font-size: 12px;
+	font-weight: normal;
+}
+
+.tabs div {
+	padding: 0 5px;
+	float: left;
+	width: 18%;
+	overflow: hidden;
+	margin-bottom: 10px; 
+}
+
+.tabs div:last-child {
+	margin-left: 4%;
+}
+
+.tabs p {
+	margin: 0;
+    text-align: center;
+    background-color: #003656;
+    height: 40px;
+    line-height: 40px;
+    padding: 0 10px;
+    color: #fff;
+    text-shadow: none;
+}
+
+.tabs p.active {
+	background-color: #edb41a;
+}
+
+.tabs-content {
+    border-radius: 5px;
+}
+
+.tabs-content .note {
+	text-align: right;
+	font-size: 12px;
+	font-style: italic;
+}
+
+.tabs-content .legend {
+	width: 100%;
+}
+
+.clear {
+	clear: both;
+}
+
+.third {
+	width: 26.5%;
+    padding: 0 6% 0 0;
+    display: inline-block;
+}
+
+.third .group > p {
+	font-style: italic;
+}
+
+.third.with-spacer {
+	padding: 0;
+}
+
+.third.long-text input:focus:not(.readonly) ~ label {
+	top: 0px !important;
+}
+
+.third.long-text label{
+	width: 26.5% !important;
+}
+
+.ui-dual-field-contain .third label.ui-input-text {
+	width: 60%;
+}
+
+.operation-label {
+    display: inline-block;
+    font-size: 30px;
+    width: 6%;
+    text-align: center;
+}
+
+.operation-label.quarter {
+	margin-top: 15px;
+}
+
+.quarter {
+	width: 18.5%;
+    padding: 0 6% 0 0;
+    display: inline-block;
+}
+
+.quarter.with-spacer {
+    padding: 0;
+}
+
+.quarter.with-spacer label {
+	width: 18.5% !important;
+}
+
+.offset-66 {
+	margin-left: 66%;
+}
+
+
+
+
+
+

@@ -1,0 +1,73 @@
+source_name|attrib|object|value
+LabelValue|key|1|USERNAME
+LabelValue|value|1|User name
+LabelValue|lang|1|en
+LabelValue|key|2|PASSWORD
+LabelValue|value|2|Password
+LabelValue|lang|2|en
+LabelValue|key|3|PROGRAMVER
+LabelValue|value|3|Program Version
+LabelValue|lang|3|en
+LabelValue|key|4|SIGNIN
+LabelValue|value|4|Sign in
+LabelValue|lang|4|en
+LabelValue|key|5|LOGINFOOTERHEADING
+LabelValue|value|5|SymbioSys Sales Tool
+LabelValue|lang|5|en
+LabelValue|key|6|LOGINFOOTERDATA
+LabelValue|value|6|Copyright &copy; 2013 C2LBIZ Solutions Pvt. Ltd.<br><a href='http://www.c2lbiz.com' target='external'>www.c2lbiz.com</a>
+LabelValue|lang|6|en
+LabelValue|key|7|USERNAMEPASSWORDMANDATORY
+LabelValue|value|7|Username and password are mandatory
+LabelValue|lang|7|en
+LabelValue|key|8|SYNC
+LabelValue|value|8|Synchronize
+LabelValue|lang|8|en
+LabelValue|key|9|CANCEL
+LabelValue|value|9|Cancel
+LabelValue|lang|9|en
+LabelValue|key|10|UPGRADEMASTER
+LabelValue|value|10|Please update master data
+LabelValue|lang|10|en
+LabelValue|key|11|PRIMARYDATA
+LabelValue|value|11|Primary data
+LabelValue|lang|11|en
+LabelValue|key|12|SECONDARYDATA
+LabelValue|value|12|Secondary data
+LabelValue|lang|12|en
+LabelValue|key|13|SELECTSYNCOPTION
+LabelValue|value|13|Please select an option for synchronization
+LabelValue|lang|13|en
+LabelValue|key|14|CHECKNETWORK
+LabelValue|value|14|Please enable network connection
+LabelValue|lang|14|en
+LabelValue|key|15|LEGALDISCLAIMER
+LabelValue|value|15|Legal disclaimer
+LabelValue|lang|15|en
+LabelValue|key|16|AGREE
+LabelValue|value|16|Agree
+LabelValue|lang|16|en
+LabelValue|key|17|DONOTAGREE
+LabelValue|value|17|Do Not Agree
+LabelValue|lang|17|en
+LabelValue|key|18|DISCLAIMER
+LabelValue|value|18|DISCLAIMER
+LabelValue|lang|18|en
+LabelValue|key|19|PROCESSING
+LabelValue|value|19|Processing
+LabelValue|lang|19|en
+LabelValue|key|20|DOWNLOADINGMASTERFILE
+LabelValue|value|20|Downloading master file
+LabelValue|lang|20|en
+LabelValue|key|21|STARTINGSYNC
+LabelValue|value|21|Starting Sync. Please wait....
+LabelValue|lang|21|en
+LabelValue|key|22|NEXTUSERTRANSACTIONSYNC
+LabelValue|value|22|Next date for forced User Transaction  Sync
+LabelValue|lang|22|en
+LabelValue|key|23|NEXTMASTERSYNC
+LabelValue|value|23|Next date for forced Master Sync
+LabelValue|lang|23|en
+LabelValue|key|24|NEWDBAVAILABLE
+LabelValue|value|24|New Master Database available!
+LabelValue|lang|24|en

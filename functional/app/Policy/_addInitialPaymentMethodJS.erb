@@ -1,0 +1,283 @@
+<script type ="text/javascript">
+function getInwardBankBranchLookups(bankCd, paymentObj, micrNum) {
+	if (bankCd != "") {
+		var selectID = paymentObj+"[bankBranch]";
+		var spanID = paymentObj+"[branchLookup]";
+		var ajaxData = "bankCd="+bankCd
+	}
+	else if (micrNum != "") {
+		var ajaxData = "micrNum="+micrNum
+	}
+
+	$.ajax({
+     	url: "/app/Policy/getBankBranchLookups",
+     	async: false,
+     	data: ajaxData,
+        headers: {
+          'Transition-Enabled': false
+        },
+     	success: function(data) {
+     		if (bankCd != "") {
+	     		if (data != "") {
+		           	create = '<select id="'+selectID+'" name="'+selectID+'">';    
+		           	create += data;
+		           	create += '</select>';
+	           	}
+	           	$('span[name="'+ spanID +'"]').html(create);
+	           	$('span[name="'+ spanID +'"]').trigger('create');
+           	}
+			else if (micrNum.toUpperCase() != "NOMICR") {
+	     		if (data != "") {
+					$("input[name='"+paymentObj+"[bankCd]']").val(JSON.parse(data).bankName);
+					$("input[name='"+paymentObj+"[bankBranch]']").val(JSON.parse(data).bankBranch);
+				}
+   				setReadOnly($("input[name='"+paymentObj+"[bankCd]']"), true);
+   				setReadOnly($("input[name='"+paymentObj+"[bankBranch]']"), true);
+			}
+       	}
+  	});
+}
+
+
+$(document).ready(function(){
+	var paymentMethodCd = $('select[name="<%=getObjectMapping(@inwardDetail)%>[paymentMethodCd]"]').val();
+	var paymentSubTypeLookup = $('select[name="<%=getObjectMapping(@inwardDetail)%>[paymentSubTypeCd]"] option');
+	if (paymentMethodCd == "CHEQUE") {
+		var paymentSubTypeCd = "";
+		var selectedOption = $('select[name="<%=getObjectMapping(@inwardDetail)%>[paymentSubTypeCd]"]').val();
+		paymentSubTypeLookup.each(function(){
+			switch ($(this).val()) {
+				case "LOCAL":
+					paymentSubTypeCd += '<option value="' + $(this).val() + '">' + $(this).html() + '</option>';
+					break;
+				case "OUTSTATION":
+					paymentSubTypeCd += '<option value="' + $(this).val() + '">' + $(this).html() + '</option>';
+					break;
+				case "":
+					paymentSubTypeCd += '<option value="' + $(this).val() + '">' + $(this).html() + '</option>';
+					break;
+			}
+		});
+		$('select[name="<%=getObjectMapping(@inwardDetail)%>[paymentSubTypeCd]"]').html(paymentSubTypeCd);
+	   	$('select[name="<%=getObjectMapping(@inwardDetail)%>[paymentSubTypeCd]"]').trigger('create');
+	   	$('select[name="<%=getObjectMapping(@inwardDetail)%>[paymentSubTypeCd]"]').val(selectedOption);
+
+		$('select[name="<%=getObjectMapping(@inwardDetail)%>[paymentSubTypeCd]"]').parents(".half").show();
+		$('input[name="<%=getObjectMapping(@inwardDetail)%>[micrNum]"]').parents(".half").show();
+		$('input[name="<%=getObjectMapping(@inwardDetail)%>[bankCd]"]').parents(".half").show();
+		$('input[name="<%=getObjectMapping(@inwardDetail)%>[bankBranch]"]').parents(".half").show();
+		$('select[name="<%=getObjectMapping(@inwardDetail)%>[bankCd]"]').parents(".half").show();
+		$('select[name="<%=getObjectMapping(@inwardDetail)%>[bankBranch]"]').parents(".half").show();
+		$('input[name="<%=getObjectMapping(@inwardDetail)%>[instrumentDt]"]').parents(".half").show();
+		$('input[name="<%=getObjectMapping(@inwardDetail)%>[inwardNum]"]').parents(".half").show();
+		$('input[name="<%=getObjectMapping(@inwardDetail)%>[accountName]"]').parents(".half").show();
+	}
+	else if (paymentMethodCd == "IPG") {
+		var paymentSubTypeCd = "";
+		var selectedOption = $('select[name="<%=getObjectMapping(@inwardDetail)%>[paymentSubTypeCd]"]').val();
+		paymentSubTypeLookup.each(function(){
+			switch ($(this).val()) {
+				case "CREDIT":
+					paymentSubTypeCd += '<option value="' + $(this).val() + '">' + $(this).html() + '</option>';
+					break;
+				case "DEBIT":
+					paymentSubTypeCd += '<option value="' + $(this).val() + '">' + $(this).html() + '</option>';
+					break;
+				case "":
+					paymentSubTypeCd += '<option value="' + $(this).val() + '">' + $(this).html() + '</option>';
+					break;
+			}
+		});
+		$('select[name="<%=getObjectMapping(@inwardDetail)%>[paymentSubTypeCd]"]').html(paymentSubTypeCd);
+	   	$('select[name="<%=getObjectMapping(@inwardDetail)%>[paymentSubTypeCd]"]').trigger('create');
+	   	$('select[name="<%=getObjectMapping(@inwardDetail)%>[paymentSubTypeCd]"]').val(selectedOption);
+
+		$('select[name="<%=getObjectMapping(@inwardDetail)%>[paymentSubTypeCd]"]').parents(".half").show();
+		$('input[name="<%=getObjectMapping(@inwardDetail)%>[micrNum]"]').parents(".half").hide();
+		$('input[name="<%=getObjectMapping(@inwardDetail)%>[bankCd]"]').parents(".half").hide();
+		$('input[name="<%=getObjectMapping(@inwardDetail)%>[bankBranch]"]').parents(".half").hide();
+		$('select[name="<%=getObjectMapping(@inwardDetail)%>[bankCd]"]').parents(".half").hide();
+		$('select[name="<%=getObjectMapping(@inwardDetail)%>[bankBranch]"]').parents(".half").hide();
+		$('input[name="<%=getObjectMapping(@inwardDetail)%>[instrumentDt]"]').parents(".half").hide();
+		$('input[name="<%=getObjectMapping(@inwardDetail)%>[inwardNum]"]').parents(".half").show();
+		$('input[name="<%=getObjectMapping(@inwardDetail)%>[accountName]"]').parents(".half").hide();
+	}
+	else if (paymentMethodCd == "ATM") {
+		$('select[name="<%=getObjectMapping(@inwardDetail)%>[paymentSubTypeCd]"]').parents(".half").hide();
+		$('input[name="<%=getObjectMapping(@inwardDetail)%>[micrNum]"]').parents(".half").hide();
+		$('input[name="<%=getObjectMapping(@inwardDetail)%>[bankCd]"]').parents(".half").hide();
+		$('input[name="<%=getObjectMapping(@inwardDetail)%>[bankBranch]"]').parents(".half").hide();
+		$('select[name="<%=getObjectMapping(@inwardDetail)%>[bankCd]"]').parents(".half").hide();
+		$('select[name="<%=getObjectMapping(@inwardDetail)%>[bankBranch]"]').parents(".half").hide();
+		$('input[name="<%=getObjectMapping(@inwardDetail)%>[instrumentDt]"]').parents(".half").hide();
+		$('input[name="<%=getObjectMapping(@inwardDetail)%>[inwardNum]"]').parents(".half").show();
+		$('input[name="<%=getObjectMapping(@inwardDetail)%>[accountName]"]').parents(".half").hide();
+	}
+	else {
+		$('select[name="<%=getObjectMapping(@inwardDetail)%>[paymentSubTypeCd]"]').parents(".half").hide();
+		$('input[name="<%=getObjectMapping(@inwardDetail)%>[micrNum]"]').parents(".half").hide();
+		$('input[name="<%=getObjectMapping(@inwardDetail)%>[bankCd]"]').parents(".half").hide();
+		$('input[name="<%=getObjectMapping(@inwardDetail)%>[bankBranch]"]').parents(".half").hide();
+		$('select[name="<%=getObjectMapping(@inwardDetail)%>[bankCd]"]').parents(".half").hide();
+		$('select[name="<%=getObjectMapping(@inwardDetail)%>[bankBranch]"]').parents(".half").hide();
+		$('input[name="<%=getObjectMapping(@inwardDetail)%>[instrumentDt]"]').parents(".half").hide();
+		$('input[name="<%=getObjectMapping(@inwardDetail)%>[inwardNum]"]').parents(".half").hide();
+		$('input[name="<%=getObjectMapping(@inwardDetail)%>[accountName]"]').parents(".half").hide();
+	}
+
+
+	$('select[name="<%=getObjectMapping(@inwardDetail)%>[paymentMethodCd]"]').change(function(){
+      clearData();
+  		if ($(this).val() == "CHEQUE") {
+			var paymentSubTypeCd = "";
+			var selectedOption = $('select[name="<%=getObjectMapping(@inwardDetail)%>[paymentSubTypeCd]"]').val();
+			paymentSubTypeLookup.each(function(){
+				switch ($(this).val()) {
+					case "LOCAL":
+						paymentSubTypeCd += '<option value="' + $(this).val() + '">' + $(this).html() + '</option>';
+						break;
+					case "OUTSTATION":
+						paymentSubTypeCd += '<option value="' + $(this).val() + '">' + $(this).html() + '</option>';
+						break;
+					case "":
+						paymentSubTypeCd += '<option value="' + $(this).val() + '">' + $(this).html() + '</option>';
+						break;
+				}
+			});
+			
+			  $('select[name="<%=getObjectMapping(@inwardDetail)%>[paymentSubTypeCd]"]').html(paymentSubTypeCd);
+		   	$('select[name="<%=getObjectMapping(@inwardDetail)%>[paymentSubTypeCd]"]').trigger('create');
+		   	$('select[name="<%=getObjectMapping(@inwardDetail)%>[paymentSubTypeCd]"]').val(selectedOption);
+
+  			$('select[name="<%=getObjectMapping(@inwardDetail)%>[paymentSubTypeCd]"]').parents(".half").show();
+  			$('input[name="<%=getObjectMapping(@inwardDetail)%>[micrNum]"]').parents(".half").show();
+  			$('input[name="<%=getObjectMapping(@inwardDetail)%>[bankCd]"]').parents(".half").show();
+  			$('input[name="<%=getObjectMapping(@inwardDetail)%>[bankBranch]"]').parents(".half").show();
+  			$('select[name="<%=getObjectMapping(@inwardDetail)%>[bankCd]"]').parents(".half").show();
+  			$('select[name="<%=getObjectMapping(@inwardDetail)%>[bankBranch]"]').parents(".half").show();
+  			$('input[name="<%=getObjectMapping(@inwardDetail)%>[instrumentDt]"]').parents(".half").show();
+  			$('input[name="<%=getObjectMapping(@inwardDetail)%>[inwardNum]"]').parents(".half").show();
+  			$('input[name="<%=getObjectMapping(@inwardDetail)%>[accountName]"]').parents(".half").show();
+  		}
+  		else if ($(this).val() == "IPG") {
+			var paymentSubTypeCd = "";
+			var selectedOption = $('select[name="<%=getObjectMapping(@inwardDetail)%>[paymentSubTypeCd]"]').val();
+			paymentSubTypeLookup.each(function(){
+				switch ($(this).val()) {
+					case "CREDIT":
+						paymentSubTypeCd += '<option value="' + $(this).val() + '">' + $(this).html() + '</option>';
+						break;
+					case "DEBIT":
+						paymentSubTypeCd += '<option value="' + $(this).val() + '">' + $(this).html() + '</option>';
+						break;
+					case "":
+						paymentSubTypeCd += '<option value="' + $(this).val() + '">' + $(this).html() + '</option>';
+						break;
+				}
+			});
+			
+			  $('select[name="<%=getObjectMapping(@inwardDetail)%>[paymentSubTypeCd]"]').html(paymentSubTypeCd);
+		   	$('select[name="<%=getObjectMapping(@inwardDetail)%>[paymentSubTypeCd]"]').trigger('create');
+		   	$('select[name="<%=getObjectMapping(@inwardDetail)%>[paymentSubTypeCd]"]').val(selectedOption);
+  			$('select[name="<%=getObjectMapping(@inwardDetail)%>[paymentSubTypeCd]"]').parents(".half").show();
+  			$('input[name="<%=getObjectMapping(@inwardDetail)%>[micrNum]"]').parents(".half").hide();
+  			$('input[name="<%=getObjectMapping(@inwardDetail)%>[bankCd]"]').parents(".half").hide();
+  			$('input[name="<%=getObjectMapping(@inwardDetail)%>[bankBranch]"]').parents(".half").hide();
+  			$('select[name="<%=getObjectMapping(@inwardDetail)%>[bankCd]"]').parents(".half").hide();
+  			$('select[name="<%=getObjectMapping(@inwardDetail)%>[bankCd]"]').val('').selectmenu('refresh');
+  			$('select[name="<%=getObjectMapping(@inwardDetail)%>[bankBranch]"]').parents(".half").hide();
+  			$('select[name="<%=getObjectMapping(@inwardDetail)%>[bankBranch]"]').val('').selectmenu('refresh');
+  			$('input[name="<%=getObjectMapping(@inwardDetail)%>[instrumentDt]"]').parents(".half").hide();
+  			$('input[name="<%=getObjectMapping(@inwardDetail)%>[inwardNum]"]').parents(".half").show();
+  			$('input[name="<%=getObjectMapping(@inwardDetail)%>[accountName]"]').parents(".half").hide();
+  			
+  		}
+  		else if ($(this).val() == "ATM") {
+  		  
+  			$('select[name="<%=getObjectMapping(@inwardDetail)%>[paymentSubTypeCd]"]').parents(".half").hide();
+  			$('input[name="<%=getObjectMapping(@inwardDetail)%>[micrNum]"]').parents(".half").hide();
+  			$('input[name="<%=getObjectMapping(@inwardDetail)%>[bankCd]"]').parents(".half").hide();
+  			$('input[name="<%=getObjectMapping(@inwardDetail)%>[bankBranch]"]').parents(".half").hide();
+  			$('select[name="<%=getObjectMapping(@inwardDetail)%>[bankCd]"]').parents(".half").hide();
+  			$('select[name="<%=getObjectMapping(@inwardDetail)%>[bankCd]"]').val('').selectmenu('refresh');
+  			$('select[name="<%=getObjectMapping(@inwardDetail)%>[bankBranch]"]').parents(".half").hide();
+  			$('select[name="<%=getObjectMapping(@inwardDetail)%>[bankBranch]"]').val('').selectmenu('refresh');
+  			$('input[name="<%=getObjectMapping(@inwardDetail)%>[instrumentDt]"]').parents(".half").hide();
+  	  	$('input[name="<%=getObjectMapping(@inwardDetail)%>[inwardNum]"]').parents(".half").show();
+  			$('input[name="<%=getObjectMapping(@inwardDetail)%>[accountName]"]').parents(".half").hide();
+  		
+  		}
+  		else 
+  		  {
+  			$('select[name="<%=getObjectMapping(@inwardDetail)%>[paymentSubTypeCd]"]').parents(".half").hide();
+  			$('input[name="<%=getObjectMapping(@inwardDetail)%>[micrNum]"]').parents(".half").hide();
+  			$('input[name="<%=getObjectMapping(@inwardDetail)%>[bankCd]"]').parents(".half").hide();
+  			$('input[name="<%=getObjectMapping(@inwardDetail)%>[bankBranch]"]').parents(".half").hide();
+  			$('select[name="<%=getObjectMapping(@inwardDetail)%>[bankCd]"]').parents(".half").hide();
+  			$('select[name="<%=getObjectMapping(@inwardDetail)%>[bankCd]"]').val('').selectmenu('refresh');
+  			$('select[name="<%=getObjectMapping(@inwardDetail)%>[bankBranch]"]').parents(".half").hide();
+  			$('select[name="<%=getObjectMapping(@inwardDetail)%>[bankBranch]"]').val('').selectmenu('refresh');
+  			$('input[name="<%=getObjectMapping(@inwardDetail)%>[instrumentDt]"]').parents(".half").hide();
+  			$('input[name="<%=getObjectMapping(@inwardDetail)%>[inwardNum]"]').parents(".half").hide();
+  			$('input[name="<%=getObjectMapping(@inwardDetail)%>[accountName]"]').parents(".half").hide();
+  		}
+  	});
+
+	<% if @facetData[:renderInwardMicrNum] %>
+		setReadOnly($('input[name="<%=getObjectMapping(@inwardDetail)%>[bankCd]"]'), true);
+   		setReadOnly($('input[name="<%=getObjectMapping(@inwardDetail)%>[bankBranch]"]'), true);
+
+   		var micrNum = $('input[name="<%=getObjectMapping(@inwardDetail)%>[micrNum]"]').val();
+		if (micrNum.toUpperCase() === "NOMICR") {
+			$('input[name="<%=getObjectMapping(@inwardDetail)%>[bankCd]"]').val("");
+			$('input[name="<%=getObjectMapping(@inwardDetail)%>[bankBranch]"]').val("");
+			setReadOnly($('input[name="<%=getObjectMapping(@inwardDetail)%>[bankCd]"]'), false);
+			setReadOnly($('input[name="<%=getObjectMapping(@inwardDetail)%>[bankBranch]"]'), false);
+		}
+		else {
+			getInwardBankBranchLookups("", "<%=getObjectMapping(@inwardDetail)%>", micrNum);
+		}
+
+   		$('input[name="<%=getObjectMapping(@inwardDetail)%>[micrNum]"]').change(function(){
+   			if ($(this).val().toUpperCase() === "NOMICR") {
+   				$('input[name="<%=getObjectMapping(@inwardDetail)%>[bankCd]"]').val("");
+   				$('input[name="<%=getObjectMapping(@inwardDetail)%>[bankBranch]"]').val("");
+   				setReadOnly($('input[name="<%=getObjectMapping(@inwardDetail)%>[bankCd]"]'), false);
+   				setReadOnly($('input[name="<%=getObjectMapping(@inwardDetail)%>[bankBranch]"]'), false);
+   			}
+   			else {
+   				getInwardBankBranchLookups("", "<%=getObjectMapping(@inwardDetail)%>", $(this).val());
+   			}
+   		});
+   	<% else %>
+   		getInwardBankBranchLookups($("select[name='<%=getObjectMapping(@inwardDetail)%>[bankCd]']"), "<%=getObjectMapping(@inwardDetail)%>");
+	   	$("select[name='<%=getObjectMapping(@inwardDetail)%>[bankCd]']").change(function(){
+	   		getInwardBankBranchLookups($(this).val(), "<%=getObjectMapping(@inwardDetail)%>");
+	   	});
+	<% end %>
+
+	//Mark fields mandatory based on Validation Metadata
+	<%
+	if @mandatoryFields
+		@mandatoryFields.each do |object, fields|
+			fields.each do |field|
+	%>
+				$("label[for='<%=getObjectMapping(object)%>[<%= field %>]']").append('<label for=" *" class="mandatory1">&nbsp;*</label>');
+	<% 
+			end
+		end
+	end 
+	%>
+});
+
+function clearData() {
+    $('input[name="<%=getObjectMapping(@inwardDetail)%>[micrNum]"]').val('');
+    $('input[name="<%=getObjectMapping(@inwardDetail)%>[bankCd]"]').val('');
+    $('input[name="<%=getObjectMapping(@inwardDetail)%>[bankBranch]"]').val('');
+    $('input[name="<%=getObjectMapping(@inwardDetail)%>[instrumentDt]"]').val('');
+    $('input[name="<%=getObjectMapping(@inwardDetail)%>[accountName]"]').val('');
+    $('input[name="<%=getObjectMapping(@inwardDetail)%>[inwardNum]"]').val('');
+    $('select[name="<%=getObjectMapping(@inwardDetail)%>[paymentSubTypeCd]"]').val('');
+    $('select[name="<%=getObjectMapping(@inwardDetail)%>[paymentSubTypeCd]"]').selectmenu('refresh');
+}
+</script>

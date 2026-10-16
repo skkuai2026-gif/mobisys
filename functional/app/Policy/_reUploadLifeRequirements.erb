@@ -1,0 +1,96 @@
+<form method="POST" action="<%= url_for :action => :reSubmitDocuments %>" name="requirementForm" id="requirementForm">
+	<% @windows_platform = System.get_property('platform') == 'WINDOWS_DESKTOP' %>
+	<div class="illustrationdisplay">
+		<%= renderObject(@container) %>
+		<%= renderHiddenField('entityGuid', @container.entityGuid, 'EntityGuid', @container) %>
+		<%= renderHiddenField('entityTypeCd', @container.entityTypeCd, 'entityTypeCd', @container) %>
+		<%
+		@requirementsHM.each_with_index do |(key, requirements), index|
+			# imageDocument = @imageHM[key]
+			serviceDocument = @documentsHM[key]
+			imageDocument = @imageHM[key]
+			serviceDocument.imageCount = @imageCount[key]
+		%>
+			<%= renderObject(serviceDocument, @container) %>
+			<%= renderHiddenField('referenceObject', serviceDocument.referenceObject, 'Reference Object', serviceDocument) %>
+			<%= renderHiddenField('docCategoryTypeCd', serviceDocument.docCategoryTypeCd, 'Category Type Cd', serviceDocument) %>
+			<%= renderHiddenField('docCategoryCd', serviceDocument.docCategoryCd, 'Category Cd', serviceDocument) %>
+			<%= renderHiddenField('partyGuid', serviceDocument.partyGuid, 'Party guid', serviceDocument) %>
+			<%= renderHiddenField('receivedDt', serviceDocument.receivedDt, 'Received Dt', serviceDocument) %>
+			<%= renderHiddenField('acceptanceStatusCd', serviceDocument.acceptanceStatusCd, 'acceptance Status', serviceDocument) %>
+			<%= renderHiddenField('object', serviceDocument.object, 'object', serviceDocument) %>
+			
+			<div data-role="dualfieldcontain">
+        		<div class="half">
+					<%= renderLabel('documentCd',@categoryLabelHM[serviceDocument.docCategoryCd], nil, serviceDocument) %>
+					<% if @windows_platform %>
+						<%= getLookup('DYNAMICLOOKUP','documentCd', serviceDocument.documentCd, serviceDocument, requirements,'class="docc"') %>
+					<% else %>
+						<%= getLookup('DYNAMICLOOKUP','documentCd', serviceDocument.documentCd, serviceDocument, requirements,'class=""') %>
+					<% end %>
+
+				</div>
+            	<div class="half">
+					<% 
+					if @windows_platform
+						docc_id = serviceDocument.documentCd.to_s + index.to_s
+					%>
+                		<input type="button" id="capture<%=serviceDocument.object%>" class="capture" data-param ="<%=serviceDocument.object%>" value="<%= getLabelValue('Take Pic')%>" data-inline="true" onclick="location.href='<%= url_for :controller => :Policy, :action => 'take_cam_pic_reupload', :query =>{:serviceDocument_guid => serviceDocument.guid, :lifeGuid => serviceDocument.partyGuid, :policyObject => @policyObject} %>">&nbsp;&nbsp;&nbsp;
+                		<input type="button" id="view<%= key %>" value="<%= getLabelValue('viewPic')%>" data-inline="true" onclick="javascript: view('<%= key %>');">
+          			<% else %>
+						<input type="button" id="capture<%=key %>" class="capture<%=key %>" value="<%= getLabelValue('addPic')%>" data-inline="true" onclick="javascript:takePicture('<%= getObjectMapping(serviceDocument) %>');">&nbsp;&nbsp;&nbsp;
+						<input type="button" id="view<%= key %>" value="<%= getLabelValue('viewPic')%>" data-inline="true" onclick="javascript: view('<%= key %>');">
+					<% end %>
+				</div>
+			</div>
+			<% if @windows_platform %>
+				<div name="requirementimage_<%= key %>" class="requirementImageReupload">
+					<% image_hash = get_cam_pic_on_view_reupload(serviceDocument.guid) %>
+					<% image_hash.each do |key,img| %>
+						<% offlineFile = img[0] %>
+						<% imageUploadStatus = img[1] %>
+						<% if offlineFile != "" %>
+							<li id= "image<%= offlineFile.guid %>" name='<%= offlineFile.guid %>'>
+								<a href="data:image/jpeg;base64,<%= offlineFile.fileContents %>" rel="gallery" title="<%=serviceDocument.documentCd.to_s%>">
+									<img src="data:image/jpeg;base64,<%= offlineFile.fileContents %>" width='100px' height='100px' alt=""/>
+								</a>
+								<% if imageUploadStatus == "" %>
+									<a name='REMOVE' value='remove_<%=index%>_<%=offlineFile.parentKey%>' onclick="removeImage('<%=offlineFile.parentKey%>','<%=serviceDocument.guid%>')"/%><img src="/public/images/delete.png" width="30px" height="30px"></a>
+								<% end %>
+	                		</li>
+	            		<% end %>
+	            	<% end %>
+	            </div>
+    		<% else %>
+				<!--#Deepali Singh:04/03/2016 - changing absoulte file path to relative path for windows fix-->
+				<div name="requirementimage_<%= key %>" class="requirementImageReupload">
+					<% if imageDocument %>
+						<% imageDocument.each_with_index do |imageDetails,index| %>
+							<% offlineFile = imageDetails[0] %>
+							<% imageUploadStatus = imageDetails[1] %>
+							<% if offlineFile != nil && offlineFile != "" %>
+								<li name='<%= offlineFile.parentKey %>'>
+									<% is_rho_simulator = Rho::System.isRhoSimulator %>
+    								<%if is_rho_simulator %>
+										<% filelocation = offlineFile.fileLocation.to_s.partition('rhosimulator')
+	        							filePath = '/'+filelocation[1]+filelocation[2] %>
+        							<%else%>
+        								<% filePath = offlineFile.fileLocation %>
+        							<%end%>
+        							<a href="<%= filePath %>" rel="gallery" title="<%=serviceDocument.documentCd.to_s%>">
+										<img src="<%= filePath %>" width='100px' height='100px' alt=""/>
+									</a>
+	
+									<% if imageUploadStatus == "" %>
+										<a name='REMOVE' value='remove_<%=index%>_<%=offlineFile.parentKey%>' onclick="removeImage('<%=offlineFile.parentKey%>','<%=serviceDocument.guid%>')"/%><img src="/public/images/delete.png" width="30px" height="30px"></a>
+									<% end %>
+								</li>
+							<% end %>
+						<% end %>
+					<% end %>
+				</div>
+			<% end %>
+		<% end %>
+	</div>
+</form>
+<%= render :partial => "reUploadLifeRequirementsJS" %>

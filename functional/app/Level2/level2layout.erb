@@ -1,0 +1,204 @@
+<div data-role="page" data-url="<%= Rho::RhoConfig.start_path %>/">
+<% randomId = rand.to_s[2..-1] %>
+
+<!-- Content div -->
+<div class="contentdiv">
+
+<!-- Menu -->
+  <div style="width:100%;">
+   <ul id="css3menu1" class="topmenu" style="width:100%;">
+      <li class="topfirst" style="width:20%;">
+        <a href="/app/Level0/entrypoint" style="padding:0;">
+          <img src="<%=@collateralHM['HDFCLOGO'].fileName%>" alt="<%=@collateralHM['HDFCLOGO'].header%>" height="57px"/>
+        </a>
+      </li>
+      <% 
+        last = @level0s.length-1
+        @level0s.each_with_index{|level0,index|
+         
+          if index == last
+            menuString = "lastmenu"
+          else
+            menuString = "topmenu"
+          end
+      %>
+          <li class="<%=menuString%>" style="width:16%;">
+            <%
+              if level0.menu == "YES"
+                %>
+                <a href="#">
+                <%
+              elsif level0.menu == "NO"
+                %>
+                <a href="/app/Level0/{<%=level0.object%>}/click?level0id=<%=level0.object%>">
+                <%
+              end
+              
+              if level0.levelCd == @level0.levelCd
+                %>
+                  <label class="level0label0selected"><%= level0.name1 %></label>
+                <%
+              else
+                %>
+                  <label class="level0label0"><%= level0.name1 %></label>
+                <%
+              end
+            %>
+              <BR>
+              <label class="level0label1"><%= level0.name2 %></label>
+            </a>
+            <%
+              if level0.menu == "YES"
+                %>
+                  <ul>
+                    <%
+                      @level1s.each do |level1|
+                        if level1.level0_levelCd == level0.levelCd
+                          %>
+                          <li style="position:relative;display:inline-block;">
+                            <a href="/app/Level1/{<%=level0.object%>}/click?level1id=<%=level1.object%>">
+                              <img src="<%=@collateralHM[level1.icon].fileName%>" alt="<%=@collateralHM[level1.icon].header%>"/>
+                            </a>
+                          </li>
+                          <% 
+                        end 
+                      end 
+                    %>
+                  </ul>
+                <%
+              end
+            %>
+          </li>
+          <% 
+        } 
+      %>
+    </ul>
+  </div>
+<!-- end Menu -->
+    
+  <!-- Left Navigation panels -->
+    <div class="level2leftnavigation">
+      <ul class="productfeature-nav">
+        <% 
+          @level3s_level2.each do |level3| 
+            %>
+            <a href="/app/Level2/{<%=@level0.object%>}/click?level1id=<%=@level1_clicked.object%>&level2id=<%=@level2_clicked.object%>&level3id=<%=level3.object%>">
+              <li>
+                <img 
+                    src="<%=@collateralHM['IMAGETRANS'].fileName%>"
+                    class="productfeature-nav-img" 
+                    style="background:url(<%=@collateralHM[level3.icon].fileName%>) <% if level3.levelCd==@level3_clicked.levelCd%>0 -77px <% end %>;"/>                    
+              </li>
+            </a>
+            <% 
+          end 
+        %>
+      </ul>
+    </div>
+  <!-- End Left Navigation panels -->
+
+<!-- Start main content -->
+  <div id="contentpane_<%=randomId%>" class="level2rightcontentpane">
+      <!-- top row of content with level 4 menus -->
+      <table border=0 width="98%">
+        <tr>
+          <td width="100%" rowspan=2>
+            <span class="level2header"><%=@level2_clicked.header%></span>
+          </td>
+          
+          <%
+            @level4s.each do |level4|
+              %>
+              
+              <td>
+              <%
+              if level4.collateralView == "INLINE"
+                %>
+                  <a href="/app/Level2/{<%=@level0.object%>}/click?level1id=<%=@level1_clicked.object%>&level2id=<%=@level2_clicked.object%>&level3id=<%=@level3_clicked.object%>&level4id=<%=level4.object%>">
+                <%
+              else # collateralView == "EXTERNAL"
+                %>
+                <a href="#" id="<%=level4.levelCd%>_id" >
+                <script>
+                  $('#<%=level4.levelCd%>_id').click(function () {  
+                    $.get("/app/Collateral/showpopup?levelCd=<%=level4.levelCd%>",function(data) {});
+                  }); 
+                </script>
+                
+                <%
+              end
+              %>
+              
+              <%
+              if level4.levelCd == @level4.levelCd
+                %>
+                <span class="level4tabselected">
+                <%
+              else
+                %>
+                <span class="level4tab">
+                <%
+              end
+                %>                
+                  &nbsp;<%=level4.name%>&nbsp;</span>
+              </a>
+              </td>
+              
+              <%
+            end
+          %>
+        </tr>
+      </table>
+      <hr>
+      <div class="level3text">
+            <%=@text_h%>
+      </div>
+      <br>
+      <!--
+      <div>
+            Collateral here
+      </div>
+      <br>
+      -->
+      <div class="level3text">
+            <%=@text_f%>
+      </div>
+  </div>
+<!-- End main content -->
+  </div>
+  <script>
+    touchScroll('contentpane_<%=randomId%>');
+  </script>
+
+    <!-- Footer div -->
+<!--  
+    <div class="footer-docs" >
+      <TABLE width=100%>
+        <TR>
+          <TD> <a href="/app/Level0/entrypoint" style="color:#FFF; text-decoration:none;">Home</a> </TD>
+          <TD> | </TD>
+          <TD> <a href="#" id="<%#=randomId%>" style="color:#FFF; text-decoration:none;">About&nbsp;Us</a> </TD>
+                    <script>
+                      $("#<%#=randomId%>").click(function () {  
+                        $.get("/app/Collateral/showpopup?medianame=<%#=@collateralHM['ABOUTUS'].collateralCd%>",function(data) {});
+                      }); 
+                    </script>
+          <TD> | </TD>
+          <TD> <a href="<%#= :back %>" style="color:#FFF; text-decoration:none;">Back</a> </TD>
+          <TD> | </TD>
+          <TD> <a href="/app" style="color:#FFF; text-decoration:none;">Admin</a> </TD>
+          <TD width=100%> &nbsp; </TD>        
+          <TD> <a href="/app/Level0/exit" style="color:#FFF; text-decoration:none;">Exit</a> </TD>
+        </TR>
+      </TABLE>
+    </div>    
+-->  
+    <!-- End Footer div -->
+    
+  <script>
+  $(document).ready(function () {  
+     
+      
+  });  
+  </script>      
+</div>

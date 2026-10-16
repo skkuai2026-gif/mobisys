@@ -1,0 +1,134 @@
+<div id="<%=@tagName%>_partyAddress">
+	<% partyAddressPckg = 'PartyAddressDO' %>
+	<%= subPanelTagStart("Address Information",false) %>
+		<div data-role="navbar" class="labelHeader" id="<%=@tagName%>_home-permanent-business-bar">
+		    <ul style="width: 100%;">
+		    	<% if renderHomeAddressPanel %>
+		      		<li name="homeAddressLi">
+		      			<a href="#" class="" onclick="changePartyHolderAddressTab('homeAddressContainer', '<%=@tagName%>')"><%=getLabelValue('residentialAddress')%></a>
+		      		</li>  
+		      	<% end %>
+		      	<% if renderPermanentAddressPanel %>
+		      		<li name="permanentAddressLi">
+		      			<a href="#" class="" onclick="changePartyHolderAddressTab('permanentAddressContainer', '<%=@tagName%>')"><%=getLabelValue('permanentAddress')%></a>
+		      		</li>
+		      	<% end %>
+		      	<% if renderOfficeAddressPanel %>
+		      		<li name="officeAddressLi">
+		      			<a href="#" class="" onclick="changePartyHolderAddressTab('officeAddressContainer', '<%=@tagName%>')"><%=getLabelValue('officeAddress')%></a>
+		      		</li>
+		      	<% end %>
+		    </ul>
+	  	</div>
+
+		<% if renderHomeAddressPanel %>
+			<div id="<%=@tagName%>_homeAddressContainer">
+				<%= prdFieldDataTag("#{partyPckg}",'copyFromAddr1') %>
+				<div id="<%=@tagName%>_home-address-details">
+				  	<% if @renderMultiLanguagePanel %>
+				  		<% if $rhoconfig[:application_view_mode] != 'mobile' %>
+							<h3 class="col-left labelHeader labelHeaderAddress" id="language1_lbl" for="language1">
+								<%=getLabelValue('language1')%>
+							</h3>
+							<h3 class="col-right labelHeader labelHeaderAddress" id="language2_lbl" for="language2">
+								<%=getLabelValue('language2')%>
+							</h3>
+						<% else %>
+							<h3 class="col-left labelHeader labelHeaderAddress" id="language1_lbl" for="language1">
+								<%=getLabelValue('language1')%>
+							</h3>
+						<% end%>
+					<% end %>
+					<%= modelTagStart(resTagId, party_res_address, party) %>
+						<% if $rhoconfig[:application_view_mode]!= 'mobile' %>
+							<%= prdFieldDataTag("#{partyAddressPckg}",'addressLine1Lang1,addressLine1Lang2,addressLine2Lang1,addressLine2Lang2,addressLine3Lang1,addressLine3Lang2,addressLine4Lang1,addressLine4Lang2,countryCd,pinCode,districtCd,stateCd,cityCd','#none,MULTILINGUALPARTYNAME,#none,MULTILINGUALPARTYNAME,#none,MULTILINGUALPARTYNAME,#none,MULTILINGUALPARTYNAME,#none,#none,#none,#none') %>
+						<% else %>
+							<%= prdFieldDataTag("#{partyAddressPckg}",'addressLine1Lang1,addressLine2Lang1,addressLine3Lang1,addressLine4Lang1','#none,MULTILINGUALPARTYNAME,#none,MULTILINGUALPARTYNAME,#none,MULTILINGUALPARTYNAME,#none,MULTILINGUALPARTYNAME,#none,#none,#none,#none') %>
+							<h3 class="col-right labelHeader labelHeaderAddress" id="language2_lbl" for="language2">
+								<%=getLabelValue('language2')%>
+							</h3>
+							<%= prdFieldDataTag("#{partyAddressPckg}",'addressLine1Lang2,addressLine2Lang2,addressLine3Lang2,addressLine4Lang2','#none,MULTILINGUALPARTYNAME,#none,MULTILINGUALPARTYNAME,#none,MULTILINGUALPARTYNAME,#none,MULTILINGUALPARTYNAME,#none,#none,#none,#none') %>
+							<%= prdFieldDataTag("#{partyAddressPckg}",'countryCd,pinCode,districtCd,stateCd,cityCd','#none,MULTILINGUALPARTYNAME,#none,MULTILINGUALPARTYNAME,#none,MULTILINGUALPARTYNAME,#none,MULTILINGUALPARTYNAME,#none,#none,#none,#none') %>
+						<% end %>
+
+						<div style="display: none;">
+        					<%= inputTag("addressTypeCd") %>
+    					</div>
+					<% modelTagEnd %>
+				</div>
+			</div>
+		<% end %>
+		<% if renderPermanentAddressPanel %>
+			<div id="<%=@tagName%>_permanentAddressContainer">
+				<%= prdFieldDataTag("#{partyPckg}",'copyFromAddr2') %>
+				<div id="<%=@tagName%>_permanent-address-details">
+				  	<% if @renderMultiLanguagePanel %>
+				  		<% if $rhoconfig[:application_view_mode] != 'mobile' %>
+							<h3 class="col-left labelHeader labelHeaderAddress" id="language1_lbl" for="language1">
+								<%=getLabelValue('language1')%>
+							</h3>
+							<h3 class="col-right labelHeader labelHeaderAddress" id="language2_lbl" for="language2">
+								<%=getLabelValue('language2')%>
+							</h3>
+						<% else %>
+							<h3 class="col-left labelHeader labelHeaderAddress" id="language1_lbl" for="language1">
+								<%=getLabelValue('language1')%>
+							</h3>
+						<% end%>
+					<% end %>
+					<%= modelTagStart(perTagId, party_per_address, party) %>
+						<% if $rhoconfig[:application_view_mode] != 'mobile' %>
+							<%= prdFieldDataTag("#{partyAddressPckg}",'addressLine1Lang1,addressLine1Lang2,addressLine2Lang1,addressLine2Lang2,addressLine3Lang1,addressLine3Lang2,addressLine4Lang1,addressLine4Lang2,countryCd,pinCode,districtCd,stateCd,cityCd','#none,MULTILINGUALPARTYNAME,#none,MULTILINGUALPARTYNAME,#none,MULTILINGUALPARTYNAME,#none,MULTILINGUALPARTYNAME,#none,#none,#none,#none') %>
+						<% else %>
+							<%= prdFieldDataTag("#{partyAddressPckg}",'addressLine1Lang1,addressLine2Lang1,addressLine3Lang1,addressLine4Lang1','#none,MULTILINGUALPARTYNAME,#none,MULTILINGUALPARTYNAME,#none,MULTILINGUALPARTYNAME,#none,MULTILINGUALPARTYNAME,#none,#none,#none,#none') %>
+							<h3 class="col-right labelHeader labelHeaderAddress" id="language2_lbl" for="language2">
+								<%=getLabelValue('language2')%>
+							</h3>
+							<%= prdFieldDataTag("#{partyAddressPckg}",'addressLine1Lang2,addressLine2Lang2,addressLine3Lang2,addressLine4Lang2','#none,MULTILINGUALPARTYNAME,#none,MULTILINGUALPARTYNAME,#none,MULTILINGUALPARTYNAME,#none,MULTILINGUALPARTYNAME,#none,#none,#none,#none') %>
+							<%= prdFieldDataTag("#{partyAddressPckg}",'countryCd,pinCode,districtCd,stateCd,cityCd','#none,MULTILINGUALPARTYNAME,#none,MULTILINGUALPARTYNAME,#none,MULTILINGUALPARTYNAME,#none,MULTILINGUALPARTYNAME,#none,#none,#none,#none') %>
+						<% end %>
+						<div style="display: none;">
+        					<%= inputTag("addressTypeCd") %>
+    					</div>
+					<% modelTagEnd %>
+				</div>
+			</div>
+		<% end %>
+		<% if renderOfficeAddressPanel %>
+			<div id="<%=@tagName%>_officeAddressContainer">
+				<%= prdFieldDataTag("#{partyPckg}",'copyFromAddr3') %>
+				<div id="<%=@tagName%>_office-address-details">
+				  	<% if @renderMultiLanguagePanel %>
+				  		<% if $rhoconfig[:application_view_mode] != 'mobile' %>
+							<h3 class="col-left labelHeader labelHeaderAddress" id="language1_lbl" for="language1">
+								<%=getLabelValue('language1')%>
+							</h3>
+							<h3 class="col-right labelHeader labelHeaderAddress" id="language2_lbl" for="language2">
+								<%=getLabelValue('language2')%>
+							</h3>
+						<% else %>
+							<h3 class="col-left labelHeader labelHeaderAddress" id="language1_lbl" for="language1">
+								<%=getLabelValue('language1')%>
+							</h3>
+						<% end%>
+					<% end %>
+					<%= modelTagStart(ofcTagId, party_office_address, party) %>
+						<% if $rhoconfig[:application_view_mode]!= 'mobile' %>
+							<%= prdFieldDataTag("#{partyAddressPckg}",'addressLine1Lang1,addressLine1Lang2,addressLine2Lang1,addressLine2Lang2,addressLine3Lang1,addressLine3Lang2,addressLine4Lang1,addressLine4Lang2,countryCd,pinCode,districtCd,stateCd,cityCd','#none,MULTILINGUALPARTYNAME,#none,MULTILINGUALPARTYNAME,#none,MULTILINGUALPARTYNAME,#none,MULTILINGUALPARTYNAME,#none,#none,#none,#none') %>
+						<% else %>
+							<%= prdFieldDataTag("#{partyAddressPckg}",'addressLine1Lang1,addressLine2Lang1,addressLine3Lang1,addressLine4Lang1','#none,MULTILINGUALPARTYNAME,#none,MULTILINGUALPARTYNAME,#none,MULTILINGUALPARTYNAME,#none,MULTILINGUALPARTYNAME,#none,#none,#none,#none') %>
+							<h3 class="col-right labelHeader labelHeaderAddress" id="language2_lbl" for="language2">
+								<%=getLabelValue('language2')%>
+							</h3>
+							<%= prdFieldDataTag("#{partyAddressPckg}",'addressLine1Lang2,addressLine2Lang2,addressLine3Lang2,addressLine4Lang2','#none,MULTILINGUALPARTYNAME,#none,MULTILINGUALPARTYNAME,#none,MULTILINGUALPARTYNAME,#none,MULTILINGUALPARTYNAME,#none,#none,#none,#none') %>
+							<%= prdFieldDataTag("#{partyAddressPckg}",'countryCd,pinCode,districtCd,stateCd,cityCd','#none,MULTILINGUALPARTYNAME,#none,MULTILINGUALPARTYNAME,#none,MULTILINGUALPARTYNAME,#none,MULTILINGUALPARTYNAME,#none,#none,#none,#none') %>
+						<% end %>
+						<div style="display: none;">
+        					<%= inputTag("addressTypeCd") %>
+    					</div>
+					<% modelTagEnd %>
+				</div>
+			</div>
+		<% end %>
+	<%= subPanelTagEnd %>
+</div>

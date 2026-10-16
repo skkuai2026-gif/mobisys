@@ -1,0 +1,260 @@
+<script type="text/javascript">
+    var proposerLASame = $('input[name="<%= getObjectMapping(@quotation)%>[proposerLASame]"]');
+
+    function enableCorporate(partyObj){
+        partyTypeCd = $('select[name="'+ partyObj +'[partyTypeCd]"]');
+        if (partyTypeCd.fieldexists()){
+            if (partyTypeCd.val() == 'ORGANIZATION')
+            {
+                $('div[name="'+ partyObj +'individualDetails"]').hide();
+                $('div[name="'+ partyObj +'corporateName"]').show();
+                $('select[name="'+ partyObj +'[title]"]').val('MR').change();
+                $('input[name="'+ partyObj +'[firstname]"]').val('');
+                $('input[name="'+ partyObj +'[middlename]"]').val('');
+                $('input[name="'+ partyObj +'[lastname]"]').val('');
+                $('input[name="'+ partyObj +'[genderCd]"]').val('').change();
+                $('input[name="'+ partyObj +'[dob]"]').val('');
+                $('input[name="'+ partyObj +'[age]"]').val('');
+                $('select[name="'+ partyObj +'[occupationCd]"]').val('1').change();
+                $('input[name="'+ partyObj +'[smoker]"]').val('').change();
+            }
+            else
+            {
+                $('div[name="'+ partyObj +'individualDetails"]').show();
+                $('div[name="'+ partyObj +'corporateName"]').hide();
+                $('input[name="'+ partyObj +'[corporateName]"]').val('');
+            }
+        }
+    }
+
+     
+    function copyPayorDetails(partyObj, proposerLASameObj){
+        if ($(proposerLASameObj).filter(':checked').val() == 'COPYFROMINSURED') {
+            $('div[name="'+ partyObj + 'applicantDetails"]').hide();
+        }
+        else {
+            $('div[name="'+ partyObj + 'applicantDetails"]').show();
+            $('div[name="'+ partyObj + 'applicantDetails"] input').val('');
+            $('div[name="'+ partyObj + 'applicantDetails"] select').val('').change();
+            $('div[name="'+ partyObj + 'applicantDetails"] input[type=radio]').attr("checked", false).checkboxradio("refresh");
+        }
+    }
+
+    function copyInsuredDetails(partyObj){
+        if (proposerLASame.filter(':checked').val() == 'COPYFROMINSURED') {
+            $('div[name="'+ partyObj + 'applicantDetails"]').hide();
+        }
+        else {
+            $('div[name="'+ partyObj + 'applicantDetails"]').show();
+            $('div[name="'+ partyObj + 'applicantDetails"] input').val('');
+            $('div[name="'+ partyObj + 'applicantDetails"] select').val('').change();
+            $('div[name="'+ partyObj + 'applicantDetails"] input[type=radio]').attr("checked", false).checkboxradio("refresh");
+        }
+    }
+
+    function updateNatureOfDuty(fieldName){
+        industry = $('select[name="'+fieldName+'"]').val();
+        natureOfDuty = fieldName.replace("industryCd", "natureOfDuty")
+        occupationClass = fieldName.replace("industryCd", "occupationCd")
+        $('select[name="'+occupationClass+'"]').val('');
+        $('select[name="'+occupationClass+'"]').selectmenu("refresh", true);
+        natureOfDutyValue = $('select[name="'+natureOfDuty+'"]').val();
+        $.ajax({                 
+            url: "/app/Quotation/filterNatureOfDutyList",
+            data: {'industryCd': industry, 'natureOfDutyValue': natureOfDutyValue},
+            async:  false,
+            headers: {
+                'Transition-Enabled': false
+            },
+            success: function(data) {
+                if (('<%= @facetData[:renderOccupationPanel] %>' == 'true') && ('<%= @facetData[:renderOccupationclass] %>' == 'true')) {
+                    create = '<select id="'+natureOfDuty+'" name="'+natureOfDuty+'" onchange="filterOccupationClass(\''+natureOfDuty+'\');">';    
+                }
+                else {
+                    create = '<select id="'+natureOfDuty+'" name="'+natureOfDuty+'" onchange="filterOccupationClass(\''+natureOfDuty+'\');getQuotationProductExtraDO();">';  
+                }
+                create += data;
+                create += '</select>';
+                $('span[name="'+fieldName+'"]').html(create);
+                $('span[name="'+fieldName+'"]').trigger('create');
+            }
+        });
+    }
+
+    function filterOccupationClass(fieldName){
+        natureOfDuty = $('select[name="'+fieldName+'"]').val();
+        occupationClass = fieldName.replace("natureOfDuty", "occupationCd");
+        occupationClassValue = $('select[name="'+occupationClass+'"]').val();
+        if (natureOfDuty != "") {
+            $.ajax({
+                url: "/app/Quotation/filterOccupationClass",
+                data: {'natureOfDuty': natureOfDuty, 'occupationClass': occupationClassValue},
+                async: false,
+                headers: {
+                    'Transition-Enabled': false
+                },
+                success: function(data){
+                    create = '<select id="'+occupationClass+'" name="'+occupationClass+'" onchange="getQuotationProductExtraDO();">';
+                    create += data;
+                    create += '</select>';
+                    $('span[name="'+fieldName+'"]').html(create);
+                    $('span[name="'+fieldName+'"]').trigger('create');
+               
+                }
+            });
+        }
+    }
+
+	$(document).ready(function () {
+        oldAgeValue = "";
+        <% if @quotationParty.roleCd == "SUPPLEMENTARY" %>
+            $('input[name="<%=getObjectMapping(@quotationParty)%>[firstname]"]').addClass('supplementaryFirstname');
+      
+            $('input[name="<%=getObjectMapping(@quotationParty)%>[lastname]"]').addClass('supplimentaryLastNames');
+        <% end %>
+
+		<% if !@facetData[:readOnlyAge] %>
+            setReadOnly($("input[name='<%= getObjectMapping(@quotationParty) %>[age]']"), true);
+        <% end %>
+
+        $('select[name="<%=getObjectMapping(@quotationParty)%>[industryCd]"]').change(function(){
+            updateNatureOfDuty("<%=getObjectMapping(@quotationParty)%>[industryCd]");
+        });
+
+        $('select[name="<%=getObjectMapping(@quotationParty)%>[occupationCd]"]').change(function(){
+        	<% if @quotationParty.roleCd=="SUPPLEMENTARY" %>
+            	occupationCdChanged();
+            <% end %>
+            <% if @quotationParty.roleCd=="JOINT" %>
+            	// copyEachPayorDetails();
+            <% end %>
+        });
+
+        $('select[name="<%=getObjectMapping(@quotationParty)%>[natureOfDuty]"]').change(function(){
+            filterOccupationClass("<%=getObjectMapping(@quotationParty)%>[natureOfDuty]");
+        });
+
+        <% if @quotationParty.roleCd == "PRIMARY" %>
+            $('select[name="<%=getObjectMapping(@quotationParty)%>[coverageCountryCd]"]').change(function(){
+                <% if !@facetData[:renderCoveragecitycd] %>
+                    getQuotationProductExtraDO();
+                <% end %>
+            });
+
+            $('select[name="<%=getObjectMapping(@quotationParty)%>[coverageCityCd]"]').change(function(){
+                getQuotationProductExtraDO();
+            });
+        <% end %>
+
+        <%= setupFilterUsingFieldTargetValueMap('TitleGenderSI', false, @quotationParty) %>
+        <%= setupFilterUsingFieldTargetValueMap('CoverageCountryCity', true, @quotationParty) %>
+        <%= setupFilterUsingFieldTargetValueMap('RelationGender', true, @quotationParty) %>
+
+
+        <% if @quotationParty.roleCd == "PROPOSER" %>
+            enableCorporate("<%=getObjectMapping(@quotationParty)%>");
+
+            $('select[name="<%=getObjectMapping(@quotationParty)%>[partyTypeCd]"]').change(function(){
+               	enableCorporate("<%=getObjectMapping(@quotationParty)%>");
+            });
+
+            if ('<%= $enableCorporateSection %>' == 'false') {
+                $('select[name="<%=getObjectMapping(@quotation)%>[partyTypeCd]"]').val('INDIVIDUAL').change();
+                $('select[name="<%=getObjectMapping(@quotation)%>[partyTypeCd]"]').selectmenu('disable');
+            }
+        <% end %>
+
+        <% if @quotationParty.roleCd == "PRIMARY"%>
+            if (proposerLASame.filter(':checked').val() == 'COPYFROMINSURED') {
+                $('div[name="<%= getObjectMapping(@quotationParty)%>applicantDetails"]').hide();
+            }
+
+            $('input[name="<%=getObjectMapping(@quotation)%>[proposerLASame]"]').click(function(){
+                copyPayorDetails("<%=getObjectMapping(@quotationParty)%>",this);
+            });
+
+            $('input[name="<%=getObjectMapping(@quotationParty)%>[age]"]').focus( function(){
+                oldAgeValue = this.value;
+            });
+           
+            $('input[name="<%=getObjectMapping(@quotationParty)%>[age]"]').blur( function(){
+                if (oldAgeValue != this.value) {          
+                    if ( isNaN(this.value) || this.value < 0 || this.value == "") {
+                        $(this).val('');
+                        $('input[name="<%=getObjectMapping(@quotationParty)%>[dob]"]').val('');
+                    }
+                    else {
+                        getDOB(this.value, '<%=getObjectMapping(@quotationParty)%>[dob]');
+                    }
+                }        
+            });
+        <% end %>
+
+        <% if @quotationParty.roleCd == "JOINT" %>
+            $('input[name="<%=getObjectMapping(@quotationParty)%>[age]"]').focus( function(){
+                oldAgeValue = this.value;
+            });
+           
+            $('input[name="<%=getObjectMapping(@quotationParty)%>[age]"]').blur( function(){
+                if (oldAgeValue != this.value) {          
+                    if ( isNaN(this.value) || this.value < 0 || this.value == "") {
+                        $(this).val('');
+                        $('input[name="<%=getObjectMapping(@quotationParty)%>[dob]"]').val('');
+                    }
+                    else {
+                        getDOB(this.value, '<%=getObjectMapping(@quotationParty)%>[dob]');
+                    }
+                }        
+            });
+        <% end %>
+
+        $('input[name="<%=getObjectMapping(@quotationParty)%>[age]"]').change( function(){
+            if ( isNaN(this.value) || this.value < 0 || this.value == "") {
+                $(this).val('');
+                $('input[name="<%=getObjectMapping(@quotationParty)%>[dob]"]').val('');
+            }
+            else {
+                getDOB(this.value, '<%=getObjectMapping(@quotationParty)%>[dob]');
+            }
+        });
+
+        $('input[name="<%=getObjectMapping(@quotationParty)%>[dob]"]').on('change', function(){ 
+            $('input[name="<%=getObjectMapping(@quotation)%>[currentPartyRole]"]').val($('input[name="<%=getObjectMapping(@quotationParty)%>[roleCd]"]').val());
+
+            getAge(this.value, '<%=getObjectMapping(@quotationParty)%>[age]', '', '');
+
+        });
+
+        $('input[name="<%=getObjectMapping(@quotationParty)%>[contactNum]"]').change(function(){
+            contactNumPattern = new RegExp(/[^0-9\*\+\-]/);
+            returnValue = contactNumPattern.test(this.value); 
+            if (returnValue == true || this.value < 0) {
+                showDialog("", "Please enter valid number.", 'warning', 0, 'capture');
+                $(this).val('');
+                return false;
+            }
+        });
+
+        $('[name*="contactNum"]').unbind("change"); 
+        // Function to remove Non-Numeric characters
+        $('[name*="contactNum"]').change( function() {
+            this.value=this.value.replace(/[^0-9]/g,"");
+        });
+
+        //Mark fields mandatory based on Validation Metadata
+    <% 
+    if @mandatoryFields
+        if @mandatoryFields[@quotationParty]
+            @mandatoryFields[@quotationParty].each do |field| 
+    %>
+            $("label[for='<%=getObjectMapping(@quotationParty)%>[<%= field %>]']").append('<label for=" *" class="mandatory1">&nbsp;*</label>');
+    <% 
+            end
+        end
+      
+    end
+    %>
+
+        
+	});
+</script>

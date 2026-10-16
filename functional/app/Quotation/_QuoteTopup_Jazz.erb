@@ -1,0 +1,61 @@
+<%= panelTagStart(false) %>
+	<%= subPanelTagStart("TOPUPINFORMATION","true","TOPUPTYPESELECTIONREQUIRED,INITIALINVESTMENTREQUIRED,REGULARTOPUPSREQUIRED,ADHOCTOPUPSREQUIRED,TARGETFUNDVALUE,TRANSFERCONTRIBUTION",true) %>
+		<div id="topup">
+			<%= prdFieldDataTag("#{@quotationPckg}.PolicyDO","topupOptionCd","TOPUPTYPESELECTIONREQUIRED") %>
+		</div>
+
+		<div id="initialTopup">
+			<%= panelTagStart(false) %>
+				<%= subPanelTagStart("initailTopUpDetails","false","INITIALINVESTMENTREQUIRED",false) %>
+					<%= prdFieldDataTag("#{@quotationPckg}.PolicyDO","initialTopupFl","","",2,false) %>
+					<%= modelTagStart("initialInvesttopup", @initialTopup, @quotation, 50) %>
+						<%= prdFieldDataTag("#{@quotationPckg}.PolicyTopUpDO","topUpAmount","","initialInvestmentAmt") %>
+						<div style="display: none;">
+							<%= inputTag("topUpTypeCd") %>
+						</div>
+					<% modelTagEnd %>
+				<%= subPanelTagEnd %>
+			<%= panelTagEnd %>
+		</div>
+
+
+		<div id="regularTopup">
+			<%= panelTagStart(false) %>
+				<%= subPanelTagStart("regularTopUpDetails","false","REGULARTOPUPSREQUIRED",false) %>
+					<%= prdFieldDataTag("#{@quotationPckg}.PolicyDO","regularTopupFl","","",2,false) %>
+					<%= modelTagStart("regulartopup", @regularTopup, @quotation, 51) %>
+						<%= prdFieldDataTag("#{@quotationPckg}.PolicyTopUpDO","topUpPeriod","","regularTopUpPeriod") %>
+						<%= prdFieldDataTag("#{@quotationPckg}.PolicyTopUpDO","topUpAmount,topupFrequencyVal","","regularPolicyTopupAmt,regularTopupFrequencyVal") %>
+						<div style="display: none;">
+							<%= inputTag("topUpTypeCd") %>
+						</div>
+					<% modelTagEnd %>
+				<%= subPanelTagEnd %>
+			<%= panelTagEnd %>
+		</div>
+
+
+		<div id="targetFund">
+			<%= panelTagStart(false) %>
+				<%= subPanelTagStart("targetFundValue","false","TARGETFUNDVALUE",false) %>
+					<%= modelTagStart("basePlan", @baseProduct, @quotation) %>
+						<%= prdFieldDataTag("#{@quotationPckg}.PolicyProductDO","targetFundFl,payingYears,targetFundVal,targetPeriodRefCd,targetPeriod") %>
+					<% modelTagEnd %>
+				<%= subPanelTagEnd %>
+			<%= panelTagEnd %>
+		</div>
+
+
+		<input type="hidden" name="topupCount" id="topupCount" value='<%= @topupCount %>'/>
+		<div id="adhocTopup">
+			<%= fieldDataEntryGridTagStart('adhoctopupLst', 'com.c2lbiz.symbiosys.insurance.businesscommon.dataobjects.policy.PolicyTopUpDO', 'topUpTypeCd,policyYearFrom,policyYearTo,topUpAmount', @adHocTopups, @quotation,@adhocTopupLabelObject, 'delete', 52, "", true, false, true, false, true, "adhoctopup","","","ADHOCTOPUPSREQUIRED",false)%>
+			<%= fieldDataEntryGridTagEnd('adhoctopupLst', @adHocTopups ,'ADDADHOCTOPUP',true,false,true) %>
+		</div>
+
+
+		<div id="transferContribution">
+			<%= fieldDataEntryGridTagStart('transferContributionLst', 'com.c2lbiz.symbiosys.insurance.businesscommon.dataobjects.policy.PolicyTopUpDO', 'topUpTypeCd,policyYearFrom,policyYearTo,topUpAmount', @contributionTopups, @quotation,@transferTopupLabelObject, 'delete', 52+@adHocTopups.size, "", true, false, true, false, true, "transferContributionDetail","","","TRANSFERCONTRIBUTION",false)%>
+			<%= fieldDataEntryGridTagEnd('transferContributionLst', @contributionTopups, 'transferContribution',true,false,true) %>
+		</div>
+	<%= subPanelTagEnd %>
+<%= panelTagEnd %>

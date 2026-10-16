@@ -1,0 +1,18 @@
+<%= renderObject(@insured, @quotation) %>
+<div class="illustrationdisplay" name ='InsuredInformation'>
+    <div class="legend">
+        <label class="strongLabel">
+            <%= getLabelValue('PRIMARYINSURED') %>
+            <a href="#" class="scrollTopButton ui-icon-carat-u ui-btn-icon-notext ui-alt-icon ui-btn-inline"></a>
+            <a href="#" class="expandButton ui-icon-plus ui-btn-icon-notext ui-alt-icon ui-btn-inline"/></a>
+            <a href="#" class="collapseButton ui-icon-minus ui-btn-icon-notext ui-alt-icon ui-btn-inline"/></a>
+        </label>
+    </div>
+    <div class="panelContent">
+        <div name="insured"> 
+        <% @quotationParty = @insured %>
+          <%= render :partial => "capturePartyDetails" %>
+        </div>
+    </div>
+</div>
+

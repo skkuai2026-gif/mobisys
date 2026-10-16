@@ -1,0 +1,189 @@
+<%= headerTag(getLabelValue('captureSign'), '', "","#{url_for :action => :showProposal, :id=> @policy.object}") %>
+<div data-role="main" class="ui-content">
+    <div class="main-content-wrapper main-content-full">
+		<%= formTagStart("signatureForm", "#{url_for :action => :submitSignature}") %>
+			<div class="project-content-bg">
+                <div class="div-with-border no-padding-bottom preferences-content">
+					<%= modelTagStart("policy", @policy) %>
+					<% modelTagEnd %>
+					<%= modelTagStart("signatureContainer", @signatureContainer) %>
+						<div style="display: none">
+							<%= inputTag("entityGuid") %>
+							<%= inputTag("entityTypeCd") %>
+						</div>
+	                    <div class="content-fullform">
+							<h4><%= getLabelValue('agentDeclarationStart') %></h4>
+							<%
+								errorHash = Hash.new
+								if @errors!=nil && !@errors.empty?
+									[@proposerSign,@insuredSign,@supplementarySign,@agentSign].each do |obj|
+										if obj.to_s != ""
+											@errors.each do |tabId, tabErrors|								        	
+									            errorHash[obj.guid] = Hash.new
+									            unless tabErrors[obj.guid].to_s == "" || tabErrors[obj.guid].empty?
+										            if tabErrors[obj.guid].has_key?("placeOfSignature") && tabErrors[obj.guid]["placeOfSignature"].to_s != "" && !tabErrors[obj.guid]["placeOfSignature"].empty?
+										                errorHash[obj.guid]["placeOfSignature"] = tabErrors[obj.guid]["placeOfSignature"]
+										                errorHash[obj.guid]["placeOfSignature_errorStyle"] = "error-msg"
+										            end
+										            if tabErrors[obj.guid].has_key?("signatureDt") && tabErrors[obj.guid]["signatureDt"].to_s != "" && !tabErrors[obj.guid]["signatureDt"].empty?
+										                errorHash[obj.guid]["signatureDt"] = tabErrors[obj.guid]["signatureDt"]
+										                errorHash[obj.guid]["signatureDt_errorStyle"] = "error-msg"
+										            end
+										        end
+										    end
+								        end
+								    end
+								end
+							%>
+							<% if @proposerSign.to_s != "" %>
+								<%= modelTagStart("proposerSign", @proposerSign, @signatureContainer) %>
+									<%= signatureTag("signature", "policyOwnerSignature") %>
+	                            	<div class='project-data' style="float: left">
+	                            		<div class='row-details'>
+			                                <%= labelTag("signatureDt") %>
+			                                <p class='col-right'>
+				                                <%= inputTag("signatureDt") %>
+				                                <%= errorTag("signatureDt") %>
+											</p>
+										</div>
+									</div>
+									<div class='project-data' style="float: left">
+	                            		<div class='row-details'>
+			                                <%= labelTag("placeOfSignature") %>
+			                                <p class='col-right'>
+				                                <%= inputTag("placeOfSignature") %>
+				                                <%= errorTag("placeOfSignature") %>
+											</p>
+										</div>
+									</div>
+
+	                            	<div style="display: none">
+	                                    <%= inputTag("signatureTypeCd") %>
+	                                    <%= inputTag("roleCd") %>
+	                                    <%= inputTag("object") %>
+	                                    <%= inputTag("entityGuid") %>
+	                                    <%= inputTag("partyGuid") %>
+	                                    <%= inputTag("entityType") %>
+	                                </div>
+								<% modelTagEnd %>
+							<% end %>
+							<% if @insuredSign.to_s != "" %>
+								<%= modelTagStart("insuredSign", @insuredSign, @signatureContainer) %>
+									<%= signatureTag("signature", "primaryInsuredSignature") %>
+									<div class='project-data' style="float: left">
+	                            		<div class='row-details'>
+			                                <%= labelTag("signatureDt") %>
+			                                <p class='col-right'>
+				                                <%= inputTag("signatureDt") %>
+				                                <%= errorTag("signatureDt") %>
+											</p>
+										</div>
+									</div>
+									<div class='project-data' style="float: left">
+	                            		<div class='row-details'>
+			                                <%= labelTag("placeOfSignature") %>
+			                                <p class='col-right'>
+				                                <%= inputTag("placeOfSignature") %>
+				                                <%= errorTag("placeOfSignature") %>
+											</p>
+										</div>
+									</div>
+
+		                            <div style="display: none">
+	                                    <%= inputTag("signatureTypeCd") %>
+	                                    <%= inputTag("roleCd") %>
+	                                    <%= inputTag("object") %>
+	                                    <%= inputTag("entityGuid") %>
+	                                    <%= inputTag("partyGuid") %>
+	                                    <%= inputTag("entityType") %>
+	                                </div>
+								<% modelTagEnd %>
+							<% end %>
+
+							<% if @supplementarySign.to_s != "" %>
+								<%= modelTagStart("supplementarySign", @supplementarySign, @signatureContainer) %>
+									<%= signatureTag("signature", "supplementaryInsuredSignature") %>
+	                            	<div class='project-data' style="float: left">
+	                            		<div class='row-details'>
+			                                <%= labelTag("signatureDt") %>
+			                                <p class='col-right'>
+				                                <%= inputTag("signatureDt") %>
+				                                <%= errorTag("signatureDt") %>
+											</p>
+										</div>
+									</div>
+
+									<div class='project-data' style="float: left">
+	                            		<div class='row-details'>
+			                                <%= labelTag("placeOfSignature") %>
+			                                <p class='col-right'>
+				                                <%= inputTag("placeOfSignature") %>
+				                                <%= errorTag("placeOfSignature") %>
+											</p>
+										</div>
+									</div>
+
+		                            <div style="display: none">
+	                                    <%= inputTag("signatureTypeCd") %>
+	                                    <%= inputTag("roleCd") %>
+	                                    <%= inputTag("object") %>
+	                                    <%= inputTag("entityGuid") %>
+	                                    <%= inputTag("partyGuid") %>
+	                                    <%= inputTag("entityType") %>
+	                                </div>
+								<% modelTagEnd %>
+							<% end %>
+
+							<%= modelTagStart("agentSign", @agentSign, @signatureContainer) %>
+								<%= signatureTag("signature", "agentSignHeader") %>
+                            	<div class='project-data' style="float: left">
+                            		<div class='row-details'>
+		                                <%= labelTag("signatureDt") %>
+		                                <p class='col-right'>
+			                                <%= inputTag("signatureDt") %>
+			                                <%= errorTag("signatureDt") %>
+										</p>
+									</div>
+								</div>
+
+								<div class='project-data' style="float: left">
+                            		<div class='row-details'>
+		                                <%= labelTag("placeOfSignature") %>
+		                                <p class='col-right'>
+			                                <%= inputTag("placeOfSignature") %>
+			                                <%= errorTag("placeOfSignature") %>
+										</p>
+									</div>
+								</div>
+
+								<div style="display: none">
+                                    <%= inputTag("signatureTypeCd") %>
+                                    <%= inputTag("object") %>
+                                    <%= inputTag("entityGuid") %>
+                                    <%= inputTag("partyGuid") %>
+                                    <%= inputTag("entityType") %>
+                                </div>
+							<% modelTagEnd %>
+	                    </div>
+					<% modelTagEnd %>
+                </div>
+            </div>
+        <%= formTagEnd() %>
+	</div>
+    <div class="footer-bg">
+        <a href="#" name="save" onclick="javascript: sendsignature();"><%= getLabelValue('SUBMIT') %></a>
+    </div>
+</div>
+<script type="text/javascript">
+
+$(document).ready(function () {
+	initializeSignature();
+	<% if @policy.policyNum.to_s != "" %>
+        disableAllFormFields();
+    <% end %>
+});
+function sendsignature() {
+	document.getElementById('signatureForm').submit();
+	loading('show');    
+}
+</script>

@@ -1,0 +1,113 @@
+.ui-collapsible-content > .ui-listview:not(.ui-listview-inset) {
+	margin: 2px;
+}
+.ui-radio {
+	display: inline;
+	margin-left: 0px !important;
+}
+.ui-radio label {
+	font-size: 1em !important;
+	height: 20px;
+	width: 50px;
+}
+.ui-select {
+	width: 300px !important;
+	margin-left: 0px !important;
+}
+.ui-input-text {
+	display: inline-block;
+	width: 300px;
+	margin-left: 0px !important;
+}
+.ui-radio input {
+	top: 100%;
+}
+.ui-checkbox {
+	display: block;
+}
+.question {
+    white-space: normal;
+	padding-top: 1em;
+}
+.answer {
+    padding-left: 625px;
+}
+.ui-icon-delete {
+	float: right;
+	margin-right: 25px !important;
+}
+.illustrationdisplay.questionSetBlock {
+	width: 96%;
+}
+.ui-grid-a, .ui-grid-b, .ui-grid-c, .ui-grid-d, .ui-grid-solo {
+	padding-bottom: 10px;
+}
+input.ui-input-text {
+	width: 285px;
+}
+textarea.ui-input-text {
+	width: 300px;
+}
+.ui-controlgroup-controls {
+	margin-left: 0px;
+}
+
+@media all and (max-width: 1441px) {
+	.answer {
+	    padding-left: 350px;
+	}
+	.ui-icon-delete {
+		float: right;
+		margin-right: 15px !important;
+	}
+}
+
+@media all and (max-width: 1367px) {
+	.answer {
+	    padding-left: 300px;
+	}
+	.ui-icon-delete {
+		float: right;
+		margin-right: 20px !important;
+	}
+}
+
+@media all and (max-width: 1281px) {
+	.answer {
+	    padding-left: 250px;
+	}
+	.ui-icon-delete {
+		float: right;
+		margin-right: 35px !important;
+	}
+}
+
+@media all and (max-width: 1025px) {
+	.answer {
+	    padding-left: 150px;
+	}
+	.ui-icon-delete {
+		float: right;
+		margin-right: 15px !important;
+	}
+}
+
+@media all and (max-width: 961px) {
+	.answer {
+	    padding-left: 125px;
+	}
+	.ui-icon-delete {
+		float: right;
+		margin-right: 15px !important;
+	}
+}
+
+@media all and (max-width: 769px) {
+	.answer {
+	    padding-left: 30px;
+	}
+	.ui-icon-delete {
+		float: right;
+		margin-right: 15px !important;
+	}
+}

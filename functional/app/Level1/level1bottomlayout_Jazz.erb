@@ -1,0 +1,136 @@
+<link rel="stylesheet" type="text/css" href="/public/css/style.css" /> 
+<%= pageTagStart('collateralPage','Symbiosys - Sales Illustration') %>
+    <%= headerTag("COLLATERAL", "home") %>
+
+    <div data-role="main" class="ui-content">
+        <%= menuTag('COLLATERAL',true) %>       
+        <div class="main-content-wrapper" style="background-color: white;">
+            <% randomId = rand.to_s[2..-1] %>
+            <ul id="css3menu1" class="topmenu" style="width:100%;">
+                <% last = @level0s.length-1
+                @level0s.each_with_index do |level0,index|
+                    if index == last
+                        menuString = "lastmenu"
+                    else
+                        menuString = "topmenu"
+                    end %>
+                    <li class="<%=menuString%>" style="width:16%;">
+                        <% if level0.menu == "YES" %>
+                            <a href="#">
+                        <% elsif level0.menu == "NO" %>
+                            <a href="/app/Level0/{<%=level0.object%>}/click?level0id=<%=level0.object%>">
+                        <% end %>
+                        <% if level0.levelCd == @level0.levelCd %>
+                            <label class="level0label0selected"><%= level0.name1 %></label>
+                        <% else %>
+                            <label class="level0label0"><%= level0.name1 %></label>
+                        <% end %>
+                        <BR>
+                        <label class="level0label1"><%= level0.name2 %></label>
+                        </a>
+                        <% if level0.menu == "YES" %>
+                            <ul>
+                                <% @level1s.each do |level1|
+                                    if level1.level0_levelCd == level0.levelCd %>
+                                        <li style="position:relative;display:inline-block;">
+                                            <a href="/app/Level1/{<%=level0.object%>}/click?level1id=<%=level1.object%>">
+                                                <img src="<%=@collateralHM[level1.icon].fileName%>" alt="<%=@collateralHM[level1.icon].header%>"/>
+                                            </a>
+                                        </li>
+                                    <% end 
+                                end %>
+                            </ul>
+                        <% end %>
+                    </li>
+                <% end %>
+            </ul>
+  
+            <!-- Left Navigation panels -->
+            <div class="leftnavigation">
+                <div class="level1header">
+                    <label class="level1label0"><%= @level0.name1 %></label>
+                    <br>
+                    <label class="level1label1"><%= @level0.name2 %></label>
+                </div>    
+                <div class="sec-nav">
+                    <% @level1s_level0.each do |level1| 
+                        if level1.levelCd == @level1_clicked.levelCd 
+                            if level1.name.length < 30 %>          
+                                <li class="sec-nav-li-selected">
+                                    <%= level1.name %>
+                                </li>
+                            <% else %>          
+                                <li class="sec-nav-li-selected-small">
+                                    <%= level1.name %>
+                                </li>
+                            <% end
+                        else %>
+                            <a href="/app/Level1/{<%=@level0.object%>}/click?level1id=<%=level1.object%>">
+                                <% if level1.name.length < 30 %>          
+                                    <li class="sec-nav-li">
+                                        <%= level1.name %>
+                                    </li>
+                                <% else %>          
+                                    <li class="sec-nav-li-small">
+                                        <%= level1.name %>
+                                    </li>
+                                <% end %>
+                            </a>
+                        <% end
+                    end %>
+                </div>
+            </div>
+            <!-- End Left Navigation panels -->
+  
+            <!-- Right Content panels -->    
+            <div id="contentpane_<%=randomId%>" class="rightcontentpane"><div>
+            <!-- Selected Level 2 object data -->
+            <div id="selectedlevel2data" class="bottomlayoutlevel2datadiv">
+                <span class="bottomlayoutlevel1header"><%= @level2_clicked.header%></span>
+                <hr>      
+                <table class="maincontentvideoplayerdiv" width="100%">
+                    <tr>
+                        <td valign="bottom">
+                            <% @level2collaterals.each do |collateral|
+                                if collateral.fileType == "MP4" %>
+                                    <a href="#" id="<%=collateral.collateralCd%>_id" >
+                                        <img src="<%=@collateralHM['PLAYVIDEO'].fileName%>" style="width: 100%; align:center;">
+                                    </a>                    
+                                    <script>
+                                        $('#<%=collateral.collateralCd%>_id').click(function () {
+                                            $.get("/app/Collateral/showpopup?medianame=<%=collateral.collateralCd%>",function(data) {});
+                                        }); 
+                                    </script>
+                                <% end       
+                            end %>
+                        </td>
+                    </tr>
+                </table>
+            </div>
+        
+            <!-- List of Level 2 objects -->  
+            <div id="level2list" class="bottomlayoutlevel2menudiv">
+                <table class="bottomlayoutlevel2menutable">
+                    <tr>
+                        <% @level2s_first.each do |level2| %>
+                            <td>            
+                                <% if level2.levelCd == @level2_clicked.levelCd %>
+                                    <a href="#">
+                                        <div class="bottomactivemenu">
+                                <% else %>
+                                    <a href="/app/Level1/{<%=@level0.object%>}/click?level1id=<%=@level1_clicked.object%>&level2id=<%=level2.object%>">
+                                        <div class="bottominactivemenu">
+                                <% end %>
+                                    <%=level2.header%>
+                                </div>
+                                </a>
+                            </td>              
+                        <% end %>        
+                    </tr>
+                </table>
+            </div>
+        </div>
+    </div>
+<%= pageTagEnd %>
+
+

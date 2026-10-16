@@ -1,0 +1,194 @@
+
+
+<link rel="stylesheet" href="/public/css/FNA/shame.css">
+<div data-role="content" id="capture" style="-webkit-transform: none;">
+<form method="POST" action="<%= url_for :action => :submitFNAOtherTargetNeed %>" name="FNAOtherTargetNeedForm" id="FNAOtherTargetNeedForm">
+
+<%= renderObject(@fnaRequest) %>
+<%= renderObject(@fnaProposer, @fnaRequest) %>
+<%= renderObject(@fnaOtherTargetNeed, @fnaRequest) %>
+<input type="hidden"  id ="changeOtherNeed" name="changeOtherNeed" value=""/>
+
+
+<div class="header" style="padding-top:15px;">
+        <span class="title"><%= getLabelValue('INSURED_NEED') %></span>
+        <span class="description"><%= getLabelValue('FIN_FIGURES') %></span>
+        <!-- <span class="set-right required-note" style="padding-top:0px;"><%#= getLabelValue('REQD_FIELDS') %></span> -->
+    </div>
+    <div class="illustrationdisplay">
+        <div class="card">
+           <div class="legend rates-header">
+            <label class="strongLabel"><%= getLabelValue('EXPECTED_RATES') %></label>
+            <a id="inline" href="javascript: openPDF();" style="width: 100%;font-weight: bold;color: #4a7295;font-size: 14px;" ><%= getLabelValue('AVERAGE_RATES') %></a>
+            </div>
+
+            <div data-role="dualfieldcontain" class="ui-dual-field-contain ui-body ui-br">
+                <div class="half">
+                    <div class="group">
+                       <%= renderNumericField('inflationRate', thosandSeperator(@fnaRequest.inflationRate.to_s) ,'inflationRate', @fnaRequest, ' maxlength="6" pattern="/([^\s])" onkeypress="return isNumberKey(event)" onchange="return checkifNumdeci(this.value, this.id)" class="material-input"') %>
+                       <%= renderLabel('inflationRate', 'EXPECTEDINFLATIONRATE', 'mandatory material-label', @fnaRequest) %>
+                    </div>
+                </div>
+                <div class="half">
+                    <div class="group">
+                    <%= renderNumericField('returnRate', thosandSeperator(@fnaRequest.returnRate.to_s) ,'returnRate', @fnaRequest, ' maxlength="6" pattern="/([^\s])" class="material-input" onkeypress="return isNumberKey(event)" onchange="return checkifNumdeci(this.value, this.id)"') %>
+                       <%= renderLabel('returnRate', 'EXPECTEDRETURNRATE', 'mandatory material-label', @fnaRequest) %>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <br/>
+         <div class="tabs">
+            <div style="margin-bottom: 0px;">
+                <a href="#" onclick="changeTab($(this))" data-url="getNeeds"><p><%= getLabelValue('LIFEPROTNEEDS') %></p></a>
+            </div>
+            <div style="margin-bottom: 0px;">
+                <a href="#" onclick="changeTab($(this))" data-url="healthNeeds"><p><%= getLabelValue('OTHER_LIFE_RISK_NEED') %></p></a>
+            </div>
+            <div style="margin-bottom: 0px;">
+                <a href="#" onclick="changeTab($(this))" data-url="retirementNeeds"><p><%= getLabelValue('RETIREMENT_PLANNING') %></p></a>
+            </div>
+            <div style="margin-bottom: 0px;">
+                <a href="#" onclick="changeTab($(this))" data-url="otherTargetSaving"><p class="active"><%= getLabelValue('OTHER_TARGET_SAVINGS') %></p></a>
+            </div>
+            <div style="margin-bottom: 0px;">
+                <a href="#" onclick="changeTab($(this))" data-url="shortfallSummary"><p><%= getLabelValue('SHORTFALL_SUMMARY') %></p></a>
+            </div>
+        </div>
+      <div class="clear" style="border-top: 5px solid #eaab00;"></div>
+        <div class="tabs-content">
+          <div class="card">
+            <div class="note"><%= getLabelValue('ALL_VALUES_IN_HKD') %></div>
+            <div data-role="dualfieldcontain" class="ui-dual-field-contain ui-body ui-br">
+              <div class="third with-spacer">
+                <div class="group">
+                  <%= renderNumericField('TOTAL_CURRENT_SHORTFALL', thosandSeperator(@totalcurrentshortfall.to_s) ,'TOTAL_CURRENT_SHORTFALL', nil, ' maxlength="10" pattern="/([^\s])" class="material-input " tabindex="-1"  readonly="true" style="background-color: #c8c8c8 !important;margin-top:7px !important;"') %>
+                  <%= renderLabel('TOTAL_CURRENT_SHORTFALL', 'TOTAL_CURRENT_SHORTFALL', 'mandatory material-label', nil) %>
+                </div>
+              </div>
+              <div class="operation-label"> : </div>
+              <div class="third with-spacer">
+                <div class="group">
+                  <%= renderNumericField('TOTAL_MONTHLY_SAVINGS_SHORTFALL', thosandSeperator(@totalmonthlysavingsshortfall.to_s) ,'TOTAL_MONTHLY_SAVINGS_SHORTFALL', nil, ' maxlength="10" pattern="/([^\s])" onkeypress="return numbersonly(event)" class="material-input "  tabindex="-1" readonly="true" style="background-color: #c8c8c8 !important;margin-top:7px !important;"') %>
+                  <%= renderLabel('TOTAL_MONTHLY_SAVINGS_SHORTFALL', 'TOTAL_MONTHLY_SAVINGS_SHORTFALL', 'mandatory material-label', nil) %>
+                </div>
+              </div>
+              <div class="operation-label"> <%= getLabelValue('OR') %> </div>
+              <div class="third with-spacer">
+                <div class="group">
+                 <%= renderNumericField('TOTAL_LUMP_SUM_INV_SHORTFALL', thosandSeperator(@totallumpsuminvshortfall.to_s),'TOTAL_LUMP_SUM_INV_SHORTFALL', nil, ' maxlength="10" pattern="/([^\s])" onkeypress="return numbersonly(event)" class="material-input " tabindex="-1"  readonly="true" style="background-color: #c8c8c8 !important;margin-top:7px !important;"') %>
+                  <%= renderLabel('TOTAL_LUMP_SUM_INV_SHORTFALL', 'TOTAL_LUMP_SUM_INV_SHORTFALL', 'mandatory material-label', nil) %>
+              </div>
+            </div>
+          </div>
+        </div>
+      <div class="card">
+       <div class="legend"><label class="strongLabel"><%= getLabelValue('OTHER_TARGET_TARGETS') %></label></div>
+       
+  
+      
+       <div name ="FNAadditionalgoalTabs" id = "FNAadditionalgoalTabs">
+        <%= render(:partial => 'FNAOther_Target_Saving_Need_Additional_Goals')%>
+       </div>
+        
+      <% if @fnaRequest.statusCd.to_s == "FNASIGNED" || @fnaRequest.statusCd.to_s == "FNASUBMIT" || @fnaRequest.statusCd.to_s == "SYNCDONE"  %>
+        <div class="ui-grid-b">
+          <div class="ui-dual-field-contain ui-body ui-br">
+            <div class="half">
+              <a class="ui-btn ui-state-disabled" onclick="additionalgoal()"><%= getLabelValue('ADD_TARGET_GOAL') %></a>
+            </div>
+          </div>
+        </div>
+      <% else %>
+      <div class="ui-grid-b">
+          <div class="ui-dual-field-contain ui-body ui-br">
+            <div class="half">
+              <a class="ui-btn" onclick="additionalgoal()"><%= getLabelValue('ADD_TARGET_GOAL') %></a>
+            </div>
+          </div>
+        </div>
+      <% end %>
+       
+      </div>   
+	</div>
+   <% if @fnaRequest.statusCd.to_s == "FNASIGNED" || @fnaRequest.statusCd.to_s == "FNASUBMIT" || @fnaRequest.statusCd.to_s == "SYNCDONE"  %>
+       <% else %>
+   <div class="ui-dual-field-contain ui-body ui-br">
+          <div class="half">
+            <a class="button_UI_1 ui-link ui-btn selected" onclick="calculateothertargetsavingneeds()"><%= getLabelValue('CALCULATE') %></a>
+          </div>
+        </div>
+        <% end %>
+  <div class="ui-dual-field-contain ui-body ui-br">
+      <div class="half">
+        <a class="button_UI_1 ui-link ui-btn selected" onclick="changeTab($(this))" data-url="shortfallSummary"><%= getLabelValue('NEXT_SECTION') %></a>
+      </div>
+    </div>
+	 
+	</div>
+    
+    <style >
+        .button_UI {
+            background-color:#efbc33!important;
+            border-radius: 7px;
+            border-style: none;
+            color: #003946 !important;
+            display: inline-block;
+            font-size: 14px !important;
+            max-width: 200px;
+            margin: 0;
+            text-shadow: none !important;
+            font-weight: 700;
+            text-align: center;
+            line-height: 1.3;
+            /*padding: .8em 1.5em !important;*/
+            width: 100px;
+        }
+        .button_UI_1 {
+            background-color:#efbc33!important;
+            border-radius: 7px;
+            border-style: none;
+            color: #003946 !important;
+            display: inline-block;
+            font-size: 14px !important;
+            max-width: 200px;
+            margin: 0;
+            text-shadow: none !important;
+            font-weight: 700;
+            text-align: center;
+            line-height: 1.3;
+            /*padding: .8em 1.5em !important;*/
+            /*width: 100px;*/
+        }
+    </style>
+
+<%= render(:partial => 'FNAOther_Target_SavingJS')%>
+
+</form>
+</div>
+ <div class="" data-role="dualfieldcontain" align="">
+        <div class="">
+            <div class="group" style="font-size: 14px;">
+                <%= getLabelValue('INSTRUCTION_TEXT_NEEDS2') %>
+            </div>
+        </div>     
+    </div>
+
+ <!--   <div class="" data-role="dualfieldcontain">
+        <div class="half"  align="left" style="margin:0% 0% 0% 2%">
+            <div class="group">
+                <a href="#" id="previousTab"  class="button_UI ui-link ui-btn selected"  style="" onclick="previousTab()">
+                    <%#= getLabelValue('PREVIOUS') %>
+                </a>
+
+            </div>
+        </div>
+
+        <div class="half" align="right">
+            <div class="group" >
+                <a href="#"  id="nextTab"  class="button_UI ui-link ui-btn selected"  style="" onclick="nextTab()" >
+                    <%#= getLabelValue('NEXT') %> 
+                </a>   
+            </div>
+        </div>
+    </div> -->

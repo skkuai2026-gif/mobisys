@@ -1,0 +1,29 @@
+<li class="ui-field-contain">
+    <%= renderObject(@topUp, @quotation) %>
+    <%= renderHiddenField('topUpTypeCd', @topUp.topUpTypeCd, 'topUpTypeCd', @topUp) %>
+    <%= renderHiddenField('removed', @topUp.removed, 'removed', @topUp) %>
+
+    <div class="ui-grid-c">
+        <div class="ui-block-a" name="<%= getObjectMapping(@topUp) %>[policyYearFrom]">
+            <% if @facetData[:renderPolicyyearfrom] %>
+                <%= renderCountField('policyYearFrom', @topUp.policyYearFrom, nil, @topUp, 'maxlength="3"') %>
+            <% end %> 
+        </div>
+        <div class="ui-block-b" name="<%= getObjectMapping(@topUp) %>[policyYearTo]"> 
+            <% if @facetData[:renderPolicyyearto] %>
+                <%= renderCountField('policyYearTo', @topUp.policyYearTo, nil, @topUp, 'maxlength="3"') %>
+            <% end %>  
+        </div>
+        <div class="ui-block-c" name="<%= getObjectMapping(@topUp) %>[topUpAmount]">
+            <% if @facetData[:renderTopupamount] %>
+                <%= renderAmountField('topUpAmount', @topUp.topUpAmount, nil, @topUp, 'maxlength="20" style="margin-left:5%;"') %>
+                <%=attachMask("#{getObjectMapping(@topUp)}[topUpAmount]") %>
+            <% end %> 
+        </div>
+        <div class="ui-block-d">
+            <input id="<%= getObjectMapping(@topUp) %>" type="button" class="removeButton" data-inline="true" data-icon="delete" data-iconpos="notext" onclick="removeTopup('<%= getObjectMapping(@topUp)%>');"/>
+        </div>
+    </div>
+</li>
+<%= render :partial => "addTopupJS" %>
+

@@ -1,0 +1,11 @@
+<%= pageTagStart('e-application','Symbiosys - EAPP') %>
+	<%= headerTag("#{@insuranceType}EAPPLICATION","search") %>
+	<%= formTagStart("Search","/app/Policy/searchProposal") %>
+		<div data-role="main" class="ui-content">
+			<%= menuTag('EAPP',true) %>
+			<%= listSearchTag("SearchProposalTab","","SearchPolicyDO", true, true,"","","","/app/Policy/addProposal",'','',"","",true,"") %>
+			<input type="hidden" name="insuranceTypeCd" id="insuranceType" value='<%= @insuranceType %>'/>
+	    </div>
+    <%= formTagEnd %>
+<%= pageTagEnd %>
+<script src="EAPPSearch_Jazz.js" type="text/javascript"></script>

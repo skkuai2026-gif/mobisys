@@ -1,0 +1,525 @@
+
+<script type="text/javascript" src="/public/js/jquery.fancybox.pack.js"></script>
+<link rel="stylesheet" href="/public/css/jquery.fancybox.css" type="text/css" media="screen" />
+
+<% saLabel = renderProductLabel('SALABEL', @product) %>
+<% annualPremiumLabel = renderProductLabel('ANNUALPREMIUMLABEL', @product) %>
+<%= renderHiddenField('currentLayout',@quotation.currentLayout,'currentLayout', @quotation) %>
+<%= renderHiddenField('productTypeCd',@baseProduct.productTypeCd,'productTypeCd', @baseProduct) %>
+<%= renderHiddenField('productSeq',@baseProduct.productSeq, 'productSeq', @baseProduct)%>
+<%= renderHiddenField('productVersion',@baseProduct.productVersion, 'productVersion', @baseProduct)%>
+<%= renderHiddenField('partyRoleCd',@baseProduct.partyRoleCd,'partyRoleCd', @baseProduct) %>
+<%= renderHiddenField('extraPremium', @baseProduct.extraPremium, 'extraPremium', @baseProduct)%>
+<%= renderHiddenField('annualizedPremium',@baseProduct.annualizedPremium,'annualizedPremium', @baseProduct) %>
+<%= renderHiddenField('wopPremium', @baseProduct.wopPremium, 'wopPremium', @baseProduct)%>
+<%= renderHiddenField('premiumSAFl', @baseProduct.premiumSAFl, nil, @baseProduct) %>
+<%#= renderHiddenField('currencyCd',@baseProduct.currencyCd,'currencyCd', @baseProduct) %>
+<!-- product_selection_page flag removed from rhoconfig.txt/settings.erb. Following code is kept if required in future -->
+<%if $rhoconfig[:product_selection_page] == 'YES' %>
+    <div>
+        <a data-role="button" id="inline" href="#data" style="width: 30%; height: 32px; float: right; margin: 0% 4% 1% 1%;"><%= getLabelValue('SELECT/CHANGEPRODUCT')  %></a>
+    </div>
+<%end%>
+<div class="illustrationdisplay" name = "basePlan" >
+    <div class="legend">
+        <label class="strongLabel">
+            <%= getLabelValue('basePlanDetails') %>
+            <a href="#" class="scrollTopButton ui-icon-carat-u ui-btn-icon-notext ui-alt-icon ui-btn-inline"></a>
+            <a href="#" class="expandButton ui-icon-plus ui-btn-icon-notext ui-alt-icon ui-btn-inline"/></a>
+            <a href="#" class="collapseButton ui-icon-minus ui-btn-icon-notext ui-alt-icon ui-btn-inline"/></a>
+        </label>
+    </div>
+    <div class="panelContent">
+        <div data-role="dualfieldcontain">
+            <% if @facetData[:renderProductfamilycd] %>
+                <div class ="half">
+                    <%= renderLabel('productFamilyCd', 'productFamilyCd', nil, @baseProduct) %> 
+                    <%= getLookup('DYNAMICLOOKUP', 'productFamilyCd', @baseProduct.productFamilyCd, @baseProduct, @productFamilyArray) %>
+                </div>
+            <% else %>
+                <%= renderHiddenField('productFamilyCd',@baseProduct.productFamilyCd,'productFamilyCd', @baseProduct) %>
+            <% end %>
+
+            <% if @facetData[:renderProductid] %>
+                <div class ="half">
+                    <div class ="ui-grid-b">
+                        <%= renderLabel('productId', 'productName', nil, @baseProduct) %> 
+                        <%= getLookup('DYNAMICLOOKUP', 'productId', @baseProduct.productId, @baseProduct,@productArray) %>
+                    </div>
+                </div>
+            <% end %>
+        </div>
+
+        <div data-role="dualfieldcontain">
+            <% if @facetData[:renderProductplanoptioncd] %>
+                <div class ="half">
+                    <%= renderLabel('productPlanOptionCd', 'planOptionCd', nil, @baseProduct)    %>
+                    <%= getLookup('DYNAMICLOOKUP', 'productPlanOptionCd', @baseProduct.productPlanOptionCd, @baseProduct, @offlinePlanOptionArray) %>
+                </div>
+            <% end %>
+            <% if @facetData[:renderCurrencyPanel] %>
+                <% if @facetData[:renderCurrencycd] %>
+                    <div class ="half">
+                        <%= renderLabel('currencyCd','currencyCd', '', @baseProduct)%>
+                        <%= getLookup('DYNAMICLOOKUP', 'currencyCd', @baseProduct.currencyCd, @baseProduct, @currencyLookups) %> 
+                    </div>
+                <% end %>
+            <% end %>
+        </div>
+
+        <div data-role="dualfieldcontain">
+            <% if @facetData[:renderPaymenttypecd] %>
+                <div class="half">
+                    <%= renderLabel('paymentTypeCd',"paymentTypeCd", '', @baseProduct)%>
+                    <%= getLookup("DYNAMICLOOKUP", 'paymentTypeCd',@baseProduct.paymentTypeCd,@baseProduct, @paymentTypeArray)%>
+                </div>
+            <% end %>
+            <% if @facetData[:renderPaymentfrequencycd] %>
+                <div class="half">
+                    <%= renderLabel('paymentFrequencyCd',"paymentMode", '', @baseProduct)%>
+                    <%= getLookup('DYNAMICLOOKUP', 'paymentFrequencyCd',@baseProduct.paymentFrequencyCd,@baseProduct, @paymentFrequencyArray)%>
+                </div>
+            <% end %>
+        </div>
+
+        <div data-role="dualfieldcontain">
+            <% if @facetData[:renderProductTerm] %>
+                <div class ="half">
+                    <%= renderLabel('productTerm', 'benefitPeriod', '', @baseProduct) %>
+                    <%if $enableTermDiv == false %>
+                        <%= getLookup('TERMVALUE', 'productTerm', @baseProduct.productTerm, @baseProduct)%>
+                    <% elsif $enableTermDiv == true %>
+                        <%= getLookup('DYNAMICLOOKUP', 'productTerm', @baseProduct.productTerm, @baseProduct,@termArray)%>
+                    <% end%>
+                </div>
+            <% end %>
+            <% if @facetData[:renderPremiumpayingterm] %>
+                <div class ="half">
+                    <%= renderLabel('premiumPayingTerm', 'premiumPayingTerm', '', @baseProduct) %>
+                    <% if $premiumPayingTerm == true %>
+                        <%= getLookup('TERMVALUE', 'premiumPayingTerm', @baseProduct.premiumPayingTerm.to_s, @baseProduct) %>
+                    <% elsif $premiumPayingTerm == false %>
+                        <span name ="premiumPayingTermDiv">
+                            <%= getLookup('DYNAMICLOOKUP', 'premiumPayingTerm', @baseProduct.premiumPayingTerm.to_s, @baseProduct, @ppTermArray) %>
+                        </span>
+                    <% end %>
+                </div>
+            <% end %>
+        </div>
+
+        <div  data-role="dualfieldcontain">
+            <% if @facetData[:renderCapturePremiumPanel] %>
+                <% if @facetData[:renderCapturedpremiumamt] %>
+                    <div class="half">
+                        <%= renderLabel('capturedPremiumAmt','capturedPremiumAmt',nil, @baseProduct) %>
+                        <%= renderAmountField('capturedPremiumAmt', @baseProduct.capturedPremiumAmt, nil, @baseProduct, 'style="min-width:200px;" maxlength="20"')%>
+                        <%=attachMask("#{getObjectMapping(@baseProduct)}[capturedPremiumAmt]") %>
+                    </div>
+                <% end %>
+            <% end %>
+            <% if $multiplierFacet != '' %>
+                <% if @facetData[:renderMultiplier] %>
+                    <div class="half">
+                        <%= renderLabel('multiplier',"multiplier", '', @baseProduct)%>
+                        <%= getLookup('TERMVALUE', 'multiplier',@baseProduct.multiplier,@baseProduct, 'style="min-width:200px;" maxlength="6"')%>
+                    </div>
+                <% end %>
+            <% end %>
+        </div>
+
+        <div data-role="dualfieldcontain">
+            <% if @facetData[:renderBasesumassured] %>
+                <div class ="half">
+                    <%= renderLabel('baseSumAssured', saLabel, '', @baseProduct)   %>
+                    <%= renderAmountField('baseSumAssured',@baseProduct.baseSumAssured,'SA', @baseProduct, 'style="min-width:200px;"') %>
+                    <%=attachMask("#{getObjectMapping(@baseProduct)}[baseSumAssured]") %>
+                </div>
+            <% end %>
+            <% if @facetData[:renderCoi] %>
+                <div class ="half">
+                    <%= renderLabel('coi','coi', nil, @baseProduct)   %>
+                    <%= renderAmountField('coi',@baseProduct.coi,'COI', @baseProduct, 'style="min-width:200px;" maxlength="20"') %>
+                    <%=attachMask("#{getObjectMapping(@baseProduct)}[coi]") %>
+                </div>
+            <% end %>
+        </div>
+
+        <div data-role="dualfieldcontain">
+            <% if @facetData[:renderBaseannualpremium] %>
+                <div class ="half">
+                    <%= renderLabel('baseAnnualPremium', annualPremiumLabel)   %>    
+                    <%= renderPreciseAmountField('baseAnnualPremium',@baseProduct.baseAnnualPremium,'Premium', @baseProduct, 'style="min-width:200px;" maxlength="20"') %>
+                    <%=attachMask("#{getObjectMapping(@baseProduct)}[baseAnnualPremium]") %>
+                </div>
+            <% end %>
+            <% if @facetData[:renderModalpremium] %>
+                <div class ="half">
+                    <%= renderLabel('modalPremium','modalPremium', nil, @baseProduct) %>
+                    <%= renderAmountField('modalPremium',@baseProduct.modalPremium,'Modal Premium', @baseProduct, 'style="min-width:200px;" maxlength="20"') %>
+                    <%=attachMask("#{getObjectMapping(@baseProduct)}[modalPremium]") %>
+                </div>
+            <% end %>
+        </div>
+
+        <% if @facetData[:renderAnnualincome] || @facetData[:renderMonthlyincome] %>
+            <div  data-role="dualfieldcontain">
+                <% if @facetData[:renderAnnualincome] && $premiumSAFl == 'ANNUALINCOME' %>
+                    <div class="half">
+                        <%= renderLabel('annualIncome',"annualIncome", nil, @baseProduct)%>
+                        <%= renderAmountField('annualIncome',@baseProduct.annualIncome,'annualIncome',@baseProduct, "maxlength='20'")%>
+                    </div>
+                </div>
+                <% else %>
+                    <%= renderHiddenField('annualIncome',@baseProduct.annualIncome,'annualIncome',@baseProduct, "maxlength='20'")%>
+                <% end %>
+                <% if @facetData[:renderMonthlyincome] && $premiumSAFl == 'MONTHLYINCOME' %>
+                    <div class="half">
+                        <%= renderLabel('monthlyIncome',"monthlyIncome", nil, @baseProduct)%>
+                        <%= renderAmountField('monthlyIncome',@baseProduct.monthlyIncome,'monthlyIncome',@baseProduct, "maxlength='20'")%>
+                    </div>
+                <% else %>
+                    <%= renderHiddenField('monthlyIncome',@baseProduct.monthlyIncome,'monthlyIncome',@baseProduct, "maxlength='20'")%>
+                <% end %>
+            </div>
+        <% end %>
+
+        <% if @facetData[:renderOtherPremiumPanel] %>
+            <div data-role="dualfieldcontain">
+                <% if @facetData[:renderMintargetpremium] %>
+                    <div class="half">
+                        <%= renderLabel('minTargetPremium','minTargetPremium', nil, @baseProduct) %>
+                        <%= renderAmountField('minTargetPremium', @baseProduct.minTargetPremium, nil, @baseProduct, "maxlength='20'")%>
+                        <%=attachMask("#{getObjectMapping(@baseProduct)}[minTargetPremium]") %>
+                    </div>
+                <% end %>
+                <% if @facetData[:renderMaxtargetpremium] %>
+                    <div class="half">
+                        <%= renderLabel('maxTargetPremium','maxTargetPremium', nil, @baseProduct) %>
+                        <%= renderAmountField('maxTargetPremium', @baseProduct.maxTargetPremium, nil, @baseProduct, 'style="min-width:200px;" maxlength="20"')%>
+                        <%=attachMask("#{getObjectMapping(@baseProduct)}[maxTargetPremium]") %>
+                    </div>
+                <% end %>
+            </div>
+
+            <div data-role="dualfieldcontain">
+                <% if @facetData[:renderRecommendedpremium] %>
+                    <div class ="half">
+                        <%= renderLabel('recommendedPremium','recommendedPremium', nil, @baseProduct) %>
+                        <%= renderAmountField('recommendedPremium', @baseProduct.recommendedPremium, nil, @baseProduct, "maxlength='20'")%>
+                        <%=attachMask("#{getObjectMapping(@baseProduct)}[recommendedPremium]") %>
+                    </div>
+                <% end %>
+                <% if @facetData[:renderUnapliedpremium] %>
+                    <div class="half">
+                        <%= renderLabel('unapliedPremium','unapliedPremium', nil, @baseProduct) %>
+                        <%= renderAmountField('unapliedPremium', @baseProduct.unapliedPremium, nil, @baseProduct, 'style="min-width:200px;" maxlength="20"')%>
+                        <%=attachMask("#{getObjectMapping(@baseProduct)}[unapliedPremium]") %>
+                    </div>
+                <% end %>
+            </div>
+        <% end %>
+
+        <div data-role="dualfieldcontain">
+            <% if @facetData[:addtnField1LabelFacet] %>
+                <div class ="half">
+                    <%= renderLabel('addtnField1', @facetData[:addtnField1LabelFacet].actionValue, nil, @baseProduct) %>
+                    <% if @facetData[:addtnField1TypeFacet] && @facetData[:addtnField1TypeFacet].actionValue == "TEXT" %>
+                        <%= renderAmountField('addtnField1', @baseProduct.addtnField1, nil, @baseProduct, "maxlength='20'")%>
+                    <% elsif @facetData[:addtnField1TypeFacet] && @facetData[:addtnField1TypeFacet].actionValue == "COMBO" %>
+                        <%= getLookup(@facetData[:addtnField1LookupFacet].actionValue, 'addtnField1', @baseProduct.addtnField1, @baseProduct, nil,"maxlength='20'")%>
+                    <% end %>
+                </div>
+            <% end %>
+
+            <% if @facetData[:addtnField2LabelFacet] %>
+                <div class="half">
+                    <%= renderLabel('addtnField2', @facetData[:addtnField2LabelFacet].actionValue, nil, @baseProduct) %>
+                    <% if @facetData[:addtnField2TypeFacet] && @facetData[:addtnField2TypeFacet].actionValue == "TEXT" %>
+                        <%= renderAmountField('addtnField2', @baseProduct.addtnField2, nil, @baseProduct, 'maxlength="20"')%>
+                    <% elsif @facetData[:addtnField2TypeFacet] && @facetData[:addtnField2TypeFacet].actionValue == "COMBO" %>
+                        <%= getLookup(@facetData[:addtnField2LookupFacet].actionValue, 'addtnField2', @baseProduct.addtnField2, @baseProduct, nil,"maxlength='20'")%>
+                    <% end %>
+                </div>
+            <% end %>
+        </div>
+
+        
+        <div data-role="dualfieldcontain">
+            <% if @facetData[:addtnField3LabelFacet] %>
+                <div class ="half">
+                    <%= renderLabel('addtnField3', @facetData[:addtnField3LabelFacet].actionValue, nil, @baseProduct) %>
+                    <% if @facetData[:addtnField3TypeFacet] && @facetData[:addtnField3TypeFacet].actionValue == "TEXT" %>
+                        <%= renderAmountField('addtnField3', @baseProduct.addtnField3, nil, @baseProduct, "maxlength='20'")%>
+                    <% elsif @facetData[:addtnField3TypeFacet] && @facetData[:addtnField3TypeFacet].actionValue == "COMBO" %>
+                        <%= getLookup(@facetData[:addtnField3LookupFacet].actionValue, 'addtnField3', @baseProduct.addtnField3, @baseProduct, nil,"maxlength='20'")%>
+                    <% end %>
+                </div>
+            <% end %>
+
+            <% if @facetData[:addtnField4LabelFacet] %>
+                <div class="half">
+                    <%= renderLabel('addtnField4', @facetData[:addtnField4LabelFacet].actionValue, nil, @baseProduct) %>
+                    <% if @facetData[:addtnField4TypeFacet] && @facetData[:addtnField4TypeFacet].actionValue == "TEXT" %>
+                        <%= renderAmountField('addtnField4', @baseProduct.addtnField4, nil, @baseProduct, "maxlength='20'")%>
+                    <% elsif @facetData[:addtnField4TypeFacet] && @facetData[:addtnField4TypeFacet].actionValue == "COMBO" %>
+                        <%= getLookup(@facetData[:addtnField4LookupFacet].actionValue, 'addtnField4', @baseProduct.addtnField4, @baseProduct, nil,"maxlength='20'")%>
+                    <% end %>
+                </div>
+            <% end %>
+        </div>
+        <div data-role="dualfieldcontain" name="additionalFieldsDiv">
+            <% if @facetData[:addtnField5LabelFacet] %>
+                <div class ="half">
+                    <%= renderLabel('addtnField5', @facetData[:addtnField5LabelFacet].actionValue, nil, @baseProduct) %>
+                    <% if @facetData[:addtnField5TypeFacet] && @facetData[:addtnField5TypeFacet].actionValue == "TEXT" %>
+                        <%= renderAmountField('addtnField5', @baseProduct.addtnField5, nil, @baseProduct, "maxlength='20'")%>
+                    <% elsif @facetData[:addtnField5TypeFacet] && @facetData[:addtnField5TypeFacet].actionValue == "COMBO" %>
+                        <%= getLookup(@facetData[:addtnField5LookupFacet].actionValue, 'addtnField5', @baseProduct.addtnField5, @baseProduct, nil,"maxlength='20'")%>
+                    <% end %>
+                </div>
+            <% end %>
+            <% if @facetData[:addtnField6LabelFacet] %>
+                 <div class="half">
+                    <%= renderLabel('addtnField6', @facetData[:addtnField6LabelFacet].actionValue, nil, @baseProduct) %>
+                    <% if @facetData[:addtnField6TypeFacet] && @facetData[:addtnField6TypeFacet].actionValue == "TEXT" %>
+                        <%= renderAmountField('addtnField6', @baseProduct.addtnField6, nil, @baseProduct, "maxlength='20'")%>
+                    <% elsif @facetData[:addtnField6TypeFacet] && @facetData[:addtnField6TypeFacet].actionValue == "COMBO" %>
+                        <%= getLookup(@facetData[:addtnField6LookupFacet].actionValue, 'addtnField6', @baseProduct.addtnField6, @baseProduct, nil,"maxlength='20'")%>
+                    <% end %>
+                </div>
+            <% end %>
+        </div>
+
+        <% if @facetData[:renderPremiumHolidayPanel] %>
+            <div data-role="dualfieldcontain" name="premiumDiv">
+                <% if @facetData[:renderPremiumholidayfl] %>
+                    <div class="half">
+                        <%= renderLabel('premiumHolidayFl', 'premiumHolidayFl', nil, @baseProduct)    %>
+                        <%= renderRadioButton('premiumHolidayFl', @baseProduct.premiumHolidayFl, 'premHolYes', 'YES', @baseProduct) %>
+                        <%= renderLabel('premHolYes', 'YES', 'radioWidth', nil)   %>
+                        <%= renderRadioButton('premiumHolidayFl', @baseProduct.premiumHolidayFl, 'premiHolNo', 'NO', @baseProduct) %>
+                        <%= renderLabel('premiHolNo', 'NO', 'radioWidth', nil)   %>
+                    </div>
+                <% end %>
+                <% if @facetData[:renderPremiumholidayyear] %>
+                    <div class="half">
+                        <%= renderLabel('premiumHolidayYear','premiumHolidayYear',nil, @baseProduct) %>
+                        <%= renderCountField('premiumHolidayYear', @baseProduct.premiumHolidayYear, nil, @baseProduct, 'maxlength="3"')%>
+                    </div>
+                <% end %>
+            </div>
+        <% end %>
+
+       
+
+        <% if @facetData[:renderPremiumOffsetPanel] %>
+            <div data-role="dualfieldcontain">
+                <% if @facetData[:renderPremiumoffsetfl] %>
+                    <div class="half">
+                        <%= renderLabel('premiumOffsetFl', 'premiumOffsetFl', nil, @baseProduct)    %>
+                        <%= renderRadioButton('premiumOffsetFl', @baseProduct.premiumOffsetFl, 'premOffYes', 'YES', @baseProduct) %>
+                        <%= renderLabel('premOffYes', 'YES', 'radioWidth', nil)   %>
+                        <%= renderRadioButton('premiumOffsetFl', @baseProduct.premiumOffsetFl, 'premOffNo', 'NO', @baseProduct) %>
+                        <%= renderLabel('premOffNo', 'NO', 'radioWidth', nil)   %>
+                    </div>
+                <% end %>
+                <% if @facetData[:renderPremiumoffsetoptioncd] %>
+                    <div class="half" id="premiumOffsetDiv">
+                        <%= renderLabel('premiumOffsetOptionCd','premiumOffsetOptionCd',nil, @baseProduct) %>
+                        <%= getLookup('PREMOFFSETOPTION', 'premiumOffsetOptionCd', @baseProduct.premiumOffsetOptionCd, @baseProduct, nil)%>
+                    </div>
+                <% end %>
+            </div>
+
+            <% if @facetData[:renderPaidUpValue] %>
+                <div data-role="dualfieldcontain" name="premiumDiv"> 
+                    <div class="half">
+                        <%= renderLabel('paidUpValue', 'paidUpFl', nil, @baseProduct)    %>
+                        <%= renderRadioButton('paidUpValue', @baseProduct.paidUpValue, 'paidUpValueYes', 'YES', @baseProduct) %>
+                        <%= renderLabel('paidUpValueYes', 'YES', 'radioWidth', nil)   %>
+                        <%= renderRadioButton('paidUpValue', @baseProduct.paidUpValue, 'paidUpValueNo', 'NO', @baseProduct) %>
+                        <%= renderLabel('paidUpValueNo', 'NO', 'radioWidth', nil)   %>
+                    </div>
+                    <div class="half">
+                    </div>
+                </div>
+            <% end %>
+
+            <div data-role="dualfieldcontain" id="premiumOffsetDiv">
+                <% if @facetData[:renderPremiumoffsetvalues] %>
+                    <div class="half">
+                        <%= renderLabel('premiumOffsetValues','premiumOffsetValues',nil, @baseProduct) %>
+                        <%= getLookup('PREMOFFSETVALUES', 'premiumOffsetValues', @baseProduct.premiumOffsetValues, @baseProduct)%>
+                    </div>
+                <% end %>
+                <% if @facetData[:renderPremiumoffsetyear] %>
+                    <div class="half" name = 'premiumOffsetYear'>
+                        <%= renderLabel('premiumOffsetYear','premiumOffsetYear',nil, @baseProduct) %>
+                        <%= renderCountField('premiumOffsetYear', @baseProduct.premiumOffsetYear, nil, @baseProduct)%>
+                    </div>
+                <% end %>
+            </div>
+        <% end %>
+
+        <% if @facetData[:renderAnnuityPanel] %>
+            <div data-role="dualfieldcontain">
+                <% if @facetData[:renderAnnuityoptioncd] %>
+                    <div class="half">
+                        <%= renderLabel('annuityOptionCd',"annuityOptionCd", '', @baseProduct)%>
+                        <%= renderRadioButton('annuityOptionCd', @baseProduct.annuityOptionCd, 'annuityOptionYes', 'YES', @baseProduct) %>
+                        <%= renderLabel('annuityOptionYes', 'YES', 'radioWidth', nil)   %>
+                        <%= renderRadioButton('annuityOptionCd', @baseProduct.annuityOptionCd, 'annuityOptionNo', 'NO', @baseProduct) %>
+                        <%= renderLabel('annuityOptionNo', 'NO', 'radioWidth', nil)   %>
+                    </div>
+                <% end %>
+                <% if @facetData[:renderAnnuityage] %>
+                    <div class="half">
+                        <%= renderLabel('annuityAge', 'annuityAge', '', @baseProduct)   %>
+                        <%= renderCountField('annuityAge', @baseProduct.annuityAge, 'Years', @baseProduct, 'maxlength="3"') %> <%= renderLabel('annuityAge','YEAR')   %> 
+                    </div>
+                <% end %>
+            </div>
+
+            <div data-role="dualfieldcontain">
+                <% if @facetData[:renderAnnuityperc] %>
+                    <div class="half">
+                        <%= renderLabel('annuityPerc','annuityPerc', '', @baseProduct)   %>
+                        <%= renderAmountField('annuityPerc', @baseProduct.annuityPerc,'Premium Guarantees', @baseProduct, "maxlength='5'") %>
+                    </div>
+                <% end %>
+                <div class="half">
+                </div>
+            </div>
+        <% end %>
+
+        <% if @facetData[:renderPDFPanel] %>
+            <div data-role="dualfieldcontain">
+                <% if @facetData[:renderPdfrequiredfl] %>
+                    <div class="half">
+                        <%= renderLabel('pdfRequiredFl', 'pdfRequiredFl', nil, @baseProduct)    %>
+                        <%= renderRadioButton('pdfRequiredFl', @baseProduct.pdfRequiredFl, 'pdfReqYes', 'YES', @baseProduct) %>
+                        <%= renderLabel('pdfReqYes', 'YES', 'radioWidth', nil)   %>
+                        <%= renderRadioButton('pdfRequiredFl', @baseProduct.pdfRequiredFl, 'pdfReqNo', 'NO', @baseProduct) %>
+                        <%= renderLabel('pdfReqNo', 'NO', 'radioWidth', nil)   %>
+                    </div>
+                <% end %>
+                <% if @facetData[:renderSolvertypecd] %>
+                    <div class="half">
+                        <%= renderLabel('solverTypeCd',"solverTypeCd", '', @baseProduct)%>
+                        <%= getLookup('SOLVERTYPE','solverTypeCd',@baseProduct.solverTypeCd,@baseProduct, nil, 'onchange="enablePrePaymentFields();"')%>
+                    </div>
+                <% end %>
+            </div>
+            <div data-role="dualfieldcontain">
+                <% if @facetData[:renderPdfamount] %>
+                    <div class="half" id = "pdfAmountDiv">
+                        <%= renderLabel('pdfAmount',"pdfAmount", '', @baseProduct)%>
+                        <%= renderAmountField('pdfAmount',@baseProduct.pdfAmount, nil, @baseProduct, "maxlength ='20'")%>
+                    </div>
+                <% end %>
+            </div>
+
+            <div data-role="dualfieldcontain" id = "pdfDiv">
+                <% if @facetData[:renderPdffrequencyval] %>
+                    <div class="half">
+                        <%= renderLabel('pdfFrequencyVal',"pdfFrequencyVal", '', @baseProduct)%>
+                        <%= renderAmountField('pdfFrequencyVal',@baseProduct.pdfFrequencyVal, nil, @baseProduct, "maxlength ='3'")%>
+                    </div>
+                <% end %>
+                <% if @facetData[:renderPdfperiod] %>
+                    <div class="half">
+                        <%= renderLabel('pdfPeriod',"pdfPeriod", '', @baseProduct)%>
+                        <%= renderAmountField('pdfPeriod',@baseProduct.pdfPeriod, nil, @baseProduct, "maxlength ='3'")%>
+                    </div>
+                <% end %>
+            </div>
+
+        <% end %>
+
+        <% if @facetData[:renderRetirementPanel] %>
+            <div data-role="dualfieldcontain">
+                <% if @facetData[:renderRetirementoptionfl] %>
+                    <div class="half">
+                        <%= renderLabel('retirementOptionFl', 'retirementOptionFl', nil, @baseProduct, " style='max-width:118%;' ")   %>
+                        <%= renderRadioButton('retirementOptionFl', @baseProduct.retirementOptionFl, 'retireYes', 'YES', @baseProduct) %>
+                        <%= renderLabel('retireYes', 'YES', 'radioWidth', nil)   %>
+                        <%= renderRadioButton('retirementOptionFl', @baseProduct.retirementOptionFl, 'retireNo', 'NO', @baseProduct) %>
+                        <%= renderLabel('retireNo', 'NO', 'radioWidth', nil)   %>
+                    </div>
+                <% end %>
+                <% if @facetData[:renderRetirementpercent] %>
+                    <div class="half">
+                        <%= renderLabel('retirementPercent',"retirementPercent", nil, @baseProduct)%>
+                        <%= renderCountField('retirementPercent',@baseProduct.retirementPercent, nil, @baseProduct, "maxlength ='5'")%>
+                    </div>
+                <% end %>
+            </div>
+        <% end %>
+
+        <% if @facetData[:renderReturnRatePanel] %>
+            <% if @facetData[:renderLowreturnrate] || @facetData[:renderMediumreturnrate] %>
+                <div data-role="dualfieldcontain">
+                    <% if @facetData[:renderLowreturnrate] %>
+                        <div class="half">
+                            <%= renderLabel('lowReturnRate','lowReturnRate', nil , @baseProduct) %>
+                            <%= renderAmountField('lowReturnRate', @baseProduct.lowReturnRate, nil, @baseProduct, "maxlength='20'")%>
+                        </div>
+                    <% end %>
+                    <% if @facetData[:renderMediumreturnrate] %>
+                        <div class="half">
+                            <%= renderLabel('mediumReturnRate','mediumReturnRate', nil , @baseProduct) %>
+                            <%= renderAmountField('mediumReturnRate', @baseProduct.mediumReturnRate, nil, @baseProduct, "maxlength='20'")%>
+                        </div>
+                    <% end %>
+                </div>
+            <% end %>
+
+
+            <% if @facetData[:renderHighreturnrate] || @facetData[:renderVeryLowReturnRate] %>
+                <div data-role="dualfieldcontain">
+                    <% if @facetData[:renderHighreturnrate] %>
+                        <div class="half">
+                            <%= renderLabel('highReturnRate','highReturnRate', nil , @baseProduct) %>
+                            <%= renderAmountField('highReturnRate', @baseProduct.highReturnRate, nil, @baseProduct, "maxlength='20'")%>
+                        </div>
+                    <% end %>
+                    <% if @facetData[:renderVeryLowReturnRate] %>
+                        <div class="half">
+                            <%= renderLabel('veryLowReturnRate','veryLowReturnRate', nil , @baseProduct) %>
+                            <%= renderAmountField('veryLowReturnRate', @baseProduct.veryLowReturnRate, nil, @baseProduct, "maxlength='20'")%>
+                        </div>
+                    <% end %>
+                </div>
+            <% end %>
+
+            <% if @facetData[:renderVeryHighReturnRate] %>
+                <div data-role="dualfieldcontain">
+                    <div class="half">
+                        <%= renderLabel('veryHighReturnRate','veryHighReturnRate', nil , @baseProduct) %>
+                        <%= renderAmountField('veryHighReturnRate', @baseProduct.veryHighReturnRate, nil, @baseProduct, "maxlength='20'")%>
+                    </div>
+                </div>
+            <% end %>
+        <% end %>
+
+        <% if @facetData[:renderIncomeBaseSolver] == true %>
+            <div class="ui-grid-d">
+                <div class="ui-block-a"> </div>
+                <div class="ui-block-b"></div>
+                <div class="ui-block-c"> <input type="button" value="<%= getLabelValue('Solve & Compute SA')%>" id="solveQuotationSA_id">  </div>
+                <div class="ui-block-d"></div>
+                <div class="ui-block-e"></div>
+            </div>
+        <% end %>
+        <% if @facetData[:renderWithdrawalBasedSolver] == true%>
+            <div class="ui-grid-d">
+                <div class="ui-block-a"> </div>
+                <div class="ui-block-b"></div>
+                <div class="ui-block-c"> <input type="button" value="<%= getLabelValue('Solve & Validate SA')%>" id="solveQuotationSAValidate_id">  </div>
+                <div class="ui-block-d"></div>
+                <div class="ui-block-e"></div>
+            </div>
+        <% end %>
+    </div>
+</div>
+<%= render :partial => "capturePlanInformationJS" %>

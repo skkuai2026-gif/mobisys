@@ -1,0 +1,129 @@
+<div data-role="page" id="illustration">
+	<div data-role="header" data-position="inline">
+		<script src="/public/js/RGraph/RGraph.common.core.js"></script>
+    	<script src="/public/js/RGraph/RGraph.line.js"></script>
+    	<h1><%= getLabelValue('IMPNOTES')%></h1>
+	    <div class="headerButtons" name = "headerButtons">     
+	      <a href="#" id = "back" name="back" onclick="location.href='<%= url_for :action => :illustration1, :id=>@quotation.object %>';" data-direction="reverse">
+	        <img src="/public/images/SalesIllustration/icon_BackArrow-Red.png">
+	      </a>
+    	</div>
+    </div>
+	<div data-role="content">
+		<div data-role="table" class="illustrationdisplay" >
+			<div style="float:left"><h1><%= getLabelValue(@baseQuotationProduct.productId.to_s)%></h1></div>
+			<div style="float:right"><img src = "/public/images/SalesIllustration/small_fwd.jpg"/></div>
+			<div style="clear:both"></div>			
+			<%= getLabelValue('Note') %>:
+			<br/>
+			<ul>
+				<li>
+					1.<%= getLabelValue('IMPNOTE1') %><br/><br/>
+				</li>
+				<li>
+					2.<%= getLabelValue('IMPNOTE2') %>
+					<table border = "1" style ="border-spacing: 0px">
+						<tr>
+							<td align='center' rowspan = 3>Premi</td>
+							<td align='center' colspan = 2>Tahun ke-1</td>
+							
+							<td align='center' colspan = 2>Tahun ke-2</td>
+							
+							<td align='center' colspan = 2>Tahun ke-3</td>
+							
+							<td align='center' colspan = 2>Tahun ke-4 dst</td>
+							
+						</tr>
+						<tr  align='center'>
+							<td>Alokasi</td>
+							<td>Biaya Akusisi</td>
+							<td>Alokasi</td>
+							<td>Biaya Akusisi</td>
+							<td>Alokasi</td>
+							<td>Biaya Akusisi</td>
+							<td>Alokasi</td>
+							<td>Biaya Akusisi</td>
+						</tr>
+						<tr  align='center'>
+							<td>Investasi</td>
+							<td>Biaya Top-Up</td>
+							<td>Investasi</td>
+							<td>Biaya Top-Up</td>
+							<td>Investasi</td>
+							<td>Biaya Top-Up</td>
+							<td>Investasi</td>
+							<td>Biaya Top-Up</td>
+						</tr>
+						<tr  align='center'>
+							<td align='left'>Premi Dasar</td>
+							<td>0%</td>
+							<td>100%</td>
+							<td>30%</td>
+							<td>70%</td>
+							<td>65%</td>
+							<td>35%</td>
+							<td>100%</td>
+							<td>0</td>
+						</tr>
+						<tr  align='center'>
+							<td align='left'>Premi Top-Up Berkala & Tunggal</td>
+							<td>97%</td>
+							<td>3%</td>
+							<td>97%</td>
+							<td>3%</td>
+							<td>97%</td>
+							<td>3%</td>
+							<td>97%</td>
+							<td>3%</td>
+						</tr>
+					</table>
+				</li>
+				<li>
+					<br/>3.<%= getLabelValue('IMPNOTE3') %><br/><br/>
+				</li>
+				<li>
+					4.<%= getLabelValue('IMPNOTE4') %><br/><br/>
+				</li>
+				<li>
+					5.<%= getLabelValue('IMPNOTE5') %><br/><br/>
+				</li>
+				<li>
+					6.<%= getLabelValue('IMPNOTE6') %><br/><br/>
+				</li>
+				<li>
+					7.<%= getLabelValue('IMPNOTE7') %><br/><br/>		
+				</li>
+				<li>
+					8.<%= getLabelValue('IMPNOTE8') %><br/><br/>
+				</li>
+				<li>
+					9.<%= getLabelValue('IMPNOTE9') %><br/><br/>
+				</li>
+				<li>
+					10.<%= getLabelValue('IMPNOTE10') %><br/><br/>
+				</li>
+				<li>
+					11.<%= getLabelValue('IMPNOTE11') %><br/><br/>
+				</li>
+				<li>
+					12.<%= getLabelValue('IMPNOTE12') %><br/><br/>
+				</li>
+				<li>
+					13.<%= getLabelValue('IMPNOTE13') %><br/><br/>
+				</li>
+				<li>
+					14.<%= getLabelValue('IMPNOTE14') %><br/><br/>
+				</li>
+			</ul>
+			<br/>
+			<table style ="border-style:solid;">
+				<tr>
+					<td style="padding:0 32px 0 32px;">
+						<%= getLabelValue('NOTEFOOTER') %>
+					</td>
+				</tr>
+			</table>
+		</div>
+	</div>
+</div>
+

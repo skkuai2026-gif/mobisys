@@ -1,0 +1,386 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 45;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		9FA1F66C2678C13800BBCF17 /* AkamaiBMP.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 9FA1F66B2678C13800BBCF17 /* AkamaiBMP.framework */; };
+		FA3E1F211779EFAA00F5E33A /* Bmp.h in Headers */ = {isa = PBXBuildFile; fileRef = FA3E1F1B1779EFAA00F5E33A /* Bmp.h */; };
+		FA3E1F221779EFAA00F5E33A /* Bmp.m in Sources */ = {isa = PBXBuildFile; fileRef = FA3E1F1C1779EFAA00F5E33A /* Bmp.m */; };
+		FA3E1F231779EFAA00F5E33A /* BmpFactorySingleton.m in Sources */ = {isa = PBXBuildFile; fileRef = FA3E1F1D1779EFAA00F5E33A /* BmpFactorySingleton.m */; };
+		FA3E1F241779EFAA00F5E33A /* BmpSetup.m in Sources */ = {isa = PBXBuildFile; fileRef = FA3E1F1E1779EFAA00F5E33A /* BmpSetup.m */; };
+		FA3E1F251779EFAA00F5E33A /* BmpSingleton.h in Headers */ = {isa = PBXBuildFile; fileRef = FA3E1F1F1779EFAA00F5E33A /* BmpSingleton.h */; };
+		FA3E1F261779EFAA00F5E33A /* BmpSingleton.m in Sources */ = {isa = PBXBuildFile; fileRef = FA3E1F201779EFAA00F5E33A /* BmpSingleton.m */; };
+		FA3E1F281779EFB100F5E33A /* IBmp.h in Headers */ = {isa = PBXBuildFile; fileRef = FA3E1F271779EFB100F5E33A /* IBmp.h */; };
+		FA3E1F2F1779EFBB00F5E33A /* BmpBase.h in Headers */ = {isa = PBXBuildFile; fileRef = FA3E1F291779EFBB00F5E33A /* BmpBase.h */; };
+		FA3E1F301779EFBB00F5E33A /* BmpBase.m in Sources */ = {isa = PBXBuildFile; fileRef = FA3E1F2A1779EFBB00F5E33A /* BmpBase.m */; };
+		FA3E1F311779EFBB00F5E33A /* BmpFactoryBase.h in Headers */ = {isa = PBXBuildFile; fileRef = FA3E1F2B1779EFBB00F5E33A /* BmpFactoryBase.h */; };
+		FA3E1F321779EFBB00F5E33A /* BmpFactoryBase.m in Sources */ = {isa = PBXBuildFile; fileRef = FA3E1F2C1779EFBB00F5E33A /* BmpFactoryBase.m */; };
+		FA3E1F331779EFBB00F5E33A /* BmpSingletonBase.h in Headers */ = {isa = PBXBuildFile; fileRef = FA3E1F2D1779EFBB00F5E33A /* BmpSingletonBase.h */; };
+		FA3E1F341779EFBB00F5E33A /* BmpSingletonBase.m in Sources */ = {isa = PBXBuildFile; fileRef = FA3E1F2E1779EFBB00F5E33A /* BmpSingletonBase.m */; };
+		FA3E1F361779EFC400F5E33A /* bmp_js_wrap.mm in Sources */ = {isa = PBXBuildFile; fileRef = FA3E1F351779EFC400F5E33A /* bmp_js_wrap.mm */; };
+		FA3E1F381779EFCB00F5E33A /* bmp_ruby_wrap.m in Sources */ = {isa = PBXBuildFile; fileRef = FA3E1F371779EFCB00F5E33A /* bmp_ruby_wrap.m */; };
+		FA3E1F3C1779EFD700F5E33A /* bmp_api_init.cpp in Sources */ = {isa = PBXBuildFile; fileRef = FA3E1F391779EFD700F5E33A /* bmp_api_init.cpp */; };
+		FA3E1F3D1779EFD700F5E33A /* bmp_js_api.cpp in Sources */ = {isa = PBXBuildFile; fileRef = FA3E1F3A1779EFD700F5E33A /* bmp_js_api.cpp */; };
+		FA3E1F3E1779EFD700F5E33A /* bmp_ruby_api.c in Sources */ = {isa = PBXBuildFile; fileRef = FA3E1F3B1779EFD700F5E33A /* bmp_ruby_api.c */; };
+		FAC155E7145855CF0016F3BD /* Bmp_Prefix.pch in Headers */ = {isa = PBXBuildFile; fileRef = FAD45FD51225FED600141873 /* Bmp_Prefix.pch */; };
+		FAC155EE145855CF0016F3BD /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AACBBE490F95108600F1A2B1 /* Foundation.framework */; };
+		FAC155EF145855CF0016F3BD /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FAD4602C12260A8500141873 /* UIKit.framework */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXFileReference section */
+		9FA1F66B2678C13800BBCF17 /* AkamaiBMP.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AkamaiBMP.framework; path = Frameworks/AkamaiBMP.framework; sourceTree = "<group>"; };
+		AACBBE490F95108600F1A2B1 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
+		FA3E1F1B1779EFAA00F5E33A /* Bmp.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Bmp.h; path = impl/Bmp.h; sourceTree = "<group>"; };
+		FA3E1F1C1779EFAA00F5E33A /* Bmp.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = Bmp.m; path = impl/Bmp.m; sourceTree = "<group>"; };
+		FA3E1F1D1779EFAA00F5E33A /* BmpFactorySingleton.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = BmpFactorySingleton.m; path = impl/BmpFactorySingleton.m; sourceTree = "<group>"; };
+		FA3E1F1E1779EFAA00F5E33A /* BmpSetup.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = BmpSetup.m; path = impl/BmpSetup.m; sourceTree = "<group>"; };
+		FA3E1F1F1779EFAA00F5E33A /* BmpSingleton.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = BmpSingleton.h; path = impl/BmpSingleton.h; sourceTree = "<group>"; };
+		FA3E1F201779EFAA00F5E33A /* BmpSingleton.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = BmpSingleton.m; path = impl/BmpSingleton.m; sourceTree = "<group>"; };
+		FA3E1F271779EFB100F5E33A /* IBmp.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = IBmp.h; path = generated/IBmp.h; sourceTree = "<group>"; };
+		FA3E1F291779EFBB00F5E33A /* BmpBase.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = BmpBase.h; path = generated/base_impl/BmpBase.h; sourceTree = "<group>"; };
+		FA3E1F2A1779EFBB00F5E33A /* BmpBase.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = BmpBase.m; path = generated/base_impl/BmpBase.m; sourceTree = "<group>"; };
+		FA3E1F2B1779EFBB00F5E33A /* BmpFactoryBase.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = BmpFactoryBase.h; path = generated/base_impl/BmpFactoryBase.h; sourceTree = "<group>"; };
+		FA3E1F2C1779EFBB00F5E33A /* BmpFactoryBase.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = BmpFactoryBase.m; path = generated/base_impl/BmpFactoryBase.m; sourceTree = "<group>"; };
+		FA3E1F2D1779EFBB00F5E33A /* BmpSingletonBase.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = BmpSingletonBase.h; path = generated/base_impl/BmpSingletonBase.h; sourceTree = "<group>"; };
+		FA3E1F2E1779EFBB00F5E33A /* BmpSingletonBase.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = BmpSingletonBase.m; path = generated/base_impl/BmpSingletonBase.m; sourceTree = "<group>"; };
+		FA3E1F351779EFC400F5E33A /* bmp_js_wrap.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; name = bmp_js_wrap.mm; path = generated/javascript/bmp_js_wrap.mm; sourceTree = "<group>"; };
+		FA3E1F371779EFCB00F5E33A /* bmp_ruby_wrap.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = bmp_ruby_wrap.m; path = generated/ruby/bmp_ruby_wrap.m; sourceTree = "<group>"; };
+		FA3E1F391779EFD700F5E33A /* bmp_api_init.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = bmp_api_init.cpp; path = ../../shared/generated/bmp_api_init.cpp; sourceTree = "<group>"; };
+		FA3E1F3A1779EFD700F5E33A /* bmp_js_api.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = bmp_js_api.cpp; path = ../../shared/generated/bmp_js_api.cpp; sourceTree = "<group>"; };
+		FA3E1F3B1779EFD700F5E33A /* bmp_ruby_api.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = bmp_ruby_api.c; path = ../../shared/generated/bmp_ruby_api.c; sourceTree = "<group>"; };
+		FAC155F3145855CF0016F3BD /* libBmp.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libBmp.a; sourceTree = BUILT_PRODUCTS_DIR; };
+		FAD45FD51225FED600141873 /* Bmp_Prefix.pch */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Bmp_Prefix.pch; sourceTree = "<group>"; };
+		FAD4602C12260A8500141873 /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		FAC155ED145855CF0016F3BD /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				FAC155EE145855CF0016F3BD /* Foundation.framework in Frameworks */,
+				FAC155EF145855CF0016F3BD /* UIKit.framework in Frameworks */,
+				9FA1F66C2678C13800BBCF17 /* AkamaiBMP.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		034768DFFF38A50411DB9C8B /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				FAC155F3145855CF0016F3BD /* libBmp.a */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		0867D691FE84028FC02AAC07 /* Bmp */ = {
+			isa = PBXGroup;
+			children = (
+				08FB77AEFE84172EC02AAC07 /* Classes */,
+				32C88DFF0371C24200C91783 /* Other Sources */,
+				0867D69AFE84028FC02AAC07 /* Frameworks */,
+				034768DFFF38A50411DB9C8B /* Products */,
+			);
+			name = Bmp;
+			sourceTree = "<group>";
+		};
+		0867D69AFE84028FC02AAC07 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				9FA1F66B2678C13800BBCF17 /* AkamaiBMP.framework */,
+				AACBBE490F95108600F1A2B1 /* Foundation.framework */,
+				FAD4602C12260A8500141873 /* UIKit.framework */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		08FB77AEFE84172EC02AAC07 /* Classes */ = {
+			isa = PBXGroup;
+			children = (
+				FA3E1F161779EF7600F5E33A /* impl */,
+				FA3E1F151779EF6E00F5E33A /* generated */,
+			);
+			name = Classes;
+			sourceTree = "<group>";
+		};
+		32C88DFF0371C24200C91783 /* Other Sources */ = {
+			isa = PBXGroup;
+			children = (
+				FAD45FD51225FED600141873 /* Bmp_Prefix.pch */,
+			);
+			name = "Other Sources";
+			sourceTree = "<group>";
+		};
+		FA3E1F151779EF6E00F5E33A /* generated */ = {
+			isa = PBXGroup;
+			children = (
+				FA3E1F1A1779EF9B00F5E33A /* api */,
+				FA3E1F191779EF9400F5E33A /* base_impl */,
+				FA3E1F181779EF8D00F5E33A /* wrappers */,
+				FA3E1F171779EF7D00F5E33A /* shared */,
+			);
+			name = generated;
+			sourceTree = "<group>";
+		};
+		FA3E1F161779EF7600F5E33A /* impl */ = {
+			isa = PBXGroup;
+			children = (
+				FA3E1F1B1779EFAA00F5E33A /* Bmp.h */,
+				FA3E1F1C1779EFAA00F5E33A /* Bmp.m */,
+				FA3E1F1D1779EFAA00F5E33A /* BmpFactorySingleton.m */,
+				FA3E1F1E1779EFAA00F5E33A /* BmpSetup.m */,
+				FA3E1F1F1779EFAA00F5E33A /* BmpSingleton.h */,
+				FA3E1F201779EFAA00F5E33A /* BmpSingleton.m */,
+			);
+			name = impl;
+			sourceTree = "<group>";
+		};
+		FA3E1F171779EF7D00F5E33A /* shared */ = {
+			isa = PBXGroup;
+			children = (
+				FA3E1F391779EFD700F5E33A /* bmp_api_init.cpp */,
+				FA3E1F3A1779EFD700F5E33A /* bmp_js_api.cpp */,
+				FA3E1F3B1779EFD700F5E33A /* bmp_ruby_api.c */,
+			);
+			name = shared;
+			sourceTree = "<group>";
+		};
+		FA3E1F181779EF8D00F5E33A /* wrappers */ = {
+			isa = PBXGroup;
+			children = (
+				FA3E1F371779EFCB00F5E33A /* bmp_ruby_wrap.m */,
+				FA3E1F351779EFC400F5E33A /* bmp_js_wrap.mm */,
+			);
+			name = wrappers;
+			sourceTree = "<group>";
+		};
+		FA3E1F191779EF9400F5E33A /* base_impl */ = {
+			isa = PBXGroup;
+			children = (
+				FA3E1F291779EFBB00F5E33A /* BmpBase.h */,
+				FA3E1F2A1779EFBB00F5E33A /* BmpBase.m */,
+				FA3E1F2B1779EFBB00F5E33A /* BmpFactoryBase.h */,
+				FA3E1F2C1779EFBB00F5E33A /* BmpFactoryBase.m */,
+				FA3E1F2D1779EFBB00F5E33A /* BmpSingletonBase.h */,
+				FA3E1F2E1779EFBB00F5E33A /* BmpSingletonBase.m */,
+			);
+			name = base_impl;
+			sourceTree = "<group>";
+		};
+		FA3E1F1A1779EF9B00F5E33A /* api */ = {
+			isa = PBXGroup;
+			children = (
+				FA3E1F271779EFB100F5E33A /* IBmp.h */,
+			);
+			name = api;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXHeadersBuildPhase section */
+		FAC155E6145855CF0016F3BD /* Headers */ = {
+			isa = PBXHeadersBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				FAC155E7145855CF0016F3BD /* Bmp_Prefix.pch in Headers */,
+				FA3E1F211779EFAA00F5E33A /* Bmp.h in Headers */,
+				FA3E1F251779EFAA00F5E33A /* BmpSingleton.h in Headers */,
+				FA3E1F281779EFB100F5E33A /* IBmp.h in Headers */,
+				FA3E1F2F1779EFBB00F5E33A /* BmpBase.h in Headers */,
+				FA3E1F311779EFBB00F5E33A /* BmpFactoryBase.h in Headers */,
+				FA3E1F331779EFBB00F5E33A /* BmpSingletonBase.h in Headers */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXHeadersBuildPhase section */
+
+/* Begin PBXNativeTarget section */
+		FAC155E5145855CF0016F3BD /* Bmp */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = FAC155F0145855CF0016F3BD /* Build configuration list for PBXNativeTarget "Bmp" */;
+			buildPhases = (
+				FAC155E6145855CF0016F3BD /* Headers */,
+				FAC155E9145855CF0016F3BD /* Sources */,
+				FAC155ED145855CF0016F3BD /* Frameworks */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = Bmp;
+			productName = Barcode;
+			productReference = FAC155F3145855CF0016F3BD /* libBmp.a */;
+			productType = "com.apple.product-type.library.static";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		0867D690FE84028FC02AAC07 /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+			};
+			buildConfigurationList = 1DEB922208733DC00010E9CD /* Build configuration list for PBXProject "Bmp" */;
+			compatibilityVersion = "Xcode 3.1";
+			developmentRegion = English;
+			hasScannedForEncodings = 1;
+			knownRegions = (
+				English,
+				Japanese,
+				French,
+				German,
+			);
+			mainGroup = 0867D691FE84028FC02AAC07 /* Bmp */;
+			productRefGroup = 034768DFFF38A50411DB9C8B /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				FAC155E5145855CF0016F3BD /* Bmp */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXSourcesBuildPhase section */
+		FAC155E9145855CF0016F3BD /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				FA3E1F221779EFAA00F5E33A /* Bmp.m in Sources */,
+				FA3E1F231779EFAA00F5E33A /* BmpFactorySingleton.m in Sources */,
+				FA3E1F241779EFAA00F5E33A /* BmpSetup.m in Sources */,
+				FA3E1F261779EFAA00F5E33A /* BmpSingleton.m in Sources */,
+				FA3E1F301779EFBB00F5E33A /* BmpBase.m in Sources */,
+				FA3E1F321779EFBB00F5E33A /* BmpFactoryBase.m in Sources */,
+				FA3E1F341779EFBB00F5E33A /* BmpSingletonBase.m in Sources */,
+				FA3E1F361779EFC400F5E33A /* bmp_js_wrap.mm in Sources */,
+				FA3E1F381779EFCB00F5E33A /* bmp_ruby_wrap.m in Sources */,
+				FA3E1F3C1779EFD700F5E33A /* bmp_api_init.cpp in Sources */,
+				FA3E1F3D1779EFD700F5E33A /* bmp_js_api.cpp in Sources */,
+				FA3E1F3E1779EFD700F5E33A /* bmp_ruby_api.c in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin XCBuildConfiguration section */
+		1DEB922308733DC00010E9CD /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				GCC_C_LANGUAGE_STANDARD = c99;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				HEADER_SEARCH_PATHS = (
+					"$(RHO_ROOT)/platform/shared/common",
+					"$(RHO_ROOT)/platform/shared/rubyext",
+					"$(RHO_ROOT)/platform/shared/ruby/include",
+					"$(RHO_ROOT)/platform/shared/ruby/iphone",
+					"$(RHO_ROOT)/platform/shared",
+				);
+				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
+				ONLY_ACTIVE_ARCH = NO;
+				PREBINDING = NO;
+				SDKROOT = iphonesimulator4.1;
+				STANDARD_C_PLUS_PLUS_LIBRARY_TYPE = static;
+			};
+			name = Debug;
+		};
+		1DEB922408733DC00010E9CD /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				GCC_C_LANGUAGE_STANDARD = c99;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				HEADER_SEARCH_PATHS = (
+					"$(RHO_ROOT)/platform/shared/common",
+					"$(RHO_ROOT)/platform/shared/rubyext",
+					"$(RHO_ROOT)/platform/shared/ruby/include",
+					"$(RHO_ROOT)/platform/shared/ruby/iphone",
+					"$(RHO_ROOT)/platform/shared",
+				);
+				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
+				ONLY_ACTIVE_ARCH = NO;
+				PREBINDING = NO;
+				SDKROOT = iphonesimulator4.1;
+				STANDARD_C_PLUS_PLUS_LIBRARY_TYPE = static;
+			};
+			name = Release;
+		};
+		FAC155F1145855CF0016F3BD /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				COPY_PHASE_STRIP = NO;
+				DSTROOT = /tmp/Bmp.dst;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)/Frameworks",
+				);
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_ENABLE_FIX_AND_CONTINUE = YES;
+				GCC_MODEL_TUNING = G5;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = Bmp_Prefix.pch;
+				INSTALL_PATH = /usr/local/lib;
+				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
+				MACOSX_DEPLOYMENT_TARGET = 10.5;
+				ONLY_ACTIVE_ARCH = YES;
+				OTHER_LDFLAGS = "$(inherited)";
+				PRODUCT_NAME = Bmp;
+				SDKROOT = iphoneos;
+			};
+			name = Debug;
+		};
+		FAC155F2145855CF0016F3BD /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				DSTROOT = /tmp/Bmp.dst;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)/Frameworks",
+				);
+				GCC_MODEL_TUNING = G5;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = Bmp_Prefix.pch;
+				INSTALL_PATH = /usr/local/lib;
+				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
+				MACOSX_DEPLOYMENT_TARGET = 10.5;
+				ONLY_ACTIVE_ARCH = YES;
+				OTHER_LDFLAGS = "$(inherited)";
+				PRODUCT_NAME = Bmp;
+				SDKROOT = iphoneos;
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		1DEB922208733DC00010E9CD /* Build configuration list for PBXProject "Bmp" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				1DEB922308733DC00010E9CD /* Debug */,
+				1DEB922408733DC00010E9CD /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		FAC155F0145855CF0016F3BD /* Build configuration list for PBXNativeTarget "Bmp" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				FAC155F1145855CF0016F3BD /* Debug */,
+				FAC155F2145855CF0016F3BD /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = 0867D690FE84028FC02AAC07 /* Project object */;
+}

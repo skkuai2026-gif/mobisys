@@ -1,0 +1,19 @@
+<%
+require 'CommonModules/mobisysbrowserhelper'
+@planLookups.each do|plan|
+%>
+	<option value="<%= plan.cd %>">
+		<%= getLabelValue(plan.desc) %>
+	</option>
+<% end %>
+<script type="text/javascript">
+	filterSAFlDetails('<%=@riderObject %>', '<%= @premiumSAFl %>');
+
+	<% 
+	if @newRiderFields != nil && @newRiderFields[@riderProductSequence.to_i]
+		@newRiderFields[@riderProductSequence.to_i].split(",").each do |readonlyField| %>
+			setReadOnly($("input[name='<%= @riderObject %>[<%= readonlyField %>]']"), true);
+		<% end %>
+	<% end %>
+
+</script>

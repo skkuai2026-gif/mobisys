@@ -1,0 +1,11 @@
+<%
+require 'CommonModules/mobisysbrowserhelper'
+@selectLookup.each do|lookup|
+%>
+	<option value="<%= lookup.cd%>" 
+		<% if @selectedValue != '' && (@selectedValue == lookup.cd) %>
+            selected
+        <% end %> >
+    	<%= (lookup.desc) %>
+  	</option>
+<% end %>

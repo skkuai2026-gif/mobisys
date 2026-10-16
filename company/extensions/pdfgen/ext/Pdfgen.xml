@@ -1,0 +1,92 @@
+<?xml version = "1.0"?>
+<?xml-stylesheet type="text/xsl" href="pb_help.xsl"?>
+<API>
+    <MODULE name="Pdfgen" parent="Rho">
+        <HELP_OVERVIEW>Offline PDF generation extension api</HELP_OVERVIEW>
+        <MORE_HELP>This is example of API. Implementation contain in extension.</MORE_HELP>
+    
+        <TEMPLATES>
+            <DEFAULT_INSTANCE/>
+            <PROPERTY_BAG/>
+        </TEMPLATES>
+
+         <PROPERTIES >
+            <DESC>list of properties supported by instance of object</DESC>
+            <PROPERTY name="simpleStringProperty" type="STRING" usePropertyBag="accessorsViaPropertyBag" >
+                <DESC>simple string property</DESC>
+            </PROPERTY>
+        </PROPERTIES>
+
+        <METHODS>
+
+            <METHOD name="enumerate" access="STATIC" hasCallback="optional">
+                <RETURN type="ARRAY">
+                    <DESC>Array of Pdfgen objects</DESC>
+                    <PARAM type="SELF_INSTANCE"/>
+                </RETURN>
+            </METHOD>
+
+            <METHOD name="generateAndroidPDF">
+                <DESC>Generate PDF using iText for Android</DESC>
+                <PARAMS>
+                    <PARAM name="inputHTMLFileName" type="STRING">
+                    </PARAM>
+                    <PARAM name="orientation" type="STRING">
+                    </PARAM>
+                    <PARAM name="isSinglePDFRequired" type="STRING">
+                    </PARAM>
+                    <PARAM name="password" type="STRING">
+                    </PARAM>
+                </PARAMS>
+                <RETURN type="STRING"/>
+            </METHOD>
+
+            <METHOD name="generateAndroidPDFCharts" runInThread="ui">
+                <DESC>Generate Charts for PDF using MPAndroidCharts on Android</DESC>
+                <PARAMS>
+                    <PARAM name="chartJSON" type="STRING">
+                    </PARAM>
+                    <PARAM name="chartOutputFileName" type="STRING">
+                    </PARAM>
+                    <PARAM name="chartType" type="STRING">
+                    </PARAM>
+                </PARAMS>
+                <RETURN type="STRING"/>
+            </METHOD>
+
+            <METHOD name="generateIOSPDF">
+                <DESC>Generate PDF for iOS</DESC>
+                <PARAMS>
+                    <PARAM name="htmlContent" type="STRING">
+                    </PARAM>
+                    <PARAM name="targetFilePath" type="STRING">
+                    </PARAM>
+                </PARAMS>
+                <RETURN type="STRING"/>
+            </METHOD>
+
+            <METHOD name="mergeIOSPDF">
+                <DESC>Merge PDF in iOS</DESC>
+                <PARAMS>
+                    <PARAM name="listOfPaths" type="STRING">
+                    </PARAM>
+                    <PARAM name="targetFilePath" type="STRING">
+                    </PARAM>
+                    <PARAM name="masterPassword" type="STRING">
+                    </PARAM>
+                    <PARAM name="password" type="STRING">
+                    </PARAM>
+                </PARAMS>
+                <RETURN type="STRING"/>
+            </METHOD>
+            
+        </METHODS>
+        
+        <USER_OVERVIEW>
+        </USER_OVERVIEW>
+
+        <VER_INTRODUCED>1.0.0</VER_INTRODUCED>
+        <PLATFORM>
+         </PLATFORM>
+    </MODULE>
+</API>    

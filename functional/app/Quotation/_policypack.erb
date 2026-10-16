@@ -1,0 +1,319 @@
+<% totalBasePremium = 0
+   premiumBlocks = 0
+   if @baseQuotationProduct != nil && @baseQuotationProduct.productId != nil && @baseQuotationProduct.productId != "" 
+     premiumBlocks = premiumBlocks + 1 
+     %>
+    <!-- base plan table -->  
+    <table class="illustrationtable" width = "100%" align="center">
+        <tr class="illustrationtableheader" >
+          <td width="55%"> <%= getLabelValue('PLAN') %> </td>
+          <td width="15%"> <%= getLabelValue('SUMASSURED') %> </td>
+          <td width="15%"> <%= getLabelValue('PREMIUMPERTIME') %> <br> <%= getLabelValue(@baseQuotationProduct.paymentFrequencyCd) %></td>
+          <td width="15%"> <%= getLabelValue('TAXELIGIBLE') %> </td>
+        </tr>
+
+        <!-- for each base product -->          
+        <% 
+          
+          @quotation.QuotationProductList.each do |quotationProduct|
+            currentProduct = @productHash[quotationProduct.productId] 
+            if currentProduct != nil and quotationProduct.productTypeCd == "PLAN"
+              totalBasePremium += quotationProduct.modalPremium.to_f
+            %>
+              <tr class="illustrationtablerow">
+                  <td class="tabletext">
+                    <a href="<%= url_for :action => :benefits, :id=>@quotation.object, :query=>{:product => quotationProduct.productId} %>">
+                      <div style="height:100%;width:100%">
+                        <%= quotationProduct.planCode %> - <%= getLabelValue(quotationProduct.planCode+"LONG") %>
+                      </div>
+                    </a>
+                  </td>
+                  <td class="tablenum"> 
+                    <% if quotationProduct.baseSumAssured == nil || quotationProduct.baseSumAssured.to_i == 0 %>
+                      <%= quotationProduct.productPlanOptionCd %>
+                    <% else %>
+                      <%= renderNumber(quotationProduct.baseSumAssured) %>
+                    <% end %>
+                  </td>
+                  <td class="tablenum"> <%= renderNumber(quotationProduct.modalPremium) %> </td>
+                  <td align="center">
+                    <% if @taxExemptionHT[quotationProduct.productId] != nil && @taxExemptionHT[quotationProduct.productId] == 1 %>
+                      <img src="/public/images/red-tick-th.png" style="height:14px;">
+                    <% end %>
+                  </td>
+              </tr>
+            <%
+            end 
+          end 
+        %>
+        
+        <tr class="illustrationtablerow">
+            <td colspan=2 class="tablenum"> <span> <%= getLabelValue('TOTALPREMIUM') %> (<%=premiumBlocks%>) </span> </td>
+            <td class="tablenum"> <%= renderNumber(totalBasePremium.to_i) %></td>
+        </tr>
+    </table>
+    <!-- end base plan table -->        
+    <br>
+  <% end %>
+
+<% 
+  totalRiderPremium = 0
+  riders = MobiSys::QuotationBO.getRiders(@quotation)
+  showRiders = false
+  riders.each do |rider|
+    showRiders = true if rider.selected == "on"
+  end
+  
+  if showRiders
+    premiumBlocks = premiumBlocks + 1
+%>
+
+<!-- rider table -->
+<table class="illustrationtable" width = "100%" align="center">
+  <tr class="illustrationtableheader" >
+    <td width="55%"> <%= getLabelValue('RIDER')   %> </td>
+    <td width="15%"> <%= getLabelValue('SUMASSURED')   %> </td>
+    <td width="15%"> <%= getLabelValue('PREMIUMPERTIME') %> <br> <%= getLabelValue(@baseQuotationProduct.paymentFrequencyCd) %> </td>
+    <td width="15%"> <%= getLabelValue('TAXELIGIBLE')   %> </td>
+  </tr>
+
+  <!-- for each rider -->          
+  <% 
+    @products.each do |currentProduct|
+      quotationProduct = MobiSys::QuotationBO.getQuotationProductByProductId(@quotation, currentProduct.productId)            
+       
+      if  currentProduct != nil && quotationProduct != nil && 
+          quotationProduct.productTypeCd == "RIDER" && quotationProduct.selected == "on"
+           
+        totalRiderPremium += quotationProduct.modalPremium.to_f
+      %>
+        <tr class="illustrationtablerow">
+            <td class="tabletext">
+              <a href="<%= url_for :action => :benefits, :id=>@quotation.object, :query=>{:product => quotationProduct.productId} %>">
+                <div style="height:100%;width:100%">
+                  <%= quotationProduct.planCode %> - <%= getLabelValue(quotationProduct.planCode+"LONG") %>
+                </div>
+              </a>
+            </td>
+            <td class="tablenum">
+              <% if quotationProduct.baseSumAssured == nil || quotationProduct.baseSumAssured.to_i == 0 %>
+                <%= getLabelValue(quotationProduct.productPlanOptionCd) %>
+              <% else %>
+                <% if quotationProduct.productId != "PB" %>
+                  <%= renderNumber(quotationProduct.baseSumAssured) %>
+                <% else %>
+                  <%= renderNumber(@baseQuotationProduct.baseSumAssured) %>
+                <% end %>
+              <% end %>
+            </td>
+            <td class="tablenum">
+              <% 
+                if quotationProduct.modalPremium.to_i != 0
+                %>
+                  <%= renderNumber(quotationProduct.modalPremium) %>
+                <%
+                else
+                  %>
+                  <%= getLabelValue('FREE') %>
+                  <%
+                end
+              %>                        
+            </td>
+            <td align="center">
+              <% if @taxExemptionHT[@baseQuotationProduct.productId] != nil && @taxExemptionHT[@baseQuotationProduct.productId] == 1 &&
+                    quotationProduct.productId == "TR" && quotationProduct.productTerm != nil && quotationProduct.productTerm.to_i >= 10 %>
+                <img src="/public/images/red-tick-th.png" style="height:14px;">
+              <% end %>
+            </td>
+        </tr>
+      <%
+      end 
+    end 
+  %>
+   
+  <tr class="illustrationtablerow">
+    <td colspan=2 class="tablenum"> <span> <%= getLabelValue('TOTALPREMIUM') %> (<%=premiumBlocks%>) </span> </td>
+    <td class="tablenum"> <%= renderNumber(totalRiderPremium.to_i) %> </td>
+  </tr>
+</table>
+<!-- end rider table -->
+ 
+<br>
+
+<%
+  end
+%> 
+
+<% if @partialProducts.length > 0 %>
+
+
+<!-- partial product table -->
+<table class="illustrationtable" width = "100%" align="center">
+  <tr class="illustrationtableheader" >
+    <td width="55%"> <%= getLabelValue('PARTIALPRODUCTS')   %> </td>
+    <td width="15%"> <%= getLabelValue('SUMASSURED')   %> </td>
+    <td width="15%"> <%= getLabelValue('PREMIUMPERTIME') %> <br> <%= getLabelValue(@baseQuotationProduct.paymentFrequencyCd) %> </td>
+    <td width="7%"> <%= getLabelValue('COVERAGETERM')   %> </td>
+    <td width="8%"> <%= getLabelValue('PPTERM')   %> </td>
+  </tr>
+
+
+  <tr class="illustrationtablerow">
+      <td class="tabletext">
+        <%= @baseQuotationProduct.planCode %> - <%= getLabelValue(@baseQuotationProduct.planCode+"LONG") %>
+      </td>
+      <td class="tablenum">
+        <%= renderNumber(@baseQuotationProduct.baseSumAssured) %>
+      </td>
+      <td class="tablenum">
+        <%= @baseQuotationProduct.modalPremium.to_f.round(2).to_s %>
+      </td>
+      <td class="tablenum">
+        <%= @baseQuotationProduct.productTerm %>
+      </td>
+      <td class="tablenum">
+        <%= @baseQuotationProduct.premiumPayingTerm %>
+      </td>
+  </tr>
+  
+  <% 
+    quotationProduct = MobiSys::QuotationBO.getQuotationProductByProductId(@quotation, '10ECV')
+  %>
+    
+  <tr class="illustrationtablerow">
+      <td class="tabletext">
+        - Regular premium (Year 1 - 6)
+      </td>
+      <td class="tablenum">
+        <%= renderNumber(@baseQuotationProduct.baseSumAssured) %>
+      </td>
+      <td class="tablenum">
+        <%= @baseQuotationProduct.modalPremium.to_f.round(2).to_s %>
+      </td>
+      <td class="tablenum">
+        <%= quotationProduct.productTerm %>
+      </td>
+      <td class="tablenum">
+        <%= quotationProduct.premiumPayingTerm %>
+      </td>
+  </tr>
+
+  <% 
+    wlProduct = MobiSys::QuotationBO.getQuotationProductByProductId(@quotation, '2WL99')
+    ulProduct = MobiSys::QuotationBO.getQuotationProductByProductId(@quotation, 'UL99')
+  %>
+    
+  <tr class="illustrationtablerow">
+      <td class="tabletext">
+        - Regular premium (Year 7+)
+      </td>
+      <td class="tablenum">
+        <%= renderNumber(wlProduct.baseSumAssured) %>
+      </td>
+      <td class="tablenum">
+        <%= (wlProduct.modalPremium.to_f + ulProduct.modalPremium.to_f).round(2).to_s %>
+      </td>
+      <td class="tablenum">
+        <%= @baseQuotationProduct.productTerm %>
+      </td>
+      <td class="tablenum">
+        <%= @baseQuotationProduct.premiumPayingTerm %>
+      </td>
+  </tr>
+   
+</table>
+<!-- end partial product table -->
+<br>
+
+<div name="premiumgraph" > 
+  
+</div>
+
+<br>
+<% end %>
+
+
+<% totalPAPremium = 0
+   if @paProduct != nil && @paProduct.productId != nil && @paProduct.productId != "" 
+     premiumBlocks = premiumBlocks + 1
+     %>
+  <!-- PA table -->
+  <table class="illustrationtable" width = "100%" align="center">
+      <tr class="illustrationtableheader" >
+        <td width="55%"> <%= getLabelValue('PAPLAN')   %> </td>
+        <td width="15%"> <%= getLabelValue('SUMASSURED')   %> </td>
+        <td width="15%"> <%= getLabelValue('PREMIUM')   %> </td>
+        <td width="15%"> <%= getLabelValue('TAXELIGIBLE')   %> </td>
+      </tr>
+  
+      <!-- for each PA product -->          
+      <% 
+        
+        @quotation.QuotationProductList.each do |quotationProduct|
+          currentProduct = @productHash[quotationProduct.productId] 
+          if currentProduct != nil and quotationProduct.productTypeCd == "PA"
+            totalPAPremium += quotationProduct.baseAnnualPremium.to_f
+          %>
+            <tr class="illustrationtablerow">
+                <td class="tabletext">
+                  <a href="<%= url_for :action => :benefits, :id=>@quotation.object, :query=>{:product => quotationProduct.productId} %>">
+                    <div style="height:100%;width:100%">
+                      <%= getLabelValue(quotationProduct.planCode+"LONG") %>
+                    </div>
+                  </a>
+                </td>
+                <td class="tablenum"> 
+                  <% if quotationProduct.baseSumAssured == nil || quotationProduct.baseSumAssured.to_i == 0 %>
+                    <%= getLabelValue(quotationProduct.planCode) %>
+                  <% else %>
+                    <%= renderNumber(quotationProduct.baseSumAssured) %>
+                  <% end %>
+                </td>
+                <td class="tablenum"> <%= renderNumber(quotationProduct.baseAnnualPremium) %> </td>
+                <td align="center">
+                   <% if @taxExemptionHT[quotationProduct.productId] != nil && @taxExemptionHT[quotationProduct.productId] == 1 %>
+                     <img src="/public/images/red-tick-th.png" style="height:14px;">
+                   <% end %>
+                </td>
+            </tr>
+          <%
+          end 
+        end 
+      %>
+      
+      <tr class="illustrationtablerow">
+          <td colspan=2 class="tablenum"> <span> <%= getLabelValue('TOTALPREMIUM') %> (<%=premiumBlocks%>) </span> </td>
+          <td class="tablenum"> <%= renderNumber(totalPAPremium.to_i) %></td>
+      </tr>
+  </table>
+  <!-- end PA table -->
+  <br>  
+<% end %>
+
+
+<% if premiumBlocks != 1 %> 
+  <!-- total premium -->
+    <table class="illustrationtable" width = "100%" align="center">
+        <tr class="illustrationtablerow">
+            <td colspan=2 class="tablenum" width="70%"> <span> <%= getLabelValue('TOTALPREMIUM')   %>
+            <%
+              for i in 1..premiumBlocks
+                if i == 1
+                  %>
+                    (<%=i%>)
+                  <%
+                else
+                  %>
+                    + (<%=i%>)
+                  <%
+                end
+              end
+            %>
+            </span> </td>
+            <td class="tablenum" width="15%"> <%= renderNumber((totalBasePremium + totalRiderPremium + totalPAPremium).to_i) %> </td>
+          <td width="15%"></td>
+      </tr>
+    </table>
+  <!-- end total premium -->
+<br>
+<% end %>

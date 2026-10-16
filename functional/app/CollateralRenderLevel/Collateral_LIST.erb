@@ -1,0 +1,105 @@
+<% @playVideoCollateral = Collateral.loadObject(:first, :conditions =>{:collateralCd => "PLAYVIDEO"})
+@mediaCollateral = Collateral.loadObject(:first, :conditions =>{:levelCd => @collateralRenderLevelDO.levelCd})%>
+<div id="listDiv">
+	<% if @parentColRenderLevelDO!=nil %>
+		<div class="leftnavigation">
+			<div class="level1header">
+	            <label class="level1label0"><%=@parentColRenderLevelDO.header1%></label>
+	            <br>
+	            <label class="level1label1"><%=@parentColRenderLevelDO.header2%></label>
+	        </div>
+	        <div class="sec-nav">
+	         	<% @parentColRenderLevelChildDOList.each do|parentColRenderLevelDO| %>
+	               	<% if @setLevelCd == parentColRenderLevelDO.levelCd %>
+	                    <% if parentColRenderLevelDO.header1.size < 30 %>
+							<li class="sec-nav-li-selected">
+	                           	<%= parentColRenderLevelDO.header1%>
+	                        </li>
+	                   	<%else%>
+	                        <li class="sec-nav-li-selected-small">
+	                          	<%= parentColRenderLevelDO.header1%>
+	                        </li>
+	                   	<%end%>
+	               	<%else%>
+	                  	<a href="javascript:doOnLevelClick('<%=parentColRenderLevelDO.levelCd%>','listDiv');">
+							<%if (parentColRenderLevelDO.header1.size < 30) %>           
+	                           	<li class="sec-nav-li">
+	                               	<%= parentColRenderLevelDO.header1 %>
+	                           	</li>
+	                       	<%else%>          
+	                           	<li class="sec-nav-li-small">
+	                         		<%= parentColRenderLevelDO.header1 %>
+	                           	</li>
+                           	<%end%>
+                       	</a>
+                    <%end%>
+	            <%end%>
+	        </div>
+		</div>
+	<%end%>
+
+	<div id="contentpane_<%=@collateralRenderLevelDO.guid%>" class="rightcontentpane">
+		<div>
+			<table width = 100% border = 0>
+				<tr>
+					<% if @collateralRenderLevelDO.contentPart1TypeCd == "MEDIA" && @collateralRenderLevelDO.contentPart1 != nil %>
+			            <td>
+			               <a href="#" id="<%=@playVideoCollateral.collateralCd%>_id" >
+			                  <img src="<%=@playVideoCollateral.fileName%>" alt="<%=@collateralMap[@collateralRenderLevelDO.icon].header%>" style="width: 180px;" class="dropshadow"/>
+			                   <script>
+			                      $('#<%=@playVideoCollateral.collateralCd%>_id').click(function () {  
+			                       $.get("/app/Collateral/showpopup?medianame=<%=@collateralRenderLevelDO.contentPart1%>",function(data) {});
+			                        }); 
+		                        </script>
+			               </a>
+			            </td>
+	                	<td >&nbsp;</td>
+			            <% if @mediaCollateral!= nil %>
+			            	<td valign="top"><span class="level2header"><%=@mediaCollateral.header %></span></td>
+			            <%end%>
+			        <% elsif 
+			        	 @collateralRenderLevelDO.contentPart1TypeCd == "TEXT" && @collateralRenderLevelDO.contentPart1 != nil %>
+			          	<td><%=@collateralRenderLevelDO.contentPart1%></td>
+			        <%end%>
+	           	</tr>
+				<tr>
+	            	<td colspan=3 ><hr></td>
+	            </tr>
+	            <% @collateralRenderLevelChildDOList.each do |collateralRenderLevelChildDO| %>
+	               	<tr>
+		               	<td width=180px id "">
+		               		<% if collateralRenderLevelChildDO.contentEmbedTypeCd == "EXTERNAL" %> 
+		                      	<a href="#" id="<%=collateralRenderLevelChildDO.levelCd %>_id" >  
+		                      	<script>
+              						$('#<%=collateralRenderLevelChildDO.levelCd%>_id').click(function () {  
+             	 					$.get("/app/Collateral/showpopup?collateralCd=<%=collateralRenderLevelChildDO.contentPart1%>",function(data) {});
+              						}); 
+            					</script>       
+		                   	<%else%>
+		                       	<a href="javascript:doOnLevelClick('<%=collateralRenderLevelChildDO.levelCd%>','listDiv');">
+		                   	<%end%>
+		                    <img src="<%=@collateralMap[collateralRenderLevelChildDO.icon].fileName%>" alt="<%=@collateralMap[collateralRenderLevelChildDO.icon].header%>" style="width: 180px;" class="dropshadow"/>
+		                   	<br>
+		                  	<div class="landinglevel1name"></div>
+		                    </a> 
+		                </td>
+		                <td width=10px>&nbsp;</td>
+		                <td valign="top" width=*>
+		             		<div style="text-shadow:none; height:120px;">
+		                       	<span class="level2header"><%=collateralRenderLevelChildDO.header1 %></span>
+		                        <p class="level2text">
+		                           	<%=collateralRenderLevelChildDO.contentPart1%>
+		                       	</p>
+		                    </div>
+		                </td>
+		           	</tr>
+		            <tr>
+		            	<td colspan=3 ><hr></td>
+		          	</tr>
+	            <%end%>
+	        </table>
+		</div>
+	</div>
+</div>
+		
+

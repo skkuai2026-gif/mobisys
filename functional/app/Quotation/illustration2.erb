@@ -1,0 +1,445 @@
+<!-- Start of illustration page -->
+<div data-role="page" id="illustration">
+
+  <div data-role="header" data-position="inline">
+  <h1><%= getLabelValue('ILLUSTRATION')%></h1>
+    <a href="#" onclick="location.href='<%= url_for :action => :show, :id=>@quotation.object %>';" class="ui-btn-left" data-direction="reverse">
+      <%= getLabelValue('BACK')   %>
+    </a>
+  </div>
+  
+  <div data-role="content">
+
+    <div data-role="table" class="illustrationdisplay" >
+    <% 
+       if (@quotation.proposerTitle == nil)
+           @quotation.proposerTitle = ""  
+    elsif (@quotation.proposerFirstname == nil)
+          @quotation.proposerFirstname=""
+    elsif (@quotation.proposerMiddlename == nil)
+          @quotation.proposerMiddlename  =""
+    elsif (@quotation.proposerLastname == nil)
+          @quotation.proposerLastname = ""    
+    end
+    %>
+     
+      <div style="display:block; top:300px;">
+      
+        <table class="illustrationtable" width = "100%" align="center">
+          <tr class="illustrationtablerow">
+            <td class="tableheader" width="20%"> <%= getLabelValue("NAMESURNAME") %> </td>
+            <td class="tabletext" width="40%"> <%= @quotation.proposerFirstname   %> </td>
+            <td rowspan="5" width=40% align=center> <div name="barcodeTarget"> </div> </td> 
+          </tr>
+          <tr class="illustrationtablerow">
+           <td class="tableheader"> <%= getLabelValue("birthDt") %> </td>
+           <td class="tabletext"> <%= @quotation.proposerDob %> </td>
+         </tr>
+          <tr class="illustrationtablerow">
+            <td class="tableheader"> <%= getLabelValue("AGE") %> </td>
+            <td class="tabletext"> <%= @quotation.proposerAge %> </td>
+          </tr>
+          <tr class="illustrationtablerow">
+            <td class="tableheader"> <%= getLabelValue("GENDER") %> </td>
+            <td class="tabletext"> <%= getLabelValue(@quotation.proposerGenderCd) %> </td>
+          </tr>
+          <tr class="illustrationtablerow">
+            <td class="tableheader"> <%= getLabelValue("SMOKER") %> </td>
+            <td class="tabletext"> <%= getLabelValue(@quotation.proposerSmoker) %> </td>
+          </tr>
+          <tr class="illustrationtablerow">
+            <td class="tableheader"> <%= getLabelValue("PAYMENTTYPE") %> </td>
+            <td class="tabletext"> <%= getLabelValue("") %><%= getLabelValue(@baseQuotationProduct.paymentTypeCd) %>  </td>
+          </tr>
+          <tr class="illustrationtablerow">
+            <td class="tableheader"> <%= getLabelValue("PAYMENTMODE") %> </td>
+            <td class="tabletext"> <%= getLabelValue(@baseQuotationProduct.paymentFrequencyCd) %> </td>
+          </tr>
+          
+
+        </table>
+        <br/>
+        <script>
+          var settings = {
+            output:'css',
+            bgColor: '#ffffff',
+            color: '#000000',
+            barWidth: '2px',
+            barHeight: '100px',
+            moduleSize: '5',
+            addQuietZone: 'yes'
+          };
+          $('div[name="barcodeTarget"]').html("").show().barcode("<%= @quotation.quotationRefNum %>", "datamatrix", settings);
+        </script>
+        
+        <% totalBasePremium = 0
+           premiumBlocks = 0
+           if @baseQuotationProduct != nil && @baseQuotationProduct.productId != nil && @baseQuotationProduct.productId != "" 
+             premiumBlocks = premiumBlocks + 1 
+             %>
+            <!-- base plan table -->  
+            <table class="illustrationtable" width = "100%" align="center">
+                <tr class="illustrationtableheader" >
+                  <td width="14%"> <%= getLabelValue('PLANTYPE') %> </td>
+                  <td width="14%"> <%= getLabelValue('PLAN') %> </td>
+                  <td width="14%"> <%= getLabelValue('ROLECD') %> </td>
+                  <td width="14%"> <%= getLabelValue('SUPPLEMENTARY_NAME') %> </td>
+                  <td width="14%"> <%= getLabelValue('SUMASSURED') %> </td>
+                  <td width="14%"> <%= getLabelValue('MODALPREMIUM') %> <br> <%= getLabelValue(@baseQuotationProduct.paymentFrequencyCd) %></td>
+                  <td width="14%"> <%= getLabelValue('TAXELIGIBLE') %> </td>
+                </tr>
+      
+                <!-- for each base product -->          
+                <% 
+                  
+                  @quotation.QuotationProductList.each do |quotationProduct|
+                    currentProduct = @productHash[quotationProduct.productId] 
+                    if currentProduct != nil and quotationProduct.productTypeCd == "PLAN"
+                      totalBasePremium += quotationProduct.modalPremium.to_f
+                    %>
+                      <tr class="illustrationtablerow">
+                        <td class="tabletext">
+                         <%= getLabelValue(quotationProduct.productTypeCd) %>
+                        </td>
+                          <td class="tabletext">
+                            <a href="<%= url_for :action => :benefits, :id=>@quotation.object, :query=>{:product => quotationProduct.productId} %>">
+                              <div style="height:100%;width:100%">
+                                <%= quotationProduct.planCode %>
+                              </div>
+                            </a>
+                          </td>
+                          <td class="tabletext">
+                            <%= getLabelValue(quotationProduct.partyRoleCd) %>
+                          </td>
+                          <td class="tabletext">
+                          </td>
+                          <td class="tablenum"> 
+                            <% if quotationProduct.baseSumAssured == nil || quotationProduct.baseSumAssured.to_i == 0 %>
+                              <%= quotationProduct.productPlanOptionCd %>
+                            <% else %>
+                              <%= renderNumber(quotationProduct.baseSumAssured) %>
+                            <% end %>
+                          </td>
+                          <td class="tablenum"> <%= renderNumber(quotationProduct.modalPremium) %> </td>
+                          <td align="center">
+                            <% if @taxExemptionHT[quotationProduct.productId] != nil && @taxExemptionHT[quotationProduct.productId] == 1 %>
+                              <img src="/public/images/red-tick-th.png" style="height:14px;">
+                            <% end %>
+                          </td>
+                      </tr>
+                    <%
+                    end 
+                  end 
+                %>
+                
+                <tr class="illustrationtablerow">
+
+                    <td colspan=5 class="tablenum"> <span> <%= getLabelValue('TOTALPREMIUM') %> (<%=premiumBlocks%>) </span> </td>
+                    <td class="tablenum"> <%= renderNumber(totalBasePremium.to_f) %></td>
+                </tr>
+                
+      <% 
+          totalRiderPremium = 0
+          riders = MobiSys::QuotationBO.getRiders(@quotation)
+          showRiders = false
+          riders.each do |rider|
+            showRiders = true if rider.selected == "on"
+          end
+          
+          if showRiders
+            premiumBlocks = premiumBlocks + 1
+        %>
+        <!-- rider table -->
+            
+            <!-- for each rider -->          
+                     <% 
+                       @products.each do |currentProduct|
+                         quotationProduct = MobiSys::QuotationBO.getQuotationProductByProductId(@quotation, currentProduct.productId)            
+                          
+                         if  currentProduct != nil && quotationProduct != nil && 
+                             quotationProduct.productTypeCd == "RIDER" && quotationProduct.selected == "on"
+                              
+                           totalRiderPremium += quotationProduct.modalPremium.to_f
+                         %>
+                           <tr class="illustrationtablerow">
+                             <td class="tabletext">
+                                <%= quotationProduct.productTypeCd %>
+                             </td>
+                               <td class="tabletext">
+                                 <a href="<%= url_for :action => :benefits, :id=>@quotation.object, :query=>{:product => quotationProduct.productId} %>">
+                                   <div style="height:100%;width:100%">
+                                     <%= quotationProduct.planCode %>
+                                   </div>
+                                 </a>
+                               </td>
+                               <td>
+                               </td>
+                               <td>
+                               </td>
+                               <td class="tablenum">
+                                 <% if quotationProduct.baseSumAssured == nil || quotationProduct.baseSumAssured.to_i == 0 %>
+                                   <%= getLabelValue(quotationProduct.productPlanOptionCd) %>
+                                 <% else %>
+                                   <% if quotationProduct.productId != "PB" %>
+                                     <%= renderNumber(quotationProduct.baseSumAssured) %>
+                                   <% else %>
+                                     <%= renderNumber(@baseQuotationProduct.baseSumAssured) %>
+                                   <% end %>
+                                 <% end %>
+                               </td>
+                               <td class="tablenum">
+                                 <% 
+                                   if quotationProduct.modalPremium.to_i != 0
+                                   %>
+                                     <%= renderNumber(quotationProduct.modalPremium) %>
+                                   <%
+                                   else
+                                     %>
+                                     <%= getLabelValue('FREE') %>
+                                     <%
+                                   end
+                                 %>                        
+                               </td>
+                               <td align="center">
+                                 <% if @taxExemptionHT[@baseQuotationProduct.productId] != nil && @taxExemptionHT[@baseQuotationProduct.productId] == 1 &&
+                                       quotationProduct.productId == "TR" && quotationProduct.productTerm != nil && quotationProduct.productTerm.to_i >= 10 %>
+                                   <img src="/public/images/red-tick-th.png" style="height:14px;">
+                                 <% end %>
+                               </td>
+                           </tr>
+                         <%
+                         end 
+                       end 
+                     %>
+                      
+                     <tr class="illustrationtablerow">
+                       <td colspan=5 class="tablenum"> <span> <%= getLabelValue('TOTALPREMIUM') %> (<%=premiumBlocks%>) </span> </td>
+                       <td class="tablenum"> <%= renderNumber(totalRiderPremium.to_i) %> </td>
+                     </tr>
+                 
+                   <!-- end rider table -->
+                    
+            
+                   
+                   
+                   <%
+                     end
+                   %>
+            </table>
+            <!-- end base plan table -->        
+            <br>
+          <% end %>
+
+        
+
+        <% if @partialProducts.length > 0 %>
+        
+        
+        <!-- partial product table -->
+        <table class="illustrationtable" width = "100%" align="center">
+          <tr class="illustrationtableheader" >
+            <td width="55%"> <%= getLabelValue('PARTIALPRODUCTS')   %> </td>
+            <td width="15%"> <%= getLabelValue('SUMASSURED')   %> </td>
+            <td width="15%"> <%= getLabelValue('PREMIUMPERTIME') %> <br> <%= getLabelValue(@baseQuotationProduct.paymentFrequencyCd) %> </td>
+            <td width="7%"> <%= getLabelValue('COVERAGETERM')   %> </td>
+            <td width="8%"> <%= getLabelValue('PPTERM')   %> </td>
+          </tr>
+        
+    
+          <tr class="illustrationtablerow">
+              <td class="tabletext">
+                <%= @baseQuotationProduct.planCode %>
+              </td>
+              <td class="tablenum">
+                <%= renderNumber(@baseQuotationProduct.baseSumAssured) %>
+              </td>
+              <td class="tablenum">
+                <%= @baseQuotationProduct.modalPremium.to_f.round(2).to_s %>
+              </td>
+              <td class="tablenum">
+                <%= @baseQuotationProduct.productTerm %>
+              </td>
+              <td class="tablenum">
+                <%= @baseQuotationProduct.premiumPayingTerm %>
+              </td>
+          </tr>
+          
+          <% 
+            quotationProduct = MobiSys::QuotationBO.getQuotationProductByProductId(@quotation, '10ECV')
+          %>
+            
+          <tr class="illustrationtablerow">
+              <td class="tabletext">
+                - Regular premium (Year 1 - 6)
+              </td>
+              <td class="tablenum">
+                <%= renderNumber(@baseQuotationProduct.baseSumAssured) %>
+              </td>
+              <td class="tablenum">
+                <%= @baseQuotationProduct.modalPremium.to_f.round(2).to_s %>
+              </td>
+              <td class="tablenum">
+                <%= quotationProduct.productTerm %>
+              </td>
+              <td class="tablenum">
+                <%= quotationProduct.premiumPayingTerm %>
+              </td>
+          </tr>
+
+          <% 
+            wlProduct = MobiSys::QuotationBO.getQuotationProductByProductId(@quotation, '2WL99')
+            ulProduct = MobiSys::QuotationBO.getQuotationProductByProductId(@quotation, 'UL99')
+          %>
+            
+          <tr class="illustrationtablerow">
+              <td class="tabletext">
+                - Regular premium (Year 7+)
+              </td>
+              <td class="tablenum">
+                <%= renderNumber(wlProduct.baseSumAssured) %>
+              </td>
+              <td class="tablenum">
+                <%= (wlProduct.modalPremium.to_f + ulProduct.modalPremium.to_f).round(2).to_s %>
+              </td>
+              <td class="tablenum">
+                <%= @baseQuotationProduct.productTerm %>
+              </td>
+              <td class="tablenum">
+                <%= @baseQuotationProduct.premiumPayingTerm %>
+              </td>
+          </tr>
+           
+        </table>
+        <!-- end partial product table -->
+        <br>
+        
+        <div name="premiumgraph" > 
+          
+        </div>
+
+        <br>
+        <% end %>
+ 
+        
+        
+        
+        <% if premiumBlocks != 1 %> 
+          <!-- total premium -->
+            <table class="illustrationtable" width = "100%" align="center">
+                <tr class="illustrationtablerow">
+                    <td colspan=5 class="tablenum" width="72%"> <span> <%= getLabelValue('TOTALPREMIUM')   %>
+                    <%
+                      for i in 1..premiumBlocks
+                        if i == 1
+                          %>
+                            (<%=i%>)
+                          <%
+                        else
+                          %>
+                            + (<%=i%>)
+                          <%
+                        end
+                      end
+                    %>
+                    </span> </td>
+                    <td class="tablenum" width="14%"> <%= renderNumber((totalBasePremium + totalRiderPremium).to_i) %> </td>
+                  <td width="15%"></td>
+              </tr>
+            </table>
+          <!-- end total premium -->
+        <br>
+        <% end %>
+             
+      </div>
+    </div> <!-- data-role = "table" -->
+
+    <% if @illustrationFormat != "" %>
+      <fieldset class="ui-grid-d">
+        <div class="ui-block-a"></div>
+        <div class="ui-block-b">
+          <a href="<%= url_for :action => :benefittable, :id=>@quotation.object%>" data-role="button" data-theme="a">
+            <%= getLabelValue('BENEFITTABLE')%>
+          </a>
+        </div>
+        <div class="ui-block-c">
+          <% if @quotation.signature == nil %>
+            <a href="javascript: acceptIllustration();" name="sign" data-role="button" data-theme="a">
+              <%= getLabelValue('ACCEPTILLUSTRATION')%>
+            </a>
+          <% end %>
+        </div>
+        <div class="ui-block-d">
+          <a href="<%= url_for :action => :email, :id=>@quotation.object %>" name="email" data-role="button" data-theme="a">
+            <%= getLabelValue('PRINTEMAIL')%>
+          </a>
+        </div>
+        <div class="ui-block-e"> </div>
+      </fieldset>
+    <% else %>
+      <fieldset class="ui-grid-b">
+        <div class="ui-block-a-equi"></div>
+        <div class="ui-block-b-equi">
+          <% if @quotation.signature == nil %>
+            <a href="<%= url_for :action => :acceptIllustration, :id=>@quotation.object %>" name="sign" data-role="button" data-theme="a">
+              <%= getLabelValue('ACCEPTILLUSTRATION')%>
+            </a>
+          <% end %>
+            <a href="<%= url_for :action => :email, :id=>@quotation.object %>" name="email" data-role="button" data-theme="a">
+              <%= getLabelValue('EMAIL')%>
+            </a>
+        </div>
+        <div class="ui-block-c-equi">
+          <a href="#" onclick="location.href='<%= url_for :controller => :Policy, :action => 'newPolicy', :query =>{ :quotationId => @quotation.object}%>';" name="new" data-role="button" data-theme="a" style="min-width:100px;">
+            <%= getLabelValue('LINKTOSAPP')%>
+          </a>
+        </div>
+      </fieldset>
+    <% end %>
+    <center><%=getLabelValue("LEGALDISCLAIMER")%></center>
+  </div>
+  <script>
+    function acceptIllustration(){
+      $.ajax({
+                url: "/app/Quotation/acceptIllustration",
+                data: {},
+                success: function(data) {
+                },
+                async: true                    
+             });          
+ 
+    }
+    
+    function accepted(uri){
+      $.ajax({
+                url: "/app/Quotation/accepted",
+                data: {'uri':uri, 'quotation': '<%=@quotation.object%>'},
+                success: function(data) {
+                },
+                async: true                    
+             });          
+     
+    }
+    
+    $(document).focus(function() {
+      setTimeout("onFocus()", 100);
+    });
+    
+    function onFocus(){
+        drawPremiumGraph();
+    }
+    
+    function drawPremiumGraph()
+    {
+      var pie;
+    
+      $('div[name="premiumgraph"]').html("<canvas id='premiumcvs' name='premiumcvs' width='"+ $(document).width() * 0.9 +"px' height='300px'>[No canvas support]</canvas>");
+      $('div[name="premiumgraph"]').trigger('create');
+      
+      pie = new RGraph.Pie('premiumcvs', [<%=@premiumValues%>]);
+      pie.Set('chart.labels', [<%=@premiumLabels%>]);
+      pie.Set('chart.title', 'Premium Distribution');  
+      pie.Draw();
+    }
+
+  </script>
+</div>

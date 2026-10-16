@@ -1,0 +1,68 @@
+<script type="text/javascript">
+$(document).ready(function(){
+    $('#deleteButton').hide();
+    $('#cancelButton').hide();
+    $('.deletePanel').hide();
+
+    $('#showDeletePanel').click(function () {
+        $('#deleteButton').show();
+        $('#cancelButton').show();
+        $('.deletePanel').show();
+        $('.actionButtons').hide();
+        $(this).hide();
+    });
+
+    $('#cancelButton').click(function() {
+        $('#deleteButton').hide();
+        $('#cancelButton').hide();
+        $('.deletePanel').hide();
+        $(this).hide();
+        $('#showDeletePanel').show();
+        $('.actionButtons').show();
+        $("input:checkbox[name='deleteCheck[]']:checked").prop("checked", false).checkboxradio('refresh');
+    });
+    
+    $('#deleteButton').click(function() {
+        if($("input:checkbox[name='deleteCheck[]']:checked").length > 0) {
+            $('<div>').simpledialog2({
+                mode: 'button',
+                style: "width: 629px",
+                buttonPrompt: '<%= getLabelValue("DELETE_CONFIRMATION", ["QUOTATION"])%>',
+                buttons : {
+                    '<%= getLabelValue("OK")%>': {
+                        click: function () {
+                            $('#quotationSearchForm').submit();
+                        }
+                    },
+                    '<%= getLabelValue("CANCEL")%>': {
+                        click: function () { 
+                        },
+                        icon: "delete",
+                        theme: "c"
+                    }
+                }
+            });
+        }
+    });
+
+    $('input[type=text]').keypress(function (e) {
+        if (e.which == 13) {
+            $('#quotationSearchForm').submit();
+            return false;
+        }
+    });
+
+    $('input[type=text]').change(function(){
+        $('#quotationSearchForm').submit();
+    });
+
+    $('select').change(function(){
+        $('#quotationSearchForm').submit();
+
+    });
+
+    $('#quotationDt').click(function(){
+        captureDate('Enter date', 'quotationDt');
+    });
+});
+</script>

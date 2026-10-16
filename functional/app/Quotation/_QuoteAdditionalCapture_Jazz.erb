@@ -1,0 +1,17 @@
+<%= modelTagStart("basePlan", @baseProduct, @quotation) %>
+	<%= render :partial => "QuotePlanAddtnl_Jazz" %>
+	<%= render :partial => "QuotePremiumHoliday_Jazz" %>
+	<%= render :partial => "QuotePremiumOffset_Jazz" %>
+	<%= render :partial => "QuoteAnnuity_Jazz" %>
+	<%= render :partial => "QuotePDF_Jazz" %>
+	<%= render :partial => "QuoteRetirement_Jazz" %>
+	<%= render :partial => "QuoteOverrideRates_Jazz" %>
+	<%= render :partial => "QuotePlanExtra_Jazz" %>
+
+	<!-- Discount was not present in existing UI as well -->
+	<%#= render :partial => "QuoteDiscount_Jazz" %>
+<% modelTagEnd %>
+
+<%= render :partial => "QuoteFund_Jazz" %>
+<%= render :partial => "QuoteTopup_Jazz" %>
+<%= render :partial => "QuoteWithdrawal_Jazz" %>

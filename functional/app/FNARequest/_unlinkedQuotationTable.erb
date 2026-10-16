@@ -1,0 +1,112 @@
+<style type="text/css">
+.ui-simpledialog-container table {
+    width: 100%;
+    border-collapse: collapse;
+    border-spacing: 0;
+    border: 0px solid black;
+}
+
+.ui-simpledialog-container thead,
+.ui-simpledialog-container tbody,
+.ui-simpledialog-container tr,
+.ui-simpledialog-container td,
+.ui-simpledialog-container th { display: block; }
+
+.ui-simpledialog-container tr:after {
+    content: ' ';
+    display: block;
+    visibility: hidden;
+    clear: both;
+}
+
+.ui-simpledialog-container thead th,
+.ui-simpledialog-container tbody td {
+    height: 30px;
+    line-height: 30px;
+    text-align: left;
+}
+
+.ui-simpledialog-container tbody {
+    height: 200px;
+    overflow-y: auto;
+}
+
+.ui-simpledialog-container thead {
+    width: 99%;
+    width: calc(100% - 17px);
+}
+
+.ui-simpledialog-container tbody td,
+.ui-simpledialog-container thead th {
+    width: 18.7%;
+    float: left;
+}
+
+.ui-simpledialog-container tbody td:last-child,
+.ui-simpledialog-container thead th:last-child {
+    border-right: none;
+}
+.ui-simpledialog-container .button_UI {
+    background-color:#efbc33!important;
+    border-radius: 7px;
+    border-style: none;
+    color: #003946 !important;
+    display: inline-block;
+    font-size: 14px !important;
+    max-width: 200px;
+    margin: 0;
+    text-shadow: none !important;
+    font-weight: 700;
+    text-align: center;
+    line-height: 1.3;
+    /*padding: .8em 1.5em !important;*/
+    width: 100px;
+    margin-left:1%;
+    margin-right:1%;
+}
+</style>
+<div class='header' style="padding-top:10px;padding-bottom: 10px; text-align: center;">
+  <%= getLabelValue('SALES ILLUSTRATION') %>
+</div>
+<table data-role="table" data-mode="reflow" class="ui-responsive table-stroke" data-product='<%= @params['fnaProductGuid'] %>'>
+  <thead>
+    <tr>
+      <th><%= getLabelValue('quotationRefNum') %></th>
+      <th><%= getLabelValue('insuredFullName') %></th>
+      <th><%= getLabelValue('productId') %></th>
+      <th><%= getLabelValue('statusCd') %></th>
+      <th><%= getLabelValue('select') %></th>
+    </tr>
+  </thead>
+  <tbody>
+    <% unlinked_quotations_result.each do |quotation| %>
+      <tr>
+        <td><%= quotation[:quotationRefNum] %></td>
+        <td><%= quotation[:insuredNameUI] %></td>
+        <td><%= quotation[:product] %></td>
+        <td><%= quotation[:status] %></td>
+        <td>
+          <label class='label radioWidth' for='quotation' style="top: 0px;height: 1px">
+            <%= renderRadioButton('quotation', '', "quotation_#{quotation[:quotationRefNum]}", quotation[:quotationRefNum]) %>
+          </label>
+        </td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
+<div class="ui-dual-field-contain ui-body ui-br" data-role="dualfieldcontain" style="margin:0% 0% 0% 4%;">
+  <div class="half" align="left">
+    <div class="group">
+      <a id='link_quotation' data-role='button' href='#', class="button_UI ui-btn" onclick="linkQuotation()">
+        <%= getLabelValue('Save') %>
+      </a>
+    </div>
+  </div>
+  <div class="half" align="right">
+    <div class="group">
+      <a rel='close' data-role='button' href='#' class="button_UI ui-btn">
+        <%= getLabelValue('CANCEL') %>
+      </a>
+    </div>
+  </div>
+</div>

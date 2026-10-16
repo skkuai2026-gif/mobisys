@@ -1,0 +1,87 @@
+<% if $currentProduct.getFacetValue('FAMILYINSUREDDETAILS').to_s == 'YES' %>
+    <% panelHeader = "#{getLabelValue('FAMILYINSUREDDETAILS')}" %>
+<% else %>
+    <% panelHeader = "#{getLabelValue('supplementary')}" %>
+<% end %>
+<% if @params['sym_navbar'].to_s != '' && @params['sym_navbar'].split('--')[1].to_s == @suplementaryInsuredCount.to_s %>
+	<%= subPanelTagStart("#{panelHeader} #{@suplementaryInsuredCount.to_i+ 1}", false, "", true, "onClick='javascript:accordEvent(this)'") %>
+<% else%>
+	<%= subPanelTagStart("#{getLabelValue('supplementary')} #{@suplementaryInsuredCount.to_i+ 1}", true, "", true, "onClick='javascript:accordEvent(this)'") %>
+<% end %>
+<% partyPckg = 'PolicySupplementaryLifeDO'%>
+
+	<div class='add-section'>
+		<%
+			supplementaryCount = @suplementaryInsuredCount.to_i + 1
+			@tagName = "grid_#{supplementaryCount}_supplementaryParty"
+		%>
+		<%= modelTagStart("grid_#{supplementaryCount}_supplementaryPolicyPartyRole", @policyPartyRole, @policy)%>
+			<div style="display: none;">
+				<%= inputTag("roleCd") %>
+				<%= inputTag("refGuid") %>
+				<%= inputTag("removed") %>
+			</div>
+		<% modelTagEnd %>
+
+		<%= modelTagStart(@tagName, @party, @policy,@suplementaryInsuredCount.to_i + 1) %>
+			<i class='close-add-section icon-close' onClick='javascript:catchevent(this);' id='grid_<%=supplementaryCount%>_supplementaryDetails_removed'></i>
+			<%= navbarTagStart(@supplementaryNavbarIds,@supplementaryNavbarLabels) %>
+				<% if @navbarToBeLoaded=="#{@tabToBeLoaded}-supplementaryDetailsTabContainer--#{@suplementaryInsuredCount}" %>
+					<%= tabTagStart("#{@tabToBeLoaded}-supplementaryDetailsTabContainer--#{@suplementaryInsuredCount}") %>
+						<div id='<%=@tagName%>_partyDetails'>
+							<%= render(:partial => 'NBPartyRender_Jazz', :locals => { :facetkeyprefix => 'SUPPLY', :partyPckg => partyPckg, :party => @party }) %>
+						</div>
+
+						<% if @renderSupplementaryNationalityPanel %>
+							<%= render(:partial => 'NBPartyNationality_Jazz', :locals => {:partyPckg => partyPckg, :party => @party}) %>
+						<% end %> 
+
+						<% if @renderSupplementaryIdentityPanel %>
+							<%= render(:partial => 'NBPartyIdentity_Jazz', :locals => { :partyPckg => partyPckg, :tagId => "supplementaryPartyIdentity#{supplementaryCount}", :partyIdentity1 => @partyIdentity1, :partyIdentity2 => @partyIdentity2, :party => @party}) %>
+						<% end %>
+
+						<% if @renderSupplementaryOccupationPanel %>
+							<%= render(:partial => 'NBPartyEmployment_Jazz', :locals => {:partyPckg => partyPckg, :partyEmployment => @partyEmployment, :party => @party, :tagId =>@tagName + '_supplementaryPartyEmployment'}) %>
+						<% end %>
+					<%= tabTagEnd %>
+				<% end %>
+				<% if @navbarToBeLoaded=="#{@tabToBeLoaded}-supplementaryContactDetailsTabContainer--#{@suplementaryInsuredCount}" %>
+					<%= tabTagStart("#{@tabToBeLoaded}-supplementaryContactDetailsTabContainer--#{@suplementaryInsuredCount}") %>		
+						<% if @renderSupplementaryAddressPanel %>
+							<div style="display: none;">
+								<% if @renderSupplementaryOccupationPanel %>
+									<%= modelTagStart(@tagName + '_supplementaryPartyEmployment', @partyEmployment, @party) %>
+									<%= inputTag("occupationTypeCd") %>
+						  			<% modelTagEnd %>
+						  		<% end %>
+							</div> 
+							<%= render(:partial => 'NBPartyAddress_Jazz', :locals => {:partyPckg => partyPckg, :party => @party, :party_res_address => @homeAddress, :party_per_address => @permanentAddress, :party_office_address => @businessAddress, :resTagId => @tagName + "_supplementaryPartyAddressHome",:ofcTagId => @tagName + "_supplementaryPartyAddressOffice", :perTagId => @tagName + "_supplementaryPartyAddressPermanent", :renderHomeAddressPanel => @renderSupplementaryHomeAddressPanel, :renderPermanentAddressPanel => @renderSupplementaryPermanentAddressPanel, :renderOfficeAddressPanel => @renderSupplementaryOfficeAddressPanel}) %>
+						<% end %>
+
+						<% if @renderSupplementaryContactPanel %>  
+							<%= render(:partial => 'NBPartyContact_Jazz', :locals => {:partyPckg => partyPckg, :party => @party, :party_resi_contact => @partyContactHome, :party_off_contact => @partyContactOffice, :party_mob_contact => @partyContactMobile, :resiTagId => @tagName + "_supplementaryPartyContactResidential", :offTagId => @tagName + "_supplementaryPartyContactOffice", :mobTagId => @tagName + "_supplementaryPartyContactMobile", :emailModelId => @tagName + "_supplementaryPartyEmail", :partyEmailObject => @partyEmail }) %>
+						<% end %>
+					<%= tabTagEnd %>
+				<% end %>
+			<%= navbarTagEnd%>	
+			<%= setupFilterUsingFieldTargetValueMap('TitleGender', false, @tagName) %>
+			<%= setupFilterUsingFieldTargetValueMap('CoverageCountryCity', true, @tagName) %>
+			<%= setupFilterUsingFieldTargetValueMap('RelationGender', true, @tagName) %>
+		<% modelTagEnd %>
+
+		<% if @supplementaryProductFacet  &&  @navbarToBeLoaded !="#{@tabToBeLoaded}-supplementaryContactDetailsTabContainer--#{@suplementaryInsuredCount}"%>
+	        <%= subPanelTagStart("coverage",false) %>
+			    <%= modelTagStart(@tagName, @policyProduct, @policy, @supPolicyProductCount) %>
+			        <%= prdFieldDataTag("#{partyPckg}","baseAnnualPremium,baseSumAssured,modalPremium,productPlanOptionCd") %>
+			        <%= inputTag("productTypeCd",nil,nil,nil,nil,nil,'HIDDEN') %>
+			        <%= inputTag("insuredPartyRefGuid",nil,nil,nil,nil,nil,'HIDDEN') %>
+					<% gridID_ppi = "grid_#{index}_supplementaryParty_policyProductInsured" %>
+			        <%= modelTagStart(gridID_ppi, @policyProduct.PolicyProductInsuredList[0], @policyProduct,index) %>
+						<%= inputTag("roleCd",nil,nil,nil,nil,nil,'HIDDEN')%>
+						<%= inputTag("insuredPartyRefGuid",nil,nil,nil,nil,nil,'HIDDEN') %>
+					<% modelTagEnd %>
+		    	<% modelTagEnd %>
+	        <%= subPanelTagEnd() %>
+	    <% end %>
+	</div>
+<%= subPanelTagEnd %>

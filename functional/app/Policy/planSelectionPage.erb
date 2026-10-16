@@ -1,0 +1,234 @@
+<div data-role="page">
+    <link rel="stylesheet" href="/public/css/c2l_dashboard.css">
+    <style type="text/css">
+	.ui-select {
+		width: 98% !important;
+		margin-top: 0.5em !important;
+	}
+	label{
+		padding-left:0 !important;
+	}
+	#mandatory_field label:after {
+	color: #e32;
+	content: ' *';
+	display:inline;
+	}
+	</style>
+
+    <div data-role="header" id="header" data-position="inline"> 
+		<a href="/app/Menu/eapp" rel="external" data-direction="reverse" data-role="none">
+			<img src="/public/images/SalesIllustration/icon_BackArrow-Red.png">
+		</a>
+		<h1><%= getLabelValue('AddProposal')%></h1>
+	</div>
+
+	<div data-role="content" id="content">
+		<br><br>
+		<div class="ui-field-contain">
+			<div class="ui-grid-c ui-responsive">
+				<div class="ui-block-a"></div>
+				<div class="ui-block-b" id="mandatory_field">
+					<label for="productFamilyCd"><%= getLabelValue('productFamilyCd') %></label>
+				</div>
+				<div class="ui-block-c">
+					<div class="ui-select">
+						<%= getLookup('DYNAMICLOOKUP', 'productFamilyCd', nil, nil, @productFamilyArray) %>
+					</div>
+				</div>
+				<div class="ui-block-d"></div>
+			</div>
+		</div>
+		<div class="ui-field-contain">
+			<div class="ui-grid-c ui-responsive">
+				<div class="ui-block-a"></div>
+				<div class="ui-block-b" id="mandatory_field">
+					<label for="productId"><%= getLabelValue('productCd') %></label>
+				</div>
+				<div class="ui-block-c">
+					<div class="ui-select">	
+						<%= getLookup('DYNAMICLOOKUP', 'productId', nil, nil, @productArray) %>
+					</div>
+				</div>
+				<div class="ui-block-d"></div>
+			</div>
+		</div>
+		<% if @offlineApplicationEnvironment.value == "UAT" %>
+		<div class="ui-field-contain">
+			<div class="ui-grid-c ui-responsive">
+				<div class="ui-block-a"></div>
+				<div class="ui-block-b">
+					<label for="productVersion"><%= getLabelValue('productVersion') %></label>
+				</div>
+				<div class="ui-block-c">
+					<div class="ui-select">
+						<%= getLookup('DYNAMICLOOKUP', 'productVersion', nil, nil, @productVersionArray) %>
+					</div>
+				</div>
+				<div class="ui-block-d"></div>
+			</div>
+		</div>
+		<% end %>
+		<div class="ui-field-contain">
+			<div class="ui-grid-c ui-responsive">
+				<div class="ui-block-a"></div>
+				<div class="ui-block-b" id="mandatory_field">
+					<label for="productPlanOptionCd"><%= getLabelValue('planOptionCd') %></label>
+				</div>
+				<div class="ui-block-c">
+					<div class="ui-select">
+						<%= getLookup('DYNAMICLOOKUP', 'productPlanOptionCd', nil, nil, @offlinePlanOptionArray) %>
+					</div>
+				</div>
+				<div class="ui-block-d"></div>
+			</div>
+		</div>
+		<div class="ui-field-contain">
+			<div class="ui-grid-c ui-responsive">
+				<div class="ui-block-a"></div>
+				<div class="ui-block-b"></div>
+				<div class="ui-block-c">
+					<input type="button" id="goButton" value="<%= getLabelValue('GO') %>"/>
+				</div>
+				<div class="ui-block-d"></div>
+			</div>
+		</div>
+	</div>
+</div>
+
+<script type="text/javascript">
+//Method to get product list based on product family
+function filterProduct(productFamily) {
+	$.ajax({
+		url: "/app/Policy/filterProduct",
+		data: {'productFamily':productFamily},
+        headers: {
+          'Transition-Enabled': false
+        },
+		success: function(data){
+			$('#productId').html(data);
+			$("#productId").trigger('create');
+			if ($('#productId > option').length <= 1) {
+				$('#productId').selectmenu('disable');
+			}
+			else {
+				$('#productId').selectmenu('enable');
+				$('#goButton').button("disable");
+			}
+			$('#productVersion').html('<option value=""><%= getLabelValue("select") %></option>');
+			$("#productVersion").trigger('create');
+			$('#productVersion').selectmenu('disable');
+
+			$('#productPlanOptionCd').html('<option value=""><%= getLabelValue("select") %></option>');
+			$("#productPlanOptionCd").trigger('create');
+			$('#productPlanOptionCd').selectmenu('disable');
+		}
+	}); 
+}
+
+
+//Method to get product versions list based on productID
+function filterProductVersion(productId) {
+	$.ajax({
+		url: "/app/Policy/filterProductVersion",
+		data: {'productId':productId, 'type':'PRODUCTVERSION'},
+        headers: {
+          'Transition-Enabled': false
+        },
+		success: function(data){
+			$('#productVersion').html(data);
+			$("#productVersion").trigger('create');
+			if ($('#productVersion > option').length <= 1) {
+				$('#productVersion').selectmenu('disable');
+			}
+			else {
+				$('#productVersion').selectmenu('enable');
+				$('#goButton').button("disable");
+			}
+			$('#productPlanOptionCd').html('<option value=""><%= getLabelValue("select") %></option>');
+			$("#productPlanOptionCd").trigger('create');
+			$('#productPlanOptionCd').selectmenu('disable');
+		}
+	});
+}  
+
+
+//Method to get product plans based on product version/ productId
+function filterProductPlan(productFamily, productId, productVersion) {
+	$.ajax({
+		url: "/app/Policy/filterProductPlan",
+		data: {
+			'productId':productId, 
+			'productVersion':productVersion, 
+			'productFamily':productFamily
+		},
+        headers: {
+          'Transition-Enabled': false
+        },
+		success: function(data){
+			$('#productPlanOptionCd').html(data);
+			$("#productPlanOptionCd").trigger('create');
+			if ($('#productPlanOptionCd > option').length <= 1) {
+				$('#productPlanOptionCd').selectmenu('disable');
+			}
+			else {
+				$('#productPlanOptionCd').selectmenu('enable');
+				$('#goButton').button("disable");
+			}
+		}
+	}); 
+}
+
+
+$(document).ready(function(){
+	$('#productId').selectmenu('disable');
+	$('#productVersion').selectmenu('disable');
+	$('#productPlanOptionCd').selectmenu('disable');
+	$('#goButton').button("disable");
+
+	$("#productFamilyCd").change(function(){
+		$("#productId").val("").selectmenu("refresh");
+		$("#productVersion").val("").selectmenu("refresh");
+		$("#productPlanOptionCd").val("").selectmenu("refresh");
+		filterProduct($(this).val());
+	});
+
+	$("#productId").change(function(){
+		<% if @offlineApplicationEnvironment.value == "UAT" %>
+			$("#productVersion").val("").selectmenu("refresh");
+			$("#productPlanOptionCd").val("").selectmenu("refresh");
+			filterProductVersion($(this).val());
+		<% else %>
+			$("#productPlanOptionCd").val("").selectmenu("refresh");
+			filterProductPlan($("#productFamilyCd").val(), $(this).val());
+			if ($(this).val() != "") {
+				$('#goButton').button("enable");	
+			}
+		<% end %>
+	});
+
+	<% if @offlineApplicationEnvironment.value == "UAT" %>
+		$("#productVersion").change(function(){
+			$("#productPlanOptionCd").val("").selectmenu("refresh");
+			filterProductPlan($("#productFamilyCd").val(), $("#productId").val(), $(this).val());
+			if ($(this).val() != "") {
+				$('#goButton').button("enable");	
+			}
+		});
+	<% end %>
+
+	$("#productPlanOptionCd").change(function(){
+		if ($(this).val() != "") {
+			$('#goButton').button("enable");	
+		}
+	});
+
+	$('#goButton').click(function(){
+		var productFamily = $("#productFamilyCd").val();
+		var productId = $("#productId").val();
+		var productVersion = $("#productVersion").val();
+		var productPlanOptionCd = $("#productPlanOptionCd").val();
+
+		location.href = '/app/Policy/newPolicy?productFamily='+productFamily+'&productId='+productId+'&productVersion='+productVersion+'&productPlanOptionCd='+productPlanOptionCd;
+	});
+});
+</script>

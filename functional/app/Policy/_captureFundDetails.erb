@@ -1,0 +1,102 @@
+<div id='fundDetails'>
+    <div class="legend">
+		<label class="strongLabel">
+			<%= getLabelValue('FUNDSINFORMATION') %>
+			<a href="#" class="scrollTopButton ui-icon-carat-u ui-btn-icon-notext ui-alt-icon ui-btn-inline"/>
+			<a href="#" class="expandButton ui-icon-plus ui-btn-icon-notext ui-alt-icon ui-btn-inline"/>
+			<a href="#" class="collapseButton ui-icon-minus ui-btn-icon-notext ui-alt-icon ui-btn-inline"/>
+		</label>
+	</div>
+
+	<div class="panelContent">
+	    <% if @facetData[:renderPortfolioModelCd] || @facetData[:renderTopUpAllocSameAsPremAllocFl] %>
+		    <div data-role="dualfieldcontain">
+		    	<% if @facetData[:renderPortfolioModelCd] %>
+					<div class="half">
+						<%= renderLabel('portfolioModelCd', 'portfolioModelCd', 'mandatory', @policyProduct) %>
+						<%= getLookup('DYNAMICLOOKUP', 'portfolioModelCd', @policyProduct.portfolioModelCd, @policyProduct, @modelArray) %>
+			    	</div>
+			 	<% end %> 
+
+		    	<% if @facetData[:renderTopUpAllocSameAsPremAllocFl] %>
+			    	<div class="half">
+			         	<%= renderLabel('topUpAllocSameAsPremAllocFl', 'topUpAllocSameAsPremAllocFl', nil, @policyProduct, "style='width: 100%;'") %>
+			    		<%= renderCheckBox('topUpAllocSameAsPremAllocFl', @policyProduct.topUpAllocSameAsPremAllocFl, 'Selected', @policyProduct) %>
+			       	</div>
+			 	<% end %>
+		    </div>
+		<% end %>
+
+	    <div class="ui-grid-c">
+	    	<% if @facetData[:renderFundCd] %>
+				<div class="ui-block-a"><%= getLabelValue('fundDesc') %></div>
+		 	<% end %> 
+
+		 	<div class="ui-block-b"></div>
+
+	    	<% if @facetData[:renderAllocationPerc] %>
+				<div class="ui-block-c">
+					<%= getLabelValue('allocationPerc') %> (<span id="allocationPerc">0%</span>)
+				</div>
+		 	<% end %> 
+
+	    	<% if @facetData[:renderTopupAllocationPerc] %>
+				<div class="ui-block-d">
+					<%= getLabelValue('topupAllocationPerc') %> (<span id="topupAllocationPerc">0%</span>)
+				</div>
+		 	<% end %> 
+		</div>
+
+		<ul data-role="listview" id="selectedFundList" data-inset="true" style="width: 98%;">
+			<% @funds.each do |fund| %>
+				<li class="ui-field-contain">
+		        	<%= renderObject(fund, @policyProduct) %>
+		        	<%= renderHiddenField('removed', fund.removed, 'removed', fund) %>
+	        	    <%= renderHiddenField('fundCd', fund.fundCd, '', fund) %>
+	    			
+	    			<% if @facetData[:renderFundCd] %>
+						<label><%= getLabelValue(@fundDescHM[fund.fundCd].fundDesc) %></label>
+		 			<% end %>
+					
+		 			<% if @showSearchFl == true %>
+  					<span style="float: right;">
+  						<input id="<%= getObjectMapping(fund) %>" type="button" data-inline="true" data-icon="delete" data-iconpos="notext" onclick="removeFund('<%= getObjectMapping(fund)%>');"/>
+  					</span>
+					<% end %>
+
+	    			<% if @facetData[:renderTopupAllocationPerc] %>
+						<span style="float: right; margin-right: 5em;">
+					        <%= renderAmountField('topupAllocationPerc', fund.topupAllocationPerc.to_i, nil, fund, 'maxlength="3"') %>
+					    </span>
+		 			<% end %> 
+
+	    			<% if @facetData[:renderAllocationPerc] %>
+						<span style="float: right; margin-right: 15em;">
+							<%= renderAmountField('allocationPerc', fund.allocationPerc, nil, fund, 'maxlength="3"') %>
+						</span>
+						<% if @modelFundType == "FIXEDMODEL" %>
+						  <script type="text/javascript">  
+						    setReadOnly($('input[name="<%= getObjectMapping(fund) %>[allocationPerc]"]'),true);
+				      </script>
+					  <% end %>  
+		 			<% end %> 
+				</li>
+	    	<% end %>
+		</ul>
+
+		<% if @policy.quotationRefGuid.to_s == "" %>
+			<div class="ui-grid-a" style="width: 98%;" id="searchFundDiv">
+				<div class="ui-block-a" style="width: 10%;">
+					<label for="search"><%= getLabelValue('SEARCHINPUT') %></label>
+				</div>
+				<div class="ui-block-b" style="width: 90%;">
+					<input type="text" name="search" id="search" placeholder="<%= getLabelValue('SEARCHINPUT') %>"/>
+					<a href='#' data-role="button" data-mini="true" data-inline="true" id="searchFundButton"><%= getLabelValue('Search') %></a>
+				</div>
+			</div><br/>
+		<% end %>
+
+		<table data-role="table" id="searchFundTable" class="ui-body-d ui-shadow table-stripe ui-responsive" style="width: 98%;"></table>
+	</div>
+</div>
+<%= render :partial => "captureFundDetailsJS" %>

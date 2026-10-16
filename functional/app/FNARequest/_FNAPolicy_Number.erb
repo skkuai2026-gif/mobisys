@@ -1,0 +1,76 @@
+<form method="POST" action="<%= url_for :action => :submitPolicyNumber %>" name="policyNumber" id="policyNumber">
+    <div class="illustrationdisplay" >
+        <div class="ui-dual-field-contain ui-body ui-br" data-role="dualfieldcontain">
+            <%= renderObject(@fnaRequest) %>
+            <%= renderObject(@fnaProposer) %>
+            <% i = 0 %>
+            <% j = 1 %>
+            <% @fnaPolicyLink.each do |fnaPolicyLink| %>
+                <% if i < @noOfPolicy %>
+                    <%= renderObject(fnaPolicyLink, @fnaRequest) %>
+                    <%= renderHiddenField('guid', fnaPolicyLink.guid, 'guid', fnaPolicyLink) %>
+                    <%= renderHiddenField('object', fnaPolicyLink.object, 'object', fnaPolicyLink) %>
+                    <% labelForPolicynumber = "UI_POLICY_" + j.to_s %> 
+                    <div class="half">
+                        <div class="group">
+                            <%= renderNumericField('policyNum', fnaPolicyLink.policyNum, 'policyNum', fnaPolicyLink, ' maxlength="9" pattern="/([^\s])" class="material-input " onkeypress="return numbersonly(event)"  onchange="return checkifNum(this.value, this.id)"') %>
+                            <%= renderLabel('policyNum', labelForPolicynumber, 'mandatory material-label', fnaPolicyLink) %>
+                        </div>
+                    </div>
+                <% i = i+1 %>
+                <% j = j+1 %>
+                <% end %>
+            <% end %>
+        </div>
+    </div>
+  
+    <style>
+        .button_UI {
+             background-color:#efbc33!important;
+            border-radius: 7px;
+            border-style: none;
+            color: #003946 !important;
+            display: inline-block;
+            font-size: 14px !important;
+            max-width: 200px;
+            margin: 0;
+            text-shadow: none !important;
+            font-weight: 700;
+            text-align: center;
+            line-height: 1.3;
+            /*padding: .8em 1.5em !important;*/
+            width: 100px;
+        }
+    </style>
+   <%= render(:partial => 'FNAPolicy_NumberJS')%>
+</form>
+
+ <div class="" data-role="dualfieldcontain" align="">
+        <div class="">
+            <div class="group" style="font-size: 14px;">
+                <%= getLabelValue('INSTRUCTION_TEXT_SUBMISSION') %>
+            </div>
+        </div>     
+    </div>
+    <!-- <div class="" data-role="dualfieldcontain">
+         <div class="half"  align="left">
+            <div class="group">
+                <a href="#" id="previousTab"  class="button_UI ui-link ui-btn selected"  style="" onclick="previousTab()">
+                    <%#= getLabelValue('PREVIOUS') %>
+                </a>
+
+            </div>
+        </div> 
+        <%# if @fnaRequest.addtnField1Str == "FNASIGNED" %>
+         <div class="half" align="right">
+            <div class="group" >
+                <a href="#" name="submit"  class="button_UI ui-link ui-btn selected">
+                    <%#= getLabelValue('SUBMIT') %> 
+                </a>   
+            </div>
+        </div>
+        <%# end %>
+    </div>  -->
+
+
+     

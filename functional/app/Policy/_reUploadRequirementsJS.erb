@@ -1,0 +1,52 @@
+<script type="text/javascript">
+function setupRequirementTab(object, onLoad){
+	$('#requirements-info a').off('click');
+	initialRequirementForm = $('#requirements-info').serialize();
+	showLoadingMessage();
+	if (!onLoad) {
+		submitForm();
+	}
+	object.parent().siblings().children('a').removeClass('selectedTab');
+	object.addClass('selectedTab');
+	geturl = object.data("url");
+	lifeid = object.data('id').toString();
+	// if(lifeid.indexOf(".")==-1) {
+	// 	lifeid = lifeid+".0"
+	// }
+	$.ajax({                                    
+		url: "/app/Policy/"+geturl,
+		data: {'policyObject': '<%= @policy.object.to_s %>', 'lifeGuid': lifeid},
+		success: function(data) {
+			hideLoadingMessage();
+			$('#requirement-container').html(data).trigger('create').show();
+			$('#requirements-info a').on('click', function(){
+				setupRequirementTab($(this), false);
+			});  
+		}
+	});
+}
+
+$("a[name='submit']").click(function() {
+	submitForm();
+	location.href = "/app/Policy/reUploadingDocumentsToServer?policyObject=<%=@policy.object%>"
+});
+
+$(document).ready(function(){
+	if ('<%=@openSpecificTab %>' == 'true'){
+		$("#requirements-info li").each(function(){
+			currentLi = $(this).children();
+			console.log(currentLi);
+			if (currentLi.length > 0) {
+				guid = currentLi.data('id').toString();
+				if (guid == '<%= @lifeGuid %>'){
+					setupRequirementTab(currentLi, true);
+				}
+				console.log(guid);
+			}
+		});
+	}
+	else{
+		setupRequirementTab($("#requirements-info li[name='life1Li']>a"), true);
+	}
+});
+</script>

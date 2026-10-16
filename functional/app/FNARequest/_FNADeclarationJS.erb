@@ -1,0 +1,211 @@
+<script type="text/javascript">
+
+    var initialDeclaration = "";
+
+    $(document).ready(function() {  
+        $('#nextpre').show();
+        $('#nextTab').addClass("ui-state-disabled");
+        <%if @fnaRequest.applicantSignature != nil && @fnaRequest.agentSignature != nil && @fnaRequest.applicantSignature.to_s != '' && @fnaRequest.agentSignature.to_s != '' && @fnaRequest.agentSignDt != nil && @fnaRequest.applicantSignDt != nil && @fnaRequest.agentSignDt.to_s != '' && @fnaRequest.applicantSignDt.to_s != ''%>
+        $('#nextTab').removeClass("ui-state-disabled");
+        <%end%>
+    })
+
+
+ 
+    function submitForm(){
+      //Used to trim all the input fields before save
+      $(':input').each(function(){
+          $(this).val($.trim($(this).val()))
+      });   
+
+    if(initialDeclaration != $('#Declaration').serialize()) {
+        
+      $.ajax({                                    
+          url: "/app/FNARequest/submitDeclaration",
+          method: 'POST',
+          async: false,
+          data: $('#Declaration').serialize(),
+          headers: {
+                  'Transition-Enabled': false
+              },
+          success: function(data) {
+            $("input[name='<%= getObjectMapping(@fnaRequest) %>[addtnField3Str]']").val(data);
+                        if (data == "false"){
+                             $("#showSignature").val("true");
+                        }
+                $("a#submit").hide();
+              }
+      });
+    }
+    }
+
+
+    // $('[id="<%=getObjectMapping(@fnaRequest)%>[applicantSignature]_canvas"]').change(function){
+    //     alert($('[id="<%=getObjectMapping(@fnaRequest)%>[applicantSignature]_canvas"]'))
+    //     // if $('[id="<%=getObjectMapping(@fnaRequest)%>[applicantSignature]_canvas"]').val(){
+
+    //     // }
+    // };
+       
+
+
+    function bakbuttonbasicdetials(){ 
+        $.ajax({                                    
+            url: "/app/FNARequest/showpreview",
+            data: {'id': '<%= @fnaRequest.object %>' },
+            headers: {
+                'Transition-Enabled': false
+            },
+            success: function(data) {
+ 
+            }
+        });
+    }
+
+
+
+    function tabSetup(){
+        initialDeclaration != $('#Declaration').serialize()
+        $('.sigPad').signaturePad({drawOnly:true});
+        $('.sigPad').signaturePad();
+        $("canvas[id*= 'agentSignature']").css("pointer-events", "none");       
+        if($("input[name*= 'statuscode']").val() == "FNAPREVIEW"){
+          var dialogContent = '<span>'+"<%= getLabelValue('PREVIEW_AGAIN') %>"+'</span>';
+          $("#policyNo-validation-div").html("").html(dialogContent).trigger('create');
+          if (typeof $.mobile.sdCurrentDialog === 'undefined') {
+          $("<div>").simpledialog2({
+              mode : 'blank',
+              blankContent : $("#policyNo-validation-div").html() +"<a data-role='button' href='#' onclick='bakbuttonbasicdetials()' style='margin-top: 2%;'>" + '<%= getLabelValue("MESSAGE_CLOSE") %>' + "</a>"
+              });
+          }
+        }
+        if($('[id="<%=getObjectMapping(@fnaRequest)%>[applicantSignature]"]').val() == "" && $('[id="<%=getObjectMapping(@fnaRequest)%>[agentSignature]"]').val() == ""){
+              $('[id="<%=getObjectMapping(@fnaRequest)%>[agentSignature]_confirmButton"]').hide();
+              $('[id="<%=getObjectMapping(@fnaRequest)%>[agentSignature]_clearButton"]').hide();
+              $('[id="<%=getObjectMapping(@fnaRequest)%>[agentSignature]_signButton"]').hide();   
+            }
+        <%if @fnaRequest.statusCd.to_s == "FNAPENDING"%>
+          $("canvas[id*= 'applicantSignature']").css("pointer-events", "none");
+          $('[id="<%=getObjectMapping(@fnaRequest)%>[applicantSignature]_clearButton"]').show();
+        <%end%>
+        <%if @fnaRequest.statusCd.to_s == "FNASIGNED" || @fnaRequest.statusCd.to_s == "FNASUBMIT" || @fnaRequest.statusCd.to_s == "SYNCDONE"%>
+            setReadOnly($('input[type="text"]'), true);
+            setReadOnly($('input[type="tel"]'), true);
+            setReadOnly($('input[type="num"]'), true);
+            setReadOnly($('input[type="email"]'), true);
+            $('select').selectmenu('disable').trigger("refresh");
+            $('input[type="radio"]').checkboxradio('disable').trigger("refresh");
+            $('input[type="checkbox"]').checkboxradio('disable').trigger("refresh");
+            $('input[type="button"]').off('click');
+            $('input[type="button"]').button('disable').trigger("refresh");
+            $('a[href="#clear"]').hide();
+            $('.confirm_button').hide();
+            $('.sign_button').hide();
+        <%end%>
+        // if ($('[id="<%#=getObjectMapping(@fnaRequest)%>[applicantSignature]"]').val() != ''){
+      //     $('[id="<%#=getObjectMapping(@fnaRequest)%>[applicantSignature]_canvas"]').css("background-color","#684332");
+      //     // $('canvas[id="<%#=getObjectMapping(@fnaRequest)%>[applicantSignature]_canvas"]').disableCanvas();
+      // }
+      // if ($('[id="<%#=getObjectMapping(@fnaRequest)%>[agentSignature]"]').val() != ''){
+      //     $('[id="<%#=getObjectMapping(@fnaRequest)%>[agentSignature]_canvas"]').css("background-color","#684332");
+      //     // $('canvas[id="<%#=getObjectMapping(@fnaRequest)%>[agentSignature]_canvas"]').disableCanvas();
+      // }  
+    };
+
+
+
+// on clicking applicant signature confirm button
+  $('[id="<%=getObjectMapping(@fnaRequest)%>[applicantSignature]_confirmButton"]').click(function(){
+    // Disabled applicant signature canvas 
+    $("canvas[id*= 'applicantSignature']").css("pointer-events", "none");
+    if ($('[id="<%=getObjectMapping(@fnaRequest)%>[applicantSignature]"]').val() != ''){
+      // Populated today's date in applicant signed date
+      var today = new Date();
+      var date_today_applicant= today.format('dd/mm/yyyy');
+      $('input[id="<%=getObjectMapping(@fnaRequest)%>[applicantSignDt]"]').val(date_today_applicant);
+      // Changed canvas color to grey for applicant
+      $('[id="<%=getObjectMapping(@fnaRequest)%>[applicantSignature]_canvas"]').css("background-color","grey");
+      // Trigger agent signature button
+      if ($('[id="<%=getObjectMapping(@fnaRequest)%>[agentSignature]"]').val().toString() == ""){
+          $('[id="<%=getObjectMapping(@fnaRequest)%>[agentSignature]_signButton"]').children().trigger("click");
+      }
+      // Disabled agent signature
+      $("canvas[id*= 'agentSignature']").css("pointer-events", "none");
+      // Showed agent buttons
+      if ($('[id="<%=getObjectMapping(@fnaRequest)%>[agentSignature]"]').val() == ""){
+          $('[id="<%=getObjectMapping(@fnaRequest)%>[agentSignature]_confirmButton"]').show();
+          $('[id="<%=getObjectMapping(@fnaRequest)%>[agentSignature]_clearButton"]').show();
+          $('[id="<%=getObjectMapping(@fnaRequest)%>[agentSignature]_signButton"]').show();
+      }
+    }
+    else{
+        // Cleared populated applicant signed date if not signed
+        $('input[id="<%=getObjectMapping(@fnaRequest)%>[applicantSignDt]"]').val("");
+        // Disabled agent signature
+        $("canvas[id*= 'agentSignature']").css("pointer-events", "none");
+    }
+  });
+
+
+// on clicking applicant signature sign button
+  $('[id="<%=getObjectMapping(@fnaRequest)%>[applicantSignature]_signButton"]').click(function(){
+        $('#nextTab').addClass("ui-state-disabled"); 
+    // Enabled applicant signature canvas
+    $("canvas[id*= 'applicantSignature']").css("pointer-events", "auto");
+    // Removed grey color
+    $('[id="<%=getObjectMapping(@fnaRequest)%>[applicantSignature]_canvas"]').css("background-color","transparent");
+    // Removed applicant sign date
+    $('input[id="<%=getObjectMapping(@fnaRequest)%>[applicantSignDt]"]').val("");
+    // Disabled agent signature
+    $("canvas[id*= 'agentSignature']").css("pointer-events", "none");
+    // Cleared canvas for agent signature
+    var canvasElement = $("canvas[id*= 'FNARequest[agentSignature]']");
+    var canvasContext = canvasElement.get(0).getContext("2d"); 
+    canvasContext.clearRect(0, 0, canvasElement.get(0).width, canvasElement.get(0).height);
+    canvasContext.fillStyle = 'transparent';
+    $('[id="<%=getObjectMapping(@fnaRequest)%>[agentSignature]"]').val(""); 
+    // Removed agent sign date
+    $('input[id="<%=getObjectMapping(@fnaRequest)%>[agentSignDt]"]').val("");
+    // Hidden agent buttons
+    $('[id="<%=getObjectMapping(@fnaRequest)%>[agentSignature]_confirmButton"]').hide();
+    $('[id="<%=getObjectMapping(@fnaRequest)%>[agentSignature]_clearButton"]').hide();
+    $('[id="<%=getObjectMapping(@fnaRequest)%>[agentSignature]_signButton"]').hide();
+    // Changed canvas color to grey for 
+    $('[id="<%=getObjectMapping(@fnaRequest)%>[agentSignature]_canvas"]').css("background-color","transparent");
+  });
+
+
+
+    // on clicking agent signature confirm button
+  $('[id="<%=getObjectMapping(@fnaRequest)%>[agentSignature]_confirmButton"]').click(function(){
+        // Disabled agent signature canvas
+    $("canvas[id*= 'agentSignature']").css("pointer-events", "none");
+    if ($('[id="<%=getObjectMapping(@fnaRequest)%>[agentSignature]"]').val() != ''){
+      // Populated today's date in agent signed date
+      $('#nextTab').removeClass("ui-state-disabled"); 
+
+      var today = new Date();
+      var date_today_agent= today.format('dd/mm/yyyy');
+      $('input[id="<%=getObjectMapping(@fnaRequest)%>[agentSignDt]"]').val(date_today_agent);
+      // Changed canvas color to grey
+      $('[id="<%=getObjectMapping(@fnaRequest)%>[agentSignature]_canvas"]').css("background-color","grey");
+    }
+    else{
+        // Cleared populated agent signed date if not signed
+        $('input[id="<%=getObjectMapping(@fnaRequest)%>[agentSignDt]"]').val("");
+    }
+  });
+
+  
+// on clicking sign, signature pad color changes from grey to white  for Agent
+  $('[id="<%=getObjectMapping(@fnaRequest)%>[agentSignature]_signButton"]').click(function(){
+        $('#nextTab').addClass("ui-state-disabled"); 
+    // Enabled agent signature canvas
+    $("canvas[id*= 'agentSignature']").css("pointer-events", "auto");
+    // Removed grey color 
+    $('[id="<%=getObjectMapping(@fnaRequest)%>[agentSignature]_canvas"]').css("background-color","transparent");
+    // Removed agent sign date
+    $('input[id="<%=getObjectMapping(@fnaRequest)%>[agentSignDt]"]').val("");
+  });
+
+</script>

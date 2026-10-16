@@ -1,0 +1,472 @@
+<script type="text/javascript" src="/public/js/jquery.fancybox.pack.js"></script>
+<link rel="stylesheet" href="/public/css/jquery.signaturepad.css">
+<script type="text/javascript" src="/public/js/jquery.signaturepad.js"></script>
+<div data-role="content" id="capture" style="-webkit-transform: none;">
+<form method="POST" action="<%= url_for :action => :submitBasicDetails %>" name="fnaInputForm" id="fnaInputForm">
+<%= renderObject(@fnaRequest) %>
+<%= renderObject(@fnaProposer, @fnaRequest) %>
+    <div class="header" style="padding-top:10px;padding-bottom: 10px;">
+        <span class="title"></span> 
+        <span class="description"></span>
+        <!-- <span class="set-right required-note" style="padding-top:0px;float: right;"><%#= getLabelValue('BASIC_REQUIRED_FIELDS_MSG') %></span> -->
+    </div>
+    <div class="illustrationdisplay">
+        <div class="legend">
+            <label class="strongLabel" style="font-weight: normal !important;">
+                <%= getLabelValue('FNAAPPLICANT') %>
+                <a href="#" class="expandButton ui-icon-plus ui-btn-icon-notext ui-alt-icon ui-btn-inline ui-link" style="display: none;"></a>
+                <a href="#" class="collapseButton ui-icon-minus ui-btn-icon-notext ui-alt-icon ui-btn-inline ui-link"></a>
+            </label>
+        </div>  
+        
+        <div class="panelContent">              
+            <%= renderHiddenField('partyRoleCd', @fnaProposer.partyRoleCd, 'partyRoleCd', @fnaProposer) %>
+            <input type="hidden" id ="changeStatusCd" name="changeStatusCd" value="" />
+            <input type="hidden" id ="basicTabOnSave" name="basicTabOnSave" value="" />
+
+            <div class="ui-dual-field-contain ui-body ui-br" data-role="dualfieldcontain">
+                  <div class="half">
+                    <div class="group">
+                        <%= renderInputField('lastName1', @fnaProposer.lastName1, 'lastName1', @fnaProposer, 'minOccurs= "1" data-entityType= "nameType" maxlength="25" pattern="/([^\s])" class="material-input"') %>
+                        <%= renderLabel('lastName1', 'FNAME', 'mandatory', @fnaProposer, 'style="line-height: 0.5;"') %>
+                    </div>
+                    <script type="text/javascript">
+                        $('label[for="<%=getObjectMapping(@fnaProposer)%>[lastName1]"]').addClass('material-label');
+                    </script>
+                </div>
+
+                <div class="half">
+                    <div class="group">
+                        <%= renderInputField('firstName1', @fnaProposer.firstName1 ,'firstName1', @fnaProposer, 'minOccurs= "1" data-entityType= "nameType" maxlength="25" pattern="/([^\s])" class="material-input "') %>
+                        <%= renderLabel('firstName1', 'GNAME', 'mandatory material-label', @fnaProposer)   %>
+                    </div>
+                </div>      
+
+              
+            </div>
+
+
+            <div class="ui-dual-field-contain ui-body ui-br" data-role="dualfieldcontain">
+                <div class="half">
+                    <div class="group">    
+
+                        <%= renderNumericField('mobileNum', @fnaProposer.mobileNum, 'mobileNum', @fnaProposer, ' maxlength="20" pattern="/([^\s])"  type="number" onchange="checkifnumbers(this)" onkeypress="return numbersonly(event)" class="material-input "') %>
+                        <%= renderLabel('mobileNum', 'CONTACT', 'mandatory', @fnaProposer, 'style="line-height: 0.5;"') %>
+                        <!-- <a href="#"><img src="/public/images/FNA/mobile-icon.png" class="datepickerimg"></a> -->
+                    </div>
+                    <script type="text/javascript">
+                        $('label[for="<%=getObjectMapping(@fnaProposer)%>[mobileNum]"]').addClass('material-label');
+                    </script>
+                </div>
+
+                <div class="half">
+                    <div class="group">
+                        <%= renderInputField('emailAddress', @fnaProposer.emailAddress, 'emailAddress', @fnaProposer, ' maxlength="60" pattern="/([^\s])"  class="material-input"') %>
+                        <%= renderLabel('emailAddress', 'EMAIL', 'mandatory material-label', @fnaProposer) %>
+                        <!-- <a href="#"><img src="/public/images/FNA/email-hk.png" class="datepickerimg"></a> -->
+                    </div>
+                </div>
+            </div>
+
+
+            <div class="ui-dual-field-contain ui-body ui-br" data-role="dualfieldcontain">
+                <div class="half">
+                    <div class="group">
+                        <%= renderInputField('birthDt', @fnaProposer.birthDt, 'Date Of Birth', @fnaProposer, 'pattern="/([^\s])" class="material-input" onchange="getAgeMethod(this)" readonly') %>         
+                        <%= renderLabel('birthDt', 'DOB', 'mandatory material-label' , @fnaProposer) %>
+                        <img src="/public/images/FNA/datepicker.png" class="datepickerimg" onclick="captureDate('<%= getLabelValue('ENTER_DATE') %>', $(this).siblings('input').attr('name'));">
+                    </div>
+                </div>
+
+                <div class="half">
+                    <div class="group">
+                        <%= renderInputField('age', @fnaProposer.age, 'age', @fnaProposer, ' maxlength="3" pattern="/([^\s])" class="material-input" readonly ') %>
+                        <%= renderLabel('age', 'AGE', 'material-label' , @fnaProposer) %>
+                    </div>
+                </div> 
+            </div>   
+
+            
+            <div class="ui-dual-field-contain ui-body ui-br" data-role="dualfieldcontain">
+                <div class="half">
+                    <div class="group"> 
+                        <!-- occupation by getLookup  -->     
+                        <%#= renderLabel('occupationCd', 'OCCUPATION', 'mandatory fieldLabel ui-input-text', @fnaProposer )%>
+                        <%#= getLookup('OCCUPATIONTITLE', 'occupationCd', @fnaProposer.occupationCd, @fnaProposer, ' class="material-select"  style="color:#424242 !important" maxlength="40" ') %>
+                        
+                        <!-- occupation by inputfield  -->
+                        <%= renderInputField('occupationCd', @fnaProposer.occupationCd, 'occupationCd', @fnaProposer, ' maxlength="64" pattern="/([^\s])" class="material-input"  ') %>
+                        <%= renderLabel('occupationCd', 'OCCUPATION', 'material-label' , @fnaProposer) %> 
+
+                        <!-- occupation by renderTextArea  -->
+                        <%#= renderLabel('occupationCd', 'OCCUPATION', '' , @fnaProposer) %> 
+                        <%#= renderTextArea('occupationCd', @fnaProposer.occupationCd, 'occupationCd', @fnaProposer, 'style="width: 372px;max-width: 372px;padding-top:5px;"') %>
+
+                        <!-- Smart Search for occupation start-->
+                        <!-- <input id= "fna-Proposer-occupation" data-type= "search" name= '<%#= getObjectMapping(@fnaProposer)%>[occupationCd]' value= '<%#= @fnaProposer.occupationCd %>' oninput="showFilteredList(this)" onclick="showFilteredList(this)" style= "width: 109%;border-bottom:1px solid #757575;font-size:14px;padding:10px;padding-left:20px;color:#757575;">
+                        
+                        <a href="#" id="deleteOccupation" style="border:0px red solid;margin-left:36px;" onclick="deleteOccupation()">
+                            <img style="height: 16px;width: 16px; " src="/public/mirum/images/X-32x32.png">
+                        </a>
+                        
+                        <ul id="smartSearchList" data-role= "listview" data-filter= "true" data-filter-reveal= "true" data-input= "#fna-Proposer-occupation" style= "display: block;max-height: 210px;overflow-y: scroll;width: 216%;overflow-x: hidden;margin-top: 5px;margin-right: 5%;">
+                            <%# @occupationlist.each do |occupation| %>
+                                <li class= "auto-filter-listitem" data-pointer= '<%#= getObjectMapping(@fnaProposer)%>[occupationCd]' data-cd= '<%#=occupation.cd %>' data-desc= '<%#=occupation.desc %>' onclick= "filterList(this);" onmousedown="changeColor(this)" style="margin-left: 0%;font-size:10px;background-color:#f7f7f7;">
+                                    <span>
+                                        <%#= occupation.desc %>
+                                    </span>
+                                </li> 
+                            <%# end %>
+                        </ul> -->
+                        <!-- Smart Search for occupation start--> 
+                    </div>      
+                </div>
+                
+                <div class="half">
+                    <div class="group">
+                        <%= renderLabel('maritalStatusCd', 'MARITAL', 'mandatory fieldLabel ui-input-text', @fnaProposer) %>
+                        <%= getLookup('FNAMARITALSTATUS', 'maritalStatusCd', @fnaProposer.maritalStatusCd, @fnaProposer, 'pattern="/([^\s])" class="material-select" style="color:#424242 !important" ') %>
+                    </div>
+                </div>
+            </div>
+
+            <div class="ui-dual-field-contain ui-body ui-br" data-role="dualfieldcontain">
+                <div class="half">
+                    <div class="group">
+                        <%= renderLabel('educationLevelCd','EDUCATIONLEVEL', 'mandatory fieldLabel ui-input-text', @fnaProposer) %>
+                        <%= getLookup('EDUCATIONLEVEL', 'educationLevelCd', @fnaProposer.educationLevelCd, @fnaProposer, 'pattern="/([^\s])" class="material-select" style="color:#424242 !important;" ') %>
+                    </div>
+                </div>
+
+                <div class="half">
+                    <div class="group">
+                        <%= renderLabel('existingLIDurationCd','YRSFORINSURANCE', ' fieldLabel ui-input-text', @fnaProposer) %>             
+                        <%= getLookup('EXISTINGLIDURATION', 'existingLIDurationCd', @fnaProposer.existingLIDurationCd, @fnaProposer, 'pattern="/([^\s])" class="material-select" style="color:#424242 !important" ') %>
+                    </div>
+                </div>
+            </div>
+
+            <div class="" style="margin-left:1.5%;display: inline-block;margin-right:-11px;">
+                <%= renderCheckBox('consentFl', @fnaRequest.consentFl, nil, @fnaRequest, 'onclick="expDate()" class="ui-checkbox2" style="top: 30px !important;display:none;"') %>
+                <%= renderLabel('consentFl', 'CONFIRM', 'icon-checkbox2 ', @fnaRequest, ' style="width:85%;color:#333 !important;padding-left:36px !important;top: 0px !important;" ') %>
+                <div style="display: inline-block;margin-left:-12px;">
+                    <a id="inline" href="#data" onclick=" $('.mask').fadeIn();" >
+                        <u><%= renderLabel('BASIC_PICS_HYPERLINK', 'BASIC_PICS_HYPERLINK', '', @fnaRequest, ' style="width:100%;font-weight:bold;color:#4a7295;" ') %></u>
+                    </a>
+
+                    <div class='mask' style="margin-top: 0px;margin-left: -30px;"></div>
+
+                    <style type="text/css">
+                    .fancybox-skin{
+                        background-color: #ffffff !important;
+                        opacity: 1;
+                        /*border:5px solid black; */
+                        border-radius: 7px;
+                    }
+                    #fancybox{
+                        /*padding: 50px 50px;*/
+                        outline: none;
+                        position: relative;
+                        overflow: hidden;
+                        z-index: 1102;
+                        border: 3px solid #fff;
+                        background-color: black;
+                    }
+                    .mask{
+                        position:fixed;
+                        top:0;
+                        left:0;
+                        width:200%;
+                        height:200%;
+                        background:rgba(0,0,0,0.4);
+                        z-index:200;
+                        display:none;
+                    }
+                    .backgroundFreeze{
+                        position: fixed;
+                    }
+                    </style>
+                    <script>
+                        // To freeze background when Popup shows but this can't be copied to error box thus commented 
+                        // $('label[for="FNARequest[BASIC_PICS_HYPERLINK]"]').click(function(){
+                        //     $('form[id="fnaForm"]').addClass('backgroundFreeze');
+                            
+                        // })
+                        // $('a[id="closeButton"]').click(function(){
+                        //     $('form[id="fnaForm"]').removeClass('backgroundFreeze');
+                        // })
+                    </script>
+
+                    <div style="display:none;">
+                        <div id="data" >  
+                            <div class="legend" style="width:98%;">
+                                <label class="strongLabel" style="font-size:18px;display:inline-block;">
+                                    <%= getLabelValue('FNA_PICS_1') %>                    
+                                </label>
+                                <a id="closeButton" class="strongLabel" href="javascript:;" onclick="$.fancybox.close();$('.mask').fadeOut();" style="display:inline-block;float:right;">
+                                    <b><img src="/public/images/FNA/close_button.png"></b>
+                                </a>
+                                <% declarationText = getLabelValue('PICS_HEADER') + "%0D%0A%0D%0A" + getLabelValue('CTC_1') + "%0D%0A%0D%0A" + getLabelValue('CTC_2') + "%0D%0A%0D%0A" + getLabelValue('CTC_3') + "%0D%0A%0D%0A" + getLabelValue('CTC_4') + "%0D%0A%0D%0A" + getLabelValue('CTC_5') %>
+                                <a href='mailto:?subject=<%= getLabelValue('PICS_HEADER') %>&body=<%= declarationText %>' style="float:right;">
+                                    <b><img src="/public/images/FNA/email-hk.png" height="20px" width="20px" style="padding-right:10px;padding-top:4px;"></b>
+                                </a>
+                            </div>
+
+                            <div style="margin-top:0px;padding: 0px 20px;text-align:justify;" id='copythis'>
+                                    <%= getLabelValue('FNA_DECLARATION1') %>
+                                    <br>
+                                    <%= getLabelValue('FNA_DECLARATION2') %>
+                                    <!-- <br> -->
+                                    <%= getLabelValue('FNA_PICS') %>
+                            </div>
+
+                            <br>
+
+                            <div style="width:96%;padding:2%;position:relative;">
+                                <% declarationText = getLabelValue('PICS_HEADER') + "%0D%0A%0D%0A" + getLabelValue('CTC_1') + "%0D%0A%0D%0A" + getLabelValue('CTC_2') + "%0D%0A%0D%0A" + getLabelValue('CTC_3') + "%0D%0A%0D%0A" + getLabelValue('CTC_4') + "%0D%0A%0D%0A" + getLabelValue('CTC_5') %>
+                                <a href='mailto:?subject=<%= getLabelValue('PICS_HEADER') %>&body=<%= declarationText %>' class="button_UI" style="font-weight:bold;border-radius:7px !important;border:0px solid #003656 !important;float:left">
+                                    <%= getLabelValue('EMAIL_FNA') %>
+                                </a>
+                                <a href="javascript:;" onclick="$.fancybox.close();$('.mask').fadeOut();" class="button_UI" style="font-weight:bold;border-radius:7px !important;border:0px solid #003656 !important;float:right">
+                                    <%= getLabelValue('MESSAGE_CLOSE') %>
+                                </a>
+
+                            </div>
+                    </div>
+                    </div> 
+                </div>
+            </div>
+
+            <div id="fna_exp_date" style="margin-left:2%;width:98%">
+                <br>
+                <img  valign="center" src="/public/images/FNA/notes.png">
+                <span style="vertical-align:10px;">
+                <%= renderLabel('noteDeleteFna','PICSAlert', '', @fnaProposer, 'style="display: inline-block;"') %>
+                <%  if OfflineApplication.find(:first, :conditions =>{{:name =>'PROPERTY'} =>'FNACONSENTEXPIRYDAYS'})
+                        if OfflineApplication.find(:first, :conditions =>{{:name =>'PROPERTY'} =>'FNACONSENTEXPIRYDAYS'}).value != nil 
+                            requiredays = OfflineApplication.find(:first, :conditions =>{{:name =>'PROPERTY'} =>'FNACONSENTEXPIRYDAYS'}).value.to_i
+                        else
+                            requiredays = 0
+                        end
+                    else
+                        requiredays = 0
+                    end
+                %>
+                <%  if @fnaRequest.requestDt != nil 
+                        creation_date = @fnaRequest.requestDt 
+                    else
+                        creation_date = Date.today
+                    end
+                    fnaCreatedDate = Date.parse creation_date
+                %>
+                <% d = (fnaCreatedDate + requiredays) %>
+                <% d.strftime ('%d/%m/%Y') %>
+                <%= consentExpiryDt = d.strftime ('%d/%m/%Y') %>
+                <%= renderHiddenField('consentExpiryDt',consentExpiryDt,'',@fnaRequest) %>
+                <%= renderLabel('noteDeleteFna','PICSAlert2', '', @fnaProposer, 'style="display: inline-block;"') %>
+                <br>
+                <br>
+                </span>
+            </div>
+            
+            <br>  
+        </div>      
+    </div>
+
+    <div class="illustrationdisplay">
+        <div class="legend">
+            <label class="strongLabel">
+                <%= getLabelValue('RES_ADDR') %>
+                <a href="#" class="scrollTopButton ui-icon-carat-u ui-btn-icon-notext ui-alt-icon ui-btn-inline ui-link"></a>
+                <a href="#" class="expandButton ui-icon-plus ui-btn-icon-notext ui-alt-icon ui-btn-inline ui-link" style="display: none;"></a>
+                <a href="#" class="collapseButton ui-icon-minus ui-btn-icon-notext ui-alt-icon ui-btn-inline ui-link"></a>
+            </label>
+        </div> 
+
+        <div class="panelContent">  
+            <div class="ui-dual-field-contain ui-body ui-br" data-role="dualfieldcontain">
+                <div class="half">
+                    <div class="group">
+                        <%= renderInputField('addressLine1Lang1', @fnaProposer.addressLine1Lang1, 'addressLine1Lang1', @fnaProposer, 'minOccurs="1" data-entityType= "addressType" maxlength="150" pattern="/([^\s])" class="material-input"') %>             
+                        <%= renderLabel('addressLine1Lang1', 'ROOM', ' material-label', @fnaProposer) %>
+                    </div>
+                </div>
+
+                <div class="half">
+                    <div class="group">      
+                        <%= renderInputField('addressLine6Lang1', @fnaProposer.addressLine6Lang1, 'addressLine6Lang1', @fnaProposer, 'minOccurs="1" data-entityType= "addressType" maxlength="150" pattern="/([^\s])" class="material-input"') %>             
+                        <%= renderLabel('addressLine6Lang1', 'FLOOR_UI', 'material-label', @fnaProposer) %>
+                    </div>
+                </div>
+            </div>
+
+
+            <div class="ui-dual-field-contain ui-body ui-br" data-role="dualfieldcontain">
+                <div class="half">
+                    <div class="group">      
+                        <%= renderInputField('addressLine2Lang1', @fnaProposer.addressLine2Lang1, 'addressLine2Lang1', @fnaProposer, 'minOccurs="1" data-entityType= "addressType" maxlength="150" pattern="/([^\s])" class="material-input"') %>             
+                        <%= renderLabel('addressLine2Lang1', 'BLOCK', 'material-label', @fnaProposer) %>
+                    </div>
+                </div>
+
+                <div class="half">
+                    <div class="group">
+                        <%= renderInputField('addressLine3Lang1', @fnaProposer.addressLine3Lang1, 'addressLine3Lang1', @fnaProposer, 'minOccurs="1" data-entityType= "addressType" maxlength="150" pattern="/([^\s])" class="material-input"') %>             
+                        <%= renderLabel('addressLine3Lang1', 'BUILDINGNAME', 'material-label', @fnaProposer) %>
+                    </div>
+                </div>
+            </div>   
+
+
+            <div class="ui-dual-field-contain ui-body ui-br" data-role="dualfieldcontain">
+                <div class="half">
+                    <div class="group">      
+                        <%= renderInputField('addressLine4Lang1', @fnaProposer.addressLine4Lang1, 'addressLine4Lang1', @fnaProposer, 'minOccurs="1" data-entityType= "addressType" maxlength="150" pattern="/([^\s])" class="material-input"') %>             
+                        <%= renderLabel('addressLine4Lang1', 'STREETNAME', 'material-label', @fnaProposer) %>
+                    </div>  
+                </div>
+
+                <div class="half">
+                    <div class="group">
+                        <%= renderLabel('addressLine5Lang1','HKKLNNT', 'mandatory fieldLabel ui-input-text', @fnaProposer) %>
+                        <%= getLookup('HKKLNNT', 'addressLine5Lang1', @fnaProposer.addressLine5Lang1, @fnaProposer, 'minOccurs="1" data-entityType= "addressType" pattern="/([^\s])" class="material-select" style="color:#424242 !important"') %>
+                    </div>
+                </div>      
+            </div>  
+
+            <div class="ui-dual-field-contain ui-body ui-br" data-role="dualfieldcontain">
+                <div class="half">
+                    <div class="group">
+                        <%= renderInputField('countryCd', @fnaProposer.countryCd, 'countryCd', @fnaProposer, 'maxlength="64" minOccurs="1" data-entityType= "addressType" pattern="/([^\s])" class="material-input"') %>             
+                        <%= renderLabel('countryCd', 'DISTRICT', 'material-label', @fnaProposer) %>
+                    </div>
+                </div>
+            </div> 
+        </div>
+    </div>
+
+      
+    <div class="illustrationdisplay">
+        <div class="legend">
+            <label class="strongLabel">
+                <%= getLabelValue('FNAANALYSIS') %>&nbsp;<%= getLabelValue('PRODUCTINTRODUCTION_REQUIRED_FIELDS_MSG') %>
+                <a href="#" class="scrollTopButton ui-icon-carat-u ui-btn-icon-notext ui-alt-icon ui-btn-inline ui-link"></a>
+                <a href="#" class="expandButton ui-icon-plus ui-btn-icon-notext ui-alt-icon ui-btn-inline ui-link" style="display: none;"></a>
+                <a href="#" class="collapseButton ui-icon-minus ui-btn-icon-notext ui-alt-icon ui-btn-inline ui-link"></a>
+            </label>
+        </div>
+
+        <div class="panelContent">  
+            <div id="fnaQuestionaireDiv" class="clear-container" style="margin: 0% 2% 0% 2%">
+                <span style="font-size:14px;color:#757575 !important;"><%= getLabelValue('FNA_BASIC_INFO') %></span>
+                <br/><br/>
+                <% @fnaProposer.questionSeq.each_with_index do | question, i | %>
+                    <div class="clear-container" stye="text-color:#424242 !important;">
+                        <% fnaQuestionResponse = @fnaProposer.getQuestionResponse(question.questionCd) %>
+                        <%# puts "~~~~fnaQuestionResponse: #{fnaQuestionResponse.to_json}" %>
+                        <%= renderObject(fnaQuestionResponse,@fnaProposer) %>
+                        <%= renderHiddenField('fnaQuestionCd',fnaQuestionResponse.fnaQuestionCd,'fnaQuestionCd',fnaQuestionResponse) %>
+                        <%= renderHiddenField('fnaRequestRefGuid',fnaQuestionResponse.fnaRequestRefGuid,'fnaRequestRefGuid',fnaQuestionResponse) %>
+                        <%= renderHiddenField('fnaPartyRefGuid',fnaQuestionResponse.fnaPartyRefGuid,'fnaPartyRefGuid',fnaQuestionResponse) %>
+                        <div class="add-fna-heading">
+                            <%#= MobiSys::CommonUtil.replacePlaceHolders( getLabelValue(question.questionCd), question.getChannelMapping ) %>
+                            <%= getLabelValue(question.questionCd) %>
+                        </div>
+
+                        <div class="<%= "#{question.questionTypeCd} #{question.questionCd}" %>">
+                            <% if question.questionTypeCd=='multiple-select' %>
+                                <%= renderHiddenField(question.questionCd.to_s,fnaQuestionResponse.fnaQuestionLookupDataCd.to_s, nil, nil) %>
+                                <% resp = fnaQuestionResponse.fnaQuestionLookupDataCd.to_s.split(",") %>
+                                <%= getQuestionnaireCheckbox(question.questionCd.to_s, question.questionCd.to_s, resp, fnaQuestionResponse, nil, nil) %>
+                            <% elsif question.questionTypeCd=='single-select' %>
+                                <% resp = fnaQuestionResponse.fnaQuestionLookupDataCd %>
+                                <%= renderHiddenField(question.questionCd.to_s,resp, nil, nil) %>
+                                <%= getQuestionRadioButton(question.questionCd.to_s, question.questionCd.to_s,resp, fnaQuestionResponse, nil, nil, true)  %>
+                            <% elsif question.questionTypeCd=='sign' %>
+                                <%# resp = fnaQuestionResponse.fnaQuestionLookupDataCd %>
+                                <%#= renderHiddenField(question.questionCd.to_s,resp, nil, nil) %>
+                                <%#= getQuestionRadioButton(question.questionCd.to_s, question.questionCd.to_s,resp, fnaQuestionResponse, nil, nil, true)  %>
+                                <%= renderTextInlineFieldForFNA('nonDisclosureofAssets', @fnaRequest, returnAppHeightWeight('screen_width', 0.95), returnAppHeightWeight('screen_height', 0.13) ,'true')%>
+                                <%= renderHiddenField('witnessSignature', @fnaRequest.witnessSignature, 'witnessSignature', @fnaRequest) %>
+                            <%# else %>
+                                <%#= renderAmountField('fnaQuestionLookupDataCd',fnaQuestionResponse.fnaQuestionLookupDataCd,'fnaQuestionLookupDataCd',fnaQuestionResponse,nil)  %>
+                            <% end %>
+                        </div>
+                    </div>
+                <% end %>
+            </div>
+        </div>     
+
+
+        <br>
+        <br>
+        <div class="ui-dual-field-contain ui-body ui-br" data-role="dualfieldcontain">
+            <!-- addtnField1Str witnessSignature -->
+            <div style="margin:0% 2% 0% 2%;">
+                <!-- saving in JSON format -->
+                <%#= renderTextInlineFieldForFNA('nonDisclosureofAssets', @fnaRequest, returnAppHeightWeight('screen_width', 0.78), returnAppHeightWeight('screen_height', 0.5) ,"true")%>
+                <!-- saving in baseX64 format -->
+                <%#= renderHiddenField('witnessSignature', @fnaRequest.witnessSignature, 'witnessSignature', @fnaRequest) %>
+            </div>
+        </div>
+        <br>
+        <br>
+    </div>
+    
+
+
+    
+        <!-- Next button -->
+   
+    <style >
+        .button_UI {
+            background-color:#efbc33!important;
+            border-radius: 7px !important;
+            border-style: none;
+            color: #003946 !important;
+            display: inline-block;
+            font-size: 14px !important;
+            max-width: 200px;
+            margin: 0;
+            text-shadow: none !important;
+            font-weight: 700;
+            text-align: center;
+            line-height: 1.3;
+            padding: .8em 1.5em !important;
+            width: 100px;
+        }
+    </style>
+<%= render(:partial => 'FNAProposerJS')%>
+</form>
+</div>
+ <div class="" data-role="dualfieldcontain" align="">
+        <div class="">
+            <div class="group" style="font-size: 14px;">
+                <%= getLabelValue('INSTRUCTION_TEXT_NEEDS') %>
+            </div>
+        </div>     
+    </div>
+  <!--   <div class="" data-role="dualfieldcontain" align="right">
+        
+        <div class="half" align="right">
+            <div class="group" >
+                <a href="#"  id="nextTab"  class="button_UI ui-link ui-btn selected"  style="" onclick="nextTab()" >
+                    <%#= getLabelValue('NEXT') %> 
+                </a>   
+            </div>
+        </div>
+    </div> -->
+
+
+ <!--   <div class="" data-role="dualfieldcontain" align="right">
+        
+        <div class="half" align="right">
+            <div class="group" >
+                <a href="#"  id="needsCalculations" onclick="changeTab($(this))"  data-url="getNeeds" class="button_UI ui-link ui-btn selected"  style="" >
+                    <%#= getLabelValue('NEXT') %> 
+                </a>   
+            </div>
+        </div>
+    </div>
+
+ -->

@@ -1,0 +1,42 @@
+<%= pageTagStart('Capture Lead','Symbiosys - Leads') %>
+<%= headerTag("Lead","add",@lead.leadId, "/app/Lead/search","#{@quickLinkLabels}","#{@quickLinkActions}")%>
+<%= formTagStart("leadForm","#{url_for :action => :executeSubmit}") %>
+	<%= tabbarTagStart(@tabName, @tabLabel, @tabIcons,true) %>
+		<%= modelTagStart("lead", @lead) %>
+			<% if @tabToBeLoaded == "tab_basic" %>
+				<%= tabTagStart("tab_basic") %>
+					<%= ocrButtonTag %>
+					<%= layoutFieldTag("closureNotes,addActivityFlag,activityToBeUpdated,contactId") %>
+					<%= layoutFieldTag("title,firstname,middlename,lastname") %>
+					<%= layoutFieldTag("genderCd,maritalStatus,dob,age,leadSource,leadSourceOther,identityTypeCd,idNumber,incomeGroup,industryCd,natureofDutyId,occupationCd,nationality,otherNationality") %>
+				<%= tabTagEnd %>
+			<% end %>
+			<% if @tabToBeLoaded == "tab_contact" %>
+				<%= tabTagStart("tab_contact") %>
+					<%= panelTagStart(false) %>
+					<%= subPanelTagStart("Address Information",false) %>
+						<%= layoutFieldTag("address1,address2,address3,address4,country,pincode,state,city") %>
+					<%= subPanelTagEnd %>
+					<%= subPanelTagStart("contact",false) %>
+						<%= layoutFieldTag("residenceNumber,officeNumber,mobileNumber,emailAddress,fromTime,toTime") %>
+					<%= subPanelTagEnd %>
+					<%= panelTagEnd %>
+				<%= tabTagEnd %>
+			<% end %>
+			<% if @tabToBeLoaded == "tab_activity" %>
+				<%= tabTagStart("tab_activity") %>
+					<%= render :partial => "captureLeadActivity_Jazz" %>
+				<%= tabTagEnd %>
+			<% end %>
+			<div style="display: none">
+				<%= inputTag("visitedTabs") %>
+				<%= inputTag("leadId") %>
+				<%= inputTag("statusCd") %>
+            </div>
+            <%= setupFilterUsingFieldTargetValueMap('TitleGenderSI', false, "lead") %>
+		<% modelTagEnd %>
+	<%= tabbarTagEnd(true) %>
+<%= formTagEnd %>
+<%= pageTagEnd %>
+<script type="text/javascript" charset="utf-8" src="/app/Lead/captureLead_Jazz.js"></script>
+

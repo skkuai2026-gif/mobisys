@@ -1,0 +1,125 @@
+<div data-role="page">
+    <link rel="stylesheet" href="/public/css/c2l_dashboard.css">
+    <style type="text/css">
+    .ui-checkbox {
+        display: inline-block;
+        margin: 0px;
+    }
+
+    .removeLabel {
+        width: 0px;
+        padding-left: 25px;
+    }
+
+    .headerRightButtons {
+        padding-right: 4em;
+        margin-top: 10px;
+    }
+
+    .actionButtons {
+        height: 37px;
+    }
+
+    </style>
+    <div data-role="header" id="header" data-position="inline">
+        <a href="/app/Menu/landingPage" rel="external" data-direction="reverse" data-role="none">
+            <img src="/public/images/SalesIllustration/icon_BackArrow-Red.png">
+        </a>
+        <h1><%= getLabelValue('SEARCHILLUSTRATION') %></h1>
+        <% if @searchResult.length > 0 %>
+        <div class="ui-btn-right">
+            <div class="headerRightButtons">
+                <a data-role="button" id="showIllustrationPanel" href="#" style="min-width:100px;">
+                    <%= getLabelValue('generate') %>&nbsp;<%= getLabelValue('SALESILLUSTRATION') %>
+                </a>
+                <a data-role="button" id="generateIllustrationButton" href="#" style="min-width:100px;">
+                    <%= getLabelValue('Generate Illustration') %>
+                </a>
+                
+                <a data-role="button" id="showPdfPanel" href="#" style="min-width:100px;">
+                    <%= getLabelValue('generate') %>&nbsp;<%= getLabelValue('Output Pdf') %>
+                </a>
+                <a data-role="button" id="generatePdfButton" href="#" style="min-width:100px;">
+                    <%= getLabelValue('Generate PDF') %>
+                </a>
+
+                <a data-role="button" id="cancelButton" href="#" style="min-width:100px;">
+                    <%= getLabelValue('CANCEL')%>
+                </a>
+            </div>
+        </div>
+        <% end %>
+    </div>
+
+    <div data-role="content" id="content">
+        <form method="POST" action="/app/Quotation/illustrationSelect" name="illustrationCheckForm" id="illustrationCheckForm" data-ajax="false">
+            <%= renderDateTimeJS %>
+            <table data-role="table" class="ui-responsive table-stroke">
+                <thead>
+                    <tr>
+                        <th data-priority="1" style="width:10%"><%= getLabelValue('quotationRefNum')%></th>
+                        <th data-priority="5" style="width:27%"><%= getLabelValue('PRODUCT')%></th>
+                        <th data-priority="2" style="width:27%"><%= getLabelValue('PRIMARYINSUREDNAME')%></th>
+                        <th data-priority="3" style="width:10%"><%= getLabelValue('quotationDt')%></th>
+                        <th data-priority="4" style="width:10%"><%= getLabelValue('STATUS')%></th>
+                        <th data-priority="6" style="width:16%"><%= getLabelValue('ACTION')%></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td data-priority="1">
+                            <input name="quotationRefNum" id="quotationRefNum" value="<%= @params['quotationRefNum'] %>" type="search" placeholder="<%= getLabelValue('quotationRefNum')%>">
+                        </td>
+                        <td data-priority="5">
+                            <%= getLookup('DYNAMICLOOKUP', 'productSeq', @params['productSeq'], nil, @productLookup) %>
+                        </td>
+                        <td data-priority="2" id="proposerNameTD">
+                            <input name="insuredName" id="insuredName" value="<%= @params['insuredName'] %>" type="search" placeholder="<%= getLabelValue('PRIMARYINSUREDNAME')%>">
+                        </td>
+                        <td data-priority="3" id="">
+                            <input name="quotationDt" id="quotationDt" value="<%= @params['quotationDt'] %>" type="search" placeholder="<%= getLabelValue('quotationDt')%>" readonly="true">
+                        </td>
+                        <td data-priority="4">
+                            <input name="quoteStatusCd" id="quoteStatusCd" value="<%= @params['quoteStatusCd'] %>" type="search" placeholder="<%= getLabelValue('PRIMARYINSUREDNAME')%>">
+                        </td>
+                        <td data-priority="6">
+                        </td>
+                    </tr>
+                     <% if @searchResult.length < 1 && !@params.empty? %>
+                        <tr><td colspan="6" style="text-align:center;">No Records</td></tr>
+                    <% else 
+                        @searchResult.each do |quotation| %>
+                            <tr>
+                                <td>
+                                    <a href="<%= url_for :action => :show, :id => quotation[:object] %>" rel="external"><%= quotation[:quotationRefNum] %></a>
+                                </td>
+                                <td>
+                                    <a href="<%= url_for :action => :show, :id => quotation[:object] %>" rel="external"><%= quotation[:productName] %></a>
+                                </td>
+                                <td>
+                                    <a href="<%= url_for :action => :show, :id => quotation[:object] %>" rel="external"><%= quotation[:insuredName] %></a>
+
+                                </td>
+                                <td>
+                                    <a href="<%= url_for :action => :show, :id => quotation[:object] %>" rel="external"><%= quotation[:quotationDt]%></a>
+                                </td>
+                                <td>
+                                    <a href="<%= url_for :action => :show, :id => quotation[:object] %>" rel="external"><%= quotation[:quoteStatusCd] %></a>
+                                </td>
+                                <td>
+                                    <div class="illustrationCheckPanel">
+                                        <label class="removeLabel">
+                                            <input class="illustrationCheck" type="checkbox" value="<%= quotation[:object] %>" name="illustrationCheck[]">
+                                        </label>
+                                    </div>
+                                </td>
+                            </tr>
+                        <% end %>
+                    <% end %>
+                </tbody>
+            </table>
+        </form>
+    </div>
+</div>
+
+<%= render(:file => 'Quotation/illustrationSelectJS.erb')%>

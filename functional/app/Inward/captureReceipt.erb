@@ -1,0 +1,299 @@
+<div data-role="page" data-url="<%= Rho::RhoConfig.start_path %>/">
+<form method="POST" action="<%= url_for :action => :execute %>" name="receiptForm" onsubmit = "return checkBasicDetails();">
+<%= renderObject(@inward) %>
+
+    <div data-role="header" data-position="inline">
+      <h1><%= getLabelValue('CAPTURERECEIPT') %></h1>    
+      <a href="/app/Menu/receipting" class="ui-btn-left" data-direction="reverse">
+        <%= getLabelValue('BACK')   %>
+      </a>
+      <div class="ui-btn-right">
+        <a href="javascript: submitForm();" name="save" data-role="button" style="min-width:100px;">
+          <%= getLabelValue('SAVEVALIDATE')%>
+        </a>
+      </div>
+    </div>
+
+    <div data-role="content" id="capture" style="-webkit-transform: none;">    
+      <input type="hidden" name="id" value="<%= @inward.object %>" />
+      <script>
+        try{
+          objectMapping = new Array();
+          objectCount = 0;
+        } catch(e){alert(e);}
+      </script>
+      <% 
+        if @msg != nil && @msg != ""
+          if @msg == "SUCCESS"
+            %>
+            <script>
+            showDialog("", "<%= getLabelValue(@msg)%>", 'success', 0, 'capture');
+            </script>
+            <%
+          else
+          %>
+            <script>
+            showDialog("", "<%= getLabelValue(@msg)%>", 'error', 0, 'capture');
+            </script>
+          <div class="illustrationdisplay">
+          <fieldset name="errors">
+          <%=  renderErrorTag(@msg,@errors,'receiptForm') %>
+          </fieldset>
+          </div>
+          <%
+          end
+        end
+      %>
+      
+      <div class="illustrationdisplay">        
+        <fieldset name="inwardId">
+          <div data-role="fieldcontain">
+            <%= renderLabel('receiptRefNum', 'RECEIPTREFNUM', nil, @inward)   %>
+            <%= renderInputField('receiptRefNum', @inward.receiptRefNum, 'Receipt ref num', @inward, ' maxlength="10"') %>
+          </div>            
+        </fieldset>
+      </div>
+      
+      <div class="legend"><%= renderLabel('receiptInformation','RECEIPTINFORMATION','strongLabel') %></div>
+
+      <div class="illustrationdisplay">
+      
+        <fieldset data-role="controlgroup">
+          <div class="ui-grid-b">            
+            <div class="ui-block-a"> <%= renderLabel('receiptPurpose', 'RECEIPTPURPOSE', nil, @inward) %> </div>
+            <div class="ui-block-b"> <%= getLookup('RECEIPTPURPOSE','receiptPurpose', @inward.receiptPurpose, @inward) %> </div>
+            <div class="ui-block-c"> </div>
+          </div>
+        </fieldset>
+
+        <div data-role="fieldcontain">
+          <%= renderLabel('policyNum', 'POLICYNUM', nil, @inward)   %>
+          <%= renderInputField('policyNum', @inward.policyNum, 'Policy Num', @inward) %>
+        </div>
+               
+        <div data-role="fieldcontain">
+          <%= renderLabel('quotationRefNum', 'QUOTATIONREFNUM', nil, @inward)   %>
+          <%= renderInputField('quotationRefNum', @inward.quotationRefNum, 'Quotation ref num', @inward) %>
+        </div>
+            
+        <div data-role="fieldcontain">
+          <%= renderLabel('proposalNum', 'PROPOSALNUM', nil, @inward)   %>
+          <%= renderInputField('proposalNum', @inward.proposalNum, 'Proposal Num', @inward) %>
+        </div>
+
+      </div>
+
+      
+      <div class="legend"><%= renderLabel('receiptDetailInformation','RECEIPTDETAILINFORMATION','strongLabel') %></div>
+      <div class="illustrationdisplay">
+        <fieldset name="inwardDetails">
+          <div data-role="fieldcontain">
+            <%= renderLabel('inwardAmount', 'TOTALRECEIPTAMOUNT', nil, @inward)   %>
+            <%= renderAmountField('inwardAmount', @inward.inwardAmount, 'Inward Amount', @inward) %>
+          </div>
+            
+          <div name="inwardDetails">
+            <%  if @inwardDetails != nil && @inwardDetails.size > 0 %>
+            
+                <%  @inwardDetails.each do |inwardDetail| %>
+                    <script>
+                    objectCount = objectCount + 1;
+                    </script>
+                    <hr>
+                    <%= renderObject(inwardDetail, @inward) %>
+                    <div data-role="fieldcontain">
+                      <%= renderLabel('refVoucherNo', 'REFVOUCHERNO', nil, inwardDetail) %>
+                      <%= renderInputField('refVoucherNo', inwardDetail.refVoucherNo, 'ref Voucher No.', inwardDetail) %>
+                    </div>
+                    <fieldset data-role="controlgroup">
+                      <div class="ui-grid-b">            
+                        <div class="ui-block-a"> <%= renderLabel('paymentMethodCd', 'PAYMENTMETHOD', nil, inwardDetail) %> </div>
+                        <div class="ui-block-b"> <%= getLookup('PAYMENTMETHOD','paymentMethodCd', inwardDetail.paymentMethodCd, inwardDetail) %> </div>
+                        <div class="ui-block-c"> </div>
+                      </div>
+                    </fieldset>
+
+                    <div data-role="fieldcontain">
+                      <%= renderLabel('inwardAmount', 'AMOUNT', nil, inwardDetail) %>
+                      <%= renderAmountField('inwardAmount', inwardDetail.inwardAmount, 'Amount', inwardDetail) %>
+                    </div>
+                  
+                    <fieldset data-role="controlgroup">
+                      <div class="ui-grid-b">            
+                        <div class="ui-block-a"> <%= renderLabel('bankCd', 'BANKDETAILS', nil, inwardDetail) %> </div>
+                        <div class="ui-block-b"> <%= renderInputField('bankCd', inwardDetail.bankCd, 'Bank cd', inwardDetail) %> </div>
+                        <div class="ui-block-c"> <%= renderInputField('bankBranch', inwardDetail.bankBranch, 'Branch cd', inwardDetail) %> </div>
+                      </div>
+                    </fieldset>
+                    
+                    <fieldset data-role="controlgroup">
+                      <div class="ui-grid-b">            
+                        <div class="ui-block-a"> <%= renderLabel('accountNum', 'ACCOUNTDETAILS', nil, inwardDetail) %> </div>
+                        <div class="ui-block-b"> <%= renderInputField('accountNum', inwardDetail.accountNum, 'Account num', inwardDetail) %> </div>
+                        <div class="ui-block-c"> <%= renderInputField('micrNum', inwardDetail.micrNum, 'MICR Num', inwardDetail) %> </div>
+                      </div>
+                    </fieldset>
+                    
+                  <fieldset data-role="controlgroup">
+                     <div class="ui-grid-b">            
+                     <div class="ui-block-a"> <%= renderLabel('inwardNum', 'INSTRUMENTDETAILS', nil, inwardDetail) %> </div>
+                     <div class="ui-block-b"> <%= renderInputField('inwardNum', inwardDetail.inwardNum, 'cheque/dd num', inwardDetail) %></div>
+                     <div class="ui-block-b"> <%= renderDateField('instrumentDt', getScreenDate(inwardDetail.instrumentDt), 'Instrument date', inwardDetail) %></div>
+                     </div>
+                 </fieldset> 
+        
+                <%  end %>
+            
+            <% end %>
+          </div>
+        </fieldset>
+      </div>
+
+      
+      <fieldset class="ui-grid-b">
+        <div class="ui-block-a-equi"> </div>
+        <div class="ui-block-b-equi"> <a href="javascript:addInwardDetail();" data-role="button" data-theme="a" id="sync"> <%= getLabelValue('ADDRECEIPTDETAIL')%> </a> </div>
+        <div class="ui-block-c-equi"> </div>
+      </fieldset>
+            
+    </div>
+
+</form>
+
+<script type="text/javascript">
+      
+      $(document).focus(function() {
+        setTimeout("onFocus()", 100);
+      });
+      
+      function onFocus(){        
+      }
+      
+      var oldAgeValue = "";
+      $('input[name="<%=getObjectMapping(@inward)%>[age]"]').focus( function(){
+        oldAgeValue = this.value;
+      });
+      
+      $('input[name="<%=getObjectMapping(@inward)%>[age]"]').blur( function(){
+        if (oldAgeValue != this.value)
+        {          
+          if ( isNaN(this.value) || this.value < 0)      
+          {
+            $(this).val('');
+          }
+          else
+          {
+            getDOB(this.value, '<%=getObjectMapping(@inward)%>[dob]');
+          }
+        }        
+      });
+
+      $('input[name="<%=getObjectMapping(@inward)%>[genderCd]"]').change( function(){
+      });
+
+      $('input[name="<%=getObjectMapping(@inward)%>[emailAddress]"]').change( function(){
+        
+        if(!testEmail(this.value))
+        {
+          $(this).val('');
+        }
+        
+      });
+
+      function testEmail(value)
+      {
+        returnValue = true;
+        if (value != "")
+        {
+          emailPattern=new RegExp("[A-Za-z0-9._-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,4}");
+          returnValue = emailPattern.test(value);  
+        }
+        
+        return returnValue;
+      }
+      
+      $('input[name="<%=getObjectMapping(@inward)%>[dob]"]').change( function(){
+        age = getAge(this.value, '<%=getObjectMapping(@inward)%>[age]', '<%=getObjectMapping(@inward)%>[ageMonths]', '<%=getObjectMapping(@inward)%>[ageDays]');
+      });
+
+
+      function getAge(birthDt, fieldId1, fieldId2, fieldId3)
+      {
+        age = 0;
+        $.ajax({
+                url: "/app/Quotation/getAge",
+                data: {'birthDt': birthDt},
+                success: function(data) {
+                  data = data.replace("<div>","");
+                  data = data.replace("</div>","");
+                  ageParts = data.split("|");
+                  $('input[name="'+ fieldId1 +'"]').val(ageParts[0]);
+                  age = ageParts[0];
+                  try{
+                    $('input[name="'+ fieldId2 +'"]').val(ageParts[1]);
+                    $('input[name="'+ fieldId3 +'"]').val(ageParts[2]);
+                  } catch(e){}
+                }
+              });
+        return age;
+      }
+      
+      function getDOB(age, fieldId)
+      {
+        $.ajax({
+                url: "/app/Quotation/getBirthDt",
+                data: {'age': age},
+                success: function(data) {
+                  data = data.replace("<div>","");
+                  data = data.replace("</div>","");
+                  
+                  $('input[name="'+ fieldId +'"]').val(data);
+                }
+              });
+        
+      }
+
+      function addInwardDetail(){
+        $.ajax({
+                url: "/app/Inward/addInwardDetail",
+                data: {'inwardObject': '<%= @inward.object.to_s %>', 'inwardDetailObjects': objectCount },
+                success: function(data) {
+                  objectCount = objectCount + 1;
+                  newHTML = $('div[name="inwardDetails"]').html() + data 
+                  $('div[name="inwardDetails"]').html(newHTML);
+                  $('div[name="inwardDetails"]').trigger('create');                  
+                }
+              });
+        
+      }
+      
+      function submitForm(){
+        $("a[name='save']").focus();
+        if(checkBasicDetails() && checkRecordExists())
+        {
+          $.mobile.showPageLoadingMsg();
+          
+          // # submit form
+          document.receiptForm.submit();          
+        }  
+      }
+      
+      function checkBasicDetails(){
+        returnValue = true;
+        firstname = $("input[name='<%=getObjectMapping(@inward)%>[firstname]']").val();
+        receiptRefNum = $("input[name='<%=getObjectMapping(@inward)%>[receiptRefNum]']").val();
+        if ( firstname == "" || receiptRefNum == ""){
+          showDialog("", "<%= getLabelValue('MANDATORYFORRECEIPTSAVE')%>", 'warning', 0, 'capture');
+          returnValue = false;
+        }
+        
+        return returnValue;
+      }
+        
+      function checkRecordExists(){
+        returnValue = true;        
+        return returnValue;
+      }
+
+</script>  
+</div>

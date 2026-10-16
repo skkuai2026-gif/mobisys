@@ -1,0 +1,551 @@
+<script type="text/javascript">
+    var premiumPayingTerm = '<%= $premiumPayingTerm %>';
+    
+    function defaultPPTerm(){
+        var premiumPayingTerm = '<%= $premiumPayingTerm %>';
+        var paymentTypeCd = $('select[name="<%=getObjectMapping(@baseProduct)%>[paymentTypeCd]"]').val();
+        var baseProductTerm = $('select[name="<%=getObjectMapping(@baseProduct)%>[productTerm]"]').val();
+
+        if(paymentTypeCd == 'SINGLE') {
+            if($('select[name="<%=getObjectMapping(@baseProduct)%>[premiumPayingTerm]"] option[value="1"]').length == 0) {
+                $('select[name="<%=getObjectMapping(@baseProduct)%>[premiumPayingTerm]"]').append('<option val="1">1</option>');
+            }
+            $('select[name="<%=getObjectMapping(@baseProduct)%>[premiumPayingTerm]"]').val("1").selectmenu("refresh");
+            $('select[name="<%=getObjectMapping(@baseProduct)%>[paymentFrequencyCd]"]').val("SINGLE").selectmenu("refresh");
+
+            $('select[name="<%=getObjectMapping(@baseProduct)%>[paymentFrequencyCd]"]').selectmenu('disable');
+
+            $('select[name="<%=getObjectMapping(@baseProduct)%>[premiumPayingTerm]"]').selectmenu('disable');
+        }
+        else if((paymentTypeCd == 'REGULAR') && (premiumPayingTerm == 'true')) {
+            $('select[name="<%=getObjectMapping(@baseProduct)%>[premiumPayingTerm]"]').val(baseProductTerm);
+            $('select[name="<%=getObjectMapping(@baseProduct)%>[premiumPayingTerm]"]').selectmenu('disable');
+        }
+        else {
+            $('select[name="<%=getObjectMapping(@baseProduct)%>[paymentFrequencyCd]"]').selectmenu('enable');
+            $('select[name="<%=getObjectMapping(@baseProduct)%>[premiumPayingTerm]"]').selectmenu('enable');
+        }
+    }  
+
+    function updatePDFAmount(option){
+        if (option == "YES"){
+            // calculate PDF amount
+            annualPremium = $("input[name='<%= getObjectMapping(@baseProduct)%>[baseAnnualPremium]']").val();
+            ppTerm = $("select[name='<%= getObjectMapping(@baseProduct)%>[premiumPayingTerm]']").val();
+            // planCode = $("select[name='<%= getObjectMapping(@baseProduct)%>[planCode]']").val();
+            $.ajax({
+                url: "/app/Quotation/computePDFAmount",
+                data: {'annualPremium': annualPremium, 'ppTerm': ppTerm, 'planCode':planCode},
+                headers: {
+                    'Transition-Enabled': false
+                },
+                success: function(data) {
+                    var result = $.parseJSON(data);
+                    $("input[name='<%= getObjectMapping(@baseProduct)%>[pdfAmount]']").val(result);                    
+                }
+            });          
+        }
+        else {
+            // reset PDF amount
+            $("input[name='<%= getObjectMapping(@baseProduct)%>[pdfAmount]']").val(0);
+        }
+    }
+    
+
+    function enablePremiumHolidayFields(){
+        premiumHolidayFl = $('input[name="<%=getObjectMapping(@baseProduct)%>[premiumHolidayFl]"]');
+        if (premiumHolidayFl.fieldexists())
+        {
+            if (premiumHolidayFl.filter(':checked').val() == "YES")
+            {
+                readonly = false
+            }
+            else
+            {
+                readonly = true
+                $('input[name="<%=getObjectMapping(@baseProduct)%>[premiumHolidayYear]"]').val('');
+            }
+            setReadOnly($('input[name="<%=getObjectMapping(@baseProduct)%>[premiumHolidayYear]"]'), readonly)
+        }
+    }
+
+    function enableRetirementFields(){
+        retirementOptionFl = $('input[name="<%=getObjectMapping(@baseProduct)%>[retirementOptionFl]"]');
+        if (retirementOptionFl.fieldexists())
+        {
+            if (retirementOptionFl.filter(':checked').val() == "YES")
+            {
+                readonly = false;
+            }
+            else
+            {
+                readonly = true;
+                value="";
+            }
+            setReadOnly($('input[name="<%=getObjectMapping(@baseProduct)%>[retirementPercent]"]'), readonly);
+            $('input[name="<%=getObjectMapping(@baseProduct)%>[retirementPercent]"]').val(value);            
+        }
+    }
+
+    function filterOffsetOption(){
+        premiumOffsetFl = $('input[name="<%=getObjectMapping(@baseProduct)%>[premiumOffsetFl]"]');
+        if (premiumOffsetFl.fieldexists()) { 
+            premiumOffsetOptionCd = 'select[name$="[premiumOffsetOptionCd]"]';
+            premiumOffsetValues = 'select[name$="[premiumOffsetValues]"]';
+            if (premiumOffsetFl.filter(':checked').val() == 'YES')
+            {
+                option = 1;
+                readonly = false;
+                menu = 'enable';
+            }
+            else
+            {
+                option = 0;
+                readonly = true;
+                menu = 'disable';
+                value = '';
+            }
+            if($(premiumOffsetOptionCd).fieldexists()) {
+                 $(premiumOffsetOptionCd).selectit(option);
+            }
+            if($(premiumOffsetValues).fieldexists()) {
+                 $(premiumOffsetValues).selectit(option);
+            }
+            setReadOnly($('#premiumOffsetDiv input'), readonly);
+            $('#premiumOffsetDiv input').val(value);
+            $('#premiumOffsetDiv select').selectmenu(menu);
+        }
+    }
+
+    function hideOffsetYear(){
+        premiumOffsetOptionCd = $('select[name="<%=getObjectMapping(@baseProduct)%>[premiumOffsetOptionCd]"]');
+        if (premiumOffsetOptionCd.fieldexists()){
+            if (premiumOffsetOptionCd.val() == 'EARLYOFFSET')
+            {
+                $('input[name="<%=getObjectMapping(@baseProduct)%>[premiumOffsetYear]"]').val(''); 
+                $('div[name="premiumOffsetYear"]').hide();
+            }
+            else
+            {
+                $('div[name="premiumOffsetYear"]').show();
+            }
+        }
+    }
+
+    function enablePrePaymentFields(){
+        premiumPayingTerm = $('select[name="<%=getObjectMapping(@baseProduct)%>[premiumPayingTerm]"]').val(); 
+        solverTypeCd = $('select[name="<%=getObjectMapping(@baseProduct)%>[solverTypeCd]"]');
+        if (solverTypeCd.fieldexists()){
+            if (solverTypeCd.val() == 'NO')
+            {
+                $('#pdfAmountDiv :input, #pdfDiv :input').val('')
+                setReadOnly($('#pdfAmountDiv :input, #pdfDiv :input'), true);
+            }
+            else if ( solverTypeCd.val() == 'FASOLVER')
+            {
+                $('#pdfAmountDiv :input, #pdfDiv :input').val('')
+                setReadOnly($('#pdfAmountDiv :input'), false);
+                setReadOnly($('#pdfDiv :input'), true);
+                $('input[name="<%=getObjectMapping(@baseProduct)%>[pdfFrequencyVal]"]').val('1'); 
+                $('input[name="<%=getObjectMapping(@baseProduct)%>[pdfPeriod]"]').val(premiumPayingTerm); 
+            }
+            else if (solverTypeCd.val() == 'AMOUNTSOLVER')
+            {
+                $('#pdfAmountDiv :input, #pdfDiv :input').val('')
+                setReadOnly($('#pdfAmountDiv :input'), true);
+                setReadOnly($('#pdfDiv :input'), false);
+                $('input[name="<%=getObjectMapping(@baseProduct)%>[pdfFrequencyVal]"]').val('1'); 
+                $('input[name="<%=getObjectMapping(@baseProduct)%>[pdfPeriod]"]').val(premiumPayingTerm); 
+            }
+        }
+    }
+
+    function enableAnnuityFields(){
+        annuityOptionCd = $('input[name="<%=getObjectMapping(@baseProduct)%>[annuityOptionCd]"]');
+        if (annuityOptionCd.fieldexists()){
+            if (annuityOptionCd.filter(':checked').val() == "YES")
+            {
+                annuityPerc = 100;
+                readonly = false
+            }
+            else
+            {
+                annuityPerc = '';
+                $('input[name="<%=getObjectMapping(@baseProduct)%>[annuityAge]"]').val(''); 
+                readonly = true 
+            }
+            $('input[name="<%=getObjectMapping(@baseProduct)%>[annuityPerc]"]').val(annuityPerc);
+            setReadOnly($('input[name="<%=getObjectMapping(@baseProduct)%>[annuityAge]"]'), readonly);
+            setReadOnly($('input[name="<%=getObjectMapping(@baseProduct)%>[annuityPerc]"]'), readonly);
+        }
+    }
+
+    function enablePrePaymentSection(){
+        pdfRequiredFl = $('input[name="<%=getObjectMapping(@baseProduct)%>[pdfRequiredFl]"]')
+        premiumPayingTerm = $('select[name="<%=getObjectMapping(@baseProduct)%>[premiumPayingTerm]"]').val(); 
+        if (pdfRequiredFl.fieldexists()){
+            if (pdfRequiredFl.filter(':checked').val() == "YES")
+            {
+                readonly = false
+                pdfReadOnly = true
+                $('input[name="<%=getObjectMapping(@baseProduct)%>[pdfFrequencyVal]"]').val('1'); 
+                $('input[name="<%=getObjectMapping(@baseProduct)%>[pdfPeriod]"]').val(premiumPayingTerm); 
+            }
+            else
+            {
+                readonly = true
+                pdfReadOnly = true
+                $('#pdfAmountDiv input').val('');
+                $('#pdfDiv input').val('');
+            }
+            setReadOnly($('#pdfAmountDiv input'), pdfReadOnly);
+            setReadOnly($('#pdfDiv input'), readonly);
+        }
+    }
+
+    function calculateBasePlanValue(){
+        $('select[name="<%=getObjectMapping(@baseProduct)%>[productFamilyCd]"]').selectmenu('enable');
+        $('select[name="<%=getObjectMapping(@baseProduct)%>[productPlanOptionCd]"]').selectmenu('enable');
+        $('select[name="<%=getObjectMapping(@baseProduct)%>[productId]"]').selectmenu('enable');
+        $('select[name="<%=getObjectMapping(@baseProduct)%>[paymentFrequencyCd]"]').selectmenu('enable');
+        $('select[name="<%=getObjectMapping(@baseProduct)%>[premiumPayingTerm]"]').selectmenu('enable');
+        $.ajax({                                    
+            url: "/app/Quotation/ajaxCalculateBasePremium",
+            method: 'POST',
+            data: { 'form': $('#quotationForm').serializeHash()},
+
+            success: function(data) {
+                $('div[name="refreshBasePlan"]').html(data);
+                $('div[name="refreshBasePlan"]').trigger('create');
+
+                var premiumSAFl = '<%= $premiumSAFl %>';
+                enableDisableFormFields(premiumSAFl);
+                $('.scrollTopButton').click(function() {
+                    $("html, body").animate({ scrollTop: 0 }, "slow");
+                });
+
+                $('.expandButton').hide();
+
+                $('.collapseButton').click(function() {
+                    $(this).parents(".legend").siblings(".panelContent").hide();
+                    $(this).hide();
+                    $(this).siblings('.expandButton').show();
+                });
+
+                $('.expandButton').click(function() {
+                    $(this).parents(".legend").siblings(".panelContent").show();
+                    $(this).hide();
+                    $(this).siblings('.collapseButton').show();
+                });
+
+                <% 
+                if @mandatoryFields
+                    if @mandatoryFields[@baseProduct]
+                        @mandatoryFields[@baseProduct].each do |field| 
+                %>
+                        $("label[for='<%=getObjectMapping(@baseProduct)%>[<%= field %>]']").append('<label for=" *" class="mandatory1">&nbsp;*</label>');
+                <% 
+                        end
+                    end
+                end
+                %>
+            }
+        });
+    }
+
+    function solveQuotation(facetId){
+        $.ajax({
+            url: "/app/Quotation/SolveQuotation",
+            method: 'POST',
+            data: { 'facetId':facetId,'form': $('#quotationForm').serializeHash()},
+            headers: {
+                'Transition-Enabled': false
+            },
+            success: function(data) {
+                $('select[name="'+coverageCityCd+'"]').html(data).trigger("create").val("").trigger("change");
+            }
+        });
+    }
+
+    function solveQuotationSA(facetId){
+        $.ajax({
+            url: "/app/Quotation/SolveQuotation",
+            method: 'POST',
+            data: {'facetId':facetId, 'form': $('#quotationForm').serializeHash()},
+            headers: {
+                'Transition-Enabled': false
+            },
+            success: function(data) {
+                $('select[name="'+coverageCityCd+'"]').html(data).trigger("create").val("").trigger("change");
+            }
+        });
+    }
+
+    function solveQuotationSAValidate(facetId){
+        $.ajax({
+            url: "/app/Quotation/SolveQuotation",
+            method: 'POST',
+            data: {'facetId':facetId, 'form': $('#quotationForm').serializeHash()},
+            headers: {
+                'Transition-Enabled': false
+            },
+            success: function(data) {
+                $('select[name="'+coverageCityCd+'"]').html(data).trigger("create").val("").trigger("change");
+            }
+        });
+    }
+
+    function enableDisableFormFields (premiumSAFl) {
+        $('select[name="<%=getObjectMapping(@baseProduct)%>[productFamilyCd]"]').selectmenu().selectmenu('disable');
+        $('select[name="<%=getObjectMapping(@baseProduct)%>[productPlanOptionCd]"]').selectmenu().selectmenu('disable');
+        $('select[name="<%=getObjectMapping(@baseProduct)%>[productId]"]').selectmenu().selectmenu('disable');
+        if(typeof enablePremiumHolidayFields == 'function'){ enablePremiumHolidayFields(); }
+        if(typeof filterOffsetOption == 'function'){ filterOffsetOption(); }
+        if(typeof hideOffsetYear == 'function'){ hideOffsetYear(); }
+        if(typeof enableAnnuityFields == 'function'){ enableAnnuityFields(); }
+        if(typeof enablePrePaymentSection == 'function'){ enablePrePaymentSection(); }
+        if(typeof enablePrePaymentFields == 'function'){ enablePrePaymentFields(); }
+        if(typeof enableRetirementFields == 'function'){ enableRetirementFields(); }
+
+        setReadOnly($("input[name='<%= getObjectMapping(@baseProduct) %>[maxTargetPremium]']"), true);
+        setReadOnly($("input[name='<%= getObjectMapping(@baseProduct) %>[minTargetPremium]']"), true);
+        setReadOnly($("input[name='<%= getObjectMapping(@baseProduct) %>[recommendedPremium]']"), true);
+        setReadOnly($("input[name='<%= getObjectMapping(@baseProduct) %>[unapliedPremium]']"), true);
+        setReadOnly($("input[name='<%= getObjectMapping(@baseProduct) %>[extraPremium]']"), true);
+
+        if (premiumSAFl == 'PREMIUM')
+        {
+            setReadOnly($("input[name='<%= getObjectMapping(@baseProduct) %>[baseSumAssured]']"), true);
+            setReadOnly($("input[name='<%= getObjectMapping(@baseProduct) %>[baseAnnualPremium]']"), true);
+            setReadOnly($("input[name='<%= getObjectMapping(@baseProduct) %>[modalPremium]']"), false);
+        }
+        if (premiumSAFl == 'SA')
+        {
+            setReadOnly($("input[name='<%= getObjectMapping(@baseProduct) %>[baseSumAssured]']"), false);
+            setReadOnly($("input[name='<%= getObjectMapping(@baseProduct) %>[baseAnnualPremium]']"), true);
+            setReadOnly($("input[name='<%= getObjectMapping(@baseProduct) %>[modalPremium]']"), true); 
+        }
+        if (premiumSAFl == 'DUAL')
+        {
+            setReadOnly($("input[name='<%= getObjectMapping(@baseProduct) %>[baseSumAssured]']"), false);
+            setReadOnly($("input[name='<%= getObjectMapping(@baseProduct) %>[baseAnnualPremium]']"), false);
+            setReadOnly($("input[name='<%= getObjectMapping(@baseProduct) %>[modalPremium]']"), true); 
+        }
+        if(premiumSAFl == 'ANNUALPREMIUM')
+        {
+            setReadOnly($("input[name='<%= getObjectMapping(@baseProduct) %>[baseSumAssured]']"), true);
+            setReadOnly($("input[name='<%= getObjectMapping(@baseProduct) %>[baseAnnualPremium]']"), false);
+            setReadOnly($("input[name='<%= getObjectMapping(@baseProduct) %>[modalPremium]']"), true); 
+        }
+        if(premiumSAFl == 'COMPUTEDSA')
+        {
+            setReadOnly($("input[name='<%= getObjectMapping(@baseProduct) %>[baseSumAssured]']"), false);
+            setReadOnly($("input[name='<%= getObjectMapping(@baseProduct) %>[baseAnnualPremium]']"), false);
+            setReadOnly($("input[name='<%= getObjectMapping(@baseProduct) %>[modalPremium]']"), false); 
+        }
+        if((premiumSAFl == 'MONTHLYINCOME') || (premiumSAFl == 'ANNUALINCOME'))
+        {
+            setReadOnly($("input[name='<%= getObjectMapping(@baseProduct) %>[baseSumAssured]']"), true);
+            setReadOnly($("input[name='<%= getObjectMapping(@baseProduct) %>[baseAnnualPremium]']"), true);
+            setReadOnly($("input[name='<%= getObjectMapping(@baseProduct) %>[modalPremium]']"), true); 
+        }
+
+        <% if @product.getPremiumDetailsFacet != nil && @product.getPremiumDetailsFacet.OfflinePremiumDetailsList != nil &&
+          @product.getPremiumDetailsFacet.OfflinePremiumDetailsList[0] != nil && @product.getPremiumDetailsFacet.OfflinePremiumDetailsList[0].inputDataElement != nil 
+            readOnlyFields = @product.getPremiumDetailsFacet.OfflinePremiumDetailsList[0].inputDataElement.split(",")
+            readOnlyFields.each do |readOnlyField|
+        %>
+                setReadOnly($("input[name='<%= getObjectMapping(@baseProduct) %>[<%= readOnlyField %>]']"), true);
+                $('select[name="<%=getObjectMapping(@baseProduct)%>[<%= readOnlyField %>]"]').selectmenu().selectmenu('disable');
+        <%  end
+          end 
+        %> 
+    }
+
+    $(document).ready(function() {
+        var premiumSAFl = '<%= $premiumSAFl %>'
+        enableDisableFormFields(premiumSAFl);
+
+        if($('select[name="<%=getObjectMapping(@baseProduct)%>[paymentTypeCd]"]').val() == 'SINGLE') {
+            $('select[name="<%=getObjectMapping(@baseProduct)%>[paymentFrequencyCd]"]').attr('disabled', true).trigger("create");
+            $('select[name="<%=getObjectMapping(@baseProduct)%>[premiumPayingTerm]"]').attr('disabled', true).trigger("create");
+        }
+
+        $('select[name="<%=getObjectMapping(@baseProduct)%>[productFamilyCd]"]').change(function(){
+            updateProducts(true);
+        });
+
+
+        $('select[name="<%=getObjectMapping(@baseProduct)%>[productPlanOptionCd]"]').change(function(){
+            planCodeChange(true);
+        });
+
+
+        $('select[name="<%=getObjectMapping(@baseProduct)%>[currencyCd]"]').change(function(){
+            calculatePremium('Quotation[QuotationProduct][0][baseSumAssured]');
+        });
+
+        $("select[name='<%= getObjectMapping(@baseProduct)%>[productTerm]']").change(function(){
+            defaultPPTerm();
+        });
+
+        $('select[name="<%=getObjectMapping(@baseProduct)%>[paymentTypeCd]"]').change(function(){
+            defaultPPTerm();
+        });
+
+        $("input[name='<%= getObjectMapping(@baseProduct)%>[capturedPremiumAmt]']").change( function (){
+            calculateBasePlanValue();
+        });
+
+        $("input[name='<%= getObjectMapping(@baseProduct)%>[baseSumAssured]']").change( function (){
+            calculateBasePlanValue();
+        });
+                      
+        $("input[name='<%= getObjectMapping(@baseProduct)%>[premiumHolidayFl]']").change( function (){
+            enablePremiumHolidayFields();
+        });
+
+        <% if @facetData[:renderPremiumholidayyear] %>
+             setReadOnly($("input[name='<%= getObjectMapping(@baseProduct) %>[premiumHolidayYear]']"), true);
+        <% end %>
+
+        $("input[name='<%= getObjectMapping(@baseProduct)%>[premiumOffsetFl]']").change( function (){
+            filterOffsetOption();
+        });
+
+        $('select[name="<%=getObjectMapping(@baseProduct)%>[premiumOffsetOptionCd]"]').change(function(){
+                hideOffsetYear();
+        });
+
+        $("input[name='<%= getObjectMapping(@baseProduct)%>[annuityOptionCd]']").change( function (){
+            enableAnnuityFields();
+        });
+
+        $("input[name='<%= getObjectMapping(@baseProduct)%>[pdfRequiredFl]']").change( function (){
+            enablePrePaymentSection();
+        });
+
+        $('select[name="<%=getObjectMapping(@baseProduct)%>[solverTypeCd]"]').change(function(){
+            enablePrePaymentFields();
+        });
+
+        $("input[name='<%= getObjectMapping(@baseProduct)%>[retirementOptionFl]']").change( function (){
+            enableRetirementFields();
+        });
+
+        <% if @facetData[:renderRetirementpercent] %>
+            setReadOnly($("input[name='<%= getObjectMapping(@baseProduct) %>[retirementPercent]']"), true);
+        <% end %>
+        
+        $('#solveQuotationSA_id').click(function(){
+            solveQuotationSA('INCOMEBASEDSASOLVER');
+        });
+
+        $('#solveQuotationSAValidate_id').click(function(){
+            solveQuotationSAValidate('WITHDRAWALBASEDSASOLVER')
+        });
+
+        $('input[name="<%=getObjectMapping(@baseProduct)%>[productTerm]"]').change( function(){
+            if (isNaN(this.value))
+            {
+                showDialog("", "<%= getLabelValue('VALID_PRODUCT_TERM')%>", 'warning', 0, 'capture');
+                this.value = this.value.replace(/[^0-9.]/g, '');  
+            }
+        }); 
+
+        $('input[name="<%=getObjectMapping(@baseProduct)%>[premiumPayingTerm]"]').change( function(){
+            if (isNaN(this.value))
+            {
+                showDialog("", "<%= getLabelValue('VALID_PPT')%>", 'warning', 0, 'capture');
+                this.value = this.value.replace(/[^0-9.]/g, '');  
+            }
+        });  
+
+        $('input[name="<%=getObjectMapping(@baseProduct)%>[ropInterestRate]"]').change( function(){
+            if (isNaN(this.value))
+            {
+                showDialog("", "<%= getLabelValue('VALID_ROP_RATE')%>", 'warning', 0, 'capture');
+                this.value = this.value.replace(/[^0-9.]/g, '');  
+            }
+        }); 
+
+        $('input[name="<%=getObjectMapping(@baseProduct)%>[annualIncome]"]').change( function(){
+            if (isNaN(this.value))
+            {
+                showDialog("", "<%= getLabelValue('VALID_ANUUAL_INCOME')%>", 'warning', 0, 'capture');
+                this.value = this.value.replace(/[^0-9.]/g, '');  
+            }
+        });
+
+
+        $('input[name="<%=getObjectMapping(@baseProduct)%>[monthlyIncome]"]').change( function(){
+            if (isNaN(this.value))
+            {
+                showDialog("", "<%= getLabelValue('VALID_MONTHLY_INCOME')%>", 'warning', 0, 'capture');
+                this.value = this.value.replace(/[^0-9.]/g, '');  
+            }
+        });
+
+
+        $('input[name="<%=getObjectMapping(@baseProduct)%>[pdfAmount]"]').change( function(){
+            if (isNaN(this.value))
+            {
+                showDialog("", "<%= getLabelValue('VALID_PDF_AMT')%>", 'warning', 0, 'capture');
+                this.value = this.value.replace(/[^0-9.]/g, '');  
+            }
+        });
+
+        $('input[name="<%=getObjectMapping(@baseProduct)%>[annuityAge]"]').change( function(){
+            if (isNaN(this.value))
+            {
+                showDialog("", "<%= getLabelValue('VALID_ANNUITY_AGE') %>", 'warning', 0, 'capture');
+                this.value = this.value.replace(/[^0-9.]/g, '');  
+            }
+        });
+
+        $('input[name="<%=getObjectMapping(@baseProduct)%>[annuityPerc]"]').change( function(){
+            if (isNaN(this.value))
+            {
+                showDialog("", "<%= getLabelValue('VALID_ANNUITY_PERC') %>", 'warning', 0, 'capture');
+                this.value = this.value.replace(/[^0-9.]/g, '');  
+            }
+        });
+
+        $('input[name="<%=getObjectMapping(@baseProduct)%>[lowReturnRate]"]').change( function(){
+            if (isNaN(this.value))
+            {
+                showDialog("", "<%= getLabelValue('VALID_LOW_RET_RATE') %>", 'warning', 0, 'capture');
+                this.value = this.value.replace(/[^0-9.]/g, '');  
+            }
+        });
+
+        $('input[name="<%=getObjectMapping(@baseProduct)%>[mediumReturnRate]"]').change( function(){
+            if (isNaN(this.value))
+            {
+                showDialog("", "<%= getLabelValue('VALID_MED_RET_RATE') %>", 'warning', 0, 'capture');
+                this.value = this.value.replace(/[^0-9.]/g, '');  
+            }
+        });
+
+        $('input[name="<%=getObjectMapping(@baseProduct)%>[highReturnRate]"]').change( function(){
+            if (isNaN(this.value))
+            {
+                showDialog("", "<%= getLabelValue('VALID_HIGH_RET_RATE') %>", 'warning', 0, 'capture');
+                this.value = this.value.replace(/[^0-9.]/g, '');  
+            }
+        });
+
+        if (premiumPayingTerm == 'true' ) {
+            setReadOnly($('input[name="<%=getObjectMapping(@baseProduct)%>[premiumPayingTerm]"]'), true);
+        }
+        /* Using custom settings */
+
+        $("a#inline").fancybox({
+            autoSize : false,
+            height : '60%',
+            width : '60%'
+        });
+
+    });
+
+</script>

@@ -1,0 +1,200 @@
+<h3 class="col-left labelHeader">
+	<%=getLabelValue('captureSign')%>
+</h3>
+<%= modelTagStart("signatureContainer", @signatureContainer) %>
+	<div style="display: none">
+		<%= inputTag("entityGuid") %>
+		<%= inputTag("entityTypeCd") %>
+	</div>
+    <div class="content-fullform">
+		<h3><%= getLabelValue('agentDeclarationStart') %></h3>
+		<%
+			errorHash = Hash.new
+			if @errors!=nil && !@errors.empty?
+				[@proposerSign,@insuredSign,@supplementarySign,@agentSign].each do |obj|
+					if obj.to_s != ""
+						@errors.each do |tabId, tabErrors|								        	
+				            errorHash[obj.guid] = Hash.new
+				            unless tabErrors[obj.guid].to_s == "" || tabErrors[obj.guid].empty?
+					            if tabErrors[obj.guid].has_key?("placeOfSignature") && tabErrors[obj.guid]["placeOfSignature"].to_s != "" && !tabErrors[obj.guid]["placeOfSignature"].empty?
+					                errorHash[obj.guid]["placeOfSignature"] = tabErrors[obj.guid]["placeOfSignature"]
+					                errorHash[obj.guid]["placeOfSignature_errorStyle"] = "error-msg"
+					            end
+					            if tabErrors[obj.guid].has_key?("signatureDt") && tabErrors[obj.guid]["signatureDt"].to_s != "" && !tabErrors[obj.guid]["signatureDt"].empty?
+					                errorHash[obj.guid]["signatureDt"] = tabErrors[obj.guid]["signatureDt"]
+					                errorHash[obj.guid]["signatureDt_errorStyle"] = "error-msg"
+					            end
+					        end
+					    end
+			        end
+			    end
+			end
+		%>
+		<% if @proposerSign.to_s != "" %>
+			<%= modelTagStart("proposerSign", @proposerSign, @signatureContainer) %>
+				<%= signatureTag("signature", "policyOwnerSignature") %>
+                    <%if $rhoconfig[:application_view_mode] == 'mobile'%>
+                        <div class='project-data project-data-mobile' style="float: left;width:100%;padding:0 15px;"> 
+                    <% else %>
+                	   <div class='project-data' style="float: left">
+                    <% end %>    
+                		<div class='row-details'>
+                            <%= labelTag("signatureDt") %>
+                            <p class='col-right'>
+                                <%= inputTag("signatureDt") %>
+                                <%= errorTag("signatureDt") %>
+    						</p>
+    					</div>
+    				</div>
+    				<%if $rhoconfig[:application_view_mode] == 'mobile'%>
+                        <div class='project-data project-data-mobile' style="float: left;width:100%;padding:0 15px;"> 
+                    <% else %>
+                       <div class='project-data' style="float: left">
+                    <% end %>  
+                		<div class='row-details'>
+                            <%= labelTag("placeOfSignature") %>
+                            <p class='col-right'>
+                                <%= inputTag("placeOfSignature") %>
+                                <%= errorTag("placeOfSignature") %>
+    						</p>
+    					</div>
+    				</div>
+
+            	<div style="display: none">
+                    <%= inputTag("signatureTypeCd") %>
+                    <%= inputTag("roleCd") %>
+                    <%= inputTag("object") %>
+                    <%= inputTag("entityGuid") %>
+                    <%= inputTag("partyGuid") %>
+                    <%= inputTag("entityType") %>
+                </div>
+			<% modelTagEnd %>
+		<% end %>
+		<% if @insuredSign.to_s != "" %>
+			<%= modelTagStart("insuredSign", @insuredSign, @signatureContainer) %>
+    				<%= signatureTag("signature", "primaryInsuredSignature") %>
+    				<%if $rhoconfig[:application_view_mode] == 'mobile'%>
+                        <div class='project-data project-data-mobile'> 
+                    <% else %>
+                       <div class='project-data' style="float: left">
+                    <% end %>  
+                		<div class='row-details'>
+                            <%= labelTag("signatureDt") %>
+                            <p class='col-right'>
+                                <%= inputTag("signatureDt") %>
+                                <%= errorTag("signatureDt") %>
+    						</p>
+    					</div>
+    				</div>
+    				<%if $rhoconfig[:application_view_mode] == 'mobile'%>
+                        <div class='project-data project-data-mobile'> 
+                    <% else %>
+                       <div class='project-data' style="float: left">
+                    <% end %>  
+                		<div class='row-details'>
+                            <%= labelTag("placeOfSignature") %>
+                            <p class='col-right'>
+                                <%= inputTag("placeOfSignature") %>
+                                <%= errorTag("placeOfSignature") %>
+    						</p>
+    					</div>
+    				</div>
+
+                <div style="display: none">
+                    <%= inputTag("signatureTypeCd") %>
+                    <%= inputTag("roleCd") %>
+                    <%= inputTag("object") %>
+                    <%= inputTag("entityGuid") %>
+                    <%= inputTag("partyGuid") %>
+                    <%= inputTag("entityType") %>
+                </div>
+			<% modelTagEnd %>
+		<% end %>
+            <% count = 0 %>
+    		<% if !@supplementarySigns.empty? %>
+                <% @supplementarySigns.each do|supplementarySign| %>
+                    <% count = count+1%>
+                    <% gridID = "grid_#{count}_supplementarySign" %>
+        			<%= modelTagStart(gridID, supplementarySign, @signatureContainer) %>
+        				<%= signatureTag("signature", "supplementaryInsuredSignature-#{count}") %>
+                        	<%if $rhoconfig[:application_view_mode] == 'mobile'%>
+                                <div class='project-data project-data project-data-mobile' > 
+                            <% else %>
+                               <div class='project-data' style="float: left">
+                            <% end %>  
+                        		<div class='row-details'>
+                                    <%= labelTag("signatureDt") %>
+                                    <p class='col-right'>
+                                        <%= inputTag("signatureDt") %>
+                                        <%= errorTag("signatureDt") %>
+            						</p>
+            					</div>
+            				</div>
+
+            				<%if $rhoconfig[:application_view_mode] == 'mobile'%>
+                                <div class='project-data project-data-mobile'> 
+                            <% else %>
+                               <div class='project-data' style="float: left">
+                            <% end %>  
+                        		<div class='row-details'>
+                                    <%= labelTag("placeOfSignature") %>
+                                    <p class='col-right'>
+                                        <%= inputTag("placeOfSignature") %>
+                                        <%= errorTag("placeOfSignature") %>
+            						</p>
+            					</div>
+            				</div>
+
+                        <div style="display: none">
+                            <%= inputTag("signatureTypeCd") %>
+                            <%= inputTag("roleCd") %>
+                            <%= inputTag("object") %>
+                            <%= inputTag("entityGuid") %>
+                            <%= inputTag("partyGuid") %>
+                            <%= inputTag("entityType") %>
+                        </div>
+        			<% modelTagEnd %>
+                <%end%>
+    		<% end %>
+
+		<%= modelTagStart("agentSign", @agentSign, @signatureContainer) %>
+			<%= signatureTag("signature", "agentSignHeader") %>
+                	<%if $rhoconfig[:application_view_mode] == 'mobile'%>
+                        <div class='project-data project-data-mobile'> 
+                    <% else %>
+                        <div class='project-data' style="float: left">
+                    <% end %>  
+                		<div class='row-details'>
+                            <%= labelTag("signatureDt") %>
+                            <p class='col-right'>
+                                <%= inputTag("signatureDt") %>
+                                <%= errorTag("signatureDt") %>
+        					</p>
+        				</div>
+        			</div>
+
+        			<%if $rhoconfig[:application_view_mode] == 'mobile'%>
+                        <div class='project-data project-data-mobile'> 
+                    <% else %>
+                        <div class='project-data' style="float: left">
+                     <% end %>  
+                		<div class='row-details'>
+                            <%= labelTag("placeOfSignature") %>
+                            <p class='col-right'>
+                                <%= inputTag("placeOfSignature") %>
+                                <%= errorTag("placeOfSignature") %>
+        					</p>
+        				</div>
+        			</div>
+
+    			<div style="display: none">
+                    <%= inputTag("signatureTypeCd") %>
+                    <%= inputTag("object") %>
+                    <%= inputTag("entityGuid") %>
+                    <%= inputTag("partyGuid") %>
+                    <%= inputTag("entityType") %>
+                </div>
+		<% modelTagEnd %>
+    </div>
+<% modelTagEnd %>
+<%= subPanelTagEnd %>

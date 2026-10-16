@@ -1,0 +1,169 @@
+<div class="illustrationdisplay" name="" style="margin-bottom: 268px!important;">  
+<div class="legend">
+     <label class="strongLabel">
+            <%= getLabelValue('PRODUCTPAGE')%>
+            <a href="#" class="scrollTopButton ui-icon-carat-u ui-btn-icon-notext ui-alt-icon ui-btn-inline"></a>
+            <a href="#" class="expandButton ui-icon-plus ui-btn-icon-notext ui-alt-icon ui-btn-inline"/></a>
+            <a href="#" class="collapseButton ui-icon-minus ui-btn-icon-notext ui-alt-icon ui-btn-inline"/></a>
+        </label>
+</div>
+<div class="panelContent">
+    <div data-role="content cf-ui-content">
+        <div class="cf-illustrationdisplay" > 
+            <div data-role="controlgroup" >
+                <div class="ui-grid-b"> 
+                    <div class="ui-block-a"><%= renderLabel('productFamilyCd', 'productFamilyCd', nil, nil)   %></div>
+                    <div class="ui-block-b"><%= getLookup('DYNAMICLOOKUP', 'productFamilyCd', nil, nil, @productFamilyArray, "onchange=\"filterProduct(this.value);\"")   %>
+                    </div>
+                    <div class="ui-block-c"></div>
+                </div>
+            </div>
+
+            <div data-role="controlgroup">
+                <div class="ui-grid-b"> 
+                    <div class="ui-block-a"><%= renderLabel('productId', 'productID', nil, nil)   %></div>
+                    <div class="ui-block-b" id="productIdSelectList"><%= getLookup('DYNAMICLOOKUP', 'productId', nil, nil,@productArray)%></div>
+                    <div class="ui-block-c"></div>
+                </div>
+            </div>
+
+            <div data-role="controlgroup" id="productPlanDiv" >
+                <div class="ui-grid-b">            
+                    <div class="ui-block-a"><%= renderLabel('productPlanOptionCd', 'productPlanOptionCd', nil, nil)   %></div>
+                    <div class="ui-block-b" id ="productPlanSelectList"><%= getLookup('DYNAMICLOOKUP', 'productPlanOptionCd', nil, nil,@offlinePlanOptionArray )   %></div>
+                    <div class="ui-block-c"></div>
+                </div>
+            </div>
+
+            <div data-role="controlgroup">
+                <div class="ui-grid-c">            
+                    <div class="ui-block-a"></div>
+                    <div class="ui-block-b" id = "goButton"><a href="#" data-role="button" style="width: 56%; margin-left: 107px;"><%= getLabelValue('GO') %></a></div>
+                    <div class="ui-block-c"></div>
+                    <div class="ui-block-d"></div>
+                </div>
+            </div>
+
+        </div> 
+    </div>
+</div>
+
+<script type="text/javascript">
+
+    function filterProduct(value){
+
+        $.ajax({
+            url: "/app/Quotation/filterProduct",
+            data: {'productFamily':value},
+            success: function(data){
+                data = data.replace("<div>","");
+                data = data.replace("</div>","");
+                create = '<select id=productId name=productId onchange="filterProductPlan(this.value);">';                        
+                create += data;
+                create += '</select>';
+                $('#productIdSelectList').html(create);
+                $("#productIdSelectList").trigger('create');
+
+            }
+        });
+
+    }
+
+
+    function filterProductPlan (plan) {
+
+        $.ajax({
+            url: "/app/Quotation/filterPlanOptionCodes",
+            data: {'productObject':plan},
+            success: function(data){
+                data = data.replace("<div>","");
+                data = data.replace("</div>","");
+                if (data.length <= 50)
+                {
+                    $("select[id='productPlanOptionCd']").val('').change();
+                    setReadOnly($("select[id='productPlanOptionCd']"), true);
+                    $("select[id='productPlanOptionCd']").selectmenu('disable');
+                } 
+                else
+                {
+                    create = '<select id=productPlanOptionCd name=productPlanOptionCd >';                        
+                    create += data;
+                    create += '</select>';
+                    $('#productPlanSelectList').html(create);
+                    $("#productPlanSelectList").trigger('create');
+                }
+            }
+        });
+
+    }
+
+
+    $('#goButton').on('click', function(){
+
+        productFamily = $("select[id='productFamilyCd']").val();
+        product = $("select[id='productId']").val();
+        productPlanOptionCd = $("select[id='productPlanOptionCd']").val();
+        options = $("select[id='productPlanOptionCd'] option").length;
+        disabled = $('#productPlanOptionCd').is(':disabled');
+        partyTypeCd = $('select[name="<%=getObjectMapping(@policyHolder)%>[partyTypeCd]"]').val();
+
+        proposerTitle = $('select[name="<%=getObjectMapping(@policyHolder)%>[title]"]').val();
+        proposerFirstname = $('input[name="<%=getObjectMapping(@policyHolder)%>[firstname]"]').val();
+        proposerMiddlename = $('input[name="<%=getObjectMapping(@policyHolder)%>[middlename]"]').val();
+        proposerLastname = $('input[name="<%=getObjectMapping(@policyHolder)%>[lastname]"]').val();
+        proposerFirstname2 = $('input[name="<%=getObjectMapping(@policyHolder)%>[firstname2]"]').val();
+        proposerMiddlename2 = $('input[name="<%=getObjectMapping(@policyHolder)%>[middlename2]"]').val();
+        proposerLastname2 = $('input[name="<%=getObjectMapping(@policyHolder)%>[lastname2]"]').val();
+        proposerGenderCd = $('input[name="<%=getObjectMapping(@policyHolder)%>[genderCd]"]').val();
+        proposerDob = $('input[name="<%=getObjectMapping(@policyHolder)%>[dob]"]').val();
+        proposerAge = $('input[name="<%=getObjectMapping(@policyHolder)%>[age]"]').val();
+        proposerIndustryCd = $('select[name="<%=getObjectMapping(@policyHolder)%>[industryCd]"]').val();
+        proposerNationality = $('select[name="<%=getObjectMapping(@policyHolder)%>[nationality]"]').val();
+        proposerEmailAddress = $('input[name="<%=getObjectMapping(@policyHolder)%>[emailAddress]"]').val();
+        proposerMobileNum = $('input[name="<%=getObjectMapping(@policyHolder)%>[contactNum]"]').val();
+        natureOfDuty = $('select[name="<%=getObjectMapping(@policyHolder)%>[natureOfDuty]"]').val();
+        quotationRefNum = $("input[name='<%=getObjectMapping(@quotation)%>[quotationRefNum]']").val();
+
+        insuredTitle = $('select[name="<%=getObjectMapping(@insured)%>[title]"]').val();
+        insuredFirstname = $('input[name="<%=getObjectMapping(@insured)%>[firstname]"]').val();
+        insuredMiddlename = $('input[name="<%=getObjectMapping(@insured)%>[middlename]"]').val();
+        insuredLastname = $('input[name="<%=getObjectMapping(@insured)%>[lastname]"]').val();
+        insuredFirstname2 = $('input[name="<%=getObjectMapping(@insured)%>[firstname2]"]').val();
+        insuredMiddlename2 = $('input[name="<%=getObjectMapping(@insured)%>[middlename2]"]').val();
+        insuredLastname2 = $('input[name="<%=getObjectMapping(@insured)%>[lastname2]"]').val();
+        insuredGenderCd = $('input[name="<%=getObjectMapping(@insured)%>[genderCd]"]').val();
+        insuredDob = $('input[name="<%=getObjectMapping(@insured)%>[dob]"]').val();
+        insuredAge = $('input[name="<%=getObjectMapping(@insured)%>[age]"]').val();
+        insuredIndustryCd = $('select[name="<%=getObjectMapping(@insured)%>[industryCd]"]').val();
+        insuredNationality = $('select[name="<%=getObjectMapping(@insured)%>[nationality]"]').val();
+        insuredEmailAddress = $('input[name="<%=getObjectMapping(@insured)%>[emailAddress]"]').val();
+        insuredMobileNum = $('input[name="<%=getObjectMapping(@insured)%>[contactNum]"]').val();
+        insurednatureOfDuty = $('select[name="<%=getObjectMapping(@insured)%>[natureOfDuty]"]').val();
+
+
+        if ((productFamily) && (product))
+        {
+            if ((options > 1) && (productPlanOptionCd))
+            {
+                location.href='/app/Quotation/newCaptureIllustration?quotationRefNum='+quotationRefNum+'&productFamily='+productFamily+'&productId='+product+'&productPlanOptionCd='+productPlanOptionCd+'&phproposerAge='+proposerAge+'&phproposerGenderCd='+proposerGenderCd+'&phproposerIndustryCd='+proposerIndustryCd+'&phproposerFirstname2='+proposerFirstname2+'&phproposerFirstname='+proposerFirstname+'&phproposerEmailAddress='+proposerEmailAddress+'&phproposerMobileNum='+proposerMobileNum+'&phproposerTitle='+proposerTitle+'&phproposerMiddlename2='+proposerMiddlename2+'&phproposerMiddlename='+proposerMiddlename+'&phproposerLastname2='+proposerLastname2+'&phproposerLastname='+proposerLastname+'&phproposerDob='+proposerDob+'&phproposerNationality='+proposerNationality+'&phnatureOfDuty='+natureOfDuty+'&insuredAge='+insuredAge+'&insuredGenderCd='+insuredGenderCd+'&insuredIndustryCd='+insuredIndustryCd+'&insuredFirstname2='+insuredFirstname2+'&insuredFirstname='+insuredFirstname+'&insuredEmailAddress='+insuredEmailAddress+'&insuredMobileNum='+insuredMobileNum+'&insuredTitle='+insuredTitle+'&insuredLastname2='+insuredLastname2+'&insuredTitle='+insuredTitle+'&insuredMiddlename2='+insuredMiddlename2+'&insuredMiddlename='+insuredMiddlename+'&insuredLastname='+insuredLastname+'&insuredDob='+insuredDob+'&insuredNationality='+insuredNationality+'&insurednatureOfDuty='+insurednatureOfDuty+'&partyTypeCd='+partyTypeCd;
+            }
+            else if (disabled)
+            {
+                location.href='/app/Quotation/newCaptureIllustration?quotationRefNum='+quotationRefNum+'&productFamily='+productFamily+'&productId='+product+'&productPlanOptionCd='+productPlanOptionCd+'&phproposerAge='+proposerAge+'&phproposerGenderCd='+proposerGenderCd+'&phproposerIndustryCd='+proposerIndustryCd+'&phproposerFirstname2='+proposerFirstname2+'&phproposerFirstname='+proposerFirstname+'&phproposerEmailAddress='+proposerEmailAddress+'&phproposerMobileNum='+proposerMobileNum+'&phproposerTitle='+proposerTitle+'&phproposerMiddlename2='+proposerMiddlename2+'&phproposerMiddlename='+proposerMiddlename+'&phproposerLastname2='+proposerLastname2+'&phproposerLastname='+proposerLastname+'&phproposerDob='+proposerDob+'&phproposerNationality='+proposerNationality+'&phnatureOfDuty='+natureOfDuty+'&insuredAge='+insuredAge+'&insuredGenderCd='+insuredGenderCd+'&insuredIndustryCd='+insuredIndustryCd+'&insuredFirstname2='+insuredFirstname2+'&insuredFirstname='+insuredFirstname+'&insuredEmailAddress='+insuredEmailAddress+'&insuredMobileNum='+insuredMobileNum+'&insuredTitle='+insuredTitle+'&insuredMiddlename2='+insuredMiddlename2+'&insuredMiddlename='+insuredMiddlename+'&insuredLastname2='+insuredLastname2+'&insuredLastname='+insuredLastname+'&insuredDob='+insuredDob+'&insuredNationality='+insuredNationality+'&insurednatureOfDuty='+insurednatureOfDuty+'&partyTypeCd='+partyTypeCd;
+            }
+            else
+            {
+                showDialog("", '<%= getLabelValue("select") %>'+ ' ' + '<%= getLabelValue("Product Plan Option")%>', 'warning', 0, 'capture');
+            }
+        }
+        else if (product)
+        {
+            showDialog("", '<%= getLabelValue("PLEASE_SELECT_PRODUCT_FAMILY")%>', 'warning', 0, 'capture');
+        }
+        else  
+        {
+            showDialog("", '<%= getLabelValue("PLEASE_SELECT_PRODUCT")%>', 'warning', 0, 'capture');
+        }
+    });
+
+</script>

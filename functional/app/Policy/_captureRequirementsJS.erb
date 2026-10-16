@@ -1,0 +1,48 @@
+<script type="text/javascript">
+	var initialRequirementForm = "";
+	function setupRequirementTab(object, onLoad){
+		if (object.length == 0) {
+			return false;
+		}
+		$('#requirements-info a').off('click');
+		
+		showLoadingMessage();
+		<% if @policy.policyNum.to_s == "" %>
+			if (!onLoad) {
+				submitForm();
+			}
+		<% end %>
+		object.parent().siblings().children('a').removeClass('selectedTab');
+		object.addClass('selectedTab');
+		geturl = object.data("url");
+		lifeid = object.data('id').toString();
+		if(lifeid.indexOf(".")==-1) {
+			lifeid = lifeid+".0"
+		}
+		$('.endownment-container').hide().html("").trigger("create");
+		$.ajax({                                    
+			url: "/app/Policy/"+geturl,
+			data: {'policyObject': '<%= @policy.object.to_s %>', 'lifeObject': lifeid},
+			success: function(data) {
+				hideLoadingMessage();
+				$('#requirement-container').html(data).trigger('create').show();
+				$('#requirements-info a').on('click', function(){
+					setupRequirementTab($(this), false);
+				});
+				initialRequirementForm = $('#requirementForm').serialize();
+			    <% if @policy.policyNum.to_s != "" %>
+					setReadOnly($('input[type="text"]'), true);
+				    $('select').selectmenu('disable').trigger("refresh");
+				    $('input[type="radio"]').checkboxradio('disable').trigger("refresh");
+				    $('input[type="checkbox"]').checkboxradio('disable').trigger("refresh");
+				    $('input[type="button"][id!="viewIDPROOFINDO"]').off('click');
+				    $('input[type="button"][id!="viewIDPROOFINDO"]').button('disable').trigger("refresh");
+				<% end %>    
+			}
+		});
+	}
+
+	$(document).ready(function(){
+		setupRequirementTab($("#requirements-info li[name='life1Li']>a"), true);
+	});
+</script>

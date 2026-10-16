@@ -1,0 +1,35 @@
+<div data-role="page" data-url="<%= Rho::RhoConfig.start_path %>/">
+  
+  <div data-role="header" data-position="inline">
+    <h1><%= getLabelValue('CALCULATORS')    %></h1>
+    <a href="<%= url_for :action => :landingPage %>" class="btn ui-btn-left btn-large" data-direction="reverse">
+      <%= getLabelValue('BACK')   %>
+    </a>
+  </div>
+  
+  <div data-role="content">
+    <ul data-role="listview">
+      <li>
+        <img src = "/public/images/SalesIllustration/calculatorbutton.png">
+        <a href="#" onclick="location.href='/app/Calculator/humanlife';"><%= getLabelValue('HUMANLIFEVALUECALC') %></a>
+      </li>
+      <li>
+        <img src = "/public/images/SalesIllustration/calculatorbutton.png">
+        <a href="/app/Calculator/retirement" class="btn-green"><%= getLabelValue('RETIREMENTCALC') %></a>
+      </li>
+      <li>
+        <img src = "/public/images/SalesIllustration/calculatorbutton.png">
+        <a href="#" onclick="location.href='/app/Calculator/childeducation';"><%= getLabelValue('CHILDEDUCATIONCALC') %></a>
+      </li>
+      <li>
+        <img src = "/public/images/SalesIllustration/calculatorbutton.png">
+        <a href="#" onclick="location.href='/app/Calculator/marriage';"><%= getLabelValue('MARRIAGECALC') %></a>
+      </li>
+      <li>
+        <img src = "/public/images/SalesIllustration/calculatorbutton.png">
+        <a href="#" onclick="location.href='/app/Calculator/rr1Solver';"><%= getLabelValue('RR1LONG') %> Solver</a>
+      </li>
+    </ul>
+  </div>
+  
+</div>

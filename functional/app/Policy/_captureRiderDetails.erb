@@ -1,0 +1,63 @@
+<div id='riderDetails'>
+	<div class="legend">
+		<label class="strongLabel">
+			<%= getLabelValue('riderDetails') %>
+			<a href="#" class="scrollTopButton ui-icon-carat-u ui-btn-icon-notext ui-alt-icon ui-btn-inline"/>
+			<a href="#" class="expandButton ui-icon-plus ui-btn-icon-notext ui-alt-icon ui-btn-inline"/>
+			<a href="#" class="collapseButton ui-icon-minus ui-btn-icon-notext ui-alt-icon ui-btn-inline"/>
+		</label>
+	</div>
+	<br/>
+	<div class="panelContent">
+		<% if @riderAutoPopulationReqFlag == "YES" %>
+		    <div class="ui-grid-d">
+	            <div class="ui-block-a"> </div>
+	            <div class="ui-block-b"></div>
+	            <div class="ui-block-c"> <input type="button" onclick="refreshPrePolulatedRider()" value="<%= getLabelValue('REFRESH')%>"> </div>
+	            <div class="ui-block-d"></div>
+	            <div class="ui-block-e"></div>
+	        </div>
+        <% end %>
+		<div id="ridersList">
+		    <% if @builtInRiderArray.length > 0 %>
+        		<% @builtInRiderArray.each do |builtInRider|%>
+		            <%= renderObject(builtInRider[0], @policy) %>
+        			<%= renderObject(builtInRider[1], builtInRider[0]) %>
+		            <%= renderHiddenField('productId', builtInRider[0].productId, 'productId', builtInRider[0]) %>
+		            <%= renderHiddenField('productSeq', builtInRider[0].productSeq, 'productSeq', builtInRider[0]) %>
+		            <%= renderHiddenField('builtInRiderFl', builtInRider[0].builtInRiderFl, 'builtInRiderFl', builtInRider[0]) %>
+		            <%= renderHiddenField('productTerm', builtInRider[0].productTerm, 'productTerm', builtInRider[0]) %>
+		            <%= renderHiddenField('productTypeCd', builtInRider[0].productTypeCd, 'productTypeCd', builtInRider[0]) %>
+		            <%= renderHiddenField('premiumPayingTerm', builtInRider[0].premiumPayingTerm, 'premiumPayingTerm', builtInRider[0]) %>
+		            <%= renderHiddenField('coi', builtInRider[0].coi, 'coi', builtInRider[0]) %>
+		            <%= renderHiddenField('insuredPartyRefGuid', builtInRider[0].insuredPartyRefGuid, 'insuredPartyRefGuid', builtInRider[0]) %>
+		            <%= renderHiddenField('insuredPartyRefGuid', builtInRider[1].insuredPartyRefGuid, 'insuredPartyRefGuid', builtInRider[1]) %>
+		            <%= renderHiddenField('roleCd', builtInRider[1].roleCd, 'roleCd', builtInRider[1]) %>
+        		<% end %>
+    		<% end %>
+
+			<% 
+			@rider_form = ""
+			@newriders.each_with_index do |riderProduct, count|
+                if riderProduct.productTypeCd == "RIDER"
+                    @riderCount += 1
+                    @rider_form << addRider(@policy, riderProduct, riderProduct.PolicyProductInsuredList[0], @product, @riderCount)
+                end
+            end
+            %>
+			<%= @rider_form %>
+		</div>
+
+
+		<% if (@policy.quotationRefGuid == nil || @policy.quotationRefGuid == "") && @riderAutoPopulationReqFlag != "YES" %>
+			<fieldset class="ui-grid-d">
+				<div class="ui-block-a"></div>
+				<div class="ui-block-b"></div>
+				<div class="ui-block-c"><input type="button" onclick="addRider()" value='<%= getLabelValue('ADDRIDER')%>'class="addRiderButton">   </div>
+				<div class="ui-block-d"></div>
+				<div class="ui-block-e"></div>
+			</fieldset>
+		<% end %>
+	</div>	
+</div>
+<%= render :partial => "captureRiderDetailsJS" %>

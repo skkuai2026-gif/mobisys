@@ -1,0 +1,12 @@
+<%= pageTagStart('FNA-Search','Symbiosys - FNA') %>
+	<%= headerTag("SEARCH_FNA_LANDINGPAGE","search") %>
+	<%= formTagStart("fnaSearchForm","/app/FNARequest/search") %>
+		<div data-role="main" class="ui-content">
+			<%= menuTag('FNA',true) %>
+			<%= searchTag("fnaNum,fullName,contactNum,emailAddress,statusCd,systemUpdatedDt", "SearchFNADO", @searchResultList, true, true,"Edit,Copy","Edit-icon32,icon-copy","/app/FNARequest/{#object}/show,/app/FNARequest/{#object}/cloneFna",'/app/FNARequest/newFNAPics','FNA_EXPIRY_PAGE','/app/FNARequest/fnaExpirySearch',false,"","","","",true,"","/app/FNARequest/{#object}/show") %>
+
+		<div data-role="popup" id="summaryPopUp" data-theme="a" class="ui-corner-all popup-wrapper"></div>
+	    </div>
+    <%= formTagEnd %>
+<%= pageTagEnd %>
+<script src="FNASearch_Jazz.js" type="text/javascript"></script>

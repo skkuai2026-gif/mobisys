@@ -1,0 +1,116 @@
+<script type="text/javascript">
+var initialReasonsForRecommendation = "";
+    
+   $(document).ready(function() {
+      initialReasonsForRecommendation != $('#reasonsForRecommendationForm').serialize()
+      MyPageData = {};
+      MyPageData.getData = ($('#reasonsForRecommendationForm').serialize());
+      $('#nextpre').show();
+      tabExchange($('.active-btn').attr("data-url"));
+      $('#nextTab').removeClass("ui-state-disabled");
+       if ('<%= @fnaRequest.addtnField1Str.to_s == "FNACOMPLETE" || @fnaRequest.addtnField1Str.to_s == "FNASIGNED" || @fnaRequest.addtnField1Str.to_s == "FNASUBMIT" %>' == "true"){
+        $('#nextTab').attr("data-url","getDeclaration");
+      }else{
+        $('#nextTab').removeAttr("data-url","getDeclaration");
+        $('#nextTab').attr("data-url","previewtab");
+        $('#nextTab').attr("name","preview");  
+      }
+
+       $("a[name='preview']").click(function() {
+         $('input[type="radio"]').removeAttr("disabled");
+        $('input[type="checkbox"]').removeAttr("disabled");
+        submitForm();
+        setTimeout(SubmitPreview, 2500);
+      });
+
+      function SubmitPreview()
+      {
+        document.fnaForm.action = "executePreview";
+        document.fnaForm.submit();
+      }
+      
+      // Ashwini 02-08-2017 : Hide E-signature Tab if chamges are made in Basic Into tab 
+       $('#reasonsForRecommendationForm').on('keyup change', 'input, select, textarea', function(){
+       $("#reasonsForRecommendationForm").data("changed",true)
+       $("#icon-arrow").hide();
+       $("#esignature").hide();
+       $("#changeConsiderationForm").val("true");
+    });
+
+
+    });
+
+    function submitForm(){
+        //Used to trim all the input fields before save
+        //alert("767686");
+        $(':input').each(function(){
+            $(this).val($.trim($(this).val()))
+        });
+        if($('#reasonsForRecommendationForm').serialize() != (MyPageData.getData)) { 
+        // if(initialReasonsForRecommendation != $('#reasonsForRecommendationForm').serialize()) {
+
+            $.ajax({                                    
+                url: "/app/FNARequest/submitReasonsForRecommendation",
+                method: 'POST',
+                async: false,
+                data: $('#reasonsForRecommendationForm').serialize(),
+                    headers: {
+                        'Transition-Enabled': false
+                    },
+                success: function(data) {
+                    $("a#submit").hide();
+                }
+            });
+        }
+    }
+
+  function tabSetup(){
+       // if ( $('input[name="<%#=getObjectMapping(@fnaRequest)%>[reasonForRecommendation]"]').val()!=''){
+       //      $('input[name="FNARequest[addtnField2Str]"]').prop('checked', true);
+       //      $('label[for="FNARequest[addtnField2Str]"]').addClass("ui-checkbox-on");
+       //       $('label[for="FNARequest[addtnField2Str]"]').removeClass("ui-checkbox-off");
+       //  }
+       // if ( $('input[name="<%#=getObjectMapping(@fnaRequest)%>[reasonForRecommendation]"]').val()==''){
+       //      $('input[name="FNARequest[addtnField2Str]"]').prop('checked', false);
+       //      $('label[for="FNARequest[addtnField2Str]"]').addClass("ui-checkbox-off");
+       //      $('label[for="FNARequest[addtnField2Str]"]').removeClass("ui-checkbox-on");
+       //  }
+
+        <% if @fnaRequest.statusCd.to_s == "FNASIGNED" || @fnaRequest.statusCd.to_s == "FNASUBMIT" || @fnaRequest.statusCd.to_s == "SYNCDONE" %>
+            setReadOnly($('input[type="text"]'), true);
+            setReadOnly($('input[type="tel"]'), true);
+            setReadOnly($('input[type="num"]'), true);
+            setReadOnly($('input[type="email"]'), true);
+            $('select').selectmenu('disable').trigger("refresh");
+            $('input[type="radio"]').checkboxradio('disable').trigger("refresh");
+            $('input[type="checkbox"]').checkboxradio('disable').trigger("refresh");
+            $('input[type="button"]').off('click');
+            $('input[type="button"]').button('disable').trigger("refresh");
+            $('a[href="#clear"]').hide();
+            <% end %>
+
+        if ($('input[name="<%=getObjectMapping(@fnaRequest)%>[addtnField2Str]"]').is(':checked')){
+            $('input[name="<%=getObjectMapping(@fnaRequest)%>[reasonForRecommendation]"]').attr('disabled', false);
+            $('input[name="<%=getObjectMapping(@fnaRequest)%>[reasonForRecommendation]"]').removeClass("ui-state-disabled"); 
+        }
+        
+    };
+
+
+
+    function otherson(){
+                    if ($('input[name="FNARequest[addtnField2Str]"]').is(':checked')){
+                      $('input[name="<%=getObjectMapping(@fnaRequest)%>[reasonForRecommendation]"]').attr('enable', true);
+                      $('input[name="<%=getObjectMapping(@fnaRequest)%>[reasonForRecommendation]"]').removeAttr('disabled', true);
+                      $('input[name="<%=getObjectMapping(@fnaRequest)%>[reasonForRecommendation]"]').removeClass("ui-state-disabled");
+                    }else{
+                     // if (!$('input[name="FNARequest[addtnField2Str]"]').is(':checked')){
+                      $('input[name="<%=getObjectMapping(@fnaRequest)%>[reasonForRecommendation]"]').attr('enable', false);
+                      $('input[name="<%=getObjectMapping(@fnaRequest)%>[reasonForRecommendation]"]').attr('disabled', false);
+                      $('input[name="<%=getObjectMapping(@fnaRequest)%>[reasonForRecommendation]"]').addClass("ui-state-disabled"); 
+                      $('input[name="<%=getObjectMapping(@fnaRequest)%>[reasonForRecommendation]"]').val('');           
+                    }
+                }
+
+
+</script>

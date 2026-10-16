@@ -1,0 +1,35 @@
+<li class="ui-field-contain">
+	<%= renderObject(@policyProductInvestmentFund, @policyProduct) %>
+	<%= renderHiddenField('removed', @policyProductInvestmentFund.removed, '', @policyProductInvestmentFund) %>
+	
+	<% if @facetData[:renderExpiryDt] %>
+		<%= renderHiddenField('expiryDt', @policyProductInvestmentFund.expiryDt, 'expiryDt', @policyProductInvestmentFund) %>
+	<% end %>  
+	<% if @facetData[:renderFundTypeCd] %>
+		<%= renderHiddenField('fundTypeCd', @policyProductInvestmentFund.fundTypeCd, 'fundTypeCd', @policyProductInvestmentFund) %>
+	<% end %>  
+	<% if @facetData[:renderMaturityDt] %>
+		<%= renderHiddenField('maturityDt', @policyProductInvestmentFund.maturityDt, 'maturityDt', @policyProductInvestmentFund) %>
+	<% end %>
+    	
+	<% if @facetData[:renderFundCd] %>
+		<label for="allocationPerc"><%= getLabelValue(@fund.fundDesc) %></label>
+		<%= renderHiddenField('fundCd', @policyProductInvestmentFund.fundCd, '', @policyProductInvestmentFund) %>
+ 	<% end %>
+
+	<span style="float: right; margin-right: 5px;">
+		<input type="button" data-inline="true" data-icon="delete" data-iconpos="notext" onclick="removeFund('<%= getObjectMapping(@policyProductInvestmentFund)%>');"/>
+	</span>
+
+	<% if @facetData[:renderTopupAllocationPerc] %>
+		<span style="float: right; margin-right: 5em;">
+	        <%= renderAmountField('topupAllocationPerc', @policyProductInvestmentFund.topupAllocationPerc.to_i, 'mandatory', @policyProductInvestmentFund, 'maxlength="3"') %>
+	    </span>
+ 	<% end %>
+
+	<% if @facetData[:renderAllocationPerc] %>
+		<span style="float: right; margin-right: 15em;">
+			<%= renderAmountField('allocationPerc', @policyProductInvestmentFund.allocationPerc, 'mandatory', @policyProductInvestmentFund, 'maxlength="3"') %>
+		</span>
+ 	<% end %>
+</li>

@@ -1,0 +1,279 @@
+<script src="/public/js/jquery.serialize-hash.js" type="text/javascript"></script>
+<script type="text/javascript">
+var fundCount = parseInt(<%= @funds.length %>);
+
+
+//Method to get funds based on model if FIXEDMODEL
+function getFunds(modelCd) {
+	$.ajax({
+		async: false,
+		url: "/app/Policy/getFunds",
+		data: {
+			'modelCd': modelCd, 
+			'policyObject': '<%= @policy.object.to_s %>', 
+			'fundObjects': fundCount
+		},
+        headers: {
+          'Transition-Enabled': false
+        },
+		success: function(data) {
+			$("#selectedFundList").html(data);
+			$("#selectedFundList").listview("refresh");
+			$("#selectedFundList").trigger('create');
+
+			fundCount = fundCount + 1;
+			$('input[name*="[allocationPerc]"]').change(function(){
+				if (isNaN(this.value)) {
+					showDialog("", "VALID_FUND_ALLO_PERC", 'warning', 0, 'capture');
+					this.value = this.value.replace(/[^0-9]/g, '');  
+				}
+				else {
+					if($('input[name="<%=getObjectMapping(@policyProduct)%>[topUpAllocSameAsPremAllocFl]"]').prop("checked") == true) {
+						var topupAllocationPercObject = $(this).attr("name").replace("allocationPerc", "topupAllocationPerc");
+	    				setReadOnly($('input[name="'+topupAllocationPercObject+'"]'), true);
+						$('input[name="'+topupAllocationPercObject+'"]').val($(this).val());
+					}
+					updateFundTotal();
+				}
+			});
+
+			$('input[name*="[topupAllocationPerc]"]').change(function(){
+				if (isNaN(this.value)) {
+					showDialog("", "VALID_FUND_ALLO_PERC", 'warning', 0, 'capture');
+					this.value = this.value.replace(/[^0-9]/g, '');  
+				}
+				else {
+					updateFundTotal();
+				}
+			});
+
+			$('input[name*="[topupAllocationPerc]"]').each(function(){
+				if($('input[name="<%=getObjectMapping(@policyProduct)%>[topUpAllocSameAsPremAllocFl]"]').prop("checked") == true) {
+					setReadOnly($(this), true);
+				}
+			})
+			
+		}        
+	});
+}
+
+
+//Method to get funds based on search criteria
+function searchFunds(searchParam){
+	var modelCd = $('select[name="<%=getObjectMapping(@policyProduct)%>[portfolioModelCd]"]').val();
+	var selectedFundCodeList = [];
+	$('input[name*="[fundCd]"]').each(function(){
+    var fund = $(this).attr("name");  
+    fund = fund.replace("fundCd","removed");
+    if($('input[name="'+fund+'"]').val()=="")
+	  {
+      selectedFundCodeList.push($(this).val());
+	  }
+	});
+
+	$.ajax({
+		async: false,
+		url: "/app/Policy/searchFunds",
+		data: {
+			'search': searchParam, 
+			'modelCd': modelCd,
+			'selectedFundCodeList': selectedFundCodeList
+		},
+        headers: {
+          'Transition-Enabled': false
+        },
+		success: function(data) {
+			$('#searchFundTable').html(data);
+			$("#searchFundTable").trigger('create');
+			$(".addButton").click(function(){
+				addFund($(this).attr("id"));
+			});
+		}                  
+	});
+}
+
+
+//Method to add funds from search results
+function addFund(fundCode) {   
+	policyProductObjectName = '<%= getObjectMapping(@policyProduct) %>';
+	$.ajax({
+		async: false,
+		url: "/app/Policy/addFund",
+		data: {
+			'fundCode': fundCode, 
+			'policyProductObject': '<%= @policyProduct.object.to_s %>', 
+			'fundObjects': fundCount, 
+			'policyProductObjectName': policyProductObjectName
+		},
+        headers: {
+          'Transition-Enabled': false
+        },
+		success: function(data) {
+			$("#selectedFundList").append(data);
+			$("#selectedFundList").listview("refresh");
+			$("#selectedFundList").trigger('create');
+
+			fundCount = fundCount + 1;
+			$('#fundCount').html(fundCount);
+			$("#searchFundTable a#"+fundCode).parents('tr').hide();
+
+			$('input[name*="[allocationPerc]"]').change(function(){
+				if (isNaN(this.value)) {
+					showDialog("", "VALID_FUND_ALLO_PERC", 'warning', 0, 'capture');
+					this.value = this.value.replace(/[^0-9]/g, '');  
+				}
+				else {
+					if($('input[name="<%=getObjectMapping(@policyProduct)%>[topUpAllocSameAsPremAllocFl]"]').prop("checked") == true) {
+						var topupAllocationPercObject = $(this).attr("name").replace("allocationPerc", "topupAllocationPerc");
+	    				setReadOnly($('input[name="'+topupAllocationPercObject+'"]'), true);
+						$('input[name="'+topupAllocationPercObject+'"]').val($(this).val());
+					}
+					updateFundTotal();
+				}
+			});
+
+			$('input[name*="[topupAllocationPerc]"]').change(function(){
+				if (isNaN(this.value)) {
+					showDialog("", "VALID_FUND_ALLO_PERC", 'warning', 0, 'capture');
+					this.value = this.value.replace(/[^0-9]/g, '');  
+				}
+				else {
+					updateFundTotal();
+				}
+			});
+
+			$('input[name*="[topupAllocationPerc]"]').each(function(){
+				if($('input[name="<%=getObjectMapping(@policyProduct)%>[topUpAllocSameAsPremAllocFl]"]').prop("checked") == true) {
+					setReadOnly($(this), true);
+				}
+			})
+		}        
+	});
+}
+
+
+//Method to remove fund from selected funds
+function removeFund(fundObject) {
+	fundCount -= 1;
+	var fundCode = $('input[name="'+fundObject+'[fundCd]"]').val();
+
+	$('#fundCount').html(fundCount);
+  	$('input[name="'+fundObject+'[removed]"]').val("YES");
+	$('input[name="'+fundObject+'[removed]"]').parents("li").hide();
+	$("#searchFundTable a#"+fundCode).parents('tr').show();
+
+	updateFundTotal();
+}
+
+
+//Method to update total allocation percentage
+function updateFundTotal() {
+	var allocationPerc = 0;
+	var topupAllocationPerc = 0;
+
+	$('input[name*="allocationPerc"]').each(function() {
+			if ($("[name='"+$(this).attr('name').replace("allocationPerc", "removed")+"']").val() != "YES"){
+				allocationPerc += parseInt($(this).val());
+			}
+		});
+	$('input[name*="topupAllocationPerc"]').each(function() {
+		if ($("[name='"+$(this).attr('name').replace("topupAllocationPerc", "removed")+"']").val() != "YES"){
+			topupAllocationPerc += parseInt($(this).val());
+		}
+	});
+
+	$("#allocationPerc").html(allocationPerc+'%');
+	$("#topupAllocationPerc").html(topupAllocationPerc+'%');
+}
+
+
+$(document).ready(function(){
+	updateFundTotal();
+ 
+    <% @funds.each do |fund| %>
+	    if ('<%= @policy.quotationRefGuid %>' != '') {
+	        setReadOnly($('input[name="<%=getObjectMapping(fund)%>[allocationPerc]"]'), true);
+	    }
+	    $('input[name="<%=getObjectMapping(fund)%>[allocationPerc]"]').change(function(){
+        if($('input[name="<%=getObjectMapping(@policyProduct)%>[topUpAllocSameAsPremAllocFl]"]').prop("checked")) {
+          $('input[name="<%=getObjectMapping(fund)%>[topupAllocationPerc]"]').val($(this).val());
+        }
+			updateFundTotal();
+		});
+	    $('input[name="<%=getObjectMapping(fund)%>[topupAllocationPerc]"]').change(function(){
+			updateFundTotal();
+		});
+    <% end %>
+
+    $("#searchFundButton").click(function() {
+		searchFunds($("#search").val());
+    });
+
+	if($('input[name="<%=getObjectMapping(@policyProduct)%>[topUpAllocSameAsPremAllocFl]"]').prop("checked") == true) {
+		$('input[name*="topupAllocationPerc"]').each(function() {
+			setReadOnly($(this), true);
+		});
+	}
+	else {
+		$('input[name*="topupAllocationPerc"]').each(function() {
+			setReadOnly($(this), false);
+		});
+	}
+
+    $('input[name="<%=getObjectMapping(@policyProduct)%>[topUpAllocSameAsPremAllocFl]"]').change(function(){
+    	var allocationPercObject = "";
+    	if($(this).prop("checked") == true) {
+    		$('input[name*="topupAllocationPerc"]').each(function() {
+    			allocationPercObject = $(this).attr("name").replace("topupAllocationPerc", "allocationPerc");
+    			setReadOnly($(this), true);
+				$(this).val($('input[name="'+allocationPercObject+'"]').val());
+				$(this).trigger("change");
+			});
+    	}
+    	else {
+    		$('input[name*="topupAllocationPerc"]').each(function() {
+    			setReadOnly($(this), false);
+				$(this).val(0);
+				$(this).trigger("change");
+			});
+    	}
+    });
+
+    if ($('select[name="<%=getObjectMapping(@policyProduct)%>[portfolioModelCd]"]').val() == "") {
+    	$("#searchFundTable").html("");
+    	$("#searchFundDiv").hide();
+    }
+    else {
+    	<% if @modelFundType == 'FIXEDMODEL' || @modelFundType == 'FIXEDMODELOVERRIDE' %>
+    		$("#searchFundDiv").hide();		
+    	<% else %>
+			$("#searchFundDiv").show();		
+		<% end %>
+	}
+
+    $('select[name="<%=getObjectMapping(@policyProduct)%>[portfolioModelCd]"]').change(function(){
+    	if($(this).val() == "") {
+	    	$("#searchFundTable").html("");
+	    	$("#searchFundDiv").hide();
+    	}
+    	else {
+    		$("#searchFundDiv").show();
+          	getFunds($(this).val());
+    	}
+    });
+
+	$('select[name="<%=getObjectMapping(@policyProduct)%>[portfolioModelCd]"]').click(function(event){
+	  $.ajax({
+	      	url: "/app/Policy/getPortfolioModelCd",
+	      	data: $('#planForm').serializeHash(),
+	      	async: false,
+	      	headers: {
+	        	'Transition-Enabled': false
+	      	},
+	      	success: function(data) {
+	        	$('select[name="<%=getObjectMapping(@policyProduct)%>[portfolioModelCd]"]').html(data).selectmenu("refresh");
+	      	}
+	    });
+	});
+});	    
+</script>

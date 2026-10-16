@@ -1,0 +1,19 @@
+<%= panelTagStart(false) %>
+	<%= subPanelTagStart("primaryPartyInsured","true") %>
+		<%= layoutFieldTag('laSameAsApplicantFl') %>
+		<%= modelTagStart("fnaParty", @fnaInsured, @fnaRequest) %>
+			<div id="displayFNAInsured">
+				<%= layoutFieldTag('titleCd,firstName1,middleName1,lastName1,firstName2,middleName2,lastName2') %>
+				<%= layoutFieldTag('birthDt,age') %>
+				<%= layoutFieldTag('genderCd,maritalStatusCd,noOfDependents') %>
+				<%= layoutFieldTag('industryCd,natureOfDuty,occupationCd,educationLevelCd') %>
+				<%= layoutFieldTag('mobileNum,contactNum,countryCd,emailAddress') %>
+				<%= layoutFieldTag('addressLine1Lang1,addressLine2Lang1,addressLine3Lang1,addressLine4Lang1,addressLine5Lang1') %>
+				<%= layoutFieldTag('existingLIDurationCd') %>
+				<div style="display: none;">
+					<%= inputTag("partyRoleCd") %>
+				</div>
+			</div>
+		<% modelTagEnd %>
+	<%= subPanelTagEnd %>
+<%= panelTagEnd %>

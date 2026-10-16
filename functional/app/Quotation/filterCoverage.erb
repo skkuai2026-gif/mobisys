@@ -1,0 +1,11 @@
+<% if @terms != nil %>
+    <% @terms.each do |term| %>
+      <option value="<%= term %>"> 
+        <%= term %>
+      </option>
+    <% end %>  
+<% else %>
+    <option value="<%= @quotationProduct.productTerm %>" selected> 
+      <%= @quotationProduct.productTerm %>
+    </option>    
+<% end %>

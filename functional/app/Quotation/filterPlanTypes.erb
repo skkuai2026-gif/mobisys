@@ -1,0 +1,19 @@
+<%
+  require 'CommonModules/mobisysbrowserhelper'
+  
+  @filteredProducts.each do |filteredProduct|
+    %>
+    <option value="<%= filteredProduct.planType %>"
+      <% 
+        if @planType == filteredProduct.planType
+          %>
+          selected
+          <%
+        end
+      %>
+    > 
+      <%= getLabelValue(filteredProduct.planType) %>
+    </option>    
+    <%
+  end
+%>

@@ -1,0 +1,295 @@
+<!-- Start of illustration page -->
+<div data-role="page" id="illustration">
+
+  <div data-role="header" data-position="inline">
+    <a href="<%= url_for :controller => :Menu, :action => :salesIllustration%>" class="ui-btn-left" data-direction="reverse">
+       <%= getLabelValue('BACK')   %>
+    </a>
+  </div>
+  
+  <div data-role="content" class="illustrationpage">
+
+    <% if @sections.include? "SUMMARY" or @sections.include? "COMPLETEILLUSTRATION"%>
+    
+    <div data-role="table" class="illustrationdisplay" >
+
+      <% @frontPageList.each do |illustrationFacet| %>
+        <img src='<%=@header[illustrationFacet.computedElementName]["value"]%>' width='100%' />
+      <% end %>
+
+      <div class = "pagebreak" > </div>
+      
+      <div style="display:block;">
+
+        <table class="illustrationtable" width = "100%" align="center">
+          <tr class="illustrationtablerow">
+            <td align="left"> <img src = "/public/images/SalesIllustration/loginlogo.png"> </td>
+            <td width="100%" align="center"> <h1> <%= getLabelValue('ILLUSTRATION')%> </h1> </td>
+            <td align="right"> <div name="barcodeTarget"> </div> </td>           
+          </tr>
+        </table>
+        
+        <br/>
+        
+        <table class="illustrationtable" width = "100%" align="center">
+        <% 
+          (1..@maxRows).each do |row|
+                        
+            headerRow = @headerRows[row]              
+            %>
+              <tr class="illustrationtablerow">
+                
+                <%
+                  if headerRow != nil
+                  
+                    (1..@maxCols).each do |col|
+                      
+                      if headerRow[col] != nil
+                        %>
+                          <td class="tableheader<%=@maxCols%>"> <%= getLabelValue(@header[headerRow[col]]["label"]) %> </td>
+                          <td class="tabletext<%=@maxCols%>"> <%= getLabelValue(@header[headerRow[col]]["value"]) %> </td>
+                        <%                        
+                      else # if headerRow[col] == nil
+                        %>
+                          <td colspan=2 class="emptycolumn<%=@maxCols%>"> </td>         
+                        <%
+                      end
+                          
+                    end
+                  
+                  else # if headerRow == nil
+                    %>
+                      <td colspan="<%=@maxCols*2%>">&nbsp;</td>
+                    <%  
+                  end
+                %>
+                
+              </tr>
+              
+            <%
+          end
+        %>
+        </table>
+            
+        <br/>
+        <script>
+          var settings = {
+            output:'css',
+            bgColor: '#ffffff',
+            color: '#000000',
+            barWidth: '2px',
+            barHeight: '50px',
+            moduleSize: '5',
+            addQuietZone: 'yes'
+          };
+          $('div[name="barcodeTarget"]').html("").show().barcode("<%= @quotation.quotationRefNum %>", "code128", settings);
+        </script>
+        
+        <%= render :partial => "policypack" %>
+        
+        <%= render :partial => "quotationproductchildren" %>
+
+      </div>
+    </div> <!-- data-role = "table" -->
+
+    <% end %>
+    
+    
+    <% if @sections.include? "BASEBENEFITS" or @sections.include? "COMPLETEILLUSTRATION"%>
+      <div class = "pagebreak" > </div>
+      <%= render :partial => "quotationbenefits" %>
+    <% end %>
+    
+    
+    <!-- illustration tables -->
+    <script>
+    var colRateValues = new Array();
+    <% @illustrationRates.each_with_index do |illustrationRate, index| %>
+      colRateValues[<%= index %>] = <%= illustrationRate.grossRate.to_s %>;
+    <% end %>      
+    </script>
+    <% 
+      @tables.each_with_index do |table, index|
+        if table != nil      
+          %>
+          
+          <div class = "pagebreak" > </div>
+          
+          
+          <% if table["header"] != nil %>
+            <%= renderLegend('legendtable'+index.to_s, @header[table["header"][0].computedElementName]["value"] ) %>
+          <% end %>
+          
+          <div data-role="table" class="illustrationdisplay" name = "legendtable<%= index.to_s %>">
+            <% if table["header"] != nil %>
+              <!-- print header notes -->
+              <% table["header"].each_with_index do |headerNote, noteIndex| %>
+                <% if headerNote != nil && noteIndex > 0 %>
+                  <p><%= getLabelValue(@header[headerNote.computedElementName]["value"]) %></li>
+                <% end %>
+              <% end %>
+              <!-- end print header notes -->
+            <% end %>
+              
+            <!-- print table -->
+            
+            <table class="illustrationtable" width="100%" id = "table<%= index.to_s %>">
+              <tr class="illustrationtableheader" >
+                 <% table["table"].each do |illustrationFacet| %>
+                    <td> <%= getLabelValue(illustrationFacet.elementLabel) %></td>
+                 <% end %>
+              </tr>
+            
+              <%  
+                @benefitTable.each_with_index do |benefitRow, index| 
+                
+                  if benefitRow != nil
+                    if benefitRow["currMonth"]["value"] == @frequencyMultiplier &&
+                       (
+                         ( @years.include? (benefitRow["currPolicyYear"]["value"].to_s) ) ||
+                         ( @ages.include? (benefitRow["currAttainedAge"]["value"].to_s) ) 
+                       )
+                      %>
+                        <tr class="illustrationtablerow">
+                      
+                          <% table["table"].each do |illustrationFacet| %>
+                            <% if illustrationFacet.computationFreqCd == "EVERYCYCLEPERRATE" %>
+                              <td class="tablenum"> <%= renderNumber(benefitRow["illustrationRate_"+illustrationFacet.expression.to_s][illustrationFacet.computedElementName]["value"]) %> </td>
+                            <% else %>
+                              <td class="tablenum"> <%= renderNumber(benefitRow[illustrationFacet.computedElementName]["value"]) %> </td>
+                            <% end %>                            
+                          <% end %>
+                          
+                        </tr>
+                      <%
+                    end
+                  end
+                end 
+              %>           
+            </table>
+                
+            <script>
+            //add the header row for sales illustration now for displaying the assumed sales illustration rates.
+            if(<%=@noOfColsForRates%> > 0)
+              {
+                var si_Table = document.getElementById('table<%= index.to_s %>');
+                var headerRow = si_Table.insertRow(0);
+                headerRow.className = "illustrationtableheader";
+                var initialCell = headerRow.insertCell(0);
+                initialCell.colSpan  = <%=@colspanForInitialCols%>;
+            
+                for(var i=0 ; i < <%=@noOfColsForRates%> ; i++)
+                {
+                    var rateCell = headerRow.insertCell(i+1);
+                    rateCell.colSpan  = <%=@colspanForPerRateCols%>;
+                    rateCell.innerHTML = 'Assumed ROI of '+ colRateValues[i] +' p.a.';
+                }
+                
+                if( <%=@colspanForPostCols%> > 0)
+                {
+                  var postCell = headerRow.insertCell(<%=@noOfColsForRates%> +1);
+                  postCell.colSpan  = <%=@colspanForPostCols%>;
+                }
+              }
+    
+            </script>
+            <!-- end print table -->
+            
+            <% if table["header"] != nil %>
+              <!-- print footer notes -->
+              <% table["footer"].each_with_index do |footerNote, noteIndex| %>
+                <% if footerNote != nil %>
+                  <p><%= getLabelValue(@header[footerNote.computedElementName]["value"]) %></li>
+                <% end %>
+              <% end %>
+              <!-- end print footer notes -->
+            <% end %>
+          </div>
+          
+          <%
+        end
+      end 
+    %>
+  
+    <!-- end illustration tables -->
+  
+    <div class = "pagebreak" > </div>
+
+    <div class="signaturedisplay">
+    
+      <!-- print footer notes -->
+      <% if @footerList != nil && @footerList.length > 0 %>
+        <h2><%= getLabelValue(@header[@footerList[0].computedElementName]["value"]) %></h2>
+          
+        <% @footerList.each_with_index do |illustrationFacet, index| %>
+          <% if illustrationFacet != nil && index > 0 %>
+            <p><%= getLabelValue(@header[illustrationFacet.computedElementName]["value"]) %></li>
+          <% end %>
+        <% end %>
+      <% end %>
+
+      <!-- end print footer notes -->
+      
+      <br/> <br/>
+      
+      <table width="100%">
+        <tr height=60px>
+          <td width="40%" style="background:white;">  </td>
+          <td width="20%"> &nbsp; </td>
+          <td width="40%" align=right style="background:white;">
+            <img src='<%= Rho::RhoApplication.get_blob_folder%>/<%= @quotation.signature%>' width = "50%" >
+          </td>
+        </tr>
+        <tr>
+          <td align=center > <b>Agent Signature</b> </td>
+          <td > &nbsp; </td>
+          <td align=center> <b>Customer Signature</b> </td>
+        </tr>
+        <tr>
+        <td colspan=3> &nbsp; </td>
+        </tr>
+        <tr>
+          <td > <b>Agent Name:</b> </td>
+          <td > &nbsp; </td>
+          <td > <b>Customer Name:</b> <%= @quotation.firstname %></td>
+        </tr>
+        <tr>
+          <td > &nbsp;</td>
+          <td > &nbsp; </td>
+          <td > <b>Signed Date:</b> <%= getScreenDate(@quotation.quotationDt) %> </td>
+        </tr>
+      </table>
+    </div>
+    
+  </div>
+  <script>
+    $('img[name*="collapse"]').click( function(){
+      divName = this.name.replace("collapse_","");
+      val = $('input[name="state_'+divName+'"]').val();
+      // # replace image
+      if(val == "+")
+      {
+        $('input[name="state_'+divName+'"]').val('-');
+        $('img[name="collapse_'+divName+'"]').attr("src","/public/images/SalesIllustration/less.jpg");
+        $('div[name="'+divName+'"]').show();          
+      }
+      else // # val == "-"
+      {
+        $('input[name="state_'+divName+'"]').val('+');
+        $('img[name="collapse_'+divName+'"]').attr("src","/public/images/SalesIllustration/more.jpg");
+        $('div[name="'+divName+'"]').hide();
+      }
+          
+          
+    });
+
+      $(document).ready(function() {
+        setTimeout("onFocus()", 100);
+      });
+      
+      function onFocus(){
+      }
+
+
+  </script>
+</div>

@@ -1,0 +1,9 @@
+<% if @tabToBeLoaded == "tab_travellerDetails" %>
+	<%= tabTagStart("tab_travellerDetails") %>
+		<%= render :partial => "NBTravellerDetails_Jazz" %>
+	<%= tabTagEnd %>
+<% elsif @tabToBeLoaded == "tab_paymentGateway" %>
+	<%= tabTagStart("tab_paymentGateway") %>
+		<%= render :partial => "NBTravellerPaymentDetails_Jazz" %>
+	<%= tabTagEnd %>
+<% end %>

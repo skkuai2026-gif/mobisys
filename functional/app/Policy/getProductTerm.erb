@@ -1,0 +1,14 @@
+<%
+require 'CommonModules/mobisysbrowserhelper'
+@termArray.each do|term|
+%>
+  <option value="<%= term.cd%>" <% 
+          if @productTerm == term.cd
+            %>
+            selected
+            <%
+          end
+        %> >
+    <%= getLabelValue(term.desc) %>
+  </option>
+<% end %>

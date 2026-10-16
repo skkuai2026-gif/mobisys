@@ -1,0 +1,39 @@
+<div data-role="page">
+
+  <div data-role="header" data-position="inline">
+    <%= link_to "Back", :action => :show, :id => @level2.object %>
+    <h1>Edit <%= @level2.levelCd%></h1>
+    <%= link_to "Delete", :action => :delete, :id => @level2.object %>
+  </div>
+
+  <div data-role="content">
+    <form method="POST" action="<%= url_for :action => :update %>">
+      <input type="hidden" name="id" value="<%= @level2.object %>"/>
+      <table>
+          
+          <tr>
+              <td class="itemLabel">Levelcd: </td>
+              <td class="itemValue"><input type="text" name="level2[levelCd]" value="<%= @level2.levelCd %>"/></td>
+          </tr>
+          
+          <tr>
+              <td class="itemLabel">Icon: </td>
+              <td class="itemValue"><input type="text" name="level2[icon]" value="<%= @level2.icon %>"/></td>
+          </tr>
+          
+          <tr>
+              <td class="itemLabel">Header: </td>
+              <td class="itemValue"><input type="text" name="level2[header]" value="<%= @level2.header %>"/></td>
+          </tr>
+          
+          <tr>
+              <td class="itemLabel">Text: </td>
+              <td class="itemValue"><input type="text" name="level2[text]" value="<%= @level2.text %>"/></td>
+          </tr>
+          
+      </table>
+      <input type="submit" value="Update"/>
+    </form>
+  </div>
+
+</div>

@@ -1,0 +1,58 @@
+#bar {
+	.bar {
+		position: absolute;
+		height:$bar-height;
+		width:100%;
+		min-width:$body-min-width;
+		z-index:100;
+		border-width:3px;
+		border-color:$primary-color;
+		background-color:$background-color;
+		background-repeat: no-repeat;
+    background-position: 0;
+	}	
+	.header {
+		top:0px;
+		border-bottom-style: solid;
+		
+		.back-app {
+		  position: absolute;
+      top: 20px;
+      left: 15px;
+		}
+	}
+	.footer {
+		bottom:0px;
+		border-top-style: solid;
+    background-image: url($image_path+'share/_temp/footer.png');
+	}
+}
+
+#debug {
+  position: absolute;
+  top:0px;
+  right:0px;
+  display: none;
+  width:500px;
+  
+  .fa-bug {
+      position: absolute;
+      top: 15px;
+      right: 15px;
+      color: #aaa;
+    }
+    
+  .console {
+    display:none;
+	padding: 20px;
+	font-size: 12px;
+	line-height:20px;
+	
+	ul {
+		padding-bottom:20px;
+		float: left;
+		padding-left: 20px;
+	}
+	
+  }
+}

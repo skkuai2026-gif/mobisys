@@ -1,0 +1,49 @@
+<% if $currentProduct.getFacetValue('FAMILYINSUREDDETAILS').to_s == 'YES' %>
+    <% panelHeader = "#{getLabelValue('FAMILYINSUREDDETAILS')}" %>
+<% else %>
+    <% panelHeader = "#{getLabelValue('supplementary')}" %>
+<% end %>
+<% if @params['sym_navbar'].to_s != '' && @params['sym_navbar'].split('--')[1].to_s == @suplementaryInsuredCount.to_s %>
+	<%= subPanelTagStart("#{panelHeader} #{@suplementaryInsuredCount.to_i+ 1}", false, "", true) %>
+<% else%>
+	<%= subPanelTagStart("#{getLabelValue('supplementary')} #{@travellerCount.to_i+ 1}", true, "", true) %>
+<% end %>
+	<div class='add-section'>
+		<%
+			supplementaryCount = @suplementaryInsuredCount.to_i + 1
+			@tagName = "grid_#{supplementaryCount}_supplementaryParty"
+		%>
+		<%= modelTagStart("grid_#{supplementaryCount}_supplementaryPolicyPartyRole", @policyPartyRole, @policy)%>
+			<div style="display: none;">
+				<%= inputTag("roleCd") %>
+				<%= inputTag("refGuid") %>
+				<%= inputTag("removed") %>
+			</div>
+		<% modelTagEnd %>
+		<% partyPckg = 'PolicySupplementaryLifeDO'%>
+
+		<%= modelTagStart(@tagName, @party, @policy,@suplementaryInsuredCount.to_i + 1) %>
+			<i class='close-add-section icon-close' onClick='javascript:catchevent(this);' id='grid_<%=supplementaryCount%>_supplementaryDetails_removed'></i>
+			<%= prdFieldDataTag("#{partyPckg}",'roleCd') %>
+			<%= prdFieldDataTag("#{partyPckg}","firstName1,lastName1,birthDt,age,genderCd") %>
+			
+			<%= setupFilterUsingFieldTargetValueMap('TitleGender', false, @tagName) %>
+			<%= setupFilterUsingFieldTargetValueMap('RelationGender', true, @tagName) %>
+		<% modelTagEnd %>
+
+		<% if @supplementaryProductFacet %>
+	        <% policyProductPckg = 'com.c2lbiz.symbiosys.insurance.businesscommon.dataobjects.policy.PolicyProductDO' %>
+	        <%= modelTagStart(@tagName, @policyProduct, @policy, @supPolicyProductCount) %>
+	            <%= prdFieldDataTag("#{policyProductPckg}","baseAnnualPremium,baseSumAssured,productPlanOptionCd") %>
+	            <%= inputTag("productTypeCd",nil,nil,nil,nil,nil,'HIDDEN') %>
+	            <%= inputTag("insuredPartyRefGuid",nil,nil,nil,nil,nil,'HIDDEN') %>
+	            <%= inputTag("modalPremium",nil,nil,nil,nil,nil,'HIDDEN') %>
+				<% gridID_ppi = "grid_#{index}_supplementaryParty_policyProductInsured" %>
+	            <%= modelTagStart(gridID_ppi, @policyProduct.PolicyProductInsuredList[0], @policyProduct,index) %>
+					<%= inputTag("roleCd",nil,nil,nil,nil,nil,'HIDDEN')%>
+					<%= inputTag("insuredPartyRefGuid",nil,nil,nil,nil,nil,'HIDDEN') %>
+				<% modelTagEnd %>
+	        <% modelTagEnd %>
+	    <% end %>
+	</div>
+<%= subPanelTagEnd %>

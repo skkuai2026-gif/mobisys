@@ -1,0 +1,83 @@
+<div data-role="page" data-url="<%= Rho::RhoConfig.start_path %>/">
+<form method="POST" action="<%= url_for :action => :calcRetirementValue %>" name="retirementvalueForm" onsubmit = "return checkBasicDetails();">
+
+    <div data-role="header" data-position="inline">
+      <h1><%= getLabelValue('RETIREMENTCALC') %></h1>    
+      <a href="/app/Menu/calculators" class="ui-btn-left" data-direction="reverse">
+        <%= getLabelValue('BACK')   %>
+      </a>
+      <div class="ui-btn-right">
+        <a href="javascript: submitForm();" name="save" data-role="button" style="min-width:100px;">
+          <%= getLabelValue('SAVEVALIDATE')%>
+        </a>
+      </div>
+    </div>
+
+    <div data-role="content" id="capture" style="-webkit-transform: none;">
+        <%= renderObject(@calculator) %>
+        <div class="illustrationdisplay">
+            <div data-role="fieldcontain">
+              <%= renderLabel('field15', 'CALCLABEL15', nil, @calculator)   %>
+              <%= renderRangeField('field15', @calculator.field15, 'CALCLABEL15', @calculator, ' min="10000" max="500000"') %>
+            </div>
+        
+            <div data-role="fieldcontain">
+              <%= renderLabel('field16', 'CALCLABEL16', nil, @calculator)   %>
+              <%= renderRangeField('field16', @calculator.field16, 'CALCLABEL16', @calculator, ' min="1" max="30" ') %>
+            </div>
+              
+          <div data-role="fieldcontain">
+            <%= renderLabel('field17', 'CALCLABEL17', nil, @calculator)   %>
+            <%= renderRangeField('field17', @calculator.field17, 'CALCLABEL17', @calculator, ' min="1" max="30"') %>
+          </div>
+          
+          <div data-role="fieldcontain">
+            <%= renderLabel('field18', 'CALCLABEL18', nil, @calculator)   %>
+            <%= renderRangeField('field18', @calculator.field18, 'CALCLABEL18', @calculator, ' min="0" max="30"') %>
+         </div>
+          <div data-role="fieldcontain">
+             <%= renderLabel('field19', 'CALCLABEL19', nil, @calculator)   %>
+             <%= renderRangeField('field19', @calculator.field19, 'CALCLABEL19', @calculator, ' min="0" max="30"') %>
+          </div>
+          <div data-role="fieldcontain">
+            <%= renderLabel('field20', 'CALCLABEL20', nil, @calculator)   %>
+            <%= renderRangeField('field20', @calculator.field20, 'CALCLABEL20', @calculator, ' min="0" max="30"') %>
+          </div>   
+            
+          <div data-role="fieldcontain">
+             <%= renderLabel('field21', 'CALCLABEL21', nil, @calculator)   %>
+             <%= renderRangeField('field21', @calculator.field21, 'CALCLABEL21', @calculator, ' min="0" max="30"') %>
+          </div>
+          <div data-role="fieldcontain">
+              <%= renderLabel('field22', 'CALCLABEL22', nil, @calculator)   %>
+              <%= renderRangeField('field22', @calculator.field22, 'CALCLABEL22', @calculator, ' min="0" max="30"') %>
+          </div>    
+                
+        </div>
+
+    </div>
+    
+  </form>
+  <script type="text/javascript">
+        
+        $(document).focus(function() {
+          setTimeout("onFocus()", 100);
+        });
+        
+        function onFocus(){        
+        }
+        
+        function submitForm(){
+          $("a[name='save']").focus();
+          if(true)
+          {
+            $.mobile.showPageLoadingMsg();
+            
+            // # submit form
+            document.retirementvalueForm.submit();          
+          }  
+        }
+  
+  </script>  
+
+</div>

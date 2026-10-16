@@ -1,0 +1,49 @@
+<%= headerTag(getLabelValue('agentDeclaration'), '', "","#{url_for :action => :showProposal, :id=> @policy.object}") %>
+<div data-role="main" class="ui-content">
+    <div class="main-content-wrapper main-content-full">
+		<%= formTagStart("agentDeclarationForm", "#{url_for :action => :submitAgentDeclaration}") %>
+			<div class="project-content-bg">
+                <div class="div-with-border no-padding-bottom preferences-content">
+                	<%= modelTagStart("policy", @policy) %>
+                		<div style="display: none;">
+							<%= inputTag("visitedTabs") %>
+						</div>
+					<% modelTagEnd %>
+					<%= render(:partial => 'CommonModules/renderQuestionnaire_Jazz', :locals => { :questionnaireId => "agentQuestionnaire"}) %>
+					<%= modelTagStart("agentQuestionnaireContainer", @signatureContainer) %>
+						<%= modelTagStart("agentQuestionnaire", @agentDeclarationSignature, @signatureContainer) %>
+							<%= signatureTag("signature","agentSignHeader") %>
+							<div style="display: none;">
+								<%= inputTag("signatureTypeCd") %>
+								<%= inputTag("entityGuid") %>
+								<%= inputTag("roleCd") %>	
+							</div>
+						<% modelTagEnd %>
+						<div style="display: none;">
+							<%= inputTag("entityGuid") %>
+							<%= inputTag("entityTypeCd") %>
+						</div>
+					<% modelTagEnd %>
+				</div>
+            </div>
+        <%= formTagEnd() %>
+	</div>
+    <div class="footer-bg">
+        <a href="#" name="save" onclick="javascript: sendAgentDeclaration();"><%= getLabelValue('SUBMIT') %></a>
+    </div>
+</div>
+<script type="text/javascript">
+
+$(document).ready(function () {
+	initializeSignature();
+	<% if @policy.policyNum.to_s != "" %>
+        disableAllFormFields();
+    <% end %>
+    toggleOnFocus();
+    wordWrap('.sub-questionnaire-bg li .row-info-bg');
+});
+function sendAgentDeclaration() {
+	document.getElementById('agentDeclarationForm').submit();
+	loading('show');    
+}
+</script>

@@ -1,0 +1,21 @@
+<div id="questionnaires-info" style="margin-top:20px;">
+	<div data-role="navbar" style="height:40px" class="ui-navbar ui-navbar-noicons" role="navigation">
+		<ul class="ui-grid-b">
+			<% @count = 1 %>
+			<% @parties.each do |lifeGuid,tabName| %>
+				<li name="life<%=@count%>Li" style="margin-right:5px">
+					<a href="#" class="ui-btn-active unselectedTab" data-url="getLifeQuestionnaire" data-id="<%= lifeGuid.to_s %>">
+						<span class=""><%= tabName %></span>
+					</a>
+				</li>
+				<% @count = @count + 1 %>
+			<%end%>
+			<li class="ui-block-c"></li>
+		</ul>
+	</div>
+</div>
+
+<form method="POST" action="<%= url_for :action => :submitQuestionnaire %>" name="questionnaireForm" id="questionnaireForm">
+	<div id="questionnaire-container"></div>
+</form>
+<%= render(:partial => 'captureQuestionnairesJS')%>

@@ -1,0 +1,49 @@
+<div data-role="page" data-add-back-btn="false">
+
+  <div data-role="header" data-position="inline">
+    <h1><%= @level2.levelCd %></h1>
+    <a href="<%= url_for :action => :index %>" class="ui-btn-left" data-icon="arrow-l" data-direction="reverse">
+      Back
+    </a>
+    <a href="<%= url_for :action => :edit, :id => @level2.object %>" class="ui-btn-right" data-icon="star">
+      Edit
+    </a>
+  </div>
+
+  <div data-role="content">
+    <ul data-role="listview">
+      
+          <li>
+            <div class="itemLabel">LevelCd</div>
+            <div class="itemValue"><%= @level2.levelCd %></div>
+          </li>
+      
+          <li>
+            <div class="itemLabel">Icon</div>
+            <div class="itemValue"><%= @level2.icon %></div>
+          </li>
+      
+          <li>
+            <div class="itemLabel">Header</div>
+            <div class="itemValue"><%= @level2.header %></div>
+          </li>
+      
+          <li>
+            <div class="itemLabel">Text</div>
+            <div class="itemValue"><%= @level2.text %></div>
+          </li>
+      
+          <li>
+            <div class="itemLabel">Layout</div>
+            <div class="itemValue"><%= @level2.layout %></div>
+          </li>
+    
+          <li>
+            <div class="itemLabel">Sort order</div>
+            <div class="itemValue"><%= @level2.sortOrder %></div>
+          </li>
+          
+      </ul>
+  </div>
+
+</div>

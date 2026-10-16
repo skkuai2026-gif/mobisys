@@ -1,0 +1,62 @@
+<script type="text/javascript">
+function handleSubmit()
+{
+  var encryptedPassword = encryptValue(document.getElementById('agentreg[regPass]').value)
+  document.getElementById('agentreg[regPass]').value = encryptedPassword
+  return true;
+}
+
+handleSubmit();
+</script>
+<div data-role="page">
+
+  <div data-role="content">
+  
+    <div class="tiledisplay" style="margin-top: -5%!important;">
+    <form method="POST" action="<%= url_for :action => :register %>" onsubmit="return handleSubmit()">
+      
+    <div >
+      <img src = "/public/images/loginlogo.png" align="right" />
+    </div>
+      
+      <br>
+      
+      <div data-role="fieldcontain"  class="centerOrient">
+        <%= renderLabel('username','USERNAME') %>
+        <%= renderInputField('agentreg[userId]',nil,'Username') %>
+      </div>
+        
+      <div data-role="fieldcontain"  class="centerOrient">
+         <%= renderLabel('password','PASSWORD')   %>
+         <%= renderPasswordField('agentreg[regPass]',nil,'Password') %>
+      </div>
+      <fieldset class="ui-grid-b">
+          <div class="ui-block-a-equi"></div>
+          <div class="ui-block-b-equi"> 
+            <center> <%= renderLabel('programVer','PROGRAMVER', 'smallStrongLabel')%>    <%= renderLabel('programVer',Rho::RhoConfig.app_version, 'smallLabel')%> </center> 
+          </div>
+          <div class="ui-block-c-equi"></div>
+      </fieldset>
+
+      <fieldset class="ui-grid-b">
+        <div class="ui-block-a-equi"></div>
+
+        <div class="ui-block-b-equi"><a href="<%= url_for :action => :loginwait %>" data-role="button" data-theme="a"><%= renderLabel('signin','SIGNIN')%></a></div>
+
+        <div class="ui-block-c-equi"></div>
+      </fieldset>
+      <br>
+      <br>
+      
+      <fieldset class="border">
+        <%= renderLabel('loginFooterHeading','LOGINFOOTERHEADING','smallStrongLabel')%>
+        <BR>
+        <%= renderLabel('loginFooterData','LOGINFOOTERDATA','smallLabel')%>
+      </fieldset>
+    </form>
+    </div>
+    
+    
+  </div>
+
+</div>

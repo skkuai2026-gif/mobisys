@@ -1,0 +1,3283 @@
+<!-- benefit table -->  
+  
+<div data-role="page" id="benefittable">
+
+  <div data-role="header" data-position="inline">
+      <h1><%= getLabelValue('BENEFITSTABLE')   %></h1>
+      <a href="<%= url_for :action => :illustration, :id=>@quotation.object%>" class="ui-btn-left" data-direction="reverse">
+         <%= getLabelValue('BACK')   %>
+      </a>
+  </div>
+   
+  <div data-role="content">    
+      <%case @illustrationFormat
+         when "UNITLINKEDSMARTLINK"
+      %>
+      <%= renderLegend('fundInformation','FUNDINFORMATION') %>
+      <div data-role="table" class="illustrationdisplay" name="fundInformation">
+        <table class="illustrationtable" width="100%">
+          <tr class="illustrationtableheader">
+            <td colspan="2">
+              <%= getLabelValue('POLICYYEAR')%>
+            </td>
+            <td colspan="4">
+              <%= getLabelValue('FUNDCHOSEN')%>
+            </td>
+            <td colspan="2">
+              <%= getLabelValue('WEIGHTEDEXPECTEDRETURN')%>
+            </td>
+            <td rowspan="2">
+              <%= getLabelValue('WEIGHTEDMANAGEMENTCHARGE')%>
+            </td>
+          </tr>
+          <tr class="illustrationtableheader"
+            <td><%= getLabelValue('FROM')%></td>
+            <%
+              fundsArray = @outputHash["funds"]
+              fundsHash = fundsArray[0]["funds"]
+            %>
+            <td><%= getLabelValue('TO')%></td>
+            <%
+            fundsHash.each do |fundcd, fundDetails|
+            %>
+              <td><%=fundcd%></td>
+            <%
+            end  
+            %>
+            <td><%= getLabelValue('LOW')%></td>
+            <td><%= getLabelValue('HIGH')%></td>
+          </tr>
+          <% fundsArray.each do |fundArray| %>
+          <tr class="illustrationtablerow">
+            <td><%=fundArray["policyYearFrom"]%></td>
+            <td><%=fundArray["policyYearTo"]%></td>
+            <%fundsHash = fundArray["funds"]
+              fundsHash.each do |fundCd, fundDetails|
+            %>
+            <td><%= fundDetails["allocation"]%>%</td>
+            <%end %>
+            <td><%=(fundArray["weightedExpectedReturnLow"].to_f * 100).round(2)%>%</td>
+            <td><%=(fundArray["weightedExpectedReturnHigh"].to_f * 100).round(2)%>%</td>
+            <td><%=(fundArray["weightedManagementCharges"].to_f * 100).round(2)%>%</td>
+          <%end%>
+          </tr>
+        </table>
+      </div>
+      
+      <%= renderLegend('lowReturns','LOWRETURNS') %>
+      <div data-role="table" class="illustrationdisplay" name="lowReturns">
+        <table class="illustrationtable" width="100%">
+          <tr class="illustrationtableheader">
+            <td rowspan=2><%= getLabelValue('POLICYYEAR') %></td>
+            <td rowspan=2><%= getLabelValue('BASICSA') %></td>
+            <td rowspan=2><%= getLabelValue('PP') %></td>
+            <td rowspan=2><%= getLabelValue('UNALLOCATEDPREMIUM') %></td>
+            <td rowspan=2><%= getLabelValue('ALLOCATEDPREMIUM') %></td>
+            <td rowspan=2><%= getLabelValue('INSURANCECHARGES') %></td>
+            <td rowspan=2><%= getLabelValue('OTHERCHARGES') %></td>
+            <td colspan=3><%= getLabelValue('PROJECTEDRETURNS') %></td>
+            <td rowspan=2><%= getLabelValue('DDC') %></td>
+            <td rowspan=2><%= getLabelValue('INSUREDAGE') %></td>
+          </tr>
+          <tr class="illustrationtableheader">
+            <td><%= getLabelValue('FMC') %></td>
+            <td><%= getLabelValue('CV') %></td>
+            <td><%= getLabelValue('DEATHBENEFIT') %></td>
+          </tr>
+          <% benefitTable = @outputHash["benefittable"]%>
+          <% benefitTable.each do |benefitRow|%>
+            <%next unless benefitRow%>
+            <tr class="illustrationtablerow">
+              <td class="tablenum"> <%= renderNumber("%.0f" % benefitRow["policyYear"]) %> </td>
+              <td class="tablenum"> <%= renderNumber(benefitRow["basicSA"]) %> </td>
+              <td class="tablenum"> <%= renderNumber(benefitRow["premiumLow"]) %> </td>
+              <td class="tablenum"> <%= renderNumber((benefitRow["premiumLow"] + benefitRow["topup"]) - (benefitRow["allocationPremiumLow"] + benefitRow["topupAllocation"])) %> </td>
+              <td class="tablenum"> <%= renderNumber(benefitRow["allocationPremiumLow"] + benefitRow["topupAllocation"]) %> </td>
+              <td class="tablenum"> <%= renderNumber(benefitRow["totalCOILow"]) %> </td>
+              <td class="tablenum"> <%= renderNumber(benefitRow["otherChargesLow"]) %> </td>
+              <td class="tablenum"> <%= renderNumber(benefitRow["fundMgmtChargeLow"]) %> </td>
+              <td class="tablenum"> <%= renderNumber(benefitRow["eoyFundLow"]) %> </td>
+              <td class="tablenum"> <%= renderNumber(benefitRow["deathBenefitLow"]) %> </td>
+              <td class="tablenum"> <%= renderNumber(benefitRow["directDistributionCost"]) %> </td>
+              <td class="tablenum"> <%= renderNumber(benefitRow["attainedAge"]) %> </td>
+            </tr>
+          <% end %>  
+        </table>
+      </div>
+      
+      <%= renderLegend('highReturns','HIGHRETURNS') %>
+      <div data-role="table" class="illustrationdisplay" name="highReturns">
+        <table class="illustrationtable" width="100%">
+          <tr class="illustrationtableheader">
+            <td rowspan=2><%= getLabelValue('POLICYYEAR') %></td>
+            <td rowspan=2><%= getLabelValue('BASICSA') %></td>
+            <td rowspan=2><%= getLabelValue('PP') %></td>
+            <td rowspan=2><%= getLabelValue('UNALLOCATEDPREMIUM') %></td>
+            <td rowspan=2><%= getLabelValue('ALLOCATEDPREMIUM') %></td>
+            <td rowspan=2><%= getLabelValue('INSURANCECHARGES') %></td>
+            <td rowspan=2><%= getLabelValue('OTHERCHARGES') %></td>
+            <td colspan=3><%= getLabelValue('PROJECTEDRETURNS') %></td>
+            <td rowspan=2><%= getLabelValue('DDC') %></td>
+            <td rowspan=2><%= getLabelValue('INSUREDAGE') %></td>
+          </tr>
+          <tr class="illustrationtableheader">
+            <td><%= getLabelValue('FMC') %></td>
+            <td><%= getLabelValue('CV') %></td>
+            <td><%= getLabelValue('DEATHBENEFIT') %></td>
+          </tr>
+          <% benefitTable = @outputHash["benefittable"]%>
+          <% benefitTable.each do |benefitRow|%>
+            <%next unless benefitRow%>
+            <tr class="illustrationtablerow">
+              <td class="tablenum"> <%= renderNumber("%.0f" % benefitRow["policyYear"]) %> </td>
+              <td class="tablenum"> <%= renderNumber(benefitRow["basicSA"]) %> </td>
+              <td class="tablenum"> <%= renderNumber(benefitRow["premiumHigh"]) %> </td>
+              <td class="tablenum"> <%= renderNumber((benefitRow["premiumHigh"] + benefitRow["topup"]) - (benefitRow["allocationPremiumHigh"] + benefitRow["topupAllocation"])) %> </td>
+              <td class="tablenum"> <%= renderNumber(benefitRow["allocationPremiumHigh"] + benefitRow["topupAllocation"]) %> </td>
+              <td class="tablenum"> <%= renderNumber(benefitRow["totalCOIHigh"]) %> </td>
+              <td class="tablenum"> <%= renderNumber(benefitRow["otherChargesHigh"]) %> </td>
+              <td class="tablenum"> <%= renderNumber(benefitRow["fundMgmtChargeHigh"]) %> </td>
+              <td class="tablenum"> <%= renderNumber(benefitRow["eoyFundHigh"]) %> </td>
+              <td class="tablenum"> <%= renderNumber(benefitRow["deathBenefitHigh"]) %> </td>
+              <td class="tablenum"> <%= renderNumber(benefitRow["directDistributionCost"]) %> </td>
+              <td class="tablenum"> <%= renderNumber(benefitRow["attainedAge"]) %> </td>
+            </tr>
+          <% end %>  
+        </table>
+      </div>
+      <%
+      when "ENDOWMENTLE"
+      %>
+      <div data-role="table" class="illustrationdisplay">
+        <table class = "illustrationtable" width="100%">
+          <tr class="illustrationtableheader">
+            <td>
+              <%= getLabelValue('POLICYYEAR') %>
+            </td>
+            <td>
+              <%= getLabelValue('AGE')   %>
+            </td>
+            <td>
+              <%= getLabelValue('DBG')   %>
+            </td>
+            <td>
+              <%= getLabelValue('DBNG')   %>
+            </td>
+            <td>
+              <%= getLabelValue('DBT')   %>
+            </td>
+            <td>
+              <%= getLabelValue('CVG')   %>
+            </td>
+            <td>
+              <%= getLabelValue('CVNG')   %>
+            </td>
+            <td>
+              <%= getLabelValue('CVT')   %>
+            </td>      
+            <td>
+              <%= getLabelValue('ACCUMULATED')   %>
+            </td>       
+          </tr>
+          <% @benefitTable.each_with_index do |benefitRow, index| %>
+            <%next unless benefitRow%>
+              <tr class="illustrationtablerow">
+                <td class="tablenum"> <%= renderNumber("%.0f" % benefitRow["policyYear"]) %> </td>
+                <td class="tablenum"><%= renderNumberFloor(benefitRow["attainedAge"])%></td>
+                <td class="tablenum"><%= renderNumber(benefitRow["dbg"])%></td>
+                <td class="tablenum">
+                  <%if benefitRow["dbng"] != 0%>
+                    <%= renderNumber(benefitRow["dbng"])%>
+                  <%else%>
+                    -
+                  <%end%>
+                </td>
+                <td class="tablenum">
+                  <%if benefitRow["dbt"] != 0%>
+                    <%= renderNumber(benefitRow["dbt"])%>
+                  <%else%>
+                    -
+                  <%end%>
+                </td>
+                <td class="tablenum">
+                  <%if benefitRow["cvg"] != 0%>
+                      <%= renderNumber(benefitRow["cvg"])%>
+                  <%else%>
+                      -
+                  <%end%>
+                </td>
+                <td class="tablenum">
+                  <%if benefitRow["cvng"] != 0%>
+                      <%= renderNumber(benefitRow["cvng"])%>
+                  <%else%>
+                      -
+                  <%end%>
+                </td>
+                <td class="tablenum">
+                  <%if benefitRow["cvt"] != 0%>
+                      <%= renderNumber(benefitRow["cvt"])%>
+                  <%else%>
+                      -
+                  <%end%>
+                </td>
+                <td class="tablenum"><%= renderNumber(benefitRow["accumulatedPremium"])%></td>     
+              </tr>  
+          <% end %>  
+        </table>
+      </div>
+      
+      <div data-role="table" class="illustrationdisplay">
+        <table class = "illustrationtable" width="100%">
+          <tr class="illustrationtableheader">
+            <td>
+              <%= getLabelValue('POLICYYEAR') %>
+            </td>
+            <td>
+              <%= getLabelValue('CVG')%>
+            </td>
+            <td>
+              <%= getLabelValue('IYCD')%>
+            </td>
+            <td>
+              <%= getLabelValue('IAD')%>
+            </td>
+            <td>
+              <%= getLabelValue('TLB')%>
+            </td>
+            <td>
+              <%= getLabelValue('PP')%>
+            </td>
+            <td>
+              <%= getLabelValue('DBT')%>
+            </td>
+          </tr>
+          <% @benefitTable.each_with_index do |benefitRow, index| %>
+            <%next unless benefitRow%>
+            <tr class="illustrationtablerow">
+              <td class="tablenum"> <%= renderNumber("%.0f" % benefitRow["policyYear"]) %> </td>
+              <td class="tablenum"><%= renderNumber(benefitRow["cvg"])%></td>
+              <td class="tablenum"><%= renderNumber(benefitRow["baseDividend"].round(0))%></td>
+              <td class="tablenum"><%= renderNumber(benefitRow["accumulatedDividend"].round(0))%></td>
+              <td class="tablenum"><%= renderNumber(benefitRow["cvt"].round(0))%></td>
+              <td class="tablenum"><%= renderNumber(benefitRow["accumulatedPremiumWithRider"].round(0))%></td>
+              <td class="tablenum"><%= renderNumber(benefitRow["dbt"].round(0))%></td>  
+            </tr>
+          <%end%>
+        </table>
+      </div>  
+      <% 
+        when "2COLUMNLIMIT" 
+          %>
+        <div data-role="table" class="illustrationdisplay">
+          <table class="illustrationtable" width="100%">
+            <tr class="illustrationtableheader" >
+               <td rowspan="2">
+                 <%= getLabelValue('POLICYYEAR')   %>
+               </td>
+               <td colspan="2">
+                 <%= getLabelValue('PREMIUM')   %>
+               </td>
+               <td colspan="2">
+                 <%= getLabelValue('CASHPAYMENTS')   %>
+               </td>
+               <td rowspan="2">
+                 <%= getLabelValue('DEATHBENEFIT1')   %>
+               </td>
+               <td rowspan="2">
+                 <%= getLabelValue('CURRENTVALUE')   %>
+               </td>
+             </tr>
+             <tr class="illustrationtableheader">
+               <td >
+                 <%= getLabelValue('RECEIVED')   %>
+               </td>
+               <td >
+                 <%= getLabelValue('ACCUMLATED')   %>
+               </td>
+               <td>
+                 <%= getLabelValue('ICPRATE')   %>
+               </td>
+               <td>
+                 <%= getLabelValue('ICPVALUE')   %>
+               </td>
+             </tr>
+             
+          <%  
+            totalICPAmount = 0.0
+            @benefitTable.each_with_index do |benefitRow, index| 
+            
+              if benefitRow != nil
+                totalICPAmount = totalICPAmount + benefitRow["icpAmount"].to_f.floor() if benefitRow["icpAmount"] != nil
+                if index <= 22                
+                  %>      
+                    <tr class="illustrationtablerow">
+                    <td class="tablenum"> <%= renderNumber("%.0f" % benefitRow["policyYear"]) %> </td>
+                    <td class="tablenum"> 
+                      <%  
+                        if benefitRow["premiumReceived"] != 0
+                          %>
+                          <%= renderNumberFloor(benefitRow["premiumReceived"])%>
+                          <%
+                        end
+                      %> 
+                    </td>                    
+                    <td class="tablenum"> <%= renderNumberFloor(benefitRow["accumulatedPremium"]) %> </td>
+                    <td class="tablenum">
+                      <%  
+                        if benefitRow["icp"].to_i != 0
+                          %> 
+                            <%= renderNumberFloor(benefitRow["icp"]) %>
+                          <%
+                        end
+                      %>
+                    </td>
+                    <td class="tablenum">
+                      <%  
+                        if benefitRow["icpAmount"].to_i != 0
+                          %> 
+                            <%= renderNumberFloor(benefitRow["icpAmount"]) %>
+                          <%
+                        end
+                      %> 
+                    </td>
+                    <td class="tablenum"> <%= renderNumberFloor(benefitRow["benefitAmount"]) %> </td>
+                    <td class="tablenum"> <%= renderNumberFloor(benefitRow["cvAmount"]) %> </td>
+                    </tr>
+                  <%
+                elsif index == 23
+                  %>
+                    <tr class="illustrationtablerow">
+                    <td class="tablenum"> ... </td>
+                    <td class="tablenum"> ... </td>
+                    <td class="tablenum"> ... </td>
+                    <td class="tablenum"> ... </td>
+                    <td class="tablenum"> ... </td>
+                    <td class="tablenum"> ... </td>
+                    <td class="tablenum"> ... </td>
+                    </tr>                  
+                  <%
+                end
+              end
+            end 
+          %>
+          <% if @term >= 23 %>
+          <tr class="illustrationtablerow">
+            <td class="tablenum"> <%= getLabelValue('UNTIL')%> <%= @quotation.age.to_i + @benefitTable[@term]["policyYear"].to_i %> <%= getLabelValue('YEAR')%> </td>
+            <td class="tablenum"> 
+              <%  
+                if @benefitTable[@term]["premiumReceived"] != 0
+                  %>
+                  <%= renderNumber("%.0f" % @benefitTable[@term]["premiumReceived"]) %>
+                  <%
+                end
+              %> 
+            </td>
+            <td class="tablenum"> <%= renderNumberFloor(@benefitTable[@term]["accumulatedPremium"]) %> </td>
+            <td class="tablenum"> <%= renderNumberFloor(@benefitTable[@term]["icp"]) %> </td>
+            <td class="tablenum"> <%= renderNumberFloor(@benefitTable[@term]["icpAmount"]) %> </td>
+            <td class="tablenum"> <%= renderNumberFloor(@benefitTable[@term]["benefitAmount"]) %> </td>
+            <td class="tablenum"> <%= renderNumberFloor(@benefitTable[@term]["cvAmount"]) %> </td>
+          </tr>
+          <% end %>
+          <tr class="illustrationtablerow">
+              <td colspan="2"> <span> <%= getLabelValue('TOTAL')   %> <span> </td>
+              <td class="tablenum"> <span> <%= renderNumberFloor(@benefitTable[@term]["accumulatedPremium"]) %> <span> </td>
+              <td class="tablenum"> </td>
+              <td class="tablenum"> <span> <%= renderNumberFloor(totalICPAmount) %> <span> </td>                            
+          </tr>
+          </table>
+        </div>
+        <% 
+        when "2COLUMN" 
+        %>
+          <div data-role="table" class="illustrationdisplay">
+          <table class="illustrationtable" width="100%">
+            <tr class="illustrationtableheader" >
+               <td rowspan="2">
+                 <%= getLabelValue('POLICYYEAR')   %>
+               </td>
+               <td colspan="2">
+                 <%= getLabelValue('PREMIUM')   %>
+               </td>
+               <td colspan="2">
+                 <%= getLabelValue('CASHPAYMENTS')   %>
+               </td>
+               <td rowspan="2">
+                 <%= getLabelValue('DEATHBENEFIT1')   %>
+               </td>
+               <td rowspan="2">
+                 <%= getLabelValue('CURRENTVALUE')   %>
+               </td>
+             </tr>
+             <tr class="illustrationtableheader">
+               <td >
+                 <%= getLabelValue('RECEIVED')   %>
+               </td>
+               <td >
+                 <%= getLabelValue('ACCUMLATED')   %>
+               </td>
+               <td>
+                  <% if @baseQuotationProduct.productId == "EN05" %>
+                    <%= getLabelValue('ICPRATEAP')   %>
+                  <%else%>
+                    <%= getLabelValue('ICPRATE')   %>
+                  <% end %>
+               </td>
+               <td>
+                 <%= getLabelValue('ICPVALUE')   %>
+               </td>
+             </tr>
+             
+            <%  
+              totalICPAmount = 0.0
+              @benefitTable.each_with_index do |benefitRow, index| 
+              
+                if benefitRow != nil
+                  totalICPAmount = totalICPAmount + benefitRow["icpAmount"].to_f.floor() if benefitRow["icpAmount"] != nil
+                  %>      
+                    <tr class="illustrationtablerow">
+                    <td class="tablenum"> <%= renderNumber("%.0f" % benefitRow["policyYear"]) %> </td>
+                    <td class="tablenum"> 
+                      <%  
+                        if benefitRow["premiumReceived"] != 0
+                          %>
+                          <%= renderNumber("%.0f" % benefitRow["premiumReceived"])%>
+                          <%
+                        end
+                      %> 
+                    </td>                    
+                    <td class="tablenum"> <%= renderNumberFloor(benefitRow["accumulatedPremium"]) %> </td>
+                      
+                    <td class="tablenum">
+                      <%  
+                        if benefitRow["icp"].to_i != 0
+                          %> 
+                            <%= renderNumberFloor(benefitRow["icp"]) %>
+                          <%
+                        end
+                      %>
+                    </td>
+                    <td class="tablenum">
+                      <%  
+                        if benefitRow["icpAmount"].to_i != 0
+                          %> 
+                            <%= renderNumberFloor(benefitRow["icpAmount"]) %>
+                          <%
+                        end
+                      %> 
+                    </td>
+
+                    <td class="tablenum"> <%= renderNumberFloor(benefitRow["benefitAmount"]) %> </td>
+                    <td class="tablenum"> <%= renderNumberFloor(benefitRow["cvAmount"]) %> </td>
+                    </tr>
+                  <%
+                end
+              end 
+            %>
+            <tr class="illustrationtablerow">
+                <td colspan="2"> <span> <%= getLabelValue('TOTAL')   %> <span> </td>
+                <td class="tablenum"> <span> <%= renderNumberFloor(@benefitTable[@term]["accumulatedPremium"]) %> <span> </td>
+                <td class="tablenum"> </td>
+                <td class="tablenum"> <span> <%= renderNumberFloor(totalICPAmount) %> <span> </td>                            
+            </tr>
+          </table>
+        </div>
+        <% 
+        when "3COLUMNLIMIT" 
+        %>
+        <div data-role="table" class="illustrationdisplay">
+          <table class="illustrationtable" width="100%">
+            <tr class="illustrationtableheader" >
+               <td rowspan="2">
+                 <%= getLabelValue('POLICYYEAR')   %>
+               </td>
+               <td colspan="2">
+                 <%= getLabelValue('PREMIUM')   %>
+               </td>
+               <td colspan="3">
+                 <%= getLabelValue('DIVIDEND')   %>
+               </td>
+               <td rowspan="2">
+                 <%= getLabelValue('ICP')   %>
+               </td>
+               <td rowspan="2">
+                 <%= getLabelValue('DEATHBENEFIT1')   %>
+               </td>
+               <td rowspan="2">
+                 <%= getLabelValue('CURRENTVALUE')   %>
+               </td>
+             </tr>
+             <tr class="illustrationtableheader">
+               <td >
+                 <%= getLabelValue('RECEIVED')   %>
+               </td>
+               <td >
+                 <%= getLabelValue('ACCUMLATED')   %>
+               </td>
+               <td>
+                 <%= getLabelValue('TWOPER')   %>
+               </td>
+               <td>
+                 <%= getLabelValue('FOURPER')   %>
+               </td>
+               <td>
+                 <%= getLabelValue('SIXPER')   %>
+               </td>
+             </tr>
+             
+          <%  
+            totalICPAmount = 0.0
+            @benefitTable.each_with_index do |benefitRow, index| 
+            
+              if benefitRow != nil
+                totalICPAmount = totalICPAmount + benefitRow["icpAmount"].to_f.floor() if benefitRow["icpAmount"] != nil
+                if index <= 17                
+                  %>      
+                  <tr class="illustrationtablerow">
+                  <td class="tablenum"> <%= renderNumberFloor(benefitRow["policyYear"])%> </td>
+                  <td class="tablenum"> 
+                    <%  
+                      if benefitRow["premiumReceived"] != 0
+                        %>
+                        <%= renderNumberFloor(benefitRow["premiumReceived"])%>
+                        <%
+                      end
+                    %> 
+                  </td>
+                  <td class="tablenum"> <%= renderNumberFloor(benefitRow["accumulatedPremium"])%> </td>
+                  <td class="tablenum"> <%= renderNumberFloor(benefitRow["dividend2perc"])%> </td>
+                  <td class="tablenum"> <%= renderNumberFloor(benefitRow["dividend4perc"])%> </td>
+                  <td class="tablenum"> <%= renderNumberFloor(benefitRow["dividend6perc"])%> </td>
+                  <td class="tablenum"> 
+                    <%  
+                      if benefitRow["icpAmount"] != 0
+                        %>
+                        <%= renderNumberFloor(benefitRow["icpAmount"])%>
+                        <%
+                      end
+                    %> 
+                  </td>
+                  <td class="tablenum"> <%= renderNumberFloor(benefitRow["benefitAmount"])%> </td>
+                  <td class="tablenum"> <%= renderNumberFloor(benefitRow["cvAmount"])%> </td>
+                  </tr>
+                <%
+                elsif index == 18
+                %>
+                  <tr class="illustrationtablerow">
+                  <td class="tablenum"> ... </td>
+                  <td class="tablenum"> ... </td>
+                  <td class="tablenum"> ... </td>
+                  <td class="tablenum"> ... </td>
+                  <td class="tablenum"> ... </td>
+                  <td class="tablenum"> ... </td>
+                  <td class="tablenum"> ... </td>
+                  <td class="tablenum"> ... </td>
+                  <td class="tablenum"> ... </td>
+                  </tr>                
+                <%
+                end
+              end
+            end 
+          %>
+          <% if @term >= 18 %>
+            <tr class="illustrationtablerow">
+              <td class="tablenum"> <%= getLabelValue('UNTIL')%> <%= @quotation.age.to_i + @benefitTable[@term]["policyYear"].to_i %> <%= getLabelValue('YEAR')%> </td>
+              <td class="tablenum"> 
+                <%  
+                  if @benefitTable[@term]["premiumReceived"] != 0
+                    %>
+                    <%= renderNumberFloor(@benefitTable[@term]["premiumReceived"])%>
+                    <%
+                  end
+                %> 
+              </td>                    
+              <td class="tablenum"> <%= renderNumberFloor(@benefitTable[@term]["accumulatedPremium"])%> </td>
+              <td class="tablenum"> <%= renderNumberFloor(@benefitTable[@term]["dividend2perc"])%> </td>
+              <td class="tablenum"> <%= renderNumberFloor(@benefitTable[@term]["dividend4perc"])%> </td>
+              <td class="tablenum"> <%= renderNumberFloor(@benefitTable[@term]["dividend6perc"])%> </td>
+              <td class="tablenum"> 
+                <%  
+                  if @benefitTable[@term]["icpAmount"] != 0
+                    %>
+                    <%= renderNumberFloor(@benefitTable[@term]["icpAmount"])%>
+                    <%
+                  end
+                %> 
+              </td>                    
+              <td class="tablenum"> <%= renderNumberFloor(@benefitTable[@term]["benefitAmount"])%> </td>
+              <td class="tablenum"> <%= renderNumberFloor(@benefitTable[@term]["cvAmount"])%> </td>
+            </tr>
+          <% end %>
+          <tr class="illustrationtablerow">
+              <td colspan="2"> <span> <%= getLabelValue('TOTAL')   %> </span> </td>
+              <td class="tablenum"> <span> <%= renderNumberFloor(@benefitTable[@term]["accumulatedPremium"])%> </span> </td>
+              <td class="tablenum"> <span> <%= renderNumberFloor(@benefitTable[@ppt+1]["dividend2perc"])%> </span> </td>
+              <td class="tablenum"> <span> <%= renderNumberFloor(@benefitTable[@ppt+1]["dividend4perc"])%> </span> </td>
+              <td class="tablenum"> <span> <%= renderNumberFloor(@benefitTable[@ppt+1]["dividend6perc"])%> </span> </td>              
+              <td class="tablenum"> <span> <%= renderNumberFloor(totalICPAmount)%> </span> </td>
+          </tr>
+          </table>
+        </div>
+        <%
+        when "3COLUMN" 
+        %>
+        <div data-role="table" class="illustrationdisplay">
+          <table class="illustrationtable" width="100%">
+            <tr class="illustrationtableheader" >
+               <td rowspan="2">
+                 <%= getLabelValue('POLICYYEAR')   %>
+               </td>
+               <td colspan="2">
+                 <%= getLabelValue('PREMIUM')   %>
+               </td>
+               <td colspan="3">
+                 <%= getLabelValue('DIVIDEND')   %>
+               </td>
+               <td rowspan="2">
+                 <%= getLabelValue('ICP')   %>
+               </td>
+               <td rowspan="2">
+                 <%= getLabelValue('DEATHBENEFIT1')   %>
+               </td>
+               <td rowspan="2">
+                 <%= getLabelValue('CURRENTVALUE')   %>
+               </td>
+             </tr>
+             <tr class="illustrationtableheader">
+               <td >
+                 <%= getLabelValue('RECEIVED')   %>
+               </td>
+               <td >
+                 <%= getLabelValue('ACCUMLATED')   %>
+               </td>
+               <td>
+                 <%= getLabelValue('TWOPER')   %>
+               </td>
+               <td>
+                 <%= getLabelValue('FOURPER')   %>
+               </td>
+               <td>
+                 <%= getLabelValue('SIXPER')   %>
+               </td>
+             </tr>
+             
+          <%  
+            totalICPAmount = 0.0
+            @benefitTable.each_with_index do |benefitRow, index| 
+            
+              if benefitRow != nil
+                totalICPAmount = totalICPAmount + benefitRow["icpAmount"].to_f.floor() if benefitRow["icpAmount"] != nil
+                  %>      
+                  <tr class="illustrationtablerow">
+                  <td class="tablenum"> <%= renderNumberFloor(benefitRow["policyYear"])%> </td>
+                  <td class="tablenum"> 
+                    <%  
+                      if benefitRow["premiumReceived"] != 0
+                        %>
+                        <%= renderNumberFloor(benefitRow["premiumReceived"])%>
+                        <%
+                      end
+                    %> 
+                  </td>
+                  <td class="tablenum"> <%= renderNumberFloor(benefitRow["accumulatedPremium"])%> </td>
+                  <td class="tablenum"> <%= renderNumberFloor(benefitRow["dividend2perc"])%> </td>
+                  <td class="tablenum"> <%= renderNumberFloor(benefitRow["dividend4perc"])%> </td>
+                  <td class="tablenum"> <%= renderNumberFloor(benefitRow["dividend6perc"])%> </td>
+                  <td class="tablenum"> 
+                    <%  
+                      if benefitRow["icpAmount"] != 0
+                        %>
+                        <%= renderNumberFloor(benefitRow["icpAmount"])%>
+                        <%
+                      end
+                    %> 
+                  </td>
+                  <td class="tablenum"> <%= renderNumberFloor(benefitRow["benefitAmount"])%> </td>
+                  <td class="tablenum"> <%= renderNumberFloor(benefitRow["cvAmount"])%> </td>
+                  </tr>
+                <%
+              end
+            end 
+          %>
+          <tr class="illustrationtablerow">
+              <td colspan="2"> <span> <%= getLabelValue('TOTAL')   %> </span> </td>
+              <td class="tablenum"> <span> <%= renderNumberFloor(@benefitTable[@term]["accumulatedPremium"])%> </span> </td>
+              <td class="tablenum"> <span> <%= renderNumberFloor(@benefitTable[@ppt+1]["dividend2perc"])%> </span> </td>
+              <td class="tablenum"> <span> <%= renderNumberFloor(@benefitTable[@ppt+1]["dividend4perc"])%> </span> </td>
+              <td class="tablenum"> <span> <%= renderNumberFloor(@benefitTable[@ppt+1]["dividend6perc"])%> </span> </td>              
+              <td class="tablenum"> <span> <%= renderNumberFloor(totalICPAmount)%> </span> </td>
+          </tr>
+          </table>
+        </div>
+        <%
+        when "ENDOWMENT2RATE"
+        %>
+        
+        <%= renderLegend('deathBenefit','DEATHBENEFIT') %>
+        <div data-role="table" class="illustrationdisplay" name="deathBenefit">
+          <table class="illustrationtable" width="100%">
+            <tr class="illustrationtableheader" >
+               <td rowspan="2">
+                 <%= getLabelValue('POLICYYEARAGE')   %>
+               </td>
+               <td rowspan="2">
+                 <%= getLabelValue('ACCUMULATEDPREMIUM')   %>
+               </td>
+               <td rowspan="2">
+                 <%= getLabelValue('GUARANTEEDDEATHBENEFIT')   %>
+               </td>
+               <td colspan="2">
+                 <%= getLabelValue('PROJECTION')   %> <%= @low.to_s %>%
+               </td>
+               <td colspan="2">
+                 <%= getLabelValue('PROJECTION')   %> <%= @mid.to_s %>%
+               </td>
+
+            </tr>
+            <tr class="illustrationtableheader">
+               <td >
+                 <%= getLabelValue('NONGUARANTEED')   %>
+               </td>
+               <td >
+                 <%= getLabelValue('TOTAL')   %>
+               </td>
+               <td>
+                 <%= getLabelValue('NONGUARANTEED')   %>
+               </td>
+               <td>
+                 <%= getLabelValue('TOTAL')   %>
+               </td>
+            </tr>
+            
+            <%  
+              totalICPAmount = 0.0
+              @benefitTable.each_with_index do |benefitRow, index| 
+              
+                if benefitRow != nil
+                  #totalICPAmount = totalICPAmount + benefitRow["icpAmount"].to_f.floor() if benefitRow["icpAmount"] != nil
+                    %>      
+                    <tr class="illustrationtablerow">
+                      <td class="tabletext"> 
+                        <%= renderNumberFloor(benefitRow["policyYear"])%> / <%= renderNumberFloor(benefitRow["attainedAge"])%>  
+                      </td>
+                      <td class="tablenum"> <%= renderNumberFloor(benefitRow["accumulatedPremium"])%> </td>
+                      <td class="tablenum"> <%= renderNumberFloor(benefitRow["guaranteedDeathBenefit"])%> </td>
+                      <td class="tablenum"> <%= renderNumberFloor(benefitRow["ngDeathBenefitL"])%> </td>
+                      <td class="tablenum"> <%= renderNumberFloor(benefitRow["totalDeathBenefitL"])%> </td>
+                      <td class="tablenum"> <%= renderNumberFloor(benefitRow["ngDeathBenefitH"])%> </td>
+                      <td class="tablenum"> <%= renderNumberFloor(benefitRow["totalDeathBenefitH"])%> </td>
+                    </tr>
+                  <%
+                end
+              end 
+            %>
+            
+          </table>
+        </div>
+        
+        <%= renderLegend('surrenderValue','SURRENDERVALUE') %>
+        <div data-role="table" class="illustrationdisplay" name="surrenderValue">
+          <table class="illustrationtable" width="100%">
+            <tr class="illustrationtableheader" >
+               <td rowspan="2">
+                 <%= getLabelValue('POLICYYEARAGE')   %>
+               </td>
+               <td rowspan="2">
+                 <%= getLabelValue('ACCUMULATEDPREMIUM')   %>
+               </td>
+               <td rowspan="2">
+                 <%= getLabelValue('GUARANTEEDSURRENDERVALUE')   %>
+               </td>
+               <td colspan="2">
+                 <%= getLabelValue('PROJECTION')   %> <%= @low %>%
+               </td>
+               <td colspan="2">
+                 <%= getLabelValue('PROJECTION')   %> <%= @mid %>%
+               </td>
+          
+            </tr>
+            <tr class="illustrationtableheader">
+               <td >
+                 <%= getLabelValue('NONGUARANTEED')   %>
+               </td>
+               <td >
+                 <%= getLabelValue('TOTAL')   %>
+               </td>
+               <td>
+                 <%= getLabelValue('NONGUARANTEED')   %>
+               </td>
+               <td>
+                 <%= getLabelValue('TOTAL')   %>
+               </td>
+            </tr>
+            <%  
+              totalICPAmount = 0.0
+              @benefitTable.each_with_index do |benefitRow, index| 
+              
+                if benefitRow != nil
+                  #totalICPAmount = totalICPAmount + benefitRow["icpAmount"].to_f.floor() if benefitRow["icpAmount"] != nil
+                    %>      
+                    <tr class="illustrationtablerow">
+                      <td class="tabletext"> 
+                        <%= renderNumberFloor(benefitRow["policyYear"])%> / <%= renderNumberFloor(benefitRow["attainedAge"])%>  
+                      </td>
+                      <td class="tablenum"> <%= renderNumberFloor(benefitRow["accumulatedPremium"])%> </td>
+                      <td class="tablenum"> <%= renderNumberFloor(benefitRow["guaranteedSurvivalBenefit"])%> </td>
+                      <td class="tablenum"> <%= renderNumberFloor(benefitRow["ngSurrenderL"])%> </td>
+                      <td class="tablenum"> <%= renderNumberFloor(benefitRow["totalSurrenderValueL"])%> </td>
+                      <td class="tablenum"> <%= renderNumberFloor(benefitRow["ngSurrenderH"])%> </td>
+                      <td class="tablenum"> <%= renderNumberFloor(benefitRow["totalSurrenderValueH"])%> </td>
+                    </tr>
+                  <%
+                end
+              end 
+            %>
+
+          </table>
+        </div>
+        
+        <%= renderLegend('deductions','DEDUCTIONS') %>
+        <div data-role="table" class="illustrationdisplay" name="deductions">
+          <table class="illustrationtable" width="100%">
+            <tr class="illustrationtableheader" >
+               <td rowspan="2">
+                 <%= getLabelValue('POLICYYEARAGE')   %>
+               </td>
+               <td rowspan="2">
+                 <%= getLabelValue('ACCUMULATEDPREMIUM')   %>
+               </td>
+               <td colspan="3">
+                 <%= getLabelValue('PROJECTION')   %> <%= @low %>%
+               </td>
+               <td colspan="3">
+                 <%= getLabelValue('PROJECTION')   %> <%= @mid %>%
+               </td>
+          
+            </tr>
+            <tr class="illustrationtableheader">
+               <td >
+                 <%= getLabelValue('BASICPREMIUMVALUE')   %>
+               </td>
+               <td >
+                 <%= getLabelValue('DEDUCTIONEFFECT')   %>
+               </td>
+               <td>
+                 <%= getLabelValue('TOTALSURRENDERVALUE')   %>
+               </td>
+              <td >
+                <%= getLabelValue('BASICPREMIUMVALUE')   %>
+              </td>
+              <td >
+                <%= getLabelValue('DEDUCTIONEFFECT')   %>
+              </td>
+              <td>
+                <%= getLabelValue('TOTALSURRENDERVALUE')   %>
+              </td>
+            </tr>
+            <%  
+              totalICPAmount = 0.0
+              @benefitTable.each_with_index do |benefitRow, index| 
+              
+                if benefitRow != nil
+                  #totalICPAmount = totalICPAmount + benefitRow["icpAmount"].to_f.floor() if benefitRow["icpAmount"] != nil
+                    %>      
+                    <tr class="illustrationtablerow">
+                      <td class="tabletext"> 
+                        <%= renderNumberFloor(benefitRow["policyYear"])%> / <%= renderNumberFloor(benefitRow["attainedAge"])%>  
+                      </td>
+                      <td class="tablenum"> <%= renderNumberFloor(benefitRow["accumulatedPremium"])%> </td>
+                      <td class="tablenum"> <%= renderNumberFloor(benefitRow["basicPremiumValueL"])%> </td>
+                      <td class="tablenum"> <%= renderNumberFloor(benefitRow["deductionEffectL"])%> </td>
+                      <td class="tablenum"> <%= renderNumberFloor(benefitRow["totalSurrenderValueL"])%> </td>
+                      <td class="tablenum"> <%= renderNumberFloor(benefitRow["basicPremiumValueH"])%> </td>
+                      <td class="tablenum"> <%= renderNumberFloor(benefitRow["deductionEffectH"])%> </td>
+                      <td class="tablenum"> <%= renderNumberFloor(benefitRow["totalSurrenderValueH"])%> </td>
+                    </tr>
+                  <%
+                end
+              end 
+            %>
+       
+          </table>
+        </div>
+        
+        <%= renderLegend('distributionCost','DISTRIBUTIONCOST') %>
+        <div data-role="table" class="illustrationdisplay" name="distributionCost">
+          <table class="illustrationtable" width="100%">
+            <tr class="illustrationtableheader" >
+               <td>
+                 <%= getLabelValue('POLICYYEARAGE')   %>
+               </td>
+               <td>
+                 <%= getLabelValue('ACCUMULATEDPREMIUM')   %>
+               </td>
+               <td>
+                 <%= getLabelValue('TOTALDISTRIBUTIONCOST')   %>
+               </td>
+          
+            </tr>
+            <%  
+              totalICPAmount = 0.0
+              @benefitTable.each_with_index do |benefitRow, index| 
+              
+                if benefitRow != nil
+                  #totalICPAmount = totalICPAmount + benefitRow["icpAmount"].to_f.floor() if benefitRow["icpAmount"] != nil
+                    %>      
+                    <tr class="illustrationtablerow">
+                      <td class="tabletext"> 
+                        <%= renderNumberFloor(benefitRow["policyYear"])%> / <%= renderNumberFloor(benefitRow["attainedAge"])%>  
+                      </td>
+                      <td class="tablenum"> <%= renderNumberFloor(benefitRow["accumulatedPremium"])%> </td>
+                      <td class="tablenum"> <%= renderNumberFloor(benefitRow["commission"])%> </td>
+                    </tr>
+                  <%
+                end
+              end 
+            %>
+
+          </table>
+        </div>
+        
+        <%= renderLegend('ridersCost','RIDERS') %>
+        <div data-role="table" class="illustrationdisplay" name="ridersCost">
+          <table class="illustrationtable" width="100%">
+            <tr class="illustrationtableheader" >
+               <td>
+                 <%= getLabelValue('POLICYYEARAGE')   %>
+               </td>
+               <td>
+                 <%= getLabelValue('RIDERPREMIUM')   %>
+               </td>
+               <td>
+                 <%= getLabelValue('TOTALRIDERPREMIUM')   %>
+               </td>
+               <td>
+                 <%= getLabelValue('TOTALDISTRIBUTIONCOST')   %>
+               </td>
+            </tr>
+          </table>
+        </div>
+
+        <%
+        when "UNITLINKED2RATE"
+        %>
+          <%= renderLegend('deathBenefit','DEATHBENEFIT') %>
+          <div data-role="table" class="illustrationdisplay" name="deathBenefit">
+            <table class="illustrationtable" width="100%">
+              <tr class="illustrationtableheader" >
+                 <td rowspan="2">
+                   <%= getLabelValue('POLICYYEARAGE')   %>
+                 </td>
+                 <td rowspan="2">
+                   <%= getLabelValue('ACCUMULATEDPREMIUM')   %>
+                 </td>
+                 <td rowspan="2">
+                   <%= getLabelValue('GUARANTEEDDEATHBENEFIT')   %>
+                 </td>
+                 <td colspan="2">
+                   <%= getLabelValue('PROJECTION')   %> <%= @low.to_s %>%
+                 </td>
+                 <td colspan="2">
+                   <%= getLabelValue('PROJECTION')   %> <%= @mid.to_s %>%
+                 </td>
+          
+              </tr>
+              <tr class="illustrationtableheader">
+                 <td >
+                   <%= getLabelValue('NONGUARANTEED')   %>
+                 </td>
+                 <td >
+                   <%= getLabelValue('TOTAL')   %>
+                 </td>
+                 <td>
+                   <%= getLabelValue('NONGUARANTEED')   %>
+                 </td>
+                 <td>
+                   <%= getLabelValue('TOTAL')   %>
+                 </td>
+              </tr>
+              
+              <%  
+                totalICPAmount = 0.0
+                @benefitTable.each_with_index do |benefitRow, index| 
+                
+                  if benefitRow != nil
+                    #totalICPAmount = totalICPAmount + benefitRow["icpAmount"].to_f.floor() if benefitRow["icpAmount"] != nil
+                      %>      
+                      <tr class="illustrationtablerow">
+                        <td class="tabletext"> 
+                          <%= renderNumberFloor(benefitRow["policyYear"])%> / <%= renderNumberFloor(benefitRow["attainedAge"])%>  
+                        </td>
+                        <td class="tablenum"> <%= renderNumberFloor(benefitRow["accumulatedPremium"])%> </td>
+                        <td class="tablenum"> <%= renderNumberFloor(benefitRow["guaranteedDeathBenefit"])%> </td>
+                        <td class="tablenum"> <%= renderNumberFloor(benefitRow["ngDeathBenefitL"])%> </td>
+                        <td class="tablenum"> <%= renderNumberFloor(benefitRow["totalDeathBenefitL"])%> </td>
+                        <td class="tablenum"> <%= renderNumberFloor(benefitRow["ngDeathBenefitH"])%> </td>
+                        <td class="tablenum"> <%= renderNumberFloor(benefitRow["totalDeathBenefitH"])%> </td>
+                      </tr>
+                    <%
+                  end
+                end 
+              %>
+              
+            </table>
+          </div>
+          
+          <%= renderLegend('surrenderValue','SURRENDERVALUE') %>
+          <div data-role="table" class="illustrationdisplay" name="surrenderValue">
+            <table class="illustrationtable" width="100%">
+              <tr class="illustrationtableheader" >
+                 <td rowspan="2">
+                   <%= getLabelValue('POLICYYEARAGE')   %>
+                 </td>
+                 <td rowspan="2">
+                   <%= getLabelValue('ACCUMULATEDPREMIUM')   %>
+                 </td>
+                 <td rowspan="2">
+                   <%= getLabelValue('GUARANTEEDSURRENDERVALUE')   %>
+                 </td>
+                 <td colspan="2">
+                   <%= getLabelValue('PROJECTION')   %> <%= @low %>%
+                 </td>
+                 <td colspan="2">
+                   <%= getLabelValue('PROJECTION')   %> <%= @mid %>%
+                 </td>
+            
+              </tr>
+              <tr class="illustrationtableheader">
+                 <td >
+                   <%= getLabelValue('NONGUARANTEED')   %>
+                 </td>
+                 <td >
+                   <%= getLabelValue('TOTAL')   %>
+                 </td>
+                 <td>
+                   <%= getLabelValue('NONGUARANTEED')   %>
+                 </td>
+                 <td>
+                   <%= getLabelValue('TOTAL')   %>
+                 </td>
+              </tr>
+              <%  
+                totalICPAmount = 0.0
+                @benefitTable.each_with_index do |benefitRow, index| 
+                
+                  if benefitRow != nil
+                    #totalICPAmount = totalICPAmount + benefitRow["icpAmount"].to_f.floor() if benefitRow["icpAmount"] != nil
+                      %>      
+                      <tr class="illustrationtablerow">
+                        <td class="tabletext"> 
+                          <%= renderNumberFloor(benefitRow["policyYear"])%> / <%= renderNumberFloor(benefitRow["attainedAge"])%>  
+                        </td>
+                        <td class="tablenum"> <%= renderNumberFloor(benefitRow["accumulatedPremium"])%> </td>
+                        <td class="tablenum"> <%= renderNumberFloor(benefitRow["guaranteedSurvivalBenefit"])%> </td>
+                        <td class="tablenum"> <%= renderNumberFloor(benefitRow["ngSurrenderL"])%> </td>
+                        <td class="tablenum"> <%= renderNumberFloor(benefitRow["totalSurrenderValueL"])%> </td>
+                        <td class="tablenum"> <%= renderNumberFloor(benefitRow["ngSurrenderH"])%> </td>
+                        <td class="tablenum"> <%= renderNumberFloor(benefitRow["totalSurrenderValueH"])%> </td>
+                      </tr>
+                    <%
+                  end
+                end 
+              %>
+          
+            </table>
+          </div>
+          
+          <%= renderLegend('deductions','DEDUCTIONS') %>
+          <div data-role="table" class="illustrationdisplay" name="deductions">
+            <table class="illustrationtable" width="100%">
+              <tr class="illustrationtableheader" >
+                 <td rowspan="2">
+                   <%= getLabelValue('POLICYYEARAGE')   %>
+                 </td>
+                 <td rowspan="2">
+                   <%= getLabelValue('ACCUMULATEDPREMIUM')   %>
+                 </td>
+                 <td colspan="3">
+                   <%= getLabelValue('PROJECTION')   %> <%= @low %>%
+                 </td>
+                 <td colspan="3">
+                   <%= getLabelValue('PROJECTION')   %> <%= @mid %>%
+                 </td>
+            
+              </tr>
+              <tr class="illustrationtableheader">
+                 <td >
+                   <%= getLabelValue('BASICPREMIUMVALUE')   %>
+                 </td>
+                 <td >
+                   <%= getLabelValue('DEDUCTIONEFFECT')   %>
+                 </td>
+                 <td>
+                   <%= getLabelValue('TOTALSURRENDERVALUE')   %>
+                 </td>
+                <td >
+                  <%= getLabelValue('BASICPREMIUMVALUE')   %>
+                </td>
+                <td >
+                  <%= getLabelValue('DEDUCTIONEFFECT')   %>
+                </td>
+                <td>
+                  <%= getLabelValue('TOTALSURRENDERVALUE')   %>
+                </td>
+              </tr>
+              <%  
+                totalICPAmount = 0.0
+                @benefitTable.each_with_index do |benefitRow, index| 
+                
+                  if benefitRow != nil
+                    #totalICPAmount = totalICPAmount + benefitRow["icpAmount"].to_f.floor() if benefitRow["icpAmount"] != nil
+                      %>      
+                      <tr class="illustrationtablerow">
+                        <td class="tabletext"> 
+                          <%= renderNumberFloor(benefitRow["policyYear"])%> / <%= renderNumberFloor(benefitRow["attainedAge"])%>  
+                        </td>
+                        <td class="tablenum"> <%= renderNumberFloor(benefitRow["accumulatedPremium"])%> </td>
+                        <td class="tablenum"> <%= renderNumberFloor(benefitRow["basicPremiumValueL"])%> </td>
+                        <td class="tablenum"> <%= renderNumberFloor(benefitRow["deductionEffectL"])%> </td>
+                        <td class="tablenum"> <%= renderNumberFloor(benefitRow["totalSurrenderValueL"])%> </td>
+                        <td class="tablenum"> <%= renderNumberFloor(benefitRow["basicPremiumValueH"])%> </td>
+                        <td class="tablenum"> <%= renderNumberFloor(benefitRow["deductionEffectH"])%> </td>
+                        <td class="tablenum"> <%= renderNumberFloor(benefitRow["totalSurrenderValueH"])%> </td>
+                      </tr>
+                    <%
+                  end
+                end 
+              %>
+          
+            </table>
+          </div>
+          
+          <%= renderLegend('distributionCost','DISTRIBUTIONCOST') %>
+          <div data-role="table" class="illustrationdisplay" name="distributionCost">
+            <table class="illustrationtable" width="100%">
+              <tr class="illustrationtableheader" >
+                 <td>
+                   <%= getLabelValue('POLICYYEARAGE')   %>
+                 </td>
+                 <td>
+                   <%= getLabelValue('ACCUMULATEDPREMIUM')   %>
+                 </td>
+                 <td>
+                   <%= getLabelValue('TOTALDISTRIBUTIONCOST')   %>
+                 </td>
+            
+              </tr>
+              <%  
+                totalICPAmount = 0.0
+                @benefitTable.each_with_index do |benefitRow, index| 
+                
+                  if benefitRow != nil
+                    #totalICPAmount = totalICPAmount + benefitRow["icpAmount"].to_f.floor() if benefitRow["icpAmount"] != nil
+                      %>      
+                      <tr class="illustrationtablerow">
+                        <td class="tabletext"> 
+                          <%= renderNumberFloor(benefitRow["policyYear"])%> / <%= renderNumberFloor(benefitRow["attainedAge"])%>  
+                        </td>
+                        <td class="tablenum"> <%= renderNumberFloor(benefitRow["accumulatedPremium"])%> </td>
+                        <td class="tablenum"> <%= renderNumberFloor(benefitRow["commission"])%> </td>
+                      </tr>
+                    <%
+                  end
+                end 
+              %>
+          
+            </table>
+          </div>
+        
+        <%
+          when "ENDOWMENT" 
+        %>
+          <div data-role="table" class="illustrationdisplay">
+          <table class="illustrationtable" width="100%">
+            <tr class="illustrationtableheader" >
+               <td rowspan="2">
+                 <%= getLabelValue('POLICYYEAR')   %>
+               </td>
+               <td colspan="2">
+                 <%= getLabelValue('PREMIUM')   %>
+               </td>
+               <td colspan="2">
+                 <%= getLabelValue('BENEFIT')   %>
+               </td>
+               <td rowspan="2">
+                 <%= getLabelValue('LOYALTYBONUS')   %>
+               </td>
+               <td rowspan="2">
+                 <%= getLabelValue('DEATHBENEFIT1')   %>
+               </td>
+               <td rowspan="2">
+                 <%= getLabelValue('CURRENTVALUE')   %>
+               </td>
+             </tr>
+             <tr class="illustrationtableheader">
+               <td >
+                 <%= getLabelValue('RECEIVED')   %>
+               </td>
+               <td >
+                 <%= getLabelValue('ACCUMLATED')   %>
+               </td>
+               <td>
+                 <%= getLabelValue('GUARANTEED')   %>
+               </td>
+               <td>
+                 <%= getLabelValue('NONGUARANTEED')   %>
+               </td>
+             </tr>
+             
+            <%  
+              totalGuaranteedAmount = 0.0
+              totalNonGuaranteedAmount = 0.0
+              @benefitTable.each_with_index do |benefitRow, index| 
+              
+                if benefitRow != nil
+                  totalGuaranteedAmount = totalGuaranteedAmount + benefitRow["gBenefitValue"].to_f.floor() if benefitRow["gBenefitValue"] != nil
+                  totalNonGuaranteedAmount = totalNonGuaranteedAmount + benefitRow["ngBenefitValue"].to_f.floor() if benefitRow["ngBenefitValue"] != nil
+                  %>      
+                    <tr class="illustrationtablerow">
+                      <td class="tablenum"> <%= renderNumber("%.0f" % benefitRow["policyYear"]) %> </td>
+                      <td class="tablenum"> 
+                        <%  
+                          if benefitRow["premiumReceived"] != 0
+                            %>
+                            <%= renderNumber("%.0f" % benefitRow["premiumReceived"])%>
+                            <%
+                          end
+                        %> 
+                      </td>                    
+                      <td class="tablenum"> <%= renderNumberFloor(benefitRow["accumulatedPremium"]) %> </td>
+                        
+                      <td class="tablenum">
+                        <%  
+                          if benefitRow["gBenefitValue"].to_i != 0
+                            %> 
+                              <%= renderNumberFloor(benefitRow["gBenefitValue"]) %>
+                            <%
+                          end
+                        %>
+                      </td>
+                      <td class="tablenum">
+                        <%  
+                          if benefitRow["ngBenefitValue"].to_i != 0
+                            %> 
+                              <%= renderNumberFloor(benefitRow["ngBenefitValue"]) %>
+                            <%
+                          end
+                        %> 
+                      </td>
+          
+                      <td class="tablenum">
+                        <%  
+                          if benefitRow["loyaltyBenefitValue"].to_i != 0
+                            %>
+                              <%= renderNumberFloor(benefitRow["loyaltyBenefitValue"]) %>
+                            <%
+                          end
+                        %> 
+                      </td>
+                      <td class="tablenum"> <%= renderNumberFloor(benefitRow["benefitAmount"]) %> </td>
+                      <td class="tablenum">
+                        <%  
+                          if benefitRow["cvAmount"].to_i != 0
+                            %>
+                              <%= renderNumberFloor(benefitRow["cvAmount"]) %>
+                            <%
+                          end
+                        %> 
+                      </td>
+                    </tr>
+                  <%
+                end
+              end 
+            %>
+            <tr class="illustrationtablerow">
+                <td colspan="2"> <span> <%= getLabelValue('TOTAL')   %> <span> </td>
+                <td class="tablenum"> <span> <%= renderNumberFloor(@benefitTable[@term]["accumulatedPremium"]) %> <span> </td>
+                <td class="tablenum"> <span> <%= renderNumberFloor(totalGuaranteedAmount) %> <span> </td>
+                <td class="tablenum"> <span> <%= renderNumberFloor(totalNonGuaranteedAmount) %> <span> </td>                            
+            </tr>
+          </table>
+        </div>
+
+        <%
+          when "UNITLINKED" 
+        %>
+
+          <div data-role="table" class="illustrationdisplay">
+          <table class="illustrationtable" width="100%">
+            <tr class="illustrationtableheader" >
+               <td rowspan="2">
+                 <%= getLabelValue('POLICYYEAR')   %>
+               </td>
+               <td colspan="2">
+                 <%= getLabelValue('PREMIUM')   %>
+               </td>
+               <td colspan="3">
+                 <%= getLabelValue('FUNDVALUE')   %>
+               </td>
+             </tr>
+             <tr class="illustrationtableheader">
+               <td >
+                 <%= getLabelValue('RECEIVED')   %>
+               </td>
+               <td >
+                 <%= getLabelValue('ACCUMLATED')   %>
+               </td>
+                <td >
+                  <%= getLabelValue('PROJECTION')   %> <%= @low.to_s %>%
+                </td>
+                <td >
+                  <%= getLabelValue('PROJECTION')   %> <%= @mid.to_s %>%
+                </td>
+                <td >
+                  <%= getLabelValue('PROJECTION')   %> <%= @high.to_s %>%
+                </td>
+
+             </tr>
+             
+            <%  
+              @benefitTable.each_with_index do |benefitRow, index| 
+              
+                if benefitRow != nil
+                  %>      
+                    <tr class="illustrationtablerow">
+                    <td class="tablenum"> <%= renderNumber("%.0f" % benefitRow["policyYear"]) %> </td>
+                    <td class="tablenum"> 
+                      <%  
+                        if benefitRow["annualPremium"] != 0
+                          %>
+                          <%= renderNumber("%.0f" % benefitRow["annualPremium"])%>
+                          <%
+                        end
+                      %> 
+                    </td>                    
+                    <td class="tablenum"> <%= renderNumberFloor(benefitRow["accumulatedPremium"]) %> </td>
+                      
+                    <td class="tablenum">
+                      <%  
+                        if benefitRow["totalFundValueL"].to_i != 0
+                          %> 
+                            <%= renderNumberFloor(benefitRow["totalFundValueL"]) %>
+                          <%
+                        end
+                      %>
+                    </td>
+
+                    <td class="tablenum">
+                      <%  
+                        if benefitRow["totalFundValueM"].to_i != 0
+                          %> 
+                            <%= renderNumberFloor(benefitRow["totalFundValueM"]) %>
+                          <%
+                        end
+                      %>
+                    </td>
+  
+                    <td class="tablenum">
+                      <%  
+                        if benefitRow["totalFundValueH"].to_i != 0
+                          %> 
+                            <%= renderNumberFloor(benefitRow["totalFundValueH"]) %>
+                          <%
+                        end
+                      %>
+                    </td>
+        
+                    </tr>
+                  <%
+                end
+              end 
+            %>
+            <tr class="illustrationtablerow">
+                <td colspan="3"> <span> <%= getLabelValue('TOTAL')   %> <span> </td>
+                <td class="tablenum"> <span> <%= renderNumberFloor(@benefitTable[@term]["totalFundValueL"]) %> <span> </td>
+                <td class="tablenum"> <span> <%= renderNumberFloor(@benefitTable[@term]["totalFundValueM"]) %> <span> </td>
+                <td class="tablenum"> <span> <%= renderNumberFloor(@benefitTable[@term]["totalFundValueH"]) %> <span> </td>                            
+            </tr>
+          </table>
+        </div>
+
+        <%
+          when "PBUNITLINKED" 
+        %>
+        
+          <%= renderLegend("total", "COMPLETEILLUSTRATION") %>
+          <div data-role="table" class="illustrationdisplay" name = "total">
+          <table class="illustrationtable" width="100%">
+            <tr class="illustrationtableheader" >
+               <td rowspan="2">
+                 <%= getLabelValue('POLICYYEAR')   %>
+               </td>
+               <td rowspan="2">
+                 <%= getLabelValue('PREMIUM')   %>
+               </td>
+              <td rowspan="2">
+                <%= getLabelValue('CHARGES')   %>
+              </td>
+              <td rowspan="2">
+                <%= getLabelValue('WITHDRAWAL')   %>
+              </td>
+               <td colspan="3">
+                 <%= getLabelValue('FUNDVALUE')   %>
+               </td>
+              <td colspan="3">
+                <%= getLabelValue('DEATHBENEFIT1')   %>
+              </td>
+             </tr>
+             <tr class="illustrationtableheader">
+                <td >
+                  <%= getLabelValue('PROJECTION')   %> <%= @low.to_s %>%
+                </td>
+                <td >
+                  <%= getLabelValue('PROJECTION')   %> <%= @mid.to_s %>%
+                </td>
+                <td >
+                  <%= getLabelValue('PROJECTION')   %> <%= @high.to_s %>%
+                </td>
+                <td >
+                  <%= getLabelValue('PROJECTION')   %> <%= @low.to_s %>%
+                </td>
+                <td >
+                  <%= getLabelValue('PROJECTION')   %> <%= @mid.to_s %>%
+                </td>
+                <td >
+                  <%= getLabelValue('PROJECTION')   %> <%= @high.to_s %>%
+                </td>
+        
+             </tr>
+             
+            <%  
+              @benefitTable.each_with_index do |benefitRow, index| 
+              
+                if benefitRow != nil
+                  %>      
+                    <tr class="illustrationtablerow">
+                    <td class="tablenum"> <%= renderNumber("%.0f" % benefitRow["policyYear"]) %> </td>
+                    <td class="tablenum"> 
+                      <%  
+                        if benefitRow["vaTargetPremium"] != 0
+                          %>
+                          <%= renderNumber(benefitRow["vaTargetPremium"])%>
+                          <%
+                        end
+                      %> 
+                    </td>                    
+                    <td class="tablenum"> 
+                      <%  
+                        if benefitRow["totalFundChargeL"] != 0
+                          %>
+                          <%= renderNumber(benefitRow["totalFundChargeL"])%>
+                          <%
+                        end
+                      %>
+                    </td>
+                    
+                    <td class="tablenum">  </td>
+                      
+                    <td class="tablenum">
+                            <%= renderNumber(benefitRow["totalFundValueL"]) %>
+                    </td>
+        
+                    <td class="tablenum">
+                            <%= renderNumber(benefitRow["totalFundValueM"]) %>
+                    </td>
+        
+                    <td class="tablenum">
+                            <%= renderNumber(benefitRow["totalFundValueH"]) %>
+                    </td>
+
+                    <td class="tablenum">
+                        <%= renderNumber(benefitRow["benefitAmountL"]) %>
+                    </td>
+        
+                    <td class="tablenum">
+                        <%= renderNumber(benefitRow["benefitAmountM"]) %>
+                    </td>
+        
+                    <td class="tablenum">
+                        <%= renderNumber(benefitRow["benefitAmountH"]) %>
+                    </td>
+        
+                    </tr>
+                  <%
+                end
+              end 
+            %>
+          </table>
+        </div>
+
+        <% @baseQuotationProduct.QuotationProductInvestmentFundList.each do |fund| %>
+          
+            <%= renderLegend(fund.fundCd, "ILLUSTRATION"+fund.fundCd) %>
+            <div data-role="table" class="illustrationdisplay" name = "<%=fund.fundCd%>">
+            <table class="illustrationtable" width="100%">
+              <tr class="illustrationtableheader" >
+                 <td rowspan="2">
+                   <%= getLabelValue('POLICYYEAR')   %>
+                 </td>
+                 <td rowspan="2">
+                   <%= getLabelValue('PREMIUM')   %>
+                 </td>
+                <td rowspan="2">
+                  <%= getLabelValue('CHARGES')   %>
+                </td>
+                <td rowspan="2">
+                  <%= getLabelValue('WITHDRAWAL')   %>
+                </td>
+                 <td colspan="3">
+                   <%= getLabelValue('FUNDVALUE')   %>
+                 </td>
+                <td colspan="3">
+                  <%= getLabelValue('DEATHBENEFIT1')   %>
+                </td>
+               </tr>
+               <tr class="illustrationtableheader">
+                  <td >
+                    <%= getLabelValue('PROJECTION')   %> <%= @low.to_s %>%
+                  </td>
+                  <td >
+                    <%= getLabelValue('PROJECTION')   %> <%= @mid.to_s %>%
+                  </td>
+                  <td >
+                    <%= getLabelValue('PROJECTION')   %> <%= @high.to_s %>%
+                  </td>
+                  <td >
+                    <%= getLabelValue('PROJECTION')   %> <%= @low.to_s %>%
+                  </td>
+                  <td >
+                    <%= getLabelValue('PROJECTION')   %> <%= @mid.to_s %>%
+                  </td>
+                  <td >
+                    <%= getLabelValue('PROJECTION')   %> <%= @high.to_s %>%
+                  </td>
+          
+               </tr>
+               
+              <%  
+                @benefitTable.each_with_index do |benefitRow, index| 
+                
+                  if benefitRow != nil
+                    %>      
+                      <tr class="illustrationtablerow">
+                      <td class="tablenum"> <%= renderNumber("%.0f" % benefitRow["policyYear"]) %> </td>
+                      <td class="tablenum"> 
+                        <%  
+                          if benefitRow["vaTargetPremium"] != 0
+                            %>
+                            <%= renderNumber(benefitRow["vaTargetPremium"])%>
+                            <%
+                          end
+                        %> 
+                      </td>                    
+                      <td class="tablenum"> 
+                        <%  
+                          if benefitRow["totalFundChargeL"] != 0
+                            %>
+                            <%= renderNumber(benefitRow["totalFundChargeL"])%>
+                            <%
+                          end
+                        %>
+                      </td>
+                      
+                      <td class="tablenum">  </td>
+                        
+                      <td class="tablenum">
+                              <%= renderNumber(benefitRow["totalFundValueL"] * fund.allocationPerc.to_f / 100.0) %>
+                      </td>
+          
+                      <td class="tablenum">
+                              <%= renderNumber(benefitRow["totalFundValueM"] * fund.allocationPerc.to_f / 100.0) %>
+                      </td>
+          
+                      <td class="tablenum">
+                              <%= renderNumber(benefitRow["totalFundValueH"] * fund.allocationPerc.to_f / 100.0) %>
+                      </td>
+  
+                      <td class="tablenum">
+                          <%= renderNumber(benefitRow["benefitAmountL"]) %>
+                      </td>
+          
+                      <td class="tablenum">
+                          <%= renderNumber(benefitRow["benefitAmountM"]) %>
+                      </td>
+          
+                      <td class="tablenum">
+                          <%= renderNumber(benefitRow["benefitAmountH"]) %>
+                      </td>
+          
+                      </tr>
+                    <%
+                  end
+                end 
+              %>
+            </table>
+          </div>
+  
+        <% end %>
+        
+        <%
+          when "HYBRID" 
+        %>
+            <script>
+            function show(index)
+            {
+              drawGraph(index);
+            }
+            
+
+            </script>
+            
+          <div data-role="table" class="illustrationdisplay">
+            <fieldset>
+              <div name="graph" > 
+                
+              </div>
+            </fieldset>
+          </div>
+
+          <% @illustrationRates.each do |illustrationRate| 
+            
+            if illustrationRate.sortOrder == '1'
+              rate = illustrationRate.grossRate
+              hlFl = "L"
+            elsif illustrationRate.sortOrder == '2'
+              rate = illustrationRate.grossRate
+              hlFl = "M"
+            elsif illustrationRate.sortOrder == '3'
+              rate = illustrationRate.grossRate
+              hlFl = "H"
+            end
+
+            %>
+            
+          <%= renderLegend('charges'+hlFl,'CHARGES'+hlFl) %>
+          <div data-role="table" class="illustrationdisplay" name="charges<%=hlFl%>">
+          <table class="illustrationtable" width="100%">
+            <tr class="illustrationtableheader" >
+               <td rowspan="2">
+                 <%= getLabelValue('POLICYYEAR')   %>
+               </td>
+               <td colspan="2">
+                 <%= getLabelValue('PREMIUM')   %>
+               </td>
+               <td rowspan="2">
+                  <%= getLabelValue('SUMASSURED')   %>
+               </td>
+               <td rowspan="2">
+                 <%= getLabelValue('BOS')   %>
+               </td>
+               <td rowspan="2">
+                 <%= getLabelValue('POLICYACCOUNT')   %>
+               </td>
+                <td rowspan="2">
+                  <%= getLabelValue('COI')   %>
+                </td>
+                <td colspan="2">
+                  <%= getLabelValue('MAINTENANCECHARGE')   %>
+                </td>
+                <td rowspan="2">
+                  <%= getLabelValue('INVESTMENTRETURN')   %>
+                </td>
+             </tr>
+             <tr class="illustrationtableheader">
+               <td >
+                 <%= getLabelValue('TOTAL')   %>
+               </td>
+               <td >
+                 <%= getLabelValue('TOPUP')   %>
+               </td>               
+              <td >
+                <%= getLabelValue('AMC')   %>
+              </td>
+              <td >
+                <%= getLabelValue('AAMC')   %>
+              </td>
+        
+             </tr>
+             
+            <%
+              termIndex = 0
+              @benefitTable.each_with_index do |benefitRow, index| 
+                termIndex = index
+                if benefitRow != nil && benefitRow["policyYear"] != nil && benefitRow["policyYear"].to_i <= 25
+                  %>      
+                    <tr class="illustrationtablerow">
+                    <td class="tablenum"> 
+                      <%= renderNumber("%.0f" % benefitRow["policyYear"]) %> / <%= benefitRow["attainedAge"] %> 
+                    </td>
+                    <td class="tablenum"> 
+                      <%= renderNumber(benefitRow["totalPremiumReceived"]) %>
+                    </td>                    
+                    <td class="tablenum"> 
+                      <%  
+                        if benefitRow["totalTopupPremium"] != 0
+                          %>
+                          <%= renderNumberFloor(benefitRow["totalTopupPremium"]) %>
+                          <%
+                        end
+                      %> 
+                    </td>                    
+                    <td class="tablenum"> 
+                      <%  
+                        if benefitRow["totalSumAssured"] != 0
+                          %>
+                          <%= renderNumber("%.0f" % benefitRow["totalSumAssured"])%>
+                          <%
+                        end
+                      %> 
+                    </td>                    
+                    <td class="tablenum"> <%= renderNumber(benefitRow["allocationCharge"]) %> </td>
+                    
+                    <td class="tablenum">
+                      <% if termIndex == 0 %> 
+                        <%= renderNumber(benefitRow["allocatedPremium"]) %>
+                      <% else %>
+                        <%= renderNumber(benefitRow["allocatedPremium"] + @benefitTable[termIndex-1]["accumulatedBenefits"+hlFl])%>
+                      <% end %>
+                    </td>
+                      
+                    <td class="tablenum">
+                      <%  
+                        if benefitRow["mortalityCharge"+hlFl].to_i != 0
+                          %> 
+                            <%= renderNumber(benefitRow["mortalityCharge"+hlFl]) %>
+                          <%
+                        end
+                      %>
+                    </td>
+        
+                    <td class="tablenum">
+                      <%  
+                        if benefitRow["amc"+hlFl].to_i != 0
+                          %> 
+                            <%= renderNumber(benefitRow["amc"+hlFl]) %>
+                          <%
+                        end
+                      %>
+                    </td>
+        
+                    <td class="tablenum">
+                      <%  
+                        if benefitRow["aamc"+hlFl].to_i != 0
+                          %> 
+                            <%= renderNumber(benefitRow["aamc"+hlFl]) %>
+                          <%
+                        end
+                      %>
+                    </td>
+
+                    <td class="tablenum">
+                      <%  
+                        if benefitRow["compoundedValue"+hlFl].to_i != 0
+                          %> 
+                            <%= renderNumber(benefitRow["compoundedValue"+hlFl]) %>
+                          <%
+                        end
+                      %>
+                    </td>
+        
+                    </tr>
+                  <%
+                end
+              end               
+            %>
+            <tr class="illustrationtablerow">
+                <td class="tablenum"> ... </td>
+                <td class="tablenum"> ... </td>
+                <td class="tablenum"> ... </td>
+                <td class="tablenum"> ... </td>
+                <td class="tablenum"> ... </td>                            
+                <td class="tablenum"> ... </td>
+                <td class="tablenum"> ... </td>
+                <td class="tablenum"> ... </td>
+                <td class="tablenum"> ... </td>
+                <td class="tablenum"> ... </td>
+            </tr>
+
+            <tr class="illustrationtablerow">
+                
+            <tr class="illustrationtablerow">
+              <td class="tablenum"> 
+                <%= getLabelValue('UNTIL')%> <%= @quotation.age.to_i + @benefitTable[termIndex]["policyYear"].to_i %> <%= getLabelValue('YEAR')%> 
+              </td>
+              <td class="tablenum"> 
+                <%= renderNumber(@benefitTable[termIndex]["totalPremiumReceived"]) %>
+              </td>                    
+              <td class="tablenum"> 
+                <%  
+                  if @benefitTable[termIndex]["totalTopupPremium"] != 0
+                    %>
+                    <%= renderNumber(@benefitTable[termIndex]["totalTopupPremium"]) %>
+                    <%
+                  end
+                %> 
+              </td>                    
+              <td class="tablenum"> 
+                <%  
+                  if @benefitTable[termIndex]["totalSumAssured"] != 0
+                    %>
+                    <%= renderNumber("%.0f" % @benefitTable[termIndex]["totalSumAssured"])%>
+                    <%
+                  end
+                %> 
+              </td>                    
+              <td class="tablenum"> <%= renderNumberFloor(@benefitTable[termIndex]["allocationCharge"]) %> </td>
+              
+              <td class="tablenum">
+                <% if termIndex == 0 %> 
+                  <%= renderNumber(@benefitTable[termIndex]["allocatedPremium"]) %>
+                <% else %>
+                  <%= renderNumber(@benefitTable[termIndex]["allocatedPremium"] + @benefitTable[termIndex-1]["accumulatedBenefits"+hlFl])%>
+                <% end %>
+              </td>
+                
+              <td class="tablenum">
+                <%  
+                  if @benefitTable[termIndex]["mortalityCharge"+hlFl].to_i != 0
+                    %> 
+                      <%= renderNumber(@benefitTable[termIndex]["mortalityCharge"+hlFl]) %>
+                    <%
+                  end
+                %>
+              </td>
+              
+              <td class="tablenum">
+                <%  
+                  if @benefitTable[termIndex]["amc"+hlFl].to_i != 0
+                    %> 
+                      <%= renderNumber(@benefitTable[termIndex]["amc"+hlFl]) %>
+                    <%
+                  end
+                %>
+              </td>
+              
+              <td class="tablenum">
+                <%  
+                  if @benefitTable[termIndex]["aamc"+hlFl].to_i != 0
+                    %> 
+                      <%= renderNumber(@benefitTable[termIndex]["aamc"+hlFl]) %>
+                    <%
+                  end
+                %>
+              </td>
+              
+              <td class="tablenum">
+                <%  
+                  if @benefitTable[termIndex]["compoundedValue"+hlFl].to_i != 0
+                    %> 
+                      <%= renderNumber(@benefitTable[termIndex]["compoundedValue"+hlFl]) %>
+                    <%
+                  end
+                %>
+              </td>
+              
+            </tr>
+          </table>
+        </div>
+
+        
+        <%= renderLegend('benefits'+hlFl,'BENEFITS'+hlFl) %>
+        <div data-role="table" class="illustrationdisplay" name="benefits<%=hlFl%>">
+        <table class="illustrationtable" width="100%">
+          <tr class="illustrationtableheader" >
+            <td >
+              <%= getLabelValue('POLICYYEAR')   %>
+            </td>
+            <td >
+              <%= getLabelValue('DEATHBENEFIT1')   %>
+            </td>
+            <td >
+              <%= getLabelValue('MATURITY')   %>
+            </td>
+            <td >
+              <%= getLabelValue('ICP')   %>
+            </td>
+            <td >
+              <%= getLabelValue('NGBENEFITS')   %>
+            </td>
+            <td >
+              <%= getLabelValue('LOYALTYBENEFIT')   %>
+            </td>
+            <td >
+              <%= getLabelValue('ACCOUNTVALUE')   %>
+            </td>
+            <td >
+              <%= getLabelValue('CURRENTVALUE')   %>
+            </td>
+          </tr>
+           
+          <%
+            termIndex = 0
+            @benefitTable.each_with_index do |benefitRow, index| 
+              termIndex = index
+              if benefitRow != nil && benefitRow["policyYear"] != nil && benefitRow["policyYear"].to_i <= 25
+                %>      
+                  <tr class="illustrationtablerow">
+                  <td class="tablenum"> 
+                    <%= renderNumber("%.0f" % benefitRow["policyYear"]) %> / <%= benefitRow["attainedAge"] %> 
+                  </td>
+                  <td class="tablenum"> 
+                    <%  
+                      if benefitRow["benefitAmount"+hlFl] != 0
+                        %>
+                        <%= renderNumber(benefitRow["benefitAmount"+hlFl])%>
+                        <%
+                      end
+                    %> 
+                  </td>                    
+                  <td class="tablenum"> 
+                    <%  
+                      if benefitRow["totalMaturityValue"] != 0
+                        %>
+                        <%= renderNumber(benefitRow["totalMaturityValue"])%>
+                        <%
+                      end
+                    %> 
+                  </td>
+                  
+                  <td class="tablenum"> 
+                    <%  
+                      if benefitRow["totalICPValue"] != 0
+                        %>
+                        <%= renderNumber(benefitRow["totalICPValue"])%>
+                        <%
+                      end
+                    %> 
+                  </td>
+                    
+                  <td class="tablenum">
+                    <%  
+                      if benefitRow["totalNGBenefitValue"].to_i != 0
+                        %> 
+                          <%= renderNumber(benefitRow["totalNGBenefitValue"]) %>
+                        <%
+                      end
+                    %>
+                  </td>
+        
+                  <td class="tablenum">
+                    <%  
+                      if benefitRow["totalLoyaltyBenefit"+hlFl].to_i != 0
+                        %> 
+                          <%= renderNumber(benefitRow["totalLoyaltyBenefit"+hlFl]) %>
+                        <%
+                      end
+                    %>
+                  </td>
+        
+                  <td class="tablenum">
+                    <%  
+                      if benefitRow["totalSelfFundValue"+hlFl].to_i != 0
+                        %> 
+                          <%= renderNumber(benefitRow["totalSelfFundValue"+hlFl]) %>
+                        <%
+                      end
+                    %>
+                  </td>
+        
+                  <td class="tablenum">
+                    <%  
+                      if benefitRow["totalCV"+hlFl].to_i != 0
+                        %> 
+                          <%= renderNumber(benefitRow["totalCV"+hlFl]) %>
+                        <%
+                      end
+                    %>
+                  </td>
+        
+                  </tr>
+                <%
+              end
+            end               
+          %>
+          <tr class="illustrationtablerow">
+              <td class="tablenum"> ... </td>
+              <td class="tablenum"> ... </td>
+              <td class="tablenum"> ... </td>                            
+              <td class="tablenum"> ... </td>
+              <td class="tablenum"> ... </td>
+              <td class="tablenum"> ... </td>
+              <td class="tablenum"> ... </td>
+              <td class="tablenum"> ... </td>
+          </tr>
+        
+          <tr class="illustrationtablerow">
+              
+          <tr class="illustrationtablerow">
+            <td class="tablenum"> 
+              <%= getLabelValue('UNTIL')%> <%= @quotation.age.to_i + @benefitTable[termIndex]["policyYear"].to_i %> <%= getLabelValue('YEAR')%> 
+            </td>
+            <td class="tablenum"> 
+              <%  
+                if @benefitTable[termIndex]["benefitAmount"+hlFl] != 0
+                  %>
+                  <%= renderNumber(@benefitTable[termIndex]["benefitAmount"+hlFl])%>
+                  <%
+                end
+              %> 
+            </td>                    
+            <td class="tablenum"> 
+              <%  
+                if @benefitTable[termIndex]["totalMaturityValue"] != 0
+                  %>
+                  <%= renderNumber(@benefitTable[termIndex]["totalMaturityValue"])%>
+                  <%
+                end
+              %> 
+            </td>
+            
+            <td class="tablenum"> 
+              <%  
+                if @benefitTable[termIndex]["totalICPValue"] != 0
+                  %>
+                  <%= renderNumber(@benefitTable[termIndex]["totalICPValue"])%>
+                  <%
+                end
+              %> 
+            </td>
+              
+            <td class="tablenum">
+              <%  
+                if @benefitTable[termIndex]["mortalityCharge"+hlFl].to_i != 0
+                  %> 
+                    <%= renderNumber(@benefitTable[termIndex]["mortalityCharge"+hlFl]) %>
+                  <%
+                end
+              %>
+            </td>
+            
+            <td class="tablenum">
+              <%  
+                if @benefitTable[termIndex]["totalLoyaltyBenefit"+hlFl].to_i != 0
+                  %> 
+                    <%= renderNumber(@benefitTable[termIndex]["totalLoyaltyBenefit"+hlFl]) %>
+                  <%
+                end
+              %>
+            </td>
+            
+            <td class="tablenum">
+              <%  
+                if @benefitTable[termIndex]["totalSelfFundValue"+hlFl].to_i != 0
+                  %> 
+                    <%= renderNumber(@benefitTable[termIndex]["totalSelfFundValue"+hlFl]) %>
+                  <%
+                end
+              %>
+            </td>
+            
+            <td class="tablenum">
+              <%  
+                if @benefitTable[termIndex]["totalCV"+hlFl].to_i != 0
+                  %> 
+                    <%= renderNumber(@benefitTable[termIndex]["totalCV"+hlFl]+@benefitTable[termIndex]["totalMaturityValue"]) %>
+                  <%
+                end
+              %>
+            </td>
+            
+          </tr>
+          
+        </table>
+        </div>
+        
+        <b> <%= getLabelValue('REMARK')   %></b><br>
+        <%=getLabelValue("HYBRIDDISCLAIMER")%> <br>
+        
+        <% end %>
+        
+      <%
+      when "RRENDOWMENT"
+      %>
+        <div data-role="table" class="illustrationdisplay">
+          <fieldset>
+            <div name="graph" > 
+              
+            </div>
+          </fieldset>
+        </div>
+
+        <%= renderLegend('investmentAccountValue','INVESTMENTACCOUNTVALUE') %>
+        <div data-role="table" class="illustrationdisplay" name="investmentAccountValue">
+          <table class="illustrationtable" width="100%">
+            <tr class="illustrationtableheader" >
+               <td rowspan="2">
+                 <%= getLabelValue('POLICYYEARAGE')   %>
+               </td>
+               <td rowspan="2">
+                 <%= getLabelValue('ACCUMULATEDPREMIUM')   %>
+               </td>
+               <td rowspan="2">
+                 <%= getLabelValue('LUMPSUM')   %>
+               </td>
+              <td rowspan="2">
+                <%= getLabelValue('WITHDRAWAL')   %>
+              </td>
+               <td colspan="2">
+                 <%= getLabelValue('PROJECTION')   %> <%= @low.to_s %>%
+               </td>
+               <td colspan="2">
+                 <%= getLabelValue('PROJECTION')   %> <%= @mid.to_s %>%
+               </td>
+        
+            </tr>
+            <tr class="illustrationtableheader">
+               <td >
+                 <%= getLabelValue('INVESTMENTACCOUNTVALUE')   %>
+               </td>
+               <td >
+                 <%= getLabelValue('SURRENDERVALUE')   %>
+               </td>
+               <td>
+                 <%= getLabelValue('INVESTMENTACCOUNTVALUE')   %>
+               </td>
+               <td>
+                 <%= getLabelValue('SURRENDERVALUE')   %>
+               </td>
+            </tr>
+            
+            <%  
+              totalICPAmount = 0.0
+              @benefitTable.each_with_index do |benefitRow, index| 
+              
+                if benefitRow != nil
+                  #totalICPAmount = totalICPAmount + benefitRow["icpAmount"].to_f.floor() if benefitRow["icpAmount"] != nil
+                    %>      
+                    <tr class="illustrationtablerow">
+                      <td class="tabletext"> 
+                        <%= renderNumberFloor(benefitRow["policyYear"])%> / <%= renderNumberFloor(benefitRow["attainedAge"])%>  
+                      </td>
+                      <td class="tablenum"> <%= renderNumber(benefitRow["accumulatedPremium"])%> </td>
+                      <td class="tablenum"> <%= renderNumber(benefitRow["lumpsumAmount"])%> </td>
+                      <td class="tablenum"> <%= renderNumber(benefitRow["withdrawalAmount"])%> </td>
+                      <td class="tablenum"> <%= renderNumber(benefitRow["investmentAccountValueL"])%> </td>
+                      <td class="tablenum"> <%= renderNumber(benefitRow["surrenderValueL"])%> </td>
+                      <td class="tablenum"> <%= renderNumber(benefitRow["investmentAccountValueM"])%> </td>
+                      <td class="tablenum"> <%= renderNumber(benefitRow["surrenderValueM"])%> </td>
+                    </tr>
+                  <%
+                end
+              end 
+            %>
+            
+          </table>
+        </div>
+
+        <%= renderLegend('allocatedInvestmentAccountValue','ALLOCATEDINVESTMENTACCOUNTVALUE') %>
+        <div data-role="table" class="illustrationdisplay" name="allocatedInvestmentAccountValue">
+          <table class="illustrationtable" width="100%">
+            <tr class="illustrationtableheader" >
+               <td rowspan="2">
+                 <%= getLabelValue('POLICYYEARAGE')   %>
+               </td>
+               <td rowspan="2">
+                 <%= getLabelValue('ACCUMULATEDPREMIUM')   %>
+               </td>
+              <td rowspan="2">
+                <%= getLabelValue('WITHDRAWAL')   %>
+              </td>
+               <td colspan="3">
+                 <%= getLabelValue('PROJECTION')   %> <%= @low.to_s %>%
+               </td>
+               <td colspan="3">
+                 <%= getLabelValue('PROJECTION')   %> <%= @mid.to_s %>%
+               </td>
+        
+            </tr>
+            <tr class="illustrationtableheader">
+              <td >
+                <%= getLabelValue('INITIALINVESTMENTACCOUNTVALUE')   %>
+              </td>
+               <td >
+                 <%= getLabelValue('ACCUMULATEDINVESTMENTACCOUNTVALUE')   %>
+               </td>
+               <td >
+                 <%= getLabelValue('SURRENDERVALUE')   %>
+               </td>
+              <td >
+                <%= getLabelValue('INITIALINVESTMENTACCOUNTVALUE')   %>
+              </td>
+               <td>
+                 <%= getLabelValue('ACCUMULATEDINVESTMENTACCOUNTVALUE')   %>
+               </td>
+               <td>
+                 <%= getLabelValue('SURRENDERVALUE')   %>
+               </td>
+            </tr>
+            
+            <%  
+              totalICPAmount = 0.0
+              @benefitTable.each_with_index do |benefitRow, index| 
+              
+                if benefitRow != nil
+                  #totalICPAmount = totalICPAmount + benefitRow["icpAmount"].to_f.floor() if benefitRow["icpAmount"] != nil
+                    %>      
+                    <tr class="illustrationtablerow">
+                      <td class="tabletext"> 
+                        <%= renderNumberFloor(benefitRow["policyYear"])%> / <%= renderNumberFloor(benefitRow["attainedAge"])%>  
+                      </td>
+                      <td class="tablenum"> <%= renderNumber(benefitRow["accumulatedPremium"])%> </td>
+                      <td class="tablenum"> <%= renderNumber(benefitRow["withdrawalAmount"])%> </td>                  
+                      <td class="tablenum"> <%= renderNumber(benefitRow["initialInvestmentAccountValueL"])%> </td>
+                      <td class="tablenum"> <%= renderNumber(benefitRow["accumulatedInvestmentAccountValueL"])%> </td>
+                      <td class="tablenum"> <%= renderNumber(benefitRow["surrenderValueL"])%> </td>
+                      <td class="tablenum"> <%= renderNumber(benefitRow["initialInvestmentAccountValueM"])%> </td>
+                      <td class="tablenum"> <%= renderNumber(benefitRow["accumulatedInvestmentAccountValueM"])%> </td>
+                      <td class="tablenum"> <%= renderNumber(benefitRow["surrenderValueM"])%> </td>
+                    </tr>
+                  <%
+                end
+              end 
+            %>
+            
+          </table>
+        </div>
+
+        <%= renderLegend('charges','CHARGES') %>
+        <div data-role="table" class="illustrationdisplay" name="charges">
+          <table class="illustrationtable" width="100%">
+            <tr class="illustrationtableheader" >
+               <td rowspan="2">
+                 <%= getLabelValue('POLICYYEARAGE')   %>
+               </td>
+               <td rowspan="2">
+                 <%= getLabelValue('BIDOFFERSPREAD')   %>
+               </td>
+               <td colspan="2">
+                 <%= getLabelValue('PROJECTION')   %> <%= @low.to_s %>%
+               </td>
+               <td colspan="2">
+                 <%= getLabelValue('PROJECTION')   %> <%= @mid.to_s %>%
+               </td>
+        
+            </tr>
+            <tr class="illustrationtableheader">
+               <td >
+                 <%= getLabelValue('ADMINISTRATIONFEE')   %>
+               </td>
+               <td >
+                 <%= getLabelValue('EARLYENCASHMENTCHARGE')   %>
+               </td>
+               <td>
+                 <%= getLabelValue('ADMINISTRATIONFEE')   %>
+               </td>
+               <td>
+                 <%= getLabelValue('EARLYENCASHMENTCHARGE')   %>
+               </td>
+            </tr>
+            
+            <%  
+              totalICPAmount = 0.0
+              @benefitTable.each_with_index do |benefitRow, index| 
+              
+                if benefitRow != nil
+                  #totalICPAmount = totalICPAmount + benefitRow["icpAmount"].to_f.floor() if benefitRow["icpAmount"] != nil
+                    %>      
+                    <tr class="illustrationtablerow">
+                      <td class="tabletext"> 
+                        <%= renderNumberFloor(benefitRow["policyYear"])%> / <%= renderNumberFloor(benefitRow["attainedAge"])%>  
+                      </td>
+                      <td class="tablenum"> <%= renderNumber(benefitRow["boSpread"])%> </td>
+                      <td class="tablenum"> <%= renderNumber(benefitRow["adminFee"])%> </td>
+                      <td class="tablenum"> <%= renderNumber(benefitRow["surrenderLapseValueL"])%> </td>
+                      <td class="tablenum"> <%= renderNumber(benefitRow["adminFee"])%> </td>
+                      <td class="tablenum"> <%= renderNumber(benefitRow["surrenderLapseValueM"])%> </td>
+                    </tr>
+                  <%
+                end
+              end 
+            %>
+            
+          </table>
+        </div>
+
+        <%= renderLegend('summaryIllustration','SUMMARYILLUSTRATION') %>
+        <div data-role="table" class="illustrationdisplay" name="summaryIllustration">
+          <table class="illustrationtable" width="100%">
+            <tr class="illustrationtableheader" >
+               <td rowspan="2">
+                 <%= getLabelValue('POLICYYEARAGE')   %>
+               </td>
+              <td rowspan="2">
+                <%= getLabelValue('ACCUMULATEDPREMIUM')   %>
+              </td>
+               <td colspan="2">
+                 <%= getLabelValue('PROJECTION')   %> <%= @low.to_s %>%
+               </td>
+               <td colspan="2">
+                 <%= getLabelValue('PROJECTION')   %> <%= @mid.to_s %>%
+               </td>
+        
+            </tr>
+            <tr class="illustrationtableheader">
+               <td >
+                 <%= getLabelValue('SURRENDERVALUE')   %>
+               </td>
+               <td >
+                 <%= getLabelValue('DEATHBENEFIT1')   %>
+               </td>
+               <td>
+                 <%= getLabelValue('SURRENDERVALUE')   %>
+               </td>
+               <td>
+                 <%= getLabelValue('DEATHBENEFIT1')   %>
+               </td>
+            </tr>
+            
+            <%  
+              totalICPAmount = 0.0
+              @benefitTable.each_with_index do |benefitRow, index| 
+              
+                if benefitRow != nil
+                  #totalICPAmount = totalICPAmount + benefitRow["icpAmount"].to_f.floor() if benefitRow["icpAmount"] != nil
+                    %>      
+                    <tr class="illustrationtablerow">
+                      <td class="tabletext"> 
+                        <%= renderNumberFloor(benefitRow["policyYear"])%> / <%= renderNumberFloor(benefitRow["attainedAge"])%>  
+                      </td>
+                      <td class="tablenum"> <%= renderNumber(benefitRow["accumulatedPremium"])%> </td>
+                      <td class="tablenum"> <%= renderNumber(benefitRow["surrenderValueL"])%> </td>
+                      <td class="tablenum"> <%= renderNumber(benefitRow["benefitAmountL"])%> </td>
+                      <td class="tablenum"> <%= renderNumber(benefitRow["surrenderValueM"])%> </td>
+                      <td class="tablenum"> <%= renderNumber(benefitRow["benefitAmountM"])%> </td>
+                    </tr>
+                  <%
+                end
+              end 
+            %>
+            
+          </table>
+        </div>
+                
+          <%
+            when "INCOME" 
+          %>
+            <div data-role="table" class="illustrationdisplay">
+              <fieldset>
+                <div name="graph" > 
+                  
+                </div>
+              </fieldset>
+            </div>
+            
+            <div data-role="table" class="illustrationdisplay">
+            <table class="illustrationtable" width="100%">
+              <tr class="illustrationtableheader" >
+                 <td rowspan="2">
+                   <%= getLabelValue('POLICYYEAR')   %>
+                 </td>
+                 <td colspan="2">
+                   <%= getLabelValue('PREMIUM')   %>
+                 </td>
+                <td rowspan="2">
+                  <%= getLabelValue('DEATHBENEFIT1')   %>
+                </td>
+                <td rowspan="2">
+                  <%= getLabelValue('ASSUREDINCOME')   %>
+                </td>
+                <td rowspan="2">
+                  <%= getLabelValue('MATURITYBENEFIT')   %>
+                </td>
+                 <td rowspan="2">
+                   <%= getLabelValue('SURRENDERVALUE')   %>
+                 </td>
+               </tr>
+               <tr class="illustrationtableheader">
+                 <td >
+                   <%= getLabelValue('RECEIVED')   %>
+                 </td>
+                 <td >
+                   <%= getLabelValue('ACCUMLATED')   %>
+                 </td>
+               </tr>
+               
+              <%  
+                totalGuaranteedAmount = 0.0
+                totalNonGuaranteedAmount = 0.0
+                @benefitTable.each_with_index do |benefitRow, index| 
+                
+                  if benefitRow != nil
+                    totalGuaranteedAmount = totalGuaranteedAmount + benefitRow["icpValue"].to_f.floor() if benefitRow["icpValue"] != nil
+                    totalNonGuaranteedAmount = totalNonGuaranteedAmount + benefitRow["maturityValue"].to_f.floor() if benefitRow["maturityValue"] != nil
+                    %>      
+                      <tr class="illustrationtablerow">
+                      <td class="tablenum"> <%= renderNumber("%.0f" % benefitRow["policyYear"]) %> </td>
+                      <td class="tablenum"> 
+                        <%  
+                          if benefitRow["premiumReceived"] != 0
+                            %>
+                            <%= renderNumber("%.0f" % benefitRow["premiumReceived"])%>
+                            <%
+                          end
+                        %> 
+                      </td>                    
+
+                      <td class="tablenum"> <%= renderNumberFloor(benefitRow["accumulatedPremium"]) %> </td>
+                        
+                      <td class="tablenum"> 
+                        <%  
+                          if benefitRow["benefitAmount"].to_i != 0
+                            %> 
+                              <%= renderNumberFloor(benefitRow["benefitAmount"]) %>
+                            <%
+                          end
+                        %>
+                      </td>
+                        
+                      <td class="tablenum">
+                        <%  
+                          if benefitRow["icpValue"].to_i != 0
+                            %> 
+                              <%= renderNumberFloor(benefitRow["icpValue"]) %>
+                            <%
+                          end
+                        %>
+                      </td>
+                          
+                      <td class="tablenum">
+                        <%  
+                          if benefitRow["maturityValue"].to_i != 0
+                            %> 
+                              <%= renderNumberFloor(benefitRow["maturityValue"]) %>
+                            <%
+                          end
+                        %> 
+                      </td>
+          
+                      <td class="tablenum">
+                        <%  
+                          if benefitRow["surrenderBenefitValue"].to_i > 0
+                            %>
+                              <%= renderNumberFloor(benefitRow["surrenderBenefitValue"]) %>
+                            <%
+                          end
+                        %> 
+                      </td>
+                      
+                      </tr>
+                    <%
+                  end
+                end 
+              %>
+              <tr class="illustrationtablerow">
+                  <td colspan="2"> <span> <%= getLabelValue('TOTAL')   %> <span> </td>
+                  <td class="tablenum"> <span> <%= renderNumberFloor(@benefitTable[@term]["accumulatedPremium"]) %> <span> </td>
+                  <td class="tablenum"> <span> <%= renderNumberFloor(@benefitTable[@term]["benefitAmount"]) %> <span> </td>
+                  <td class="tablenum"> <span> <%= renderNumberFloor(totalGuaranteedAmount) %> <span> </td>
+                  <td class="tablenum"> <span> <%= renderNumberFloor(totalNonGuaranteedAmount) %> <span> </td>                            
+              </tr>
+            </table>
+          </div>
+              <% 
+              when "IRETIRE" 
+              %>
+                <%= render :partial => "iretire" %>
+              <%
+                when "WLENDOWMENT" 
+              %>
+              <div data-role="table" class="illustrationdisplay">
+                <fieldset>
+                  <div name="graph" > 
+                    
+                  </div>
+                </fieldset>
+              </div>
+
+                <%= renderLegend('benefitPayoutM','ENDOWMENTBENEFITPAYOUT') %>
+                <div data-role="table" class="illustrationdisplay" name="benefitPayoutM">
+                <table class="illustrationtable" width="100%">
+                  <tr class="illustrationtableheader" >
+                      <td rowspan="2">
+                        <%= getLabelValue('POLICYYEAR')   %>
+                      </td>
+                      <td rowspan="2">
+                        <%= getLabelValue('DEATHBENEFIT1')   %>
+                      </td>
+                      <td rowspan="2">
+                        <%= getLabelValue('CURRENTVALUE')   %>
+                      </td>
+                      <td rowspan="2">
+                        <%= getLabelValue('GUARANTEEDENDOWMENT')   %>
+                      </td>
+                     <td colspan="3">
+                       <%= getLabelValue('ENDOWMENTBENEFITPAYOUT')   %> <%=@mid%>%
+                     </td>
+                   </tr>
+                   <tr class="illustrationtableheader">
+                     <td >
+                       <%= getLabelValue('ILLUSTRATIVEACCUMULATEDDIVIDEND')   %> 
+                     </td>
+                     <td>
+                       <%= getLabelValue('TOTALLIVINGBENEFIT')   %>
+                     </td>
+                    <td>
+                      <%= getLabelValue('TOTALDEATHBENEFIT')   %>
+                    </td>
+                   </tr>
+                   
+                  <%  
+                    totalGuaranteedAmount = 0.0
+                    totalNonGuaranteedAmount = 0.0
+                    @benefitTable.each_with_index do |benefitRow, index| 
+                    
+                      if benefitRow != nil
+                        totalGuaranteedAmount = totalGuaranteedAmount + benefitRow["gBenefitValue"].to_f.floor() if benefitRow["gBenefitValue"] != nil
+                        totalNonGuaranteedAmount = totalNonGuaranteedAmount + benefitRow["ngBenefitValue"].to_f.floor() if benefitRow["ngBenefitValue"] != nil
+                        %>      
+                          <tr class="illustrationtablerow">
+                            <td class="tablenum"> <%= renderNumber(benefitRow["policyYear"]) %> / <%= renderNumber(benefitRow["attainedAge"]) %></td>
+                            <td class="tablenum"> 
+                              <%  
+                                if benefitRow["benefitAmount"] != 0
+                                  %>
+                                  <%= renderNumber(benefitRow["benefitAmount"])%>
+                                  <%
+                                end
+                              %> 
+                            </td>                    
+                            <td class="tablenum">
+                              <%  
+                                if benefitRow["cvAmount"] != 0
+                                  %>
+                                  <%= renderNumber(benefitRow["cvAmount"])%>
+                                  <%
+                                end
+                              %> 
+                            </td>
+                              
+                            <td class="tablenum">
+                              <%  
+                                if benefitRow["icpValue"].to_i != 0
+                                  %> 
+                                    <%= renderNumber(benefitRow["icpValue"]) %>
+                                  <%
+                                end
+                              %>
+                            </td>
+                            <td class="tablenum">
+                              <%  
+                                if benefitRow["accumulatedNGBenefitValueM"].to_i != 0
+                                  %> 
+                                    <%= renderNumber(benefitRow["accumulatedNGBenefitValueM"]) %>
+                                  <%
+                                end
+                              %> 
+                            </td>
+                        
+                            <td class="tablenum">
+                              <%  
+                                if benefitRow["accumulatedEndowmentM"].to_i != 0
+                                  %> 
+                                    <%= renderNumber(benefitRow["accumulatedEndowmentM"]) %>
+                                  <%
+                                end
+                              %> 
+                            </td>
+
+                            <td class="tablenum">
+                              <%  
+                                if benefitRow["totalDeathBenefitAEBM"].to_i != 0
+                                  %> 
+                                    <%= renderNumber(benefitRow["totalDeathBenefitAEBM"]) %>
+                                  <%
+                                end
+                              %> 
+                            </td>
+                          </tr>
+                        <%
+                      end
+                    end 
+                  %>
+                </table>
+              </div>
+
+              <%= renderLegend('benefitPayoutL','ENDOWMENTBENEFITPAYOUT') %>
+              <div data-role="table" class="illustrationdisplay" name="benefitPayoutL">
+              <table class="illustrationtable" width="100%">
+                <tr class="illustrationtableheader" >
+                    <td rowspan="2">
+                      <%= getLabelValue('POLICYYEAR')   %>
+                    </td>
+                    <td rowspan="2">
+                      <%= getLabelValue('DEATHBENEFIT1')   %>
+                    </td>
+                    <td rowspan="2">
+                      <%= getLabelValue('CURRENTVALUE')   %>
+                    </td>
+                    <td rowspan="2">
+                      <%= getLabelValue('GUARANTEEDENDOWMENT')   %>
+                    </td>
+                   <td colspan="3">
+                     <%= getLabelValue('ENDOWMENTBENEFITPAYOUT')   %> <%=@low%>%
+                   </td>
+                 </tr>
+                 <tr class="illustrationtableheader">
+                   <td >
+                     <%= getLabelValue('ILLUSTRATIVEACCUMULATEDDIVIDEND')   %> 
+                   </td>
+                   <td>
+                     <%= getLabelValue('TOTALLIVINGBENEFIT')   %>
+                   </td>
+                  <td>
+                    <%= getLabelValue('TOTALDEATHBENEFIT')   %>
+                  </td>
+                 </tr>
+                 
+                <%  
+                  totalGuaranteedAmount = 0.0
+                  totalNonGuaranteedAmount = 0.0
+                  @benefitTable.each_with_index do |benefitRow, index| 
+                  
+                    if benefitRow != nil
+                      totalGuaranteedAmount = totalGuaranteedAmount + benefitRow["gBenefitValue"].to_f.floor() if benefitRow["gBenefitValue"] != nil
+                      totalNonGuaranteedAmount = totalNonGuaranteedAmount + benefitRow["ngBenefitValue"].to_f.floor() if benefitRow["ngBenefitValue"] != nil
+                      %>      
+                        <tr class="illustrationtablerow">
+                          <td class="tablenum"> <%= renderNumber(benefitRow["policyYear"]) %> / <%= renderNumber(benefitRow["attainedAge"]) %></td>
+                          <td class="tablenum"> 
+                            <%  
+                              if benefitRow["benefitAmount"] != 0
+                                %>
+                                <%= renderNumber(benefitRow["benefitAmount"])%>
+                                <%
+                              end
+                            %> 
+                          </td>                    
+                          <td class="tablenum">
+                            <%  
+                              if benefitRow["cvAmount"] != 0
+                                %>
+                                <%= renderNumber(benefitRow["cvAmount"])%>
+                                <%
+                              end
+                            %> 
+                          </td>
+                            
+                          <td class="tablenum">
+                            <%  
+                              if benefitRow["icpValue"].to_i != 0
+                                %> 
+                                  <%= renderNumber(benefitRow["icpValue"]) %>
+                                <%
+                              end
+                            %>
+                          </td>
+                          <td class="tablenum">
+                            <%  
+                              if benefitRow["accumulatedNGBenefitValueL"].to_i != 0
+                                %> 
+                                  <%= renderNumber(benefitRow["accumulatedNGBenefitValueL"]) %>
+                                <%
+                              end
+                            %> 
+                          </td>
+                      
+                          <td class="tablenum">
+                            <%  
+                              if benefitRow["accumulatedEndowmentL"].to_i != 0
+                                %> 
+                                  <%= renderNumber(benefitRow["accumulatedEndowmentL"]) %>
+                                <%
+                              end
+                            %> 
+                          </td>
+
+                          <td class="tablenum">
+                            <%  
+                              if benefitRow["totalDeathBenefitAEBL"].to_i != 0
+                                %> 
+                                  <%= renderNumber(benefitRow["totalDeathBenefitAEBL"]) %>
+                                <%
+                              end
+                            %> 
+                          </td>
+                        </tr>
+                      <%
+                    end
+                  end 
+                %>
+              </table>
+            </div>
+
+              <%= renderLegend('accumulatedEndowmentsM','ACCUMULATEDENDOWMENTS') %>
+              <div data-role="table" class="illustrationdisplay" name="accumulatedEndowmentsM">
+              <table class="illustrationtable" width="100%">
+                <tr class="illustrationtableheader" >
+                    <td rowspan="2">
+                      <%= getLabelValue('POLICYYEAR')   %>
+                    </td>
+                    <td rowspan="2">
+                      <%= getLabelValue('DEATHBENEFIT1')   %>
+                    </td>
+                    <td rowspan="2">
+                      <%= getLabelValue('CURRENTVALUE')   %>
+                    </td>
+                   <td colspan="4">
+                     <%= getLabelValue('ENDOWMENTBENEFITPAYOUT')   %> <%=@mid%>%
+                   </td>
+                 </tr>
+                 <tr class="illustrationtableheader">
+                    <td >
+                      <%= getLabelValue('ACCUMULATEDDIVIDEND')   %>
+                    </td>
+                    <td >
+                      <%= getLabelValue('ILLUSTRATIVEACCUMULATEDDIVIDEND')   %>
+                    </td>
+                    <td>
+                      <%= getLabelValue('TOTALLIVINGBENEFIT')   %>
+                    </td>
+                   <td>
+                     <%= getLabelValue('TOTALDEATHBENEFIT')   %>
+                   </td>
+                 </tr>
+                 
+                <%  
+                  totalGuaranteedAmount = 0.0
+                  totalNonGuaranteedAmount = 0.0
+                  @benefitTable.each_with_index do |benefitRow, index| 
+                  
+                    if benefitRow != nil
+                      totalGuaranteedAmount = totalGuaranteedAmount + benefitRow["gBenefitValue"].to_f.floor() if benefitRow["gBenefitValue"] != nil
+                      totalNonGuaranteedAmount = totalNonGuaranteedAmount + benefitRow["ngBenefitValue"].to_f.floor() if benefitRow["ngBenefitValue"] != nil
+                      %>      
+                        <tr class="illustrationtablerow">
+                          <td class="tablenum"> <%= renderNumber(benefitRow["policyYear"]) %> / <%= renderNumber(benefitRow["attainedAge"]) %></td>
+                          <td class="tablenum"> 
+                            <%  
+                              if benefitRow["benefitAmount"] != 0
+                                %>
+                                <%= renderNumber(benefitRow["benefitAmount"])%>
+                                <%
+                              end
+                            %> 
+                          </td>                    
+                          <td class="tablenum">
+                            <%  
+                              if benefitRow["cvAmount"] != 0
+                                %>
+                                <%= renderNumber(benefitRow["cvAmount"])%>
+                                <%
+                              end
+                            %> 
+                          </td>
+                            
+                          <td class="tablenum">
+                            <%  
+                              if benefitRow["accumulatedEndowmentPayoutM"].to_i != 0
+                                %> 
+                                  <%= renderNumberFloor(benefitRow["accumulatedEndowmentPayoutM"]) %>
+                                <%
+                              end
+                            %>
+                          </td>
+                          <td class="tablenum">
+                            <%  
+                              if benefitRow["accumulatedNGBenefitValueM"].to_i != 0
+                                %> 
+                                  <%= renderNumber(benefitRow["accumulatedNGBenefitValueM"]) %>
+                                <%
+                              end
+                            %> 
+                          </td>
+                      
+                          <td class="tablenum">
+                            <%  
+                              if benefitRow["accumulatedEndowmentM"].to_i != 0
+                                %> 
+                                  <%= renderNumber(benefitRow["accumulatedEndowmentM"]) %>
+                                <%
+                              end
+                            %> 
+                          </td>
+    
+                          <td class="tablenum">
+                            <%  
+                              if benefitRow["totalDeathBenefitAEBM"].to_i != 0
+                                %> 
+                                  <%= renderNumber(benefitRow["totalDeathBenefitAEBM"]) %>
+                                <%
+                              end
+                            %> 
+                          </td>
+              
+                        </tr>
+                      <%
+                    end
+                  end 
+                %>
+              </table>
+            </div>
+
+
+                <%= renderLegend('accumulatedEndowmentsL','ACCUMULATEDENDOWMENTS') %>
+                <div data-role="table" class="illustrationdisplay" name="accumulatedEndowmentsL">
+                <table class="illustrationtable" width="100%">
+                  <tr class="illustrationtableheader" >
+                      <td rowspan="2">
+                        <%= getLabelValue('POLICYYEAR')   %>
+                      </td>
+                      <td rowspan="2">
+                        <%= getLabelValue('DEATHBENEFIT1')   %>
+                      </td>
+                      <td rowspan="2">
+                        <%= getLabelValue('CURRENTVALUE')   %>
+                      </td>
+                     <td colspan="4">
+                       <%= getLabelValue('ENDOWMENTBENEFITPAYOUT')   %> <%=@low%>%
+                     </td>
+                   </tr>
+                   <tr class="illustrationtableheader">
+                      <td >
+                        <%= getLabelValue('ACCUMULATEDDIVIDEND')   %>
+                      </td>
+                      <td >
+                        <%= getLabelValue('ILLUSTRATIVEACCUMULATEDDIVIDEND')   %>
+                      </td>
+                      <td>
+                        <%= getLabelValue('TOTALLIVINGBENEFIT')   %>
+                      </td>
+                     <td>
+                       <%= getLabelValue('TOTALDEATHBENEFIT')   %>
+                     </td>
+                   </tr>
+                   
+                  <%  
+                    totalGuaranteedAmount = 0.0
+                    totalNonGuaranteedAmount = 0.0
+                    @benefitTable.each_with_index do |benefitRow, index| 
+                    
+                      if benefitRow != nil
+                        totalGuaranteedAmount = totalGuaranteedAmount + benefitRow["gBenefitValue"].to_f.floor() if benefitRow["gBenefitValue"] != nil
+                        totalNonGuaranteedAmount = totalNonGuaranteedAmount + benefitRow["ngBenefitValue"].to_f.floor() if benefitRow["ngBenefitValue"] != nil
+                        %>      
+                          <tr class="illustrationtablerow">
+                            <td class="tablenum"> <%= renderNumber(benefitRow["policyYear"]) %> / <%= renderNumber(benefitRow["attainedAge"]) %></td>
+                            <td class="tablenum"> 
+                              <%  
+                                if benefitRow["benefitAmount"] != 0
+                                  %>
+                                  <%= renderNumber(benefitRow["benefitAmount"])%>
+                                  <%
+                                end
+                              %> 
+                            </td>                    
+                            <td class="tablenum">
+                              <%  
+                                if benefitRow["cvAmount"] != 0
+                                  %>
+                                  <%= renderNumber(benefitRow["cvAmount"])%>
+                                  <%
+                                end
+                              %> 
+                            </td>
+                              
+                            <td class="tablenum">
+                              <%  
+                                if benefitRow["accumulatedEndowmentPayoutL"].to_i != 0
+                                  %> 
+                                    <%= renderNumberFloor(benefitRow["accumulatedEndowmentPayoutL"]) %>
+                                  <%
+                                end
+                              %>
+                            </td>
+                            <td class="tablenum">
+                              <%  
+                                if benefitRow["accumulatedNGBenefitValueL"].to_i != 0
+                                  %> 
+                                    <%= renderNumber(benefitRow["accumulatedNGBenefitValueL"]) %>
+                                  <%
+                                end
+                              %> 
+                            </td>
+                        
+                            <td class="tablenum">
+                              <%  
+                                if benefitRow["accumulatedEndowmentL"].to_i != 0
+                                  %> 
+                                    <%= renderNumber(benefitRow["accumulatedEndowmentL"]) %>
+                                  <%
+                                end
+                              %> 
+                            </td>
+      
+                            <td class="tablenum">
+                              <%  
+                                if benefitRow["totalDeathBenefitAEBL"].to_i != 0
+                                  %> 
+                                    <%= renderNumber(benefitRow["totalDeathBenefitAEBL"]) %>
+                                  <%
+                                end
+                              %> 
+                            </td>
+                
+                          </tr>
+                        <%
+                      end
+                    end 
+                  %>
+                </table>
+              </div>
+            
+              <%= renderLegend('paidUpAdditionsM','PAIDUPADDITIONSM') %>
+              <div data-role="table" class="illustrationdisplay" name="paidUpAdditionsM">
+              <table class="illustrationtable" width="100%">
+                <tr class="illustrationtableheader" >
+                    <td >
+                      <%= getLabelValue('POLICYYEAR')   %>
+                    </td>
+                    <td >
+                      <%= getLabelValue('CVACCUMULATEDPUA')   %>
+                    </td>
+                    <td >
+                      <%= getLabelValue('ACCUMULATEDPUA')   %>
+                    </td>
+                    <td >
+                      <%= getLabelValue('ENDOWMENTBENEFITPAYOUT')   %>
+                    </td>
+                    <td >
+                      <%= getLabelValue('DEATHBENEFITEBP')   %>
+                    </td>
+                    <td >
+                      <%= getLabelValue('ACCUMULATEDENDOWMENT')   %>
+                    </td>
+                    <td >
+                      <%= getLabelValue('DEATHBENEFITAEB')   %>
+                    </td>
+
+                 </tr>
+                 
+                <%  
+                  totalGuaranteedAmount = 0.0
+                  totalNonGuaranteedAmount = 0.0
+                  @benefitTable.each_with_index do |benefitRow, index| 
+                  
+                    if benefitRow != nil
+                      totalGuaranteedAmount = totalGuaranteedAmount + benefitRow["gBenefitValue"].to_f.floor() if benefitRow["gBenefitValue"] != nil
+                      totalNonGuaranteedAmount = totalNonGuaranteedAmount + benefitRow["ngBenefitValue"].to_f.floor() if benefitRow["ngBenefitValue"] != nil
+                      %>      
+                        <tr class="illustrationtablerow">
+                          <td class="tablenum"> <%= renderNumber(benefitRow["policyYear"]) %> / <%= renderNumber(benefitRow["attainedAge"]) %></td>
+                          <td class="tablenum"> 
+                            <%  
+                              if benefitRow["cvAccumulatedPUAM"] != 0
+                                %>
+                                <%= renderNumber(benefitRow["cvAccumulatedPUAM"])%>
+                                <%
+                              end
+                            %> 
+                          </td>                    
+                          <td class="tablenum">
+                            <%  
+                              if benefitRow["accumulatedPUAM"] != 0
+                                %>
+                                <%= renderNumber(benefitRow["accumulatedPUAM"])%>
+                                <%
+                              end
+                            %> 
+                          </td>
+                            
+                          <td class="tablenum">
+                            <%  
+                              if benefitRow["endowmentPayoutM"].to_i != 0
+                                %> 
+                                  <%= renderNumberFloor(benefitRow["endowmentPayoutM"]) %>
+                                <%
+                              end
+                            %>
+                          </td>
+                          <td class="tablenum">
+                            <%  
+                              if benefitRow["totalDeathBenefitEBPM"].to_i != 0
+                                %> 
+                                  <%= renderNumberFloor(benefitRow["totalDeathBenefitEBPM"]) %>
+                                <%
+                              end
+                            %> 
+                          </td>
+
+                          <td class="tablenum">
+                            <%  
+                              if benefitRow["accumulatedEndowmentPayoutM"].to_i != 0
+                                %> 
+                                  <%= renderNumberFloor(benefitRow["accumulatedEndowmentPayoutM"]) %>
+                                <%
+                              end
+                            %>
+                          </td>
+                          <td class="tablenum">
+                            <%  
+                              if benefitRow["totalDeathBenefitAEBM"].to_i != 0
+                                %> 
+                                  <%= renderNumberFloor(benefitRow["totalDeathBenefitAEBM"]) %>
+                                <%
+                              end
+                            %> 
+                          </td>
+              
+                        </tr>
+                      <%
+                    end
+                  end 
+                %>
+              </table>
+            </div>
+
+            
+              <%= renderLegend('paidUpAdditionsL','PAIDUPADDITIONSL') %>
+              <div data-role="table" class="illustrationdisplay" name="paidUpAdditionsL">
+              <table class="illustrationtable" width="100%">
+                <tr class="illustrationtableheader" >
+                    <td >
+                      <%= getLabelValue('POLICYYEAR')   %>
+                    </td>
+                    <td >
+                      <%= getLabelValue('CVACCUMULATEDPUA')   %>
+                    </td>
+                    <td >
+                      <%= getLabelValue('ACCUMULATEDPUA')   %>
+                    </td>
+                    <td >
+                      <%= getLabelValue('ENDOWMENTBENEFITPAYOUT')   %>
+                    </td>
+                    <td >
+                      <%= getLabelValue('DEATHBENEFITEBP')   %>
+                    </td>
+                    <td >
+                      <%= getLabelValue('ACCUMULATEDENDOWMENT')   %>
+                    </td>
+                    <td >
+                      <%= getLabelValue('DEATHBENEFITAEB')   %>
+                    </td>
+
+                 </tr>
+                 
+                <%  
+                  totalGuaranteedAmount = 0.0
+                  totalNonGuaranteedAmount = 0.0
+                  @benefitTable.each_with_index do |benefitRow, index| 
+                  
+                    if benefitRow != nil
+                      totalGuaranteedAmount = totalGuaranteedAmount + benefitRow["gBenefitValue"].to_f.floor() if benefitRow["gBenefitValue"] != nil
+                      totalNonGuaranteedAmount = totalNonGuaranteedAmount + benefitRow["ngBenefitValue"].to_f.floor() if benefitRow["ngBenefitValue"] != nil
+                      %>      
+                        <tr class="illustrationtablerow">
+                          <td class="tablenum"> <%= renderNumber(benefitRow["policyYear"]) %> / <%= renderNumber(benefitRow["attainedAge"]) %></td>
+                          <td class="tablenum"> 
+                            <%  
+                              if benefitRow["cvAccumulatedPUAL"] != 0
+                                %>
+                                <%= renderNumber(benefitRow["cvAccumulatedPUAL"])%>
+                                <%
+                              end
+                            %> 
+                          </td>                    
+                          <td class="tablenum">
+                            <%  
+                              if benefitRow["accumulatedPUAL"] != 0
+                                %>
+                                <%= renderNumber(benefitRow["accumulatedPUAL"])%>
+                                <%
+                              end
+                            %> 
+                          </td>
+                            
+                          <td class="tablenum">
+                            <%  
+                              if benefitRow["endowmentPayoutL"].to_i != 0
+                                %> 
+                                  <%= renderNumberFloor(benefitRow["endowmentPayoutL"]) %>
+                                <%
+                              end
+                            %>
+                          </td>
+                          <td class="tablenum">
+                            <%  
+                              if benefitRow["totalDeathBenefitEBPL"].to_i != 0
+                                %> 
+                                  <%= renderNumberFloor(benefitRow["totalDeathBenefitEBPL"]) %>
+                                <%
+                              end
+                            %> 
+                          </td>
+
+                          <td class="tablenum">
+                            <%  
+                              if benefitRow["accumulatedEndowmentPayoutL"].to_i != 0
+                                %> 
+                                  <%= renderNumberFloor(benefitRow["accumulatedEndowmentPayoutL"]) %>
+                                <%
+                              end
+                            %>
+                          </td>
+                          <td class="tablenum">
+                            <%  
+                              if benefitRow["totalDeathBenefitAEBL"].to_i != 0
+                                %> 
+                                  <%= renderNumberFloor(benefitRow["totalDeathBenefitAEBL"]) %>
+                                <%
+                              end
+                            %> 
+                          </td>
+              
+                        </tr>
+                      <%
+                    end
+                  end 
+                %>
+              </table>
+            </div>
+        
+        <%
+        else #new illustration type
+          %>
+          
+          <% 
+        end 
+      %>
+      
+      <% if @bonusParticipation == "PAR" %>
+        <!-- <%=getLabelValue("BONUSPARTICIPATION")%> -->
+      <% end %>
+      <%=getLabelValue("ROUNDINGDISCLAIMER")%>
+    
+      <fieldset class="ui-grid-b">
+        <div class="ui-block-a-equi"></div>
+        <div class="ui-block-b-equi">
+          <% if @quotation.signature == nil %>
+            <a href="<%= url_for :action => :acceptIllustration, :id=>@quotation.object %>" name="sign" data-role="button" data-theme="a">
+              <%= getLabelValue('ACCEPTILLUSTRATION')%>
+            </a>
+          <% end %>
+            <a href="<%= url_for :action => :email, :id=>@quotation.object %>" name="email" data-role="button" data-theme="a">
+              <%= getLabelValue('PRINTEMAIL')%>
+            </a>
+        </div>
+        <div class="ui-block-c-equi"></div>
+      </fieldset>
+      <center><%=getLabelValue("LEGALDISCLAIMER")%></center>
+  </div>
+
+  <!--
+  <div data-role="footer" data-position="inline">
+           <a href="<%= url_for :action => :email, :id=>@quotation.object%>" data-role="button" data-theme="a">
+            <%= getLabelValue('EMAIL')%>
+           </a>
+  </div>
+  -->
+  
+  <script>
+    $('img[name*="collapse"]').click( function(){
+      divName = this.name.replace("collapse_","");
+      val = $('input[name="state_'+divName+'"]').val();
+      // # replace image
+      if(val == "+")
+      {
+        $('input[name="state_'+divName+'"]').val('-');
+        $('img[name="collapse_'+divName+'"]').attr("src","/public/images/SalesIllustration/less.jpg");
+        $('div[name="'+divName+'"]').show();          
+      }
+      else // # val == "-"
+      {
+        $('input[name="state_'+divName+'"]').val('+');
+        $('img[name="collapse_'+divName+'"]').attr("src","/public/images/SalesIllustration/more.jpg");
+        $('div[name="'+divName+'"]').hide();
+      }
+          
+          
+    });
+    
+      function acceptIllustration(){
+        $.ajax({
+                  url: "/app/Quotation/acceptIllustration",
+                  data: {},
+                  success: function(data) {
+                  },
+                  async: true                    
+               });          
+   
+      }
+
+      function accepted(uri){
+        $.ajax({
+                  url: "/app/Quotation/accepted",
+                  data: {'uri':uri, 'quotation': '<%=@quotation.object%>'},
+                  success: function(data) {
+                  },
+                  async: true                    
+               });          
+       
+      }
+
+      $(document).focus(function() {
+        setTimeout("onFocus()", 100);
+      });
+      
+      function onFocus(){
+          drawGraph(1);
+      }
+
+      function drawGraph(illustrationRate)
+      {
+        var bar5;
+        var line;
+
+        $('div[name="graph"]').html("<canvas id='cvs' name='cvs' width='"+ $(document).width() * 0.9 +"px' height='300px'>[No canvas support]</canvas>");
+        $('div[name="graph"]').trigger('create');
+        
+        if (illustrationRate == 1)
+        {
+          bar5 = new RGraph.Bar('cvs', <%= @values %>);
+        }
+        else if (illustrationRate == 7)
+        {
+          bar5 = new RGraph.Bar('cvs', <%= @valuesL %>);
+        }
+        else if (illustrationRate == 8)
+        {
+          bar5 = new RGraph.Bar('cvs', <%= @valuesM %>);
+        }
+        else if (illustrationRate == 9)
+        {
+          bar5 = new RGraph.Bar('cvs', <%= @valuesH %>);
+        }
+        
+        bar5.Set('colors', ['#cccccc']);
+           
+        bar5.Set('labels', <%= @labels %>);
+        bar5.Set('chart.numyticks', 20);
+        bar5.Set('chart.ylabels.count', 10);
+        bar5.Set('strokestyle', 'transparent');
+        bar5.Set('chart.gutter.left', 90);
+        bar5.Set('chart.gutter.bottom', 35);
+        bar5.Set('chart.title.yaxis', 'Amount');
+        bar5.Set('chart.title.yaxis.pos', 0.2);
+        bar5.Set('chart.title.xaxis', 'Policy Year');
+        bar5.Set('chart.title', 'Sales Illustration');
+        bar5.Set('ymax', <%= @ymax %>);
+        bar5.Set('chart.key', [<%= @chartKey %>]);
+        bar5.Set('chart.colors', [<%= @chartColours %>]);
+        //bar5.Set('chart.key.position','gutter');
+        bar5.Set('chart.key.halign','left');
+                        
+        <% if @lineValues != nil && @lineValues != "''" %>
+        line = new RGraph.Line('cvs', <%= @lineValues %> );
+        line.Set('colors', ['#FF0000','#00FF00','#0000FF']);
+        line.Set('linewidth', 2)
+        line.Set('chart.numyticks', 20);
+        line.Set('chart.ylabels.count', 10);
+        line.Set('chart.gutter.left', 90);
+        line.Set('chart.gutter.bottom', 35);
+        line.Set('ymax', <%= @ymax %>);
+          
+        combo = new RGraph.CombinedChart(bar5, line);
+
+        combo.Draw(); 
+        <% else %>
+          bar5.Draw();
+        <% end %>
+        
+      }
+  </script>
+</div>
+<!-- end of benefit table -->

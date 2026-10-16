@@ -1,0 +1,24 @@
+<% if @searchValue != nil && @searchValue != "" %> 
+<thead class="searchtableheader"> 
+    <tr>
+        <th> <%= getLabelValue('Fund')   %> </th> 
+        <th> <%= getLabelValue('fundDesc')   %> </th>
+        <th style="width: 30%;"> <%= getLabelValue('ACTION')   %> </th> 
+    </tr>
+</thead>
+<tbody>
+    <% @fundList.each_with_index do |fund, index| %>
+    <tr class="search<%= (1 + index%2) %>">
+        <td>
+            <%= getLabelValue(fund.fundCd) %>
+        </td>
+        <td >
+            <%= fund.fundDesc %><%= getLabelValue(fund.assetClass.to_s) %>
+        </td>
+        <td>
+            <a href='#' id="<%= fund.fundCd %>" onclick = 'javascript: addFund("<%= fund.fundCd %>", "<%= fund.expiryDt %>", "<%= fund.fundTypeCd %>", "<%= fund.maturityDt %>", "<%= @fundDesc[fund.fundCd]%>");' data-role="button"> <%= getLabelValue('Add')   %></a>
+        </td>
+    </tr>   
+    <% end %> 
+</tbody> 
+<% end %>

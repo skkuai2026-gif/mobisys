@@ -1,0 +1,114 @@
+<style type="text/css">
+.signaturePopup {
+	font-size: 13px;
+	border: none;
+	padding: 0;
+}
+</style>
+<%= pageTagStart('e-application','Symbiosys - E-Application') %>
+	<%= headerTag(getLabelValue('EAPPPREVIEW'), '', "","#{url_for :action => :showProposal, :id=> @policy.object}") %>
+	<div data-role="main" class="ui-content">
+	    <div class="main-content-wrapper main-content-full touch">
+					<%= formTagStart("acceptPreviewForm", "#{url_for :action => :acceptEappPreview}") %>
+			<div class="project-content-bg">
+				<%= modelTagStart("policy", @policy) %>
+					<div style="display: none;">
+						<%= inputTag("thirdPartyCustId") %>
+						<%= inputTag("uwDecisionCd") %>
+					</div>
+				<% modelTagEnd %>
+				<%= panelTagStart %>
+					<div class="div-with-border no-padding-bottom preferences-content">
+						<div class="content-fullform">
+							<%
+							counter = 1
+							limit = 1000
+							signatureCount = 50
+							$policyIO.htmlContent.each_pair do |pageNumber, page|
+								if counter <= limit
+									header_str = ""
+									if page["name"].to_s != ""
+										header_str = getLabelValue("#{page["name"]}")
+									else
+										header_str = LabelValue.getLabel("Page", $policyIO.outputPreferencesDO.languageCd.downcase) + " #{pageNumber}"
+									end
+							%>
+							<%= subPanelTagStart(header_str, false) %>
+							<%= page["content"] %>
+							<% 
+								if page["signature"].to_s != ""
+									@signature_form = ''
+									page["signature"].each do |signatureKey, signatureObject|
+										if signatureObject
+											@signature_form << captureSignatureOnOutput(signatureObject,$policyIO.baseDO,signatureCount)
+											signatureCount = signatureCount + 1
+										end
+									end
+							%>
+									<%= @signature_form %>
+								
+								<% end %>
+							<%= subPanelTagEnd %>
+							<%
+								end
+								counter += 1
+							end
+							%>
+							<div class="project-data">
+								<div class="row-details">
+									<p class="col-left">OTP</p>
+									<input class="input-controll readonly" type="tel" placeholder="Enter OTP" readonly id="OTP" maxlength="6">
+								</div>
+							</div>
+							<a class="button-default ui-btn ui-corner-all ui-shadow ui-btn-inline" id="generateOTP">Generate OTP</a>
+						</div>
+					</div>
+				<%= panelTagEnd %>
+			</div>
+			<%= formTagEnd %>			
+			<input type="hidden" id="statusCd" value='<%= @policy.statusCd %>'/>
+			<input type="hidden" id="policyNum" value='<%= @policy.policyNum %>'/>
+		</div>
+		<%# if !@errors.empty? || !@errorTabs == "" || !@incompleteTabs.empty? %>
+		    <div class="footer-bg">
+		    	<% if $rhoconfig[:captureSignOnEappPreview] %>
+		        	<a href="javascript:saveSignature();" rel="external"><%= getLabelValue("ACCEPT") %></a>
+		        <% else %>
+		        	<a href="<%= url_for :action => :acceptEappPreview, :id => @policy.object.to_s, :query => {:submit => '', :response => 'ACCEPT'} %>" rel="external"><%= getLabelValue("ACCEPT") %></a>
+		        <% end %>
+		    </div>
+	    <%# end %>
+	</div>
+
+	<script type="text/javascript">
+	function saveSignature(){
+		var formSerialized = $('#acceptPreviewForm').serializeHash();
+		if(formSerialized.SignatureContainer != undefined && formSerialized.SignatureContainer != null){
+			for (var index in formSerialized.SignatureContainer.ServiceSignature) {	
+				var serviceSignature = formSerialized.SignatureContainer.ServiceSignature[index];
+				serviceSignature.signature = $('#captureSignature' + serviceSignature.guid + '_signature').val();
+			}
+		}
+			$(".content-fullform").append($(".signaturePopup-declaration-wrapper"));
+			loading('show');
+			document.acceptPreviewForm.action = "acceptEappPreview?captureSignatureOnOutput=true";
+			document.acceptPreviewForm.submit();
+	} 
+	$(document).ready(function(){
+		$("#generateOTP").click(function(){
+			// $("#OTP").attr("readonly", false);
+			setReadOnly($("#OTP"), false)
+		});
+		$("#OTP").change(function(){
+			validateShort(document.getElementById("OTP"));
+		});
+		initializeSignaturePopup();
+		var statusCd = $('#statusCd').val();
+		var policyNum = $('#policyNum').val();
+		if (statusCd != "PENDING" && (statusCd != "COMPLETE" || policyNum != "")){
+			$(".footer-bg").hide();
+			$("div[id*='captureSignature']").hide();
+		}
+	});
+	</script>
+<%= pageTagEnd %>

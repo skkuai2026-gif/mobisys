@@ -1,0 +1,22 @@
+<% require 'CommonModules/mobisysbrowserhelper'
+%>
+<% case @option 
+when "product" %>
+  <h4><%= productFamilyDesc %> Products</h4>
+  <% @productArray.each do|product| %>
+  <label><input class="product_selection" type="radio" name="product_radio" id="product_name" value="<%= product.productId %>" data-label="<%= getLabelValue(product.longName) %>"><%= getLabelValue(product.longName) %></label>
+  <% end
+
+when "productVersion" %>
+  <h4><%= productIdDesc %> Versions</h4>
+  <% @filterProductVersionArray.each do|product| %>
+  <label><input class="version_selection" type="radio" name="version_radio" id="version_name" value="<%= product.productVersion %>" data-label="<%= product.versionName %>"><%= product.versionName %></label>
+  <% end
+
+when "productPlanOptions" %>
+  <%= "#{@selectedProduct.id}-|-" %>
+  <h4><%= productIdDesc %> Plans</h4>
+  <% @offlinePlanOptionArray.each do|plan| %>
+  <label><input class="plan_selection" type="radio" name="plan_radio" id="plan_name" value="<%= plan.optionCd %>" data-label="<%= getLabelValue(plan.description) %>"><%= getLabelValue(plan.description) %></label>
+  <% end %>
+<% end %>

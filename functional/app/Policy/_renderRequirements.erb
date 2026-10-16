@@ -1,0 +1,149 @@
+<form method="POST" action="<%= url_for :action => :submitRequirements %>" name="requirementForm" id="requirementForm">
+	<% @windows_platform = System.get_property('platform') == 'WINDOWS_DESKTOP' %>
+	<div class="illustrationdisplay">
+		<%= renderObject(@container) %>
+		<%= renderHiddenField('entityGuid', @container.entityGuid, 'EntityGuid', @container) %>
+		<%= renderHiddenField('entityTypeCd', @container.entityTypeCd, 'entityTypeCd', @container) %>
+		<%= renderHiddenField('policyGuid', @container.policyGuid, 'policyGuid', @container) %>
+		<input type="hidden" id="multiDocMode" name="multiDocMode" value="<%= @multiDocMode %>"/>
+		<div class="legend">
+			<label class="strongLabel"><%= getLabelValue('requirements') %></label>
+		</div><br>
+
+		<% if @multiDocMode %>
+			<% @requirementsHM.each do |categoryCd, serviceDocuments| %>
+				<%= getLabelValue(@categoryLabelHM[categoryCd]) %>
+
+				<% serviceDocuments.each do |documentCd, serviceDocument|
+					images = @imageHM[serviceDocument.guid] %>
+				
+					<%= renderObject(serviceDocument, @container) %>
+					<%= renderHiddenField('referenceObject', serviceDocument.referenceObject, 'Reference Object', serviceDocument) %>
+					<%= renderHiddenField('docCategoryTypeCd', serviceDocument.docCategoryTypeCd, 'Category Type Cd', serviceDocument) %>
+					<%= renderHiddenField('docCategoryCd', serviceDocument.docCategoryCd, 'Category Cd', serviceDocument) %>
+					<%= renderHiddenField('partyGuid', serviceDocument.partyGuid, 'Party guid', serviceDocument) %>
+					<%= renderHiddenField('receivedDt', serviceDocument.receivedDt, 'Received Dt', serviceDocument) %>
+					<%= renderHiddenField('acceptanceStatusCd', serviceDocument.acceptanceStatusCd, 'acceptance Status', serviceDocument) %>
+					<%= renderHiddenField('object', serviceDocument.object, 'object', serviceDocument) %>
+					<%= renderHiddenField('documentCd', serviceDocument.documentCd, 'documentCd', serviceDocument) %>
+					<%= renderHiddenField('imageCount', serviceDocument.imageCount, 'imageCount', serviceDocument) %>
+					
+					<div data-role="dualfieldcontain">
+						<div class="half">
+							<%= renderCheckBox('selected', serviceDocument.selected, nil, serviceDocument) %>
+							<%= renderLabel('selected', serviceDocument.docDescription, nil, serviceDocument, 'style=width:100%;' ) %>
+						</div>
+
+						<div class="half">
+							<% if @windows_platform %>
+		                		<input type="button" id="capture<%=serviceDocument.object%>" class="capture" data-param ="<%=serviceDocument.object%>" value="<%= getLabelValue('addPic')%>" data-inline="true" onclick="javascript: redirect_to_browser('<%=serviceDocument.uniqueKey%>', '<%=serviceDocument.documentCd%>', '<%=@policy.object%>');">&nbsp;&nbsp;&nbsp;
+		                		<input type="button" id="view<%=serviceDocument.object %>" class="capture<%=serviceDocument.object %>" value="<%= getLabelValue('viewPic')%>" data-inline="true" onclick="javascript:view('<%=serviceDocument.object%>');">
+		          			<% else %>
+								<input type="button" id="capture<%=serviceDocument.object%>" class="capture<%=serviceDocument.object%>" value="<%= getLabelValue('addPic')%>" data-inline="true" onclick="javascript:takePicture('<%= getObjectMapping(serviceDocument) %>');">&nbsp;&nbsp;&nbsp;
+								<input type="button" id="view<%=serviceDocument.object%>" value="<%= getLabelValue('viewPic')%>" data-inline="true" onclick="javascript: view('<%=serviceDocument.object%>');">
+							<% end %>	
+						</div>
+					</div>
+				
+
+					<div name="requirementimage_<%= serviceDocument.object %>" class="requirementImage">
+						<% if @windows_platform %>
+							<% image_hash = get_cam_pic_on_view(serviceDocument.uniqueKey)%>
+							<% image_hash.each do |index,offlineFile| %>
+								<li id= "image<%= offlineFile.parentKey %>" name='<%= offlineFile.parentKey %>' style="list-style: outside none none;">
+									<img src="data:image/jpeg;base64,<%= offlineFile.fileContents %>" width="300px"/>
+									<div style='width:18%!important; margin-left:5%;'>
+										<button type='button' name='REMOVE' value='remove_<%=index%>_<%= offlineFile.parentKey%>' onclick="removeImage('<%=offlineFile.parentKey %>', '<%=serviceDocument.uniqueKey%>');"><%= getLabelValue('removePic')%></button>
+									</div>
+				                </li>
+			        		<% end %>
+			    		<% else %>
+							<% if images %>
+								<% images.each_with_index do |offlineFile,index| %>
+									<li name='<%= offlineFile.parentKey %>' style="list-style: outside none none;">
+										<div>&nbsp;&nbsp;&nbsp;
+											<% is_rho_simulator = Rho::System.isRhoSimulator %>
+			        						<% filePath = 'data:image/jpeg;base64,'+offlineFile.fileContents %>
+											<img src="<%= filePath %>" width="300px"/>
+										</div>&nbsp;&nbsp;&nbsp;
+										<div style='width:18%!important; margin-left:5%;'>
+											<% if @policy.policyNum.to_s == "" %>
+												<button type='button' name='REMOVE' value='remove_<%=index%>_<%=offlineFile.parentKey%>' onclick="removeImage('<%=offlineFile.parentKey%>','<%=serviceDocument.uniqueKey%>')"><%= getLabelValue('removePic')%></button>
+											<% end %>
+										</div>&nbsp;&nbsp;&nbsp;
+									</li></br>
+								<% end %>
+							<% end %>
+						<% end %>
+					</div>
+				<% end %>
+			<% end %>
+		<% else %>
+			<% @requirementsHM.each_with_index do |(key, serviceDocument), index|
+				images = @imageHM[serviceDocument.guid] %>
+				<%= renderObject(serviceDocument, @container) %>
+				<%= renderHiddenField('referenceObject', serviceDocument.referenceObject, 'Reference Object', serviceDocument) %>
+				<%= renderHiddenField('docCategoryTypeCd', serviceDocument.docCategoryTypeCd, 'Category Type Cd', serviceDocument) %>
+				<%= renderHiddenField('docCategoryCd', serviceDocument.docCategoryCd, 'Category Cd', serviceDocument) %>
+				<%= renderHiddenField('partyGuid', serviceDocument.partyGuid, 'Party guid', serviceDocument) %>
+				<%= renderHiddenField('receivedDt', serviceDocument.receivedDt, 'Received Dt', serviceDocument) %>
+				<%= renderHiddenField('acceptanceStatusCd', serviceDocument.acceptanceStatusCd, 'acceptance Status', serviceDocument) %>
+				<%= renderHiddenField('object', serviceDocument.object, 'object', serviceDocument) %>
+				<%= renderHiddenField('imageCount', serviceDocument.imageCount, 'imageCount', serviceDocument) %>
+				
+				<div data-role="dualfieldcontain">
+					<div class="half">
+						<%= renderLabel('documentCd', @categoryLabelHM[serviceDocument.docCategoryCd], nil, serviceDocument) %>
+						<% if @windows_platform %>
+							<%= getLookup('DYNAMICLOOKUP','documentCd', serviceDocument.documentCd, serviceDocument, @documentCdLookup[serviceDocument.docCategoryCd],'class="docc"') %>
+						<% else %>
+							<%= getLookup('DYNAMICLOOKUP','documentCd', serviceDocument.documentCd, serviceDocument, @documentCdLookup[serviceDocument.docCategoryCd],'class=""') %>
+						<% end %>
+					</div>
+
+					<div class="half">
+						<% if @windows_platform %>
+	                		<input type="button" id="capture<%=serviceDocument.object%>" class="capture" data-param ="<%=serviceDocument.object%>" value="<%= getLabelValue('addPic')%>" data-inline="true" onclick="javascript: redirect_to_browser('<%=serviceDocument.uniqueKey%>', 'SINGLEDOC', '<%=@policy.object%>');">&nbsp;&nbsp;&nbsp;
+	                		<input type="button" id="view<%=serviceDocument.object %>" class="capture<%=serviceDocument.object %>" value="<%= getLabelValue('viewPic')%>" data-inline="true" onclick="javascript:view('<%=serviceDocument.object%>');">
+	          			<% else %>
+							<input type="button" id="capture<%=serviceDocument.object%>" class="capture<%=serviceDocument.object%>" value="<%= getLabelValue('addPic')%>" data-inline="true" onclick="javascript:takePicture('<%= getObjectMapping(serviceDocument) %>');">&nbsp;&nbsp;&nbsp;
+							<input type="button" id="view<%=serviceDocument.object%>" value="<%= getLabelValue('viewPic')%>" data-inline="true" onclick="javascript: view('<%=serviceDocument.object%>');">
+						<% end %>	
+					</div>
+				</div>
+			
+				<div name="requirementimage_<%= serviceDocument.object %>" class="requirementImage">
+					<% if @windows_platform %>
+						<% image_hash = get_cam_pic_on_view(serviceDocument.uniqueKey) %>
+						<% image_hash.each do |key,offlineFile| %>
+							<li id= "image<%= offlineFile.parentKey %>" name='<%= offlineFile.parentKey %>' style="list-style: outside none none;">
+								<img src="data:image/jpeg;base64,<%= offlineFile.fileContents %>" width="300px"/>
+								<div style='width:18%!important; margin-left:5%;'>
+									<button type='button' name='REMOVE' value='remove_<%=index%>_<%= offlineFile.parentKey%>' onclick="removeImage('<%=offlineFile.parentKey %>', '<%=serviceDocument.uniqueKey%>');"><%= getLabelValue('removePic')%></button>
+								</div>
+		                	</li>
+		            	<% end %>
+		    		<% else %>
+						<% if images %>
+							<% images.each_with_index do |offlineFile,index| %>
+								<li name='<%= offlineFile.parentKey %>' style="list-style: outside none none;">
+									<div>&nbsp;&nbsp;&nbsp;
+										<% is_rho_simulator = Rho::System.isRhoSimulator %>
+		        						<% filePath = 'data:image/jpeg;base64,'+offlineFile.fileContents %>
+										<img src="<%= filePath %>" width="300px"/>
+									</div>&nbsp;&nbsp;&nbsp;
+									<div style='width:18%!important; margin-left:5%;'>
+										<% if @policy.policyNum.to_s == "" %>
+											<button type='button' name='REMOVE' value='remove_<%=index%>_<%=offlineFile.parentKey%>' onclick="removeImage('<%=offlineFile.parentKey%>','<%=serviceDocument.guid%>')"><%= getLabelValue('removePic')%></button>
+										<% end %>
+									</div>&nbsp;&nbsp;&nbsp;
+								</li></br>
+							<% end %>
+						<% end %>
+					<% end %>
+				</div>
+			<% end %>
+		<% end %>
+	</div>
+</form>
+<%= render :partial => "renderRequirementsJS" %>

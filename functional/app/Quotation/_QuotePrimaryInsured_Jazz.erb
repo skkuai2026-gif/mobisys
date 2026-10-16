@@ -1,0 +1,71 @@
+<style type="text/css">
+	/*.labelHeader.breakLine {
+		border: 1px solid #bf6b4f; 
+		padding: 0px 10px;
+	}*/
+</style>
+<%= panelTagStart(false) %>
+	<%= subPanelTagStart("primaryPartyInsured","false",'PROPOSERDIFFERENTFROMINSURED') %>
+		<%= prdFieldDataTag("#{@quotationPckg}.PolicyDO",'proposerLASame','') %>
+		<%= modelTagStart("primaryQuotationParty", @insured, @quotation) %>
+			<% partyPkg = 'com.c2lbiz.symbiosys.insurance.businesscommon.dataobjects.party' %>
+			<div id ="checkBoxProposerLASame">
+				<div id="displayPrimary">
+					<%= prdFieldDataTag("#{partyPkg}.PartyDO","title,otherTitle",'','titleCd') %>
+
+					<%= subPanelTagStart("language1","false","",false) if @renderMultiLanguagePanel%>
+						<%= prdFieldDataTag("#{partyPkg}.PartyDO","firstname,middlename,lastname,extensionName",'#none,MIDDLENAMEREQUIRED,#none,#none','firstName1,middleName1,lastName1,extensionName1') %>
+					<% if @renderMultiLanguagePanel %>
+						<div class="labelHeader breakLine"></div>
+					<%= subPanelTagEnd %>
+					<% end %>
+
+					<%= subPanelTagStart("language2","false","MULTILINGUALPARTYNAME",false) %>
+						<%= prdFieldDataTag("#{partyPkg}.PartyDO","firstname2,middlename2,lastname2,extensionName2",'#none,MIDDLENAMEREQUIRED,#none,#none','firstName2,middleName2,lastName2,extensionName2') %>
+						<div class="labelHeader breakLine"></div>
+					<%= subPanelTagEnd %>
+
+					<%= prdFieldDataTag("#{partyPkg}.PartyDO","dob,age",'','birthDt,age') %>
+
+					<%= prdFieldDataTag("#{partyPkg}.PartyDO","genderCd,relationCd,otherRelation",'','') %>
+					<!--for gender & smoker we add a hidden field that gets submitted because if radio is explicitly cleared value is not submitted.-->
+					<% if @insured.genderCd.to_s == '' %>
+						<%= inputTag('genderCd', nil, nil, nil, nil, nil, 'HIDDEN') %>
+					<% else %>
+						<%= inputTag('genderCd', nil, nil, nil, nil, nil, 'HIDDEN', nil, 'hid') %>
+					<% end %>
+					<% if @quotation.insuranceTypeCd == 'TRAVEL' || @quotation.insuranceTypeCd == 'HEALTH'%>
+						<%= prdFieldDataTag("#{partyPkg}.PartyDO","industryCd,natureOfDuty,occupationCd,smoker",'PRIMARYOCCUPATION,#none,#none,PRIMARYSMOKER','industryCd,natureOfDuty,occupationClass,smoker') %>
+					<% else %>
+						<%= prdFieldDataTag("#{partyPkg}.PartyDO","industryCd,natureOfDuty,occupationCd",'PRIMARYOCCUPATION','industryCd,natureOfDuty,occupationClass') %>
+						<%= prdFieldDataTag("#{partyPkg}.PartyDO","smoker,nsap",'PRIMARYSMOKER,PRIMARYNSAP','') %>
+					<% end %>
+					<% if @insured.smoker.to_s == '' %>
+						<%= inputTag('smoker', nil, nil, nil, nil, nil, 'HIDDEN') %>
+					<% else %>
+						<%= inputTag('smoker', nil, nil, nil, nil, nil, 'HIDDEN', nil, 'hid') %>
+					<% end %>
+					<%= prdFieldDataTag("#{partyPkg}.PartyDO","coverageCountryCd,coverageCityCd",'PRIMARYCOVERAGELOCATION','') %>
+
+					<%= prdFieldDataTag("#{partyPkg}.PartyDO","contactNum,emailAddress",'','') %>
+					<% if @quotation.insuranceTypeCd == 'TRAVEL'%>
+						<%= layoutFieldTag('quotPartyAddtnField1,quotPartyAddtnField2,quotPartyAddtnField3,quotPartyAddtnField4') %>
+					<% end %>
+				</div>
+				<div style="display: none;">
+					<%= inputTag("roleCd") %>
+					<%= inputTag("partyTypeCd") %>
+					
+					<% if !MobiSys::BrowserHelper.renderPanel?("PRIMARYSMOKER", $currentProduct) %>
+						<%= inputTag("smoker") %>
+					<% end %>
+				</div>
+				<input type="hidden" id="proposerLASame" value='<%=@quotation.proposerLASame%>'/>
+			</div>
+		<% modelTagEnd %>
+	<%= subPanelTagEnd %>
+<%= panelTagEnd %>
+
+<%= setupFilterUsingFieldTargetValueMap('TitleGenderSI', false, "primaryQuotationParty") %>
+<%= setupFilterUsingFieldTargetValueMap('CoverageCountryCity', true, "primaryQuotationParty") %>
+<%= setupFilterUsingFieldTargetValueMap('RelationGender', true, "primaryQuotationParty") %>

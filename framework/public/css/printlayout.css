@@ -1,0 +1,168 @@
+body {
+    background: #85BAE4 !important;
+    color: black;
+    margin:10px;
+    padding: 10px;
+    font-family: Arial;
+    font-size: 14px;
+}
+
+.illustrationpage{
+	background-color:#fff; 
+	display:block; 
+	position:relative; 
+	left:0%; 
+	width: 92%; 
+	padding : 2%; 
+	margin : 2%;
+	border-radius: 10px;
+	box-shadow: 2px 2px 5px 1px #aaaaaa;
+}
+
+
+h1 {
+text-align: center;
+color: #365f91;
+}
+
+.illustrationtable {
+border: 1px solid white;
+border-spacing:1px;
+//border-collapse:collapse;
+}
+
+.illustrationtableheader td{
+//border: 1px solid black;
+font-weight:bold;
+padding:5px;
+text-align:center;
+background: #D7E9FF;
+}
+
+.illustrationtablerow {
+//border: 1px solid black;
+}
+
+.illustrationtablerow td{
+//border: 1px solid black;
+//background: #DEF5C1;
+}
+
+.tableheader {
+//border: 1px solid black;
+font-weight:bold;
+padding:5px;
+background: #D7E9FF;
+}
+
+.tabletext {
+//border: 1px solid black;
+padding:5px;
+background: #DEF5C1;
+}
+
+.tablenum{
+//border: 1px solid black;
+padding:5px;
+text-align:right;
+background: #DEF5C1;
+}
+
+.legend{
+font-weight:bold;
+font-size:20px;
+padding-top:10px;
+color: #365f91; 
+}
+
+.signaturedisplay{
+    background: #CCCCCC;
+    color: black;
+    margin:2px;
+    padding: 10px;
+}
+
+.tableheader1 {
+//border: 1px solid black;
+font-weight:bold;
+padding:5px;
+background: #D7E9FF;
+width:40%;
+}
+
+.tabletext1 {
+//border: 1px solid black;
+padding:5px;
+background: #DEF5C1;
+width:60%;
+}
+
+.tablenum1 {
+//border: 1px solid black;
+padding:5px;
+text-align:right;
+background: #DEF5C1;
+width:60%;
+}
+
+.emptycolumn1{
+width:100%;
+}
+
+.tableheader2 {
+//border: 1px solid black;
+font-weight:bold;
+padding:5px;
+background: #D7E9FF;
+width:20%;
+}
+
+.tabletext2 {
+//border: 1px solid black;
+padding:5px;
+background: #DEF5C1;
+width:30%;
+}
+
+.tablenum2 {
+//border: 1px solid black;
+padding:5px;
+text-align:right;
+background: #DEF5C1;
+width:30%;
+}
+
+.emptycolumn2{
+width:50%;
+}
+
+.tableheader3 {
+//border: 1px solid black;
+font-weight:bold;
+padding:5px;
+background: #D7E9FF;
+width:11%;
+}
+
+.tabletext3 {
+//border: 1px solid black;
+padding:5px;
+background: #DEF5C1;
+width:22%;
+}
+
+.tablenum3 {
+//border: 1px solid black;
+padding:5px;
+text-align:right;
+background: #DEF5C1;
+width:22%;
+}
+
+.emptycolumn3{
+width:33%;
+}
+
+.pagebreak{
+page-break-before: always;
+}

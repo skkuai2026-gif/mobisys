@@ -1,0 +1,16 @@
+entry: Init_DocumentPicker_extension
+javaentry: com.documentpicker.DocumentPicker
+libraries: ["DocumentPicker"]
+android:
+  source_list: ext/platform/android/ext_java.files
+  rhodes_listener: com.rho.documentpicker.DocumentPickerRhoListener
+  exttype: rakefile
+wp8:
+  csharp_impl: yes
+  root_namespace: rho
+
+project_paths:
+  wp8: ext/platform/wp8/DocumentPickerLib.vcxproj
+  wm: ext/platform/wm/DocumentPicker.vcproj
+  
+xml_api_paths: ext/DocumentPicker.xml

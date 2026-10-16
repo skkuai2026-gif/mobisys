@@ -1,0 +1,20 @@
+<div id='<%=@tagName%>_identityDetail'>
+	<% partyIdentityPckg = 'PartyIdentityDO'%>
+	<%= subPanelTagStart("Identity Details",false) %>
+		<%# array_of_objects = Array.new %> 
+		<%# array_of_objects.push(partyIdentity1)%> 
+		<%# array_of_objects.push(partyIdentity2)%> 
+		<%= subPanelTagStart("Identity Details 1","false","",false) %>
+			<%= modelTagStart("grid_0_#{tagId}", partyIdentity1, party) %>
+				<%= prdFieldDataTag("#{partyIdentityPckg}",'identityTypeCd,identityNum,issuingAuthority,issueDt,expiryDt',"") %>
+			<% modelTagEnd%>
+		<%= subPanelTagEnd() %>
+		<%= subPanelTagStart("Identity Details 2","false","",false) %>
+			<%= modelTagStart("grid_1_#{tagId}", partyIdentity2, party) %>
+				<%= prdFieldDataTag("#{partyIdentityPckg}",'identityTypeCd,identityNum,issuingAuthority,issueDt,expiryDt',"") %>
+			<% modelTagEnd%>
+		<%= subPanelTagEnd() %>
+		<%#= fieldDataEntryGridTagStart(tagId,"#{partyIdentityPckg}",'identityTypeCd,identityNum,issuingAuthority,issueDt,expiryDt',array_of_objects,party,nil,'','','',false,true,false,false,false,'','','','',false) %>
+		<%#= fieldDataEntryGridTagEnd(tagId, array_of_objects, '',false,true) %>
+	<%= subPanelTagEnd() %>
+</div>

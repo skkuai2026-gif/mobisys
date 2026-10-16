@@ -1,0 +1,85 @@
+
+	<% 
+		partyPckg = 'PolicyNomineeDO'
+		nomineeCount = 0
+	%>
+	<%= fieldDataEntryGridTagStart('nomineeDetails',partyPackage,nil, nil, nil,nil,'delete','',nil,true,true,false,false,false) %>
+		<%= panelTagStart(true) %>
+		<% @beneficiaries.each_with_index do |nominee, count| %>
+			<%= subPanelTagStart("#{getLabelValue('BENEFICIARY')} #{count + 1}", true) %>
+			<div class='add-section'>
+				<%
+					nomineeCount = @nomineeLifeCount + count + 1
+					@tagName = "grid_#{nomineeCount}_nomineeParty"
+				%>
+
+				<%= modelTagStart("grid_#{nomineeCount}_nomineePolicyPartyRole", @beneficiaryPartyRoles[count], @policy)%>
+					<%= prdFieldDataTag(partyPckg,'partySameAsCd,refGuid',"",'partySameAs,refGuid') %>
+					<%= prdFieldDataTag(partyPckg,'nomineeTypeCd') %>
+					<%= prdFieldDataTag(partyPckg,'effectiveFromDt,effectiveToDt') %>
+					<%= prdFieldDataTag(partyPckg,'percentage,irrevocableFl') %>
+					
+					<div style="display: none;">
+						<%= inputTag("roleCd") %>
+						<%= inputTag("nomineeRefGuid") %>
+					</div>
+				<% modelTagEnd %>
+    
+				<%= modelTagStart(@tagName, nominee, @policy,@nomineeLifeCount + count + 1) %>
+					<i class='close-add-section icon-close' onClick='javascript:catchevent(this);' id='grid_<%=nomineeCount%>_nomineeDetails_removed'></i>
+					
+					<div id='<%=@tagName%>_partyDetails'>
+						<%= render(:partial => 'NBPartyRender_Jazz', :locals => { :facetkeyprefix => 'NOMINEE', :partyPckg => partyPckg, :party => nominee }) %>
+					</div>
+					
+					<% if @renderPolicyNomineeNationalityPanel %>
+						<%= render(:partial => 'NBPartyNationality_Jazz', :locals => {:partyPckg => partyPckg, :party => nominee}) %>
+					<% end %> 
+					
+					<% @nomineePartyHomeAddress      = nominee.getPartyAddress("RESIDENTIAL", true) %>  
+					<% @nomineePartyPermanentAddress = nominee.getPartyAddress("PERMANENT", true) %>
+					<% @nomineePartyBusinessAddress  = nominee.getPartyAddress("OFFICE", true) %>
+
+					<%= render(:partial => 'NBPartyAddress_Jazz', :locals => {:partyPckg => partyPckg, :party => nominee, :party_res_address => @nomineePartyHomeAddress, :party_per_address => @nomineePartyPermanentAddress, :party_office_address => @nomineePartyBusinessAddress, :resTagId => @tagName + "_nomineePartyAddressHome",:ofcTagId => @tagName + "_nomineePartyAddressOffice", :perTagId => @tagName + "_nomineePartyAddressPermanent", :renderHomeAddressPanel => @renderPolicyNomineeHomeAddressPanel, :renderPermanentAddressPanel => @renderPolicyNomineePermanentAddressPanel, :renderOfficeAddressPanel => @renderPolicyNomineeOfficeAddressPanel}) %>
+
+					<% if @renderPolicyNomineeContactPanel %>  
+						<% @nomineeContactHome   = nominee.getPartyContact("RESIDENTIAL", true) %>
+						<% @nomineeContactOffice = nominee.getPartyContact("OFFICE", true) %>
+						<% @nomineeContactMobile = nominee.getPartyContact("MOBILE", true) %>
+						<% @nomineeEmail         = nominee.getPartyEmail(true) %>
+
+						<%= render(:partial => 'NBPartyContact_Jazz', :locals => {:partyPckg => partyPckg, :party => nominee, :party_resi_contact => @nomineeContactHome, :party_off_contact => @nomineeContactOffice, :party_mob_contact => @nomineeContactMobile, :resiTagId => @tagName + "_nomineePartyContactResidential", :offTagId => @tagName + "_nomineePartyContactOffice", :mobTagId => @tagName + "_nomineePartyContactMobile", :emailModelId => @tagName + "_nomineePartyEmail", :partyEmailObject => @nomineeEmail }) %>
+					<% end %>
+					<div style="display: none;">
+						<%= inputTag("roleCd") %>
+					</div>
+				<% modelTagEnd %>
+				
+				<%= setupFilterUsingFieldTargetValueMap('TitleGender', false, @tagName) %>
+				<%= setupFilterUsingFieldTargetValueMap('CoverageCountryCity', true, @tagName) %>
+				<%= setupFilterUsingFieldTargetValueMap('RelationGender', true, @tagName) %>
+				<%= setupFilterUsingFieldTargetValueMap('CITIZENSHIPRACE', true, @tagName) %>
+			</div>
+			<%= subPanelTagEnd %>
+		<% end %>
+		<% @nomineeLifeCount = nomineeCount if nomineeCount > 0 %>  
+		<%= panelTagEnd %>	
+	<%= fieldDataEntryGridTagEnd('nomineeDetails', @beneficiaries, 'addBeneficiary',true,true) %>
+
+	<input type="hidden" name="nomineeLifeCount" id="nomineeLifeCount" value='<%= @nomineeLifeCount %>'/>
+	<input type="hidden" name="selectedPartyRoles" id="selectedPartyRoles" value="<%= @selectedPartyRoles.to_s %>"/>
+	<input type="hidden" name="ageFacet" id="ageFacet" value="<%= @ageFacet %>"/>
+
+	<%= modelTagStart('appointeePolicyPartyRole', @appointeePolicyPartyRole, @policy)%>
+		<div style="display: none;">
+			<%= inputTag("roleCd") %>
+			<%= inputTag("refGuid") %>
+		</div>
+	<% modelTagEnd %>
+
+	<%= modelTagStart('appointeeParty', @appointeeParty, @policy) %>
+		<div style="display: none;">
+			<%= inputTag("roleCd") %>
+		</div>
+	<% modelTagEnd %>
+<%= panelTagEnd %>

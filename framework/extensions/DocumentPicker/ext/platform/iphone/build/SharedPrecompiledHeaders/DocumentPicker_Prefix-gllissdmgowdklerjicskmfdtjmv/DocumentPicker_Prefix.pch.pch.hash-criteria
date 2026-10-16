@@ -1,0 +1,26 @@
+-x
+objective-c
+-arch
+armv7
+-std=c99
+-fpascal-strings
+-Os
+-DOBJC_OLD_DISPATCH_PROTOTYPES=1
+-isysroot
+/Applications/Xcode.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS11.4.sdk
+-miphoneos-version-min=3.0
+-g
+-fembed-bitcode-marker
+-iquote
+-iquote
+-I/Users/C2lBiz/Documents/Source/DocumentPicker/extensions/DocumentPicker/ext/platform/iphone/build/Release-iphoneos/include
+-I/Users/C2lBiz/.rvm/gems/ruby-2.3.4/gems/rhodes-6.0.57/platform/shared/common
+-I/Users/C2lBiz/.rvm/gems/ruby-2.3.4/gems/rhodes-6.0.57/platform/shared/rubyext
+-I/Users/C2lBiz/.rvm/gems/ruby-2.3.4/gems/rhodes-6.0.57/platform/shared/ruby/include
+-I/Users/C2lBiz/.rvm/gems/ruby-2.3.4/gems/rhodes-6.0.57/platform/shared/ruby/iphone
+-I/Users/C2lBiz/.rvm/gems/ruby-2.3.4/gems/rhodes-6.0.57/platform/shared
+-F/Users/C2lBiz/Documents/Source/DocumentPicker/extensions/DocumentPicker/ext/platform/iphone/build/Release-iphoneos
+arm-apple-darwin17.7.0
+"4.2.1 Compatible Apple LLVM 9.1.0 (clang-902.0.39.2)"
+SDK_PRODUCT_BUILD_VERSION=15F79
+15F79

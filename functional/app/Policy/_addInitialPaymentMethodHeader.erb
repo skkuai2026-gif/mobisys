@@ -1,0 +1,8 @@
+<h3 class="iniPayHeaderDetails<%= @initialPaymentCount %>">
+	<span class="numberSpan"><%= (@visibleInitialPaymentCount.to_i + 1)%></span> <%= renderLabel('initialPayment', 'initialPayment')%>
+</h3>
+<% if @initialPaymentCount.to_i > 0 %>
+	<fieldset style='margin-left: 92%; margin-top: 2%; position: absolute; z-index: 500;'>
+		<input type="button" data-inline="true" data-icon="delete" data-iconpos="notext" onclick="deleteInitialPaymentMethod('<%= @initialPaymentCount %>');">
+	</fieldset>	
+<% end %>

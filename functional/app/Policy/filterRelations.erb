@@ -1,0 +1,8 @@
+<%
+require 'CommonModules/mobisysbrowserhelper'
+@juvenileRelations.each do|relation|
+%>
+  <option value="<%= relation.desc %>">
+    <%= getLabelValue(relation.desc) %>
+  </option>
+<% end %>

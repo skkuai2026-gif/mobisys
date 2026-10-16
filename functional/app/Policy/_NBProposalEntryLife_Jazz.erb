@@ -1,0 +1,88 @@
+<% if @tabToBeLoaded == "tab_basic" %>
+	<%= tabTagStart("tab_basic") %>
+		<%= navbarTagStart(@basicNavbarIds,@basicNavbarLabels) %>
+			<% if @navbarToBeLoaded == 'tab_basic-basicDetails' %>
+				<%= render :partial => "NBProposalBasic_Jazz" %>
+				<%= render :partial => "NBProposalCommPreference_Jazz" %>
+			<% else %>
+				<%= render :partial => "NBProposalAgent_Jazz" %>
+			<% end %>
+		<%= navbarTagEnd %>
+	<%= tabTagEnd %>
+<% end %>
+<% if @tabToBeLoaded == "tab_owner" %>
+	<%= tabTagStart("tab_owner") %>
+		<%= render :partial => "NBProposer_Jazz" %>
+	<%= tabTagEnd %>
+<% end %>
+<% if @tabToBeLoaded == "tab_primary" %>
+	<%= tabTagStart("tab_primary") %>
+		<%= render :partial => "NBPrimaryInsured_Jazz" %>
+	<%= tabTagEnd %>
+<% end %>
+<% if @tabToBeLoaded == "tab_joint" %>
+	<%= tabTagStart("tab_joint") %>
+		<%= render :partial => "NBJointLifeInsuredDetails_Jazz" %>
+	<%= tabTagEnd %>			
+<% end %>
+<% if @tabToBeLoaded == "tab_supplementary" %>
+	<%= tabTagStart("tab_supplementary") %>
+		<%= render :partial => "NBSupplimentaryInsuredDetails_Jazz" %>
+	<%= tabTagEnd %>
+<% end %>
+<% if @tabToBeLoaded == "tab_coverage" %>
+	<%= tabTagStart("tab_coverage") %>
+		<%= render :partial => "NBCommonCoverage_Jazz" %>
+		<%= render(:partial => 'NBProposalTopup_Jazz') %>
+		<% if @showRider %>
+			<div id="riderMainWrapper">
+				<%= render(:partial => 'NBProposalRider_Jazz') %>
+			</div>
+		<% end %>
+	<%= tabTagEnd %>
+<% end %>	
+<% if @tabToBeLoaded == "tab_nominee" %>
+	<%= tabTagStart("tab_nominee") %>
+		<%= navbarTagStart(@nomineeNavbarIds,@nomineeNavbarLabels) %>
+			<% if @navbarToBeLoaded == 'tab_nominee-nomineeDetails' %>
+				<%= render :partial => "NBNomineeDetails_Jazz" %>
+			<% else %>
+				<%= render :partial => "NBProposalAppointee_Jazz" %>
+			<% end %>
+		<%= navbarTagEnd %>
+	<%= tabTagEnd %>
+<% end %>
+<% if @tabToBeLoaded == "tab_payment" %>
+	<%= tabTagStart("tab_payment") %>
+		<%= render :partial => "NBPolicyPayment_Jazz" %>
+	<%= tabTagEnd %>
+<% end %>
+<% if @tabToBeLoaded == "tab_questionnaire" %>
+	<%= tabTagStart("tab_questionnaire") %>
+		<%= render :partial => "NBQuestionnaireRenderParty_Jazz" %>
+	<%= tabTagEnd %>
+<% end %>
+<% if @tabToBeLoaded == "tab_requirement" %>
+	<%= tabTagStart("tab_requirement") %>
+		<% if $rhoconfig[:application_view_mode] == "mobile" %>
+			<%= render :partial => "NBServiceDocumentMobile_Jazz" %>
+		<% else %>
+			<%= render :partial => "NBServiceDocument_Jazz" %>
+		<% end %>
+	<%= tabTagEnd %>
+<% end %>
+<% if @tabToBeLoaded == "tab_agentDeclaration" %>
+	<%= tabTagStart("tab_agentDeclaration") %>
+		<%= render :partial => "NBQuestionnaireRenderForQuest_Jazz" %>
+	<%= tabTagEnd %>
+<% end %>
+<% if @tabToBeLoaded == "tab_signature" %>
+	<%= tabTagStart("tab_signature") %>
+		<%= render :partial => "NBSignature_Jazz" %>
+	<%= tabTagEnd %>
+<% end %>
+<div style="display: none;">
+    <%  modelFileName = (@policy.proposalNum.to_s != "" ? "#{@policy.proposalNum}_Policy_Logs" : "" ) %>
+    <input type="hidden" id="showLogFlag" value='<%= $rhoconfig[:setPolicyModelLog] %>'/>
+	<input type="hidden" id="modelFileName" value='<%= modelFileName %>'/>
+</div>

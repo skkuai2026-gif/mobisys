@@ -1,0 +1,65 @@
+<% if @riders.select { |key, rider| key.planCode.to_s != "" }.size > 0 || @basePlanCd.to_s != ""
+    col2Width = "25%"
+    col3DisplayFl = true
+    col4Width = "15%"
+    col5Width = "15%"
+else
+    col2Width = "30%"
+    col3DisplayFl = false
+    col4Width = "20%"
+    col5Width = "25%"
+end %>
+<div name='summary'>
+    <table data-role="table" class="ui-responsive table-stroke illustrationtable">
+        <thead class="illustrationtableheader">
+            <tr>
+                <th style="width:25%; border-right-color: white;"> <%= renderLabel('applicant', 'applicant') %> </th>
+                <th style="width:<%= col2Width%>; border-right-color: white;"> <%= renderLabel('productID', 'productID') %> </th>
+                <% if col3DisplayFl %>
+                    <th style="width:20%; border-right-color: white;"> <%= renderLabel('planOptionCd', 'planOptionCd') %></th>
+                <% end %>
+                <th style="width:<%= col4Width%>; border-right-color: white;"> <%= renderLabel('sumAssured', 'sumAssured') %></th>
+                <th style="width:<%= col5Width%>"> <%= renderLabel('modalPremium', 'modalPremium')  %></th>
+            </tr>
+        </thead>
+        <tbody class="illustrationtablebody">
+            <tr class="">
+                <td ><%= @quotationparty_role_name_hash[@baseQuotationProduct.partyRoleCd] %></td>
+                <td><%= @baseProductId.longName %> </td>
+                <% if col3DisplayFl %>
+                    <td><%= @basePlanCd %></td>
+                <% end %>
+                <td class="maskto"><%= thosandSeperator(sprintf "%.2f", @baseQuotationProduct.baseSumAssured ? @baseQuotationProduct.baseSumAssured(2) : '00') %>&nbsp&nbsp&nbsp</td>
+                <td class="calciTotMP maskto" ><%= thosandSeperator(sprintf "%.2f",( @baseQuotationProduct.modalPremium && @baseQuotationProduct.modalPremium != "" && @baseQuotationProduct.modalPremium.round(2)) ? @baseQuotationProduct.modalPremium.round(2) : '00') %>&nbsp&nbsp&nbsp</td>
+            </tr>
+            <% @riders.each do |rider| %>
+            <tr class="">
+                <td><%= @quotationparty_role_name_hash[rider.partyRoleCd] %></td>
+                <td><%= rider.product.longName %></td>
+                <% if col3DisplayFl %>
+                    <td><%= rider.planCode %></td>
+                <% end %>
+                <td class="maskto" ><%= thosandSeperator(sprintf "%.2f",(rider.baseSumAssured.to_s!="")? rider.baseSumAssured(2) : '00')%>&nbsp&nbsp&nbsp</td>
+                <td class="calciTotMP maskto"><%= thosandSeperator(sprintf "%.2f",( rider.modalPremium && rider.modalPremium != "" && rider.modalPremium.round(2)) ? rider.modalPremium.round(2) : '00') %>&nbsp&nbsp&nbsp</td>
+            </tr>
+            <% end %>
+            <tr class="">
+                <td></td>
+                <td></td>
+                <% if col3DisplayFl %>
+                    <td></td>
+                <% end %>
+                <td><%= renderLabel('totalModalPremium', 'totalModalPremium','style="font-weight:bold"') %></td>
+                <td ><span name="totalModalPremium"><%= thosandSeperator(@sumOfModalPremium.round(2)) %>&nbsp&nbsp&nbsp</span></td>
+            </tr>
+        </tbody>
+    </table>
+</div>
+<div data-role="controlgroup" >
+    <div class="ui-grid-c"> 
+        <div class="ui-block-a"></div>
+        <div class="ui-block-b"></div>
+        <div class="ui-block-c"></div>
+        <div class="ui-block-d"></div>
+    </div>
+</div>

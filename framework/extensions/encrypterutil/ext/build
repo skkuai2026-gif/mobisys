@@ -1,0 +1,11 @@
+#!/bin/sh
+
+if [ "$RHO_PLATFORM" == "android" ]; then
+
+cd encrypterutil/platform/android
+rake --trace
+
+elif [ "$RHO_PLATFORM" == "iphone" ]; then
+cd encrypterutil/platform/iphone
+rake --trace
+fi

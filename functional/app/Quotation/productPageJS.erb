@@ -1,0 +1,216 @@
+<script type="text/javascript">
+
+function filterProduct(value){
+
+    $.ajax({
+        url: "/app/Quotation/filterProduct",
+        data: {'productFamily':value},
+        headers: {
+            'Transition-Enabled': false
+        },
+        success: function(data){
+            $('#productId').html(data);
+            $("#productId").trigger('create');
+            if ($('#productId > option').length <= 1) {
+                $('#productId').selectmenu('disable');
+            }
+            else {
+                $('#productId').selectmenu('enable');
+                $('#goButton').button("disable");
+            }
+
+            $('#productVersion').html('<option value=""><%= getLabelValue("select") %></option>');
+            $("#productVersion").trigger('create');
+            $('#productVersion').selectmenu('disable');
+
+            $('#productPlanOptionCd').html('<option value= ""> <%= getLabelValue("select") %> </option>');
+            $("#productPlanOptionCd").trigger('create');
+            $('#productId').selectmenu('refresh');
+
+        }
+    });
+
+}
+
+function filterProductVersion(productId)
+{
+    // alert("add ajax call for product version in  function filterProductVersion()");
+    // 'productObject':plan
+    $.ajax({
+        url: "/app/Quotation/filterProductVersion",
+        data: {'productId':productId, 'type':'PRODUCTVERSION'},
+        headers: {
+            'Transition-Enabled': false
+        },
+        success: function(data){
+            $('#productVersion').html(data);
+            $("#productVersion").trigger('create');
+            $('#productVersion').selectmenu('refresh');
+            if ($('#productVersion > option').length <= 1) {
+                $('#productVersion').selectmenu('disable');
+            }
+            else {
+                $('#productVersion').selectmenu('enable');
+                $('#goButton').button("disable");
+            }
+            $('#productPlanOptionCd').html('<option value=""><%= getLabelValue("select") %></option>');
+            $("#productPlanOptionCd").trigger('create');
+            $('#productPlanOptionCd').selectmenu('disable');
+        }
+    });
+
+}  
+
+function filterProductPlan (productId) 
+{
+    productFamily = $("select[id='productFamilyCd']").val();
+    $.ajax({
+        url: "/app/Quotation/filterPlanOptionCodes",
+        data: {
+            'productId':productId, 
+            'productFamily':productFamily
+        },
+        headers: {
+            'Transition-Enabled': false
+        },
+        success: function(data){
+            values = data.split('-|-');
+            productSeq = values[0];
+            lookup = values[1];
+            $('input[name="productSeq"]').val(productSeq);
+            $('#productPlanOptionCd').html(data);
+            $("#productPlanOptionCd").trigger('create');
+            $('#productPlanOptionCd').selectmenu('refresh');
+            if ($("#productPlanOptionCd option").length == 1) {
+                $("select[id='productPlanOptionCd']").selectmenu('disable');
+            }
+            else {
+                $("select[id='productPlanOptionCd']").selectmenu('enable'); 
+            }
+        }
+    });
+}
+
+function filterPlanOptionOnProductVersionSelection(productVersion)
+{
+    productId = $("select[id='productId']").val();
+    $.ajax({
+        url: "/app/Quotation/filterPlanOptionOnProductVersionSelection",
+        data: {'productId':productId,'productVersion':productVersion},
+        headers: {
+            'Transition-Enabled': false
+        },
+        success: function(data){
+            values = data.split('-|-');
+            productSeq = values[0];
+            lookup = values[1];
+            $('input[name="productSeq"]').val(productSeq);
+            $('#productPlanOptionCd').html(lookup);
+            $("#productPlanOptionCd").trigger('create');
+            $('#productPlanOptionCd').selectmenu('refresh');
+            if ($("#productPlanOptionCd option").length == 1) {
+                $("select[id='productPlanOptionCd']").selectmenu('disable');
+            }
+            else {
+                $("select[id='productPlanOptionCd']").selectmenu('enable'); 
+            }
+        }
+    }); 
+}
+
+$(document).ready(function(){
+    $('#productId').selectmenu('disable');
+    $('#productVersion').selectmenu('disable');
+    $('#productPlanOptionCd').selectmenu('disable');
+    $('#goButton').button("disable");
+
+    $("#productFamilyCd").change(function(){
+        $("#productId").val("").selectmenu("refresh");
+        $("#productVersion").val("").selectmenu("refresh");
+        $("#productPlanOptionCd").val("").selectmenu("refresh");
+        filterProduct($(this).val());
+    });
+    $("#productId").change(function(){
+        <% if @offlineApplicationEnvironment.value == "UAT" %>
+            $("#productVersion").val("").selectmenu("refresh");
+            $("#productPlanOptionCd").val("").selectmenu("refresh");
+            filterProductVersion($(this).val());
+        <%else%>
+            $("#productPlanOptionCd").val("").selectmenu("refresh");
+            filterProductPlan($(this).val());
+            if ($(this).val() != "") {
+                $('#goButton').button("enable");    
+            }
+        <%end%>
+    });
+
+    <% if @offlineApplicationEnvironment.value == "UAT" %>  
+        $("#productVersion").change(function(){
+            $("#productPlanOptionCd").val("").selectmenu("refresh");
+            filterPlanOptionOnProductVersionSelection($(this).val());
+            if ($(this).val() != "") {
+                $('#goButton').button("enable");    
+            } 
+        });  
+    <%end%>
+
+    $('#goButton').click(function(){
+        productFamily = $("select[id='productFamilyCd']").val();
+        productId = $("select[id='productId']").val(); 
+        productSeq = $("input[name='productSeq']").val(); 
+        productPlanOptionCd = $("select[id='productPlanOptionCd']").val();
+        options = $("select[id='productPlanOptionCd'] option").length;
+        proposerTitle = '<%= @title %>'
+        proposerFirstname = '<%= @firstname %>'
+        proposerMiddlename = '<%= @middlename %>'
+        proposerLastname = '<%= @lastname %>'
+        proposerGenderCd = '<%= @genderCd %>'
+        proposerDob = '<%= @dob %>'
+        proposerAge = '<%= @age %>'
+        proposerIndustryCd = '<%= @industryCd %>'
+        proposerNationality = '<%= @nationality %>'
+        proposerEmailAddress = '<%= @emailAddress %>'
+        proposerMobileNum = '<%= @mobileNum %>'
+        natureOfDuty = '<%= @natureOfDuty%>'
+        leadid = '<%= @params["leadid"] %>'
+        rpqid = '<%= @params["rpqid"] %>'
+        if ((productId) && (productFamily))
+        {
+            if ((options > 1) && (productPlanOptionCd))
+            {
+                <% if @offlineApplicationEnvironment.value == "UAT" %>
+
+                productVersion = $("select[id='productVersion']").val(); 
+                location.href='/app/Quotation/newCaptureIllustration?productFamily='+productFamily+'&productId='+productId+'&productVersion='+productVersion+'&productSeq='+productSeq+'&productPlanOptionCd='+productPlanOptionCd+'&leadid='+leadid+'&rpqid='+rpqid+'&sym_current_Tab=tab_basic';          
+
+                <%else %>
+                location.href='/app/Quotation/newCaptureIllustration?productFamily='+productFamily+'&productId='+productId+'&productSeq='+productSeq+'&productPlanOptionCd='+productPlanOptionCd+'&leadid='+leadid+'&rpqid='+rpqid+'&sym_current_Tab=tab_basic';       
+                <%end %>
+            }
+            else if (options == 1)
+            {
+                <% if @offlineApplicationEnvironment.value == "UAT" %>
+                productVersion = $("select[id='productVersion']").val();
+                location.href='/app/Quotation/newCaptureIllustration?productFamily='+productFamily+'&productId='+productId+'&productSeq='+productSeq+'&productVersion='+productVersion+'&productPlanOptionCd='+productPlanOptionCd+'&leadid='+leadid+'&rpqid='+rpqid+'&sym_current_Tab=tab_basic'; 
+                <%else %> 
+                location.href='/app/Quotation/newCaptureIllustration?productFamily='+productFamily+'&productId='+productId+'&productSeq='+productSeq+'&productPlanOptionCd='+productPlanOptionCd+'&leadid='+leadid+'&rpqid='+rpqid+'&sym_current_Tab=tab_basic'; 
+                <%end %>
+            }
+            else
+            {
+                showDialog("", '<%= getLabelValue("PLEASE_SELECT_PRODUCT_PLAN") %>', 'warning', 0, 'capture');
+            }
+        }
+        else if (productFamily)
+        {
+            showDialog("", '<%= getLabelValue("PLEASE_SELECT_PRODUCT")%>', 'warning', 0, 'capture');
+        }
+        else  
+        {
+            showDialog("", '<%= getLabelValue("PLEASE_SELECT_PRODUCT_FAMILY")%>', 'warning', 0, 'capture');
+        }
+    });
+
+});
+
+</script>

@@ -1,0 +1,52 @@
+<style>.main-content-wrapper{background-color: white;}</style>
+<%@imageTransCollateral = Collateral.loadObject(:first,:conditions =>{:collateralCd => "IMAGETRANS"}) %>
+
+<script type="text/javascript">  
+   $('#level2leftnavigation').find('.collateral-list-menu-active').removeClass('collateral-list-menu-active');
+   $('#<%=@collateralRenderLevelDO.levelCd%>').addClass('collateral-list-menu-active');
+</script>
+
+<div id="contentpane_<%=@collateralRenderLevelDO.guid%>" class="level2rightcontentpane">
+	<table border=0 width="98%">
+		<tr>
+			<td width="70%" rowspan=2>
+			  <% if @parentColRenderLevelDO!= nil %>
+          <span class="level2header"><%=@parentColRenderLevelDO.header1%></span>
+        <%end%>
+			</td>
+			<%@collateralRenderLevelChildDOList.reverse.each do |collateralRenderLevelChildDO|%>
+			 <td width="15%">
+			   <% if collateralRenderLevelChildDO.contentEmbedTypeCd == "INLINE"  %>
+			     <a href="#">
+			   <%else%>
+          <a href="#" id="<%=collateralRenderLevelChildDO.levelCd%>_id" >
+			     <script>
+              $('#<%=collateralRenderLevelChildDO.levelCd%>_id').click(function () {  
+              $.get("/app/Collateral/showpopup?collateralCd=<%=collateralRenderLevelChildDO.contentPart1%>",function(data) {});
+              }); 
+            </script>
+			   <%end%>
+			   <% if @setLevelCd == collateralRenderLevelChildDO.levelCd %>
+	         <div class="level4tabselected">
+          <%else%>
+	         <div class="level4tab">
+			   <%end%>
+			   <%=collateralRenderLevelChildDO.header1%> </div>
+			   </a>
+			 </td>
+			<%end%>
+	 </tr>
+  </table>
+	<hr>
+	<div class="level3text">
+    <% if @collateralRenderLevelDO.contentPart1 != nil %>
+      <%= @collateralRenderLevelDO.contentPart1 %>
+    <%end%>
+  </div>
+  <br>
+  <div class="level3text">
+    <% if @collateralRenderLevelDO.contentPart2 != nil %>
+      <%=@collateralRenderLevelDO.contentPart2 %>
+    <%end%>
+  </div>
+</div>

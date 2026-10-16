@@ -1,0 +1,75 @@
+<div data-role="page" data-url="<%= Rho::RhoConfig.start_path %>/">
+<form method="POST" action="<%= url_for :action => :calcMarriageValue %>" name="marriagevalueForm" onsubmit = "return checkBasicDetails();">
+
+    <div data-role="header" data-position="inline">
+      <h1><%= getLabelValue('MARRIAGECALC') %></h1>    
+      <a href="/app/Menu/calculators" class="ui-btn-left" data-direction="reverse">
+        <%= getLabelValue('BACK')   %>
+      </a>
+      <div class="ui-btn-right">
+        <a href="javascript: submitForm();" name="save" data-role="button" style="min-width:100px;">
+          <%= getLabelValue('SAVEVALIDATE')%>
+        </a>
+      </div>
+    </div>
+
+    <div data-role="content" id="capture" style="-webkit-transform: none;">
+        <%= renderObject(@calculator) %>
+        <div class="illustrationdisplay">
+            <div data-role="fieldcontain">
+              <%= renderLabel('field09', 'CALCLABEL9', nil, @calculator)   %>
+              <%= renderRangeField('field09', @calculator.field09, 'CALCLABEL09', @calculator, ' min="18" max="65"') %>
+            </div>
+        
+            <div data-role="fieldcontain">
+              <%= renderLabel('field10', 'CALCLABEL10', nil, @calculator)   %>
+              <%= renderRangeField('field10', @calculator.field10, 'CALCLABEL10', @calculator, ' min="0" max="30" ') %>
+            </div>
+              
+          <div data-role="fieldcontain">
+            <%= renderLabel('field11', 'CALCLABEL11', nil, @calculator)   %>
+            <%= renderRangeField('field11', @calculator.field11, 'CALCLABEL11', @calculator, ' min="50000" max="5000000"') %>
+          </div>
+          
+          <div data-role="fieldcontain">
+            <%= renderLabel('field12', 'CALCLABEL12', nil, @calculator)   %>
+            <%= renderRangeField('field12', @calculator.field12, 'CALCLABEL12', @calculator, ' min="18" max="30"') %>
+         </div>
+         
+          <div data-role="fieldcontain">
+            <%= renderLabel('field13', 'CALCLABEL13', nil, @calculator)   %>
+            <%= renderRangeField('field13', @calculator.field13, 'CALCLABEL13', @calculator, ' min="1" max="30"') %>
+          </div>   
+            
+          <div data-role="fieldcontain">
+             <%= renderLabel('field14', 'CALCLABEL14', nil, @calculator)   %>
+             <%= renderRangeField('field14', @calculator.field14, 'CALCLABEL14', @calculator, ' min="1" max="30"') %>
+          </div>
+      </div>
+
+    </div>
+    
+  </form>
+  <script type="text/javascript">
+        
+        $(document).focus(function() {
+          setTimeout("onFocus()", 100);
+        });
+        
+        function onFocus(){        
+        }
+        
+        function submitForm(){
+          $("a[name='save']").focus();
+          if(true)
+          {
+            $.mobile.showPageLoadingMsg();
+            
+            // # submit form
+            document.marriagevalueForm.submit();          
+          }  
+        }
+  
+  </script>  
+
+</div>

@@ -1,0 +1,198 @@
+<div data-role="page">
+
+  
+  <div data-role="header" data-position="inline">
+    <h1><%= renderLabel('email','EMAIL')%></h1>
+    <div class="headerButtons" name = "headerButtons">     
+      <a href="<%= url_for :action => :illustration1, :id => @quotation.object %>" class="ui-btn-left" data-direction="reverse">
+        <img src="/public/images/SalesIllustration/icon_BackArrow-Red.png">
+      </a>
+    </div>
+  </div>
+
+  <div data-role="content" id="email">
+      <div class="emaildisplay">
+      <form method="POST" name="emailForm" action="<%= url_for :action => :emailQuotation %>">
+      
+        <%= renderObject(@emailRequest) %>
+        <div class = "headerdiv">              
+          <h3 align="center"> <%= getLabelValue('EMAILHEADER')   %></h3>
+        </div>
+
+        <div data-role="fieldcontain">
+            <%= renderLabel('toEmail','TO', 'rightAlign') %>
+            <%= renderEmailField('toEmail',@emailRequest.toEmail,'To', @emailRequest) %>
+        </div>
+            
+        <div data-role="fieldcontain">
+            <%= renderLabel('ccEmail','CC', 'rightAlign') %>
+            <%= renderEmailField('ccEmail',@emailRequest.ccEmail,'Cc', @emailRequest) %>
+            <%= renderHiddenField('entityGuid',@emailRequest.entityGuid,'entityGuid',@emailRequest) %>
+            <%= renderHiddenField('entityNumber',@emailRequest.entityNumber,'entityNumber',@emailRequest) %>
+            <%= renderHiddenField('entityName',@emailRequest.entityName,'entityName',@emailRequest) %>
+        </div>
+
+        <div data-role="fieldcontain">
+          <%= renderLabel('message','INSERTMSG', 'rightTopAlign')   %>
+          <textarea id="EmailRequest[message]" name="EmailRequest[message]"></textarea>
+        </div>
+        
+        <!--  
+        <fieldset class="ui-grid-b">
+          <div class="ui-block-a"></div>
+          <div class="ui-block-bc"><%#= getLabelValue("SELECTILLUSTRATION")%></div>                       
+        </fieldset> -->
+        <%# @reportSections.each do |reportSection| %>
+          <!-- <fieldset class="ui-grid-b">
+            <div class="ui-block-a"></div>
+            <div class="ui-block-b">
+              <%#= renderCheckBox(reportSection, nil, 'Selected', @emailRequest) %>
+              <%#= renderLabel(reportSection,'&nbsp;', nil, @emailRequest) %>
+              <%#= getLabelValue(reportSection) %>
+            </div>
+          </fieldset> -->
+        <%# end %>
+
+        <fieldset class="ui-grid-c">
+          <div class="ui-block-a"></div>
+          <div class="ui-block-b">
+            <!-- <a href="#" name="print" data-role="button" data-theme="a" onclick="print();">
+                <%#= getLabelValue('PRINT')%>
+                <script>
+                function print() {
+                  if( true ){    
+                    
+                    $.mobile.showPageLoadingMsg();
+                    document.emailForm.action="printIllustration";
+                    document.emailForm.submit();                    
+                    $("a[name='email']").attr('onclick', 'return false;');
+                    $("a[name='print']").attr('onclick', 'return false;');
+                  }        
+                }
+                </script>
+            </a> -->
+          </div>
+          <div class="ui-block-c">            
+            <a href="#" name="email" data-role="button" data-theme="a" onclick="sendemail();">
+                <%= getLabelValue('EMAIL')%>
+                <script>
+                function sendemail() {
+                  if( checkForm() && checkNetwork()){    
+                    
+                    $.mobile.showPageLoadingMsg();
+                    document.emailForm.submit();                    
+                    $("a[name='email']").attr('onclick', 'return false;');
+                    $("a[name='print']").attr('onclick', 'return false;');
+                  }        
+                }
+                </script>
+            </a>
+
+          </div>
+          <div class="ui-block-d"></div>          
+        </fieldset>
+      </form>
+      </div>
+  </div>
+  <script>
+  
+  function checkNetwork(){
+    returnValue = false;        
+    $.ajax({
+            url: "/app/Quotation/checkNetwork",
+            success: function(data) {
+              data = data.replace("<div>","");
+              data = data.replace("</div>","");
+              try{
+                if (data == "NETWORK")
+                {
+                  returnValue = true;
+                }
+                else
+                {
+                  returnValue = false;
+                }
+              }catch(e){alert(e);}
+            },
+            async: false                    
+         });          
+    
+    if(!returnValue){
+      showDialog("", "<%= getLabelValue('CHECKNETWORK')%>", 'error', 0, 'email');
+    }
+    
+    return returnValue;
+  }
+  
+  function checkForm(){
+    var returnValue = true;
+    
+    toField = $("input[name='EmailRequest[toEmail]']").val();
+    
+    shortChecked = $("input[name='EmailRequest[shortIllustration]']").is(':checked');
+    
+    longChecked = $("input[name='EmailRequest[longIllustration]']").is(':checked');
+    //completeChecked = $("input[name='EmailRequest[COMPLETEILLUSTRATION]']").is(':checked');
+    //alert(completeChecked);
+    
+    errors = "";
+    
+    if (toField == "")
+    {
+      errors += "<%= getLabelValue('TOEMAILMANDATORY')%>\n";
+      returnValue = false;
+    }
+    
+    // if (!shortChecked && !longChecked && !completeChecked)
+    // {
+    //   errors += "<%= getLabelValue('ILLUSTRATIONREPORTMANDATORY')%>\n";
+    //   returnValue = false;
+    // }
+    
+    if(!returnValue){      
+      showDialog("", errors, 'error', 0, 'email');
+    }
+    return returnValue
+  }
+  
+  $('input[name="<%=getObjectMapping(@emailRequest)%>[toEmail]"]').change( function(){
+    
+    if(!testEmail(this.value))
+    {
+      $(this).val('');
+    }
+    
+  });
+
+  $('input[name="<%=getObjectMapping(@emailRequest)%>[ccEmail]"]').change( function(){
+    
+    if(!testEmail(this.value))
+    {
+      $(this).val('');
+    }
+    
+  });
+
+  function testEmail(value)
+  {
+    emails = value.replace(" ","").replace(",",";");
+    emailList = emails.split(";"); 
+    returnValue = true;
+    for(i=0; i < emailList.length; i++)
+    {    
+      if (emailList[i] != "")
+      {
+        emailPattern=new RegExp("[A-Za-z0-9._-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,4}");
+        returnValue = emailPattern.test(emailList[i]);
+        if(!returnValue)
+        { 
+          break;        
+        }
+      }
+    }
+      
+    return returnValue;
+  }
+
+  </script>
+</div>

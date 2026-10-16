@@ -1,0 +1,16 @@
+entry: Init_Pdfgen_extension
+javaentry: com.pdfgen.Pdfgen
+libraries: ["Pdfgen"]
+android:
+  adds: ext/platform/android/additional
+  source_list: ext/platform/android/ext_java.files
+  exttype: rakefile
+wp8:
+  csharp_impl: yes
+  root_namespace: rho
+
+project_paths:
+  wp8: ext/platform/wp8/PdfgenLib.vcxproj
+  wm: ext/platform/wm/Pdfgen.vcproj
+  
+xml_api_paths: ext/Pdfgen.xml

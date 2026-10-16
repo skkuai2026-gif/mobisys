@@ -1,0 +1,299 @@
+<link rel="stylesheet" href="/public/css/FNA/shame.css">        
+<div data-role="content" id="capture" style="-webkit-transform: none;">
+<form method="POST" action="<%= url_for :action => :submitFnaOtherProtectionNeed %>" name="FnaOtherProtectionNeedForm" id="FnaOtherProtectionNeedForm">
+  <%= renderObject(@fnaRequest) %>
+  <%= renderObject(@fnaProposer, @fnaRequest) %>
+  <%= renderObject(@fnaOtherProtectionNeed, @fnaRequest) %>
+  <input type="hidden"  id ="changeHealthNeed" name="changeHealthNeed" value=""/>
+  
+	<div class="header" style="padding-top:15px;">
+        <span class="title"><%= getLabelValue('INSURED_NEED') %></span>
+        <span class="description"><%= getLabelValue('FIN_FIGURES') %></span>
+        <!-- <span class="set-right required-note" style="padding-top:0px;"><%#= getLabelValue('REQD_FIELDS') %></span> -->
+    </div>
+    <div class="illustrationdisplay">
+        <div class="card">
+           <div class="legend rates-header">
+            <label class="strongLabel"><%= getLabelValue('EXPECTED_RATES') %></label>
+            <a id="inline" href="javascript: openPDF();" style="width: 100%;font-weight: bold;color: #4a7295;font-size: 14px;"><%= getLabelValue('AVERAGE_RATES') %></a>
+            </div>
+            <div data-role="dualfieldcontain" class="ui-dual-field-contain ui-body ui-br">
+                <div class="half">
+                    <div class="group">
+                        <%= renderNumericField('inflationRate', thosandSeperator(@fnaRequest.inflationRate.to_s) ,'inflationRate', @fnaRequest, ' maxlength="6" pattern="/([^\s])"  onkeypress="return isNumberKey(event)" onchange="return checkifNumdeci(this.value, this.id)" class="material-input "') %>
+                        <%= renderLabel('inflationRate', 'EXPECTEDINFLATIONRATE', 'mandatory material-label', @fnaRequest) %>
+                    </div>
+                </div>
+                <div class="half">
+                    <div class="group">
+                    <%= renderNumericField('returnRate', thosandSeperator(@fnaRequest.returnRate.to_s) ,'returnRate',  @fnaRequest, ' maxlength="6" pattern="/([^\s])"  onkeypress="return isNumberKey(event)" onchange="return checkifNumdeci(this.value, this.id)" class="material-input "') %>
+                       <%= renderLabel('returnRate', 'EXPECTEDRETURNRATE', 'mandatory material-label',  @fnaRequest) %>
+                      
+                    </div>
+                </div>
+            </div>
+        </div>
+        <br/>
+        <div class="tabs">
+            <div style="margin-bottom: 0px;">
+                <a href="#" onclick="changeTab($(this))" data-url="getNeeds"><p><%= getLabelValue('LIFEPROTNEEDS') %></p></a>
+            </div>
+            <div style="margin-bottom: 0px;">
+                <a href="#" onclick="changeTab($(this))" data-url="healthNeeds"><p class="active"><%= getLabelValue('OTHER_LIFE_RISK_NEED') %></p></a>
+            </div>
+            <div style="margin-bottom: 0px;">
+                <a href="#" onclick="changeTab($(this))" data-url="retirementNeeds"><p><%= getLabelValue('RETIREMENT_PLANNING') %></p></a>
+            </div>
+            <div style="margin-bottom: 0px;">
+                <a href="#" onclick="changeTab($(this))" data-url="otherTargetSaving"><p><%= getLabelValue('OTHER_TARGET_SAVINGS') %></p></a>
+            </div>
+            <div style="margin-bottom: 0px;">
+                <a href="#" onclick="changeTab($(this))" data-url="shortfallSummary"><p><%= getLabelValue('SHORTFALL_SUMMARY') %></p></a>
+            </div>
+        </div>
+      <div class="clear" style="border-top: 5px solid #eaab00;"></div>
+        <div class="tabs-content">
+          <div class="card">
+           <div class="note"><%= getLabelValue('ALL_VALUES_IN_HKD') %></div>
+            <div data-role="dualfieldcontain" class="ui-dual-field-contain ui-body ui-br">
+            <div class="third with-spacer">
+              <div class="group">
+               <% neededAmt = @NeededAmt  if defined?(@NeededAmt) %>
+                <%= renderNumericField('TOTAL_EXPECTED_COVERAGE', thosandSeperator(neededAmt.to_s) ,'TOTAL_EXPECTED_COVERAGE',nil, ' maxlength="10" pattern="/([^\s])" class="material-input " readonly="true" tabindex="-1" style="background-color: #c8c8c8 !important;margin-top:7px !important;"') %>
+                  <%= renderLabel('TOTAL_EXPECTED_COVERAGE', 'TOTAL_EXPECTED_COVERAGE', 'mandatory material-label',nil) %> 
+              </div>
+            </div>
+          <div class="operation-label"> - </div>
+          <div class="third with-spacer">
+            <div class="group">
+            <% coveredAmt = @CoveredAmt  if defined?(@CoveredAmt) %>
+               <%= renderNumericField('TOTAL_EXISTING_COVERAGE', thosandSeperator(coveredAmt.to_s) ,'TOTAL_EXISTING_COVERAGE', nil, ' maxlength="10" pattern="/([^\s])" class="material-input " readonly="true" tabindex="-1" style="background-color: #c8c8c8 !important;margin-top:7px !important;"') %>
+                <%= renderLabel('TOTAL_EXISTING_COVERAGE', 'TOTAL_EXISTING_COVERAGE', 'mandatory material-label',nil) %> 
+            </div>
+          </div>
+          <div class="operation-label"> = </div>
+          <div class="third with-spacer">
+            <div class="group">
+            <% shortFall = @ShortFall  if defined?(@ShortFall) %>
+              <%= renderNumericField('MEDICAL_SHORTFALL', thosandSeperator(shortFall.to_s) ,'MEDICAL_SHORTFALL',nil, ' maxlength="10" pattern="/([^\s])" class="material-input " readonly="true" tabindex="-1" style="background-color: #c8c8c8 !important;margin-top:7px !important;"') %>
+                <%= renderLabel('MEDICAL_SHORTFALL', 'MEDICAL_SHORTFALL', 'mandatory material-label', nil) %> 
+            </div>
+          </div>
+        </div>
+      </div> 
+      <div class="card">
+        <div class="legend"><label class="strongLabel"><%= getLabelValue('HOSPITAL_INCOME_INSURANCE') %></label></div>
+        <div data-role="dualfieldcontain" class="ui-dual-field-contain ui-body ui-br">
+          <div class="third with-spacer">
+            <div class="group">
+               <%= renderNumericField('hincomeNeededAmt',  thosandSeperator(@fnaOtherProtectionNeed.hincomeNeededAmt.to_s) ,'hincomeNeededAmt', @fnaOtherProtectionNeed, ' maxlength="10" pattern="/([^\s])" onkeypress="return numbersonly(event)"  onchange="return checkifNum(this.value, this.id)" class="material-input "') %>
+              <%= renderLabel('hincomeNeededAmt', 'COVERAGE_NEEDED', 'mandatory material-label', @fnaOtherProtectionNeed) %>
+              <%= attachMask("#{getObjectMapping(@fnaOtherProtectionNeed)}[hincomeNeededAmt]") %> 
+            </div>
+          </div>
+          <div class="operation-label"> - </div>
+          <div class="third with-spacer">
+            <div class="group">
+              <%= renderNumericField('hincomeCoveredAmt',  thosandSeperator(@fnaOtherProtectionNeed.hincomeCoveredAmt.to_s) ,'hincomeCoveredAmt', @fnaOtherProtectionNeed, ' maxlength="10" pattern="/([^\s])"onkeypress="return numbersonly(event)"  onchange="return checkifNum(this.value, this.id)" class="material-input "') %>
+              <%= renderLabel('hincomeCoveredAmt', 'EXISTING_COVERAGE', 'mandatory material-label',  @fnaOtherProtectionNeed) %>
+              <%= attachMask("#{getObjectMapping(@fnaOtherProtectionNeed)}[hincomeCoveredAmt]") %> 
+            </div>
+          </div>
+          <div class="operation-label"> = </div>
+          <div class="third with-spacer">
+            <div class="group">
+            <%= renderNumericField('HINCOME_SHORTFALL_RISK_PROT_NEEDS', thosandSeperator(@HIncomeShortFall.to_s),'HINCOME_SHORTFALL_RISK_PROT_NEEDS',nil, ' maxlength="10" pattern="/([^\s])"  class="material-input " readonly="true" tabindex="-1" style="background-color: #c8c8c8 !important;margin-top:7px !important;"') %>
+              <%= renderLabel('HINCOME_SHORTFALL_RISK_PROT_NEEDS', 'SHORTFALL_RISK_PROT_NEEDS', 'mandatory material-label',nil) %>
+              <%= attachMask("HINCOME_SHORTFALL_RISK_PROT_NEEDS") %>            
+              </div>
+          </div>
+        </div>
+
+        <div class="legend"><label class="strongLabel"><%= getLabelValue('HOSPITALIZATION_INSURANCE') %></label></div>
+        <div data-role="dualfieldcontain" class="ui-dual-field-contain ui-body ui-br">
+          <div class="third with-spacer">
+            <div class="group">
+              <%= renderNumericField('hinsuranceNeededAmt', thosandSeperator(@fnaOtherProtectionNeed.hinsuranceNeededAmt.to_s) ,'hinsuranceNeededAmt', @fnaOtherProtectionNeed, ' maxlength="10" pattern="/([^\s])" onkeypress="return numbersonly(event)"  onchange="return checkifNum(this.value, this.id)" class="material-input "') %>
+              <%= renderLabel('hinsuranceNeededAmt', 'COVERAGE_NEEDED', 'mandatory material-label', @fnaOtherProtectionNeed) %>
+              <%= attachMask("#{getObjectMapping(@fnaOtherProtectionNeed)}[hinsuranceNeededAmt]") %> 
+            </div>
+          </div>
+          <div class="operation-label"> - </div>
+          <div class="third with-spacer">
+            <div class="group">
+              <%= renderNumericField('hinsuranceCoveredAmt', thosandSeperator(@fnaOtherProtectionNeed.hinsuranceCoveredAmt.to_s) ,'hinsuranceCoveredAmt', @fnaOtherProtectionNeed, ' maxlength="10" pattern="/([^\s])" onkeypress="return numbersonly(event)"  onchange="return checkifNum(this.value, this.id)" class="material-input "') %>
+              <%= renderLabel('hinsuranceCoveredAmt', 'EXISTING_COVERAGE', 'mandatory material-label', @fnaOtherProtectionNeed) %>
+              <%= attachMask("#{getObjectMapping(@fnaOtherProtectionNeed)}[hinsuranceCoveredAmt]") %>
+            </div>
+          </div>
+          <div class="operation-label"> = </div>
+          <div class="third with-spacer">
+            <div class="group">
+              <%= renderNumericField('HINSURANCE_SHORTFALL_RISK_PROT_NEEDS', thosandSeperator(@HInsuranceShortFall.to_s),'HINSURANCE_SHORTFALL_RISK_PROT_NEEDS', nil, ' maxlength="10" pattern="/([^\s])" class="material-input" tabindex="-1" readonly="true" style="background-color: #c8c8c8 !important;margin-top:7px !important;"') %>
+              <%= renderLabel('HINSURANCE_SHORTFALL_RISK_PROT_NEEDS', 'SHORTFALL_RISK_PROT_NEEDS', 'mandatory material-label',nil) %>
+            </div> 
+          </div>
+        </div>
+
+        <div class="legend"><label class="strongLabel"><%= getLabelValue('SURGICAL_FEES') %></label></div>
+        <div data-role="dualfieldcontain" class="ui-dual-field-contain ui-body ui-br">
+          <div class="third with-spacer">
+            <div class="group">
+              <%= renderNumericField('sfbNeededAmt', thosandSeperator(@fnaOtherProtectionNeed.sfbNeededAmt.to_s),'sfbNeededAmt', @fnaOtherProtectionNeed, ' maxlength="10" pattern="/([^\s])" onkeypress="return numbersonly(event)"  onchange="return checkifNum(this.value, this.id)" class="material-input "') %>
+              <%= renderLabel('sfbNeededAmt', 'COVERAGE_NEEDED', 'mandatory material-label', @fnaOtherProtectionNeed) %>
+              <%= attachMask("#{getObjectMapping(@fnaOtherProtectionNeed)}[sfbNeededAmt]") %>
+            </div>
+          </div>
+          <div class="operation-label"> - </div>
+          <div class="third with-spacer">
+            <div class="group">
+              <%= renderNumericField('sfbCoveredAmt', thosandSeperator(@fnaOtherProtectionNeed.sfbCoveredAmt.to_s) ,'sfbCoveredAmt', @fnaOtherProtectionNeed, ' maxlength="10" pattern="/([^\s])" onkeypress="return numbersonly(event)"  onchange="return checkifNum(this.value, this.id)" class="material-input "') %>
+              <%= renderLabel('sfbCoveredAmt', 'EXISTING_COVERAGE', 'mandatory material-label', @fnaOtherProtectionNeed) %>
+              <%= attachMask("#{getObjectMapping(@fnaOtherProtectionNeed)}[sfbCoveredAmt]") %>
+            </div>
+          </div>
+          <div class="operation-label"> = </div>
+          <div class="third with-spacer">
+            <div class="group">
+              <%= renderNumericField('SFB_SHORTFALL_RISK_PROT_NEEDS', thosandSeperator(@SFBShortFall.to_s) ,'SFB_SHORTFALL_RISK_PROT_NEEDS',nil, ' maxlength="10" pattern="/([^\s])" class="material-input " readonly="true" tabindex="-1" style="background-color: #c8c8c8 !important;margin-top:7px !important;"') %>
+              <%= renderLabel('SFB_SHORTFALL_RISK_PROT_NEEDS', 'SHORTFALL_RISK_PROT_NEEDS', 'mandatory material-label', nil) %>
+            </div>
+          </div>
+        </div>
+
+        <div class="legend"><label class="strongLabel"><%= getLabelValue('CII') %></label></div>
+        <div data-role="dualfieldcontain" class="ui-dual-field-contain ui-body ui-br">
+          <div class="third with-spacer">
+            <div class="group">
+              <%= renderNumericField('ciInsuranceNeededAmt', thosandSeperator(@fnaOtherProtectionNeed.ciInsuranceNeededAmt.to_s),'ciInsuranceNeededAmt', @fnaOtherProtectionNeed, ' maxlength="10" pattern="/([^\s])" onkeypress="return numbersonly(event)"  onchange="return checkifNum(this.value, this.id)" class="material-input "') %>
+              <%= renderLabel('ciInsuranceNeededAmt', 'COVERAGE_NEEDED', 'mandatory material-label', @fnaOtherProtectionNeed) %>
+              <%= attachMask("#{getObjectMapping(@fnaOtherProtectionNeed)}[ciInsuranceNeededAmt]") %>
+            </div>
+          </div>
+          <div class="operation-label"> - </div>
+          <div class="third with-spacer">
+            <div class="group">
+              <%= renderNumericField('ciInsuranceCoveredAmt', thosandSeperator(@fnaOtherProtectionNeed.ciInsuranceCoveredAmt.to_s) ,'ciInsuranceCoveredAmt', @fnaOtherProtectionNeed, ' maxlength="10" pattern="/([^\s])" onkeypress="return numbersonly(event)"  onchange="return checkifNum(this.value, this.id)" class="material-input "') %>
+              <%= renderLabel('ciInsuranceCoveredAmt', 'EXISTING_COVERAGE', 'mandatory material-label', @fnaOtherProtectionNeed) %>
+              <%= attachMask("#{getObjectMapping(@fnaOtherProtectionNeed)}[ciInsuranceCoveredAmt]") %>
+            </div>
+          </div>
+          <div class="operation-label"> = </div>
+          <div class="third with-spacer">
+            <div class="group">
+              <%= renderNumericField('CIINSURANCE_SHORTFALL_RISK_PROT_NEEDS', thosandSeperator(@CIInsuranceShortFall.to_s),'CIINSURANCE_SHORTFALL_RISK_PROT_NEEDS',nil, ' maxlength="10" pattern="/([^\s])" class="material-input " readonly="true" tabindex="-1" style="background-color: #c8c8c8 !important;margin-top:7px !important;"') %>
+              <%= renderLabel('CIINSURANCE_SHORTFALL_RISK_PROT_NEEDS', 'SHORTFALL_RISK_PROT_NEEDS', 'mandatory material-label',nil) %>
+            </div>
+          </div>
+        </div>
+
+        <div class="legend"><label class="strongLabel"><%= getLabelValue('ADDI') %></label></div>
+        <div data-role="dualfieldcontain" class="ui-dual-field-contain ui-body ui-br">
+          <div class="third with-spacer">
+            <div class="group">
+              <%= renderNumericField('addInsuranceNeededAmt', thosandSeperator(@fnaOtherProtectionNeed.addInsuranceNeededAmt.to_s),'addInsuranceNeededAmt', @fnaOtherProtectionNeed, ' maxlength="10" pattern="/([^\s])" onkeypress="return numbersonly(event)"  onchange="return checkifNum(this.value, this.id)" class="material-input "') %>
+              <%= renderLabel('addInsuranceNeededAmt', 'COVERAGE_NEEDED', 'mandatory material-label', @fnaOtherProtectionNeed) %>
+              <%= attachMask("#{getObjectMapping(@fnaOtherProtectionNeed)}[addInsuranceNeededAmt]") %>
+            </div>
+          </div>
+          <div class="operation-label"> - </div>
+          <div class="third with-spacer">
+            <div class="group">
+              <%= renderNumericField('addInsuranceCoveredAmt', thosandSeperator(@fnaOtherProtectionNeed.addInsuranceCoveredAmt.to_s) ,'addInsuranceCoveredAmt', @fnaOtherProtectionNeed, ' maxlength="10" pattern="/([^\s])" onkeypress="return numbersonly(event)"  onchange="return checkifNum(this.value, this.id)"  class="material-input "') %>
+              <%= renderLabel('addInsuranceCoveredAmt', 'EXISTING_COVERAGE', 'mandatory material-label', @fnaOtherProtectionNeed) %>
+              <%= attachMask("#{getObjectMapping(@fnaOtherProtectionNeed)}[addInsuranceCoveredAmt]") %>
+            </div>
+          </div>
+          <div class="operation-label"> = </div>
+          <div class="third with-spacer">
+            <div class="group">
+              <%= renderNumericField('ADDINSURANCE_SHORTFALL_RISK_PROT_NEEDS', thosandSeperator(@ADDInsuranceShortFall.to_s),'ADDINSURANCE_SHORTFALL_RISK_PROT_NEEDS', nil, ' maxlength="10" pattern="/([^\s])" class="material-input " tabindex="-1" readonly="true" style="background-color: #c8c8c8 !important;margin-top:7px !important;"') %>
+              <%= renderLabel('ADDINSURANCE_SHORTFALL_RISK_PROT_NEEDS', 'SHORTFALL_RISK_PROT_NEEDS', 'mandatory material-label',nil) %>
+            </div>
+          </div>
+        </div>
+ 
+      </div>
+       <% if @fnaRequest.statusCd.to_s == "FNASIGNED" || @fnaRequest.statusCd.to_s == "FNASUBMIT" || @fnaRequest.statusCd.to_s == "SYNCDONE"  %>
+       <% else %>
+       <div class="ui-dual-field-contain ui-body ui-br">
+        <div class="half">
+          <a class="button_UI_1 ui-link ui-btn selected" onclick="calculatehealthprotectionneeds()"><%= getLabelValue('CALCULATE') %></a>
+        </div>
+      </div> 
+      <% end %>  
+	</div>
+  <div class="ui-dual-field-contain ui-body ui-br">
+      <div class="half">
+        <a class="button_UI_1 ui-link ui-btn selected" onclick="changeTab($(this))" data-url="retirementNeeds"><%= getLabelValue('NEXT_SECTION') %></a>
+      </div>
+    </div>
+	 
+	</div>
+
+  
+    <style >
+        .button_UI {
+            background-color:#efbc33 !important;
+            border-radius: 7px;
+            border-style: none;
+            color: #003946 !important;
+            display: inline-block;
+            font-size: 14px !important;
+            max-width: 200px;
+            margin: 0;
+            text-shadow: none !important;
+            font-weight: 700;
+            text-align: center;
+            line-height: 1.3;
+            /*padding: .8em 1.5em !important;*/
+            width: 100px;
+        }
+        .button_UI_1 {
+            background-color:#efbc33 !important;
+            border-radius: 7px;
+            border-style: none;
+            color: #003946 !important;
+            display: inline-block;
+            font-size: 14px !important;
+            max-width: 200px;
+            margin: 0;
+            text-shadow: none !important;
+            font-weight: 700;
+            text-align: center;
+            line-height: 1.3;
+            /*padding: .8em 1.5em !important;*/
+            /*width: 100px;*/
+        }
+    </style>
+
+<%= render(:partial => 'FNAHealth_Protection_NeedJS')%>
+</form>
+</div>
+
+ <div class="" data-role="dualfieldcontain" align="">
+        <div class="">
+            <div class="group" style="font-size: 14px;">
+                <%= getLabelValue('INSTRUCTION_TEXT_NEEDS2') %>
+            </div>
+        </div>     
+    </div>
+
+ <!--  <div class="" data-role="dualfieldcontain">
+        <div class="half"  align="left" style="margin:0% 0% 0% 2%">
+            <div class="group">
+                <a href="#" id="previousTab"  class="button_UI ui-link ui-btn selected"  style="" onclick="previousTab()">
+                    <%#= getLabelValue('PREVIOUS') %>
+                </a>
+
+            </div>
+        </div>
+
+        <div class="half" align="right">
+            <div class="group" >
+                <a href="#"  id="nextTab"  class="button_UI ui-link ui-btn selected"  style="" onclick="nextTab()" >
+                    <%#= getLabelValue('NEXT') %> 
+                </a>   
+            </div>
+        </div>
+    </div> -->

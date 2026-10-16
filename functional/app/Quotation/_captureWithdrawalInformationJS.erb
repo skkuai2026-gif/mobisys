@@ -1,0 +1,257 @@
+    <script>
+    var withdrawCount = parseInt("<%= @withdrawCount %>") + 1;
+        function addwithdraw(){
+            quotationObjectName = '<%= getObjectMapping(@quotation) %>';
+            $.ajax({
+                url: "/app/Quotation/addWithdraw",
+                data: {
+                    'quotationProductObject': '<%= @quotation.object.to_s %>', 
+                    'withdrawCount': withdrawCount, 
+                    'quotationObjectName':quotationObjectName 
+                },
+                success: function(data) {
+                    withdrawCount = withdrawCount + 1;
+                    $("#withdrawalsList").append(data);
+                    $("#withdrawalsList").listview("refresh");
+                    $("#withdrawalsList").trigger('create'); 
+                    enableWithdrawalFields();
+                    $(".adjustWidth").children().each(function(index,value){ $(value).css('width',(100/$(".adjustWidth").last().children().size()).toString()+"%") })
+                }
+            });    
+        }
+
+        function removeWithdraw(withdraw){
+            $('<div>').simpledialog2({
+                mode: 'button',
+                style: "width: 629px",
+                buttonPrompt: 'Are you sure you want to delete?',
+                buttons : {
+                    '<%= getLabelValue("OK") %>': {
+                        click: function () {
+                            $('input[name="'+withdraw+'[removed]"]').val('YES');
+                            $('input[name="'+withdraw+'[removed]"]').parents("li").hide();
+                            withdrawCount = withdrawCount - 1;
+                        }
+                    },
+                    '<%= getLabelValue("CANCEL") %>': {
+                        click: function () {},
+                        icon: "delete",
+                        theme: "c"
+                    }
+                }
+            });
+        }
+
+       
+
+        function enableWithdrawalFields(){
+            withdrawalFl = $('input[name="<%= getObjectMapping(@quotation) %>[withdrawalFl]"]');
+            if (withdrawalFl.fieldexists()){
+                if (withdrawalFl.filter(':checked').val() == "YES")
+                {
+                    $('div[name=withdrawalFl] select').selectmenu('enable');
+                    setReadOnly($('div[name=withDrawalList] input'), false);
+                    enableWithdrawal();
+                    $('.addWithdrawButton').show();
+                    $('#withdrawalsList').show();
+                }
+                else
+                {
+                    $('.addWithdrawButton').hide();
+                    $('#withdrawalsList').hide();
+                    $('div[name=withdrawalFl] select').val('').selectmenu('refresh', true);
+                    $('div[name=withdrawalFl] select').selectmenu('disable');
+                    $('div[name=withDrawalList] input').val('');
+                    $('input[name="<%= getObjectMapping(@quotation) %>[payingYears]"]').val('');
+                    setReadOnly($('div[name=withDrawalList] input'), true);
+                    setReadOnly($('input[name="<%= getObjectMapping(@quotation) %>[payingYears]"]'), true);
+                }
+            }
+        }
+
+        function enableWithdrawal(){
+            solverTypeCd = $("select[name='<%= getObjectMapping(@quotation)%>[solverTypeCd]']");
+            withdrawalFl = $('input[name="<%= getObjectMapping(@quotation) %>[withdrawalFl]"]').filter(':checked').val();
+            age = $("input[name='<%= getObjectMapping(@insured)%>[age]']").val();
+            if (solverTypeCd.fieldexists()){
+                if (solverTypeCd.val() == "DATAENTRY")
+                {
+                    $("input[name='<%= getObjectMapping(@quotation)%>[payingYears]']").val();
+                    setReadOnly($("input[name='<%= getObjectMapping(@quotation)%>[payingYears]']"), true);
+                    setReadOnly($('div[name=withDrawalList] input'), false);
+                    if ('<%= renderWithdrawalratetypecd %>'){
+                        $('select[name$="[withdrawalRateTypeCd]"] option:eq(0)')[0].selected = true;
+                        $('select[name$="[withdrawalRateTypeCd]"]').selectmenu("refresh", true);
+                        $('select[name$="[withdrawalRateTypeCd]"]').selectmenu('disable');
+                    }
+                }
+                else if (solverTypeCd.val() == "MAXIMUMAMOUNTSOLVER" || solverTypeCd.val() == "REGULARAMOUNTSOLVER")
+                {
+                    setReadOnly($("input[name='<%= getObjectMapping(@quotation)%>[payingYears]']"), false);
+                    $("select[name='<%= getObjectMapping(@quotation)%>[withdrawalRateTypeCd]']").selectmenu('enable');
+                    $("div[name=frequencyVal] input").val(1);
+                    setReadOnly($('div[name=policyYearFrom] input'), false);
+                    setReadOnly($('div[name=policyYearTo] input'), false);
+                    setReadOnly($('div[name=withdrawalAmount] input'), false);
+                    setReadOnly($('div[name=frequencyVal] input'), false);
+                    if ('<%= @facetData[:renderWithdrawalratetypecd] %>'){
+                        $('select[name$="[withdrawalRateTypeCd]"] option:eq(1)')[0].selected = true;
+                        $('select[name$="[withdrawalRateTypeCd]"]').selectmenu("refresh", true);
+                    }
+                    if (age != null )
+                    {
+                        setReadOnly($('div[name=ageFrom] input'), false);
+                        setReadOnly($('div[name=ageTo] input'), false);
+                    }
+                }
+                else if (solverTypeCd.val() == "PERIODSOLVER")
+                {
+                    $("input[name='<%= getObjectMapping(@quotation)%>[payingYears]']").val();
+                    setReadOnly($("input[name='<%= getObjectMapping(@quotation)%>[payingYears]']"), true);
+                    setReadOnly($('div[name=withDrawalList] input'), false);
+                    $("div[name=policyYearTo] input").val('');
+                    $("div[name=ageTo] input").val('');
+                    setReadOnly($('div[name=policyYearTo] input'), true);
+                    setReadOnly($('div[name=ageTo] input'), true);
+                    $('select[name$="[withdrawalRateTypeCd]"] option:eq(0)')[0].selected = true;
+                    $('select[name$="[withdrawalRateTypeCd]"]').selectmenu("refresh", true);
+                    $("select[name='<%= getObjectMapping(@quotation)%>[withdrawalRateTypeCd]']").selectmenu('disable');
+                }
+                else if (solverTypeCd.val() == "WITHDRAWALOFCOUPON")
+                {
+                    $("input[name='<%= getObjectMapping(@quotation)%>[payingYears]']").val();
+                    setReadOnly($("input[name='<%= getObjectMapping(@quotation)%>[payingYears]']"), true);
+                    $('div[name=withDrawalList] input').val('');
+                    setReadOnly($('div[name=withDrawalList] input'), true);
+                    if ('<%= @facetData[:renderWithdrawalratetypecd] %>'){
+                        $('select[name$="[withdrawalRateTypeCd]"] option:eq(0)')[0].selected = true;
+                        $('select[name$="[withdrawalRateTypeCd]"]').selectmenu("refresh", true);
+                    }
+                    $("select[name='<%= getObjectMapping(@quotation)%>[withdrawalRateTypeCd]']").selectmenu('disable');
+                }
+                else if (withdrawalFl != 'YES')
+                {
+                    $("select[name='<%= getObjectMapping(@quotation)%>[withdrawalRateTypeCd]']").selectmenu('disable');
+                    $('div[name=withDrawalList] input').val('');
+                    setReadOnly($('div[name=withDrawalList] input'), true);
+                    if ('<%= @facetData[:renderWithdrawalratetypecd] %>'){
+                        $('select[name$="[withdrawalRateTypeCd]"] option:eq(0)')[0].selected = true;
+                        $('select[name$="[withdrawalRateTypeCd]"]').selectmenu("refresh", true);
+                    }
+                }
+            }
+        }
+
+        function calculateAgeFrom(policyYearFrom)
+        {
+            insuredAge = isNaN(parseInt($('input[name="<%= getObjectMapping(@insured)%>[age]"]').val())) ? 0 : parseInt($('input[name="<%= getObjectMapping(@insured)%>[age]"]').val());
+            solverTypeCd = $("select[name='<%= getObjectMapping(@quotation)%>[solverTypeCd]']");
+            if (solverTypeCd.fieldexists()){
+                if ((solverTypeCd.val() == "MAXIMUMAMOUNTSOLVER") && (insuredAge != 0))
+                {
+                    policyYearFromValue = parseInt($('input[name="'+policyYearFrom+'"]').val());
+                    ageFrom = policyYearFrom.replace("policyYearFrom", "ageFrom");
+                    ageFromValue = $('input[name="'+ageFrom+'"]').val();
+                    ageFromValue = policyYearFromValue + insuredAge - 1;
+                    $('input[name="'+ageFrom+'"]').val(ageFromValue);
+                }
+            }
+        }
+
+        function calculatePolicyFrom(ageFrom)
+        {
+            insuredAge = isNaN(parseInt($('input[name="<%= getObjectMapping(@insured)%>[age]"]').val())) ? 0 : parseInt($('input[name="<%= getObjectMapping(@insured)%>[age]"]').val());
+            solverTypeCd = $("select[name='<%= getObjectMapping(@quotation)%>[solverTypeCd]']");
+            if (solverTypeCd.fieldexists()){
+                if ((solverTypeCd.val() == "MAXIMUMAMOUNTSOLVER") && (insuredAge != 0))
+                {
+                    ageFromValue = parseInt($('input[name="'+ageFrom+'"]').val());
+                    policyYearFrom = ageFrom.replace("ageFrom", "policyYearFrom")
+                    policyYearFromValue = isNaN(parseInt($('input[name="'+policyYearFrom+'"]').val())) ? 0 : parseInt($('input[name="'+policyYearFrom+'"]').val());
+                    if (policyYearFromValue == 0 )
+                    {
+                        policyYearFromValue = ageFromValue - insuredAge + 1;
+                        $('input[name="'+policyYearFrom+'"]').val(policyYearFromValue);
+                    }
+                }
+            }
+        }
+
+        function calculateAgeTo(policyYearTo)
+        {
+            insuredAge = isNaN(parseInt($('input[name="<%= getObjectMapping(@insured)%>[age]"]').val())) ? 0 : parseInt($('input[name="<%= getObjectMapping(@insured)%>[age]"]').val());
+            solverTypeCd = $("select[name='<%= getObjectMapping(@quotation)%>[solverTypeCd]']");
+            if (solverTypeCd.fieldexists()){
+                if ((solverTypeCd.val() == "MAXIMUMAMOUNTSOLVER") && (insuredAge != 0))
+                {
+                    policyYearToValue = parseInt($('input[name="'+policyYearTo+'"]').val());
+                    ageTo = policyYearTo.replace("policyYearTo", "ageTo");
+                    ageToValue = $('input[name="'+ageTo+'"]').val();
+                    ageToValue = policyYearToValue + insuredAge - 1;
+                    $('input[name="'+ageTo+'"]').val(ageToValue);
+                }
+            }
+        }
+
+        function calculatePolicyTo(ageTo)
+        {
+            insuredAge = isNaN(parseInt($('input[name="<%= getObjectMapping(@insured)%>[age]"]').val())) ? 0 : parseInt($('input[name="<%= getObjectMapping(@insured)%>[age]"]').val());
+            solverTypeCd = $("select[name='<%= getObjectMapping(@quotation)%>[solverTypeCd]']");
+            if (solverTypeCd.fieldexists()){
+                if ((solverTypeCd.val() == "MAXIMUMAMOUNTSOLVER") && (insuredAge != 0))
+                {
+                    ageToValue = parseInt($('input[name="'+ageTo+'"]').val());
+                    policyYearTo = ageTo.replace("ageTo", "policyYearTo")
+                    policyYearToValue = isNaN(parseInt($('input[name="'+policyYearTo+'"]').val())) ? 0 : parseInt($('input[name="'+policyYearTo+'"]').val());
+                    if (policyYearToValue == 0 )
+                    {
+                        policyYearToValue = ageToValue - insuredAge + 1;
+                        $('input[name="'+policyYearTo+'"]').val(policyYearToValue);
+                    }
+                }
+            }
+        }
+
+        $(document).ready(function () {
+            enableWithdrawal();
+            enableWithdrawalFields();
+
+            $('input[name*="[policyYearFrom]"]').change( function(){
+                if (isNaN(this.value))
+                {
+                    showDialog("", "<%= getLabelValue('VALID_WITHDRAW_FROM_YEAR')%>", 'warning', 0, 'capture');
+                    this.value = this.value.replace(/[^0-9.]/g, '');  
+                }
+            }); 
+
+            $('input[name*="[policyYearTo]"]').change( function(){
+                if (isNaN(this.value))
+                {
+                    showDialog("", "<%= getLabelValue('VALID_WITHDRAW_TO_YEAR')%>", 'warning', 0, 'capture');
+                    this.value = this.value.replace(/[^0-9.]/g, '');  
+                }
+            }); 
+
+            $('input[name*="[withdrawalAmount]"]').change( function(){
+                if (isNaN(this.value))
+                {
+                    showDialog("", "<%= getLabelValue('VALID_WITHDRAW_AMT')%>", 'warning', 0, 'capture');
+                    this.value = this.value.replace(/[^0-9.]/g, '');  
+                }
+            }); 
+
+            $('input[name="<%=getObjectMapping(@quotation)%>[withdrawalFl]"]').change(function(){
+                enableWithdrawalFields();
+            });
+
+            $('select[name="<%=getObjectMapping(@quotation)%>[solverTypeCd]"]').change( function(){
+                enableWithdrawal();
+            });
+
+        });
+
+        $('.addWithdrawButton').click(function(){
+            addwithdraw();
+        });
+
+    </script>

@@ -1,0 +1,7 @@
+ext/platform/android/generated/jni/Pdfgen.cpp
+ext/platform/android/generated/jni/pdfgen_ruby_wrap.cpp
+ext/platform/android/generated/jni/pdfgen_js_wrap.cpp
+ext/platform/android/jni/Pdfgen_impl.cpp
+ext/shared/generated/pdfgen_api_init.cpp
+ext/shared/generated/pdfgen_js_api.cpp
+ext/shared/generated/pdfgen_ruby_api.c

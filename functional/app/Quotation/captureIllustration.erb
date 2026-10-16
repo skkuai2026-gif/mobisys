@@ -1,0 +1,2764 @@
+<div data-role="page" data-url="<%= Rho::RhoConfig.start_path %>/">
+<script>
+var modalPremiumsList = new Array(); 
+var objectMapping = new Array();
+var objectCount = 0;
+var fundCount = 0;
+var topupCount = 0;
+var JUVENILEOCCUPATIONCLASS = 2;
+var JUVENILEOCCUPATIONCLASSFORPA = 1;
+</script>  
+<form method="POST" action="<%= url_for :action => :execute %>" name="quotationForm" onsubmit = "return checkBasicDetails();">
+<%= renderObject(@quotation) %>
+<%= renderObject(@baseProduct, @quotation) %>
+
+<div data-role="header" data-position="inline">
+  <h1>
+    <div data-role="headertable" data-role="controlgroup" data-type="horizontal" data-corners="true">
+    <table class="headertable" cellpadding=0 cellspacing=0 border=0 width="85%">
+      <tr>
+        <td class="headertabletext"> <%= renderLabel('PAPremium', 'PATOTALPREMIUM', 'headerModeBold')   %>
+        </td>
+        <td name="pa_annual">
+                    
+        </td>
+        <td name="pa_semiannual">            
+          
+        </td>
+        <td name="pa_quarterly">
+          
+        </td>
+        <td name="pa_monthly">
+          
+        </td>
+      </tr>
+      <tr class="withBorder">
+        <td class="headertabletext"> <%= renderLabel('PremiumWithoutPA', 'PREMIUMWITHOUTPA', 'headerMode')   %>
+        </td>
+        <th>
+          <%= renderRadioButton('paymentFrequencyCd', @baseProduct.paymentFrequencyCd, 'modeAnnual', 'YEARLY', @baseProduct) %>
+          <%= renderLabel('modeAnnual', 'YEARLY', 'headerMode')   %>
+        </th>
+        <th>
+          <%= renderRadioButton('paymentFrequencyCd', @baseProduct.paymentFrequencyCd, 'modeSemiAnnual', 'HALFYEARLY', @baseProduct) %>
+          <%= renderLabel('modeSemiAnnual', 'HALFYEARLY', 'headerMode')   %>
+        </th>
+        <th>
+          <%= renderRadioButton('paymentFrequencyCd', @baseProduct.paymentFrequencyCd, 'modeQuarterly', 'QUARTERLY', @baseProduct) %>
+          <%= renderLabel('modeQuarterly', 'QUARTERLY', 'headerMode')   %>
+        </th>
+        <th>      
+          <%= renderRadioButton('paymentFrequencyCd', @baseProduct.paymentFrequencyCd, 'modeMonthly', 'MONTHLY', @baseProduct) %>
+          <%= renderLabel('modeMonthly', 'MONTHLY', 'headerMode')   %>
+        </th>
+      </tr>
+      <tr class="withBorder">
+        <td class="headertabletext"> <%= renderLabel('modalPremium', 'MODALPREMIUM', 'headerMode')   %>
+        </td>
+        <td name="m_annual">
+                    
+        </td>
+        <td name="m_semiannual">            
+          
+        </td>
+        <td name="m_quarterly">
+          
+        </td>
+        <td name="m_monthly">
+          
+        </td>
+      </tr>
+      <tr class="withBorder">
+        <td class="headertabletext"> <%= renderLabel('annualPremium', 'ANNUALPREMIUM', 'headerMode')   %>
+        </td>
+        <td name="a_annual">            
+                    
+        </td>
+        <td name="a_semiannual">            
+          
+        </td>
+        <td name="a_quarterly">
+          
+        </td>
+        <td name="a_monthly">
+          
+        </td>
+      </tr>
+    </table>
+    </div>
+  </h1>    
+  <a href="/app/Menu/salesIllustration" class="ui-btn-left" data-direction="reverse">
+    <%= getLabelValue('BACK')   %>
+  </a>
+  <div class="ui-btn-right">
+    <a href="#" name="viewIllustration" data-role="button" style="min-width:100px;">
+      <%= getLabelValue('VIEWILLUSTRATION')   %>
+      <script>
+      $("a[name='viewIllustration']").click( function() {
+        document.quotationForm.action="viewIllustration";        
+        submitForm();        
+      });
+      </script>
+    </a>
+    <BR>
+    <a href="javascript: submitForm();" name="save" data-role="button" style="min-width:100px;">
+      <%= getLabelValue('SAVEVALIDATE')%>
+    </a>
+  </div>
+</div>
+
+    <div data-role="content" id="capture" style="-webkit-transform: none;">    
+      <input type="hidden" name="id" value="<%= @quotation.object %>" />
+      <script>
+        try{
+          modalPremiumsList = new Array();
+          objectMapping = new Array();
+          objectCount = 0;
+        } catch(e){alert(e);}
+      </script>
+      <% 
+        if @msg != nil && @msg != ""
+          if @msg == "SUCCESS"
+            %>
+            <script>
+            showDialog("", "<%= getLabelValue(@msg)%>", 'success', 0, 'capture');
+            </script>
+            <%
+          else
+          %>
+            <script>
+            showDialog("", "<%= getLabelValue(@msg)%>", 'error', 0, 'capture');
+            </script>
+          <div class="illustrationdisplay">
+          <fieldset name="errors">
+          <%=  renderErrorTag(@msg,@errors,'quotationForm') %>
+          </fieldset>
+          </div>
+          <%
+          end
+        end
+      %>
+      
+      <div class="illustrationdisplay">        
+        <fieldset name="sic">
+          <div data-role="fieldcontain">
+            <%= renderLabel('quotationRefNum', 'SALESILLUSTRATIONCODE', nil, @quotation)   %>
+            <%= renderInputField('quotationRefNum', @quotation.quotationRefNum, 'Sales illustration code', @quotation, ' maxlength="10"') %>
+          </div>
+        </fieldset>
+        
+        <div>
+          <fieldset>
+            <div data-role="fieldcontain" name="channelCd">
+              <%= renderLabel('channelCd', 'CHANNEL', nil, @quotation)   %>
+              <%= getLookup('CHANNEL', 'channelCd', @quotation.channelCd, @quotation, nil, nil)%>
+            </div>
+          </fieldset>
+        </div>
+      </div>
+      
+      <%= renderLegend('InsuredInformation','INSUREDINFORMATION') %>
+      
+      <div class="illustrationdisplay" name ='InsuredInformation'>
+        <fieldset name="insured">          
+            
+          <div data-role="fieldcontain">
+            <%= renderLabel('firstname', 'NAMESURNAME', nil, @quotation)   %>
+            <%= renderInputField('firstname', @quotation.firstname, 'Name', @quotation, ' maxlength="60"') %>
+          </div>
+    
+          <div data-role="fieldcontain">
+            <%= renderLabel('dob', 'DATEOFBIRTH', nil, @quotation)   %>
+            <%= renderDateField('dob', getScreenDate(@quotation.dob), 'Date Of Birth', @quotation) %>
+            <script>
+            var temp = 0;
+            </script>
+          </div>
+                    
+          <fieldset class="ui-grid-c">  
+            <div class="ui-block-a"><%= renderLabel('age', 'AGE', nil, @quotation)   %></div>
+            <div class="ui-block-b" id="years"> <%= renderCountField('age', @quotation.age, '', @quotation)  %> <%= renderLabel('age','YEAR')   %></div>
+            <div class="ui-block-c" id="months"> <%= renderCountField('ageMonths', @quotation.ageMonths, '', @quotation) %> <%= renderLabel('ageMonths','MONTH')   %></div>
+            <div class="ui-block-d" id="days"> <%= renderCountField('ageDays', @quotation.ageDays, '', @quotation)   %> <%= renderLabel('ageDay','DAY')   %></div>
+          </fieldset>
+
+          <div data-role="fieldcontain">                        
+              <%= renderLabel('genderCd', 'GENDER', nil, @quotation)    %>
+          
+              <%= renderRadioButton('genderCd', @quotation.genderCd, 'male', 'MALE', @quotation) %>
+              <%= renderLabel('male', 'MALE')   %>
+              <%= renderRadioButton('genderCd', @quotation.genderCd, 'female', 'FEMALE', @quotation) %>
+              <%= renderLabel('female', 'FEMALE')   %>
+              
+          </div>
+
+          <div data-role="fieldcontain">                        
+              <%= renderLabel('smoker', 'SMOKER', nil, @quotation)    %>
+          
+              <%= renderRadioButton('smoker', @quotation.smoker, 'yes', 'YES', @quotation) %>
+              <%= renderLabel('yes', 'YES')   %>
+              <%= renderRadioButton('smoker', @quotation.smoker, 'no', 'NO', @quotation) %>
+              <%= renderLabel('no', 'NO')   %>
+              
+          </div>
+           
+          <fieldset data-role="controlgroup">
+            <div class="ui-grid-b">            
+              <div class="ui-block-a"> <%= renderLabel('occupationCd', 'OCCUPATIONCLASS', nil, @quotation) %> </div>
+              <div class="ui-block-b"> <%= getLookup('OCCUPATIONCLASS', 'occupationCd', @quotation.occupationCd, @quotation, nil, " onchange=\"occupationCdChanged();\"")   %> </div>
+              <div class="ui-block-c"> </div>
+            </div>
+          </fieldset>
+                  
+          <div data-role="fieldcontain">
+            <%= renderLabel('emailAddress', 'EMAILADDRESS', nil, @quotation)   %>
+            <%= renderEmailField('emailAddress', @quotation.emailAddress, 'Email address', @quotation) %>
+          </div>
+                 
+          <div data-role="fieldcontain">
+            <%= renderLabel('mobileNum', 'TELEPHONENUMBER', nil, @quotation)   %>
+            <%= renderTelephoneField('mobileNum', @quotation.mobileNum, 'Telephone Number', @quotation) %>
+          </div>
+        </fieldset>
+      </div>
+
+      <%= renderLegend('InsuredAdditionalInformation','INSUREDADDITIONALINFORMATION', '+') %>
+      
+      <div class="illustrationdisplay" name ='InsuredAdditionalInformation'>
+        <fieldset name="insuredadditionaldetails">          
+            
+          <div data-role="fieldcontain">
+            <%= renderLabel('alias', 'ALIAS', nil, @quotation)   %>
+            <%= renderInputField('alias', @quotation.alias, '', @quotation, ' maxlength="60"') %>
+          </div>
+            
+          <div data-role="fieldcontain">
+            <%= renderLabel('idNumber', 'IDNUMBER', nil, @quotation)   %>
+            <%= renderInputField('idNumber', @quotation.idNumber, 'IDNumber', @quotation) %>
+          </div>
+
+          <fieldset data-role="controlgroup">
+            <div class="ui-grid-b">            
+              <div class="ui-block-a"> <%= renderLabel('educationCd', 'EDUCATION', nil, @quotation) %> </div>
+              <div class="ui-block-b"> <%= getLookup('EDUCATION', 'educationCd', @quotation.educationCd, @quotation, nil) %> </div>
+              <div class="ui-block-c"> </div>
+            </div>
+          </fieldset>
+          
+          <fieldset data-role="controlgroup">
+            <div class="ui-grid-b">            
+              <div class="ui-block-a"> <%= renderLabel('incomeGroup', 'INCOMEGROUP', nil, @quotation) %> </div>
+              <div class="ui-block-b"> <%= getLookup('INCOMEGROUP', 'incomeGroup', @quotation.incomeGroup, @quotation, nil) %> </div>
+              <div class="ui-block-c"> </div>
+            </div>
+          </fieldset>
+                    
+          <fieldset data-role="controlgroup">
+            <div class="ui-grid-b">            
+              <div class="ui-block-a"> <%= renderLabel('maritalStatus', 'MARITALSTATUS', nil, @quotation) %> </div>
+              <div class="ui-block-b"> <%= getLookup('MARITALSTATUS', 'maritalStatus', @quotation.maritalStatus, @quotation, nil) %> </div>
+              <div class="ui-block-c"> </div>
+            </div>
+          </fieldset>
+
+          <fieldset data-role="controlgroup">
+            <div class="ui-grid-b">            
+              <div class="ui-block-a"> <%= renderLabel('nationality', 'NATIONALITY', nil, @quotation) %> </div>
+              <div class="ui-block-b"> <%= getLookup('NATIONALITY', 'nationality', @quotation.nationality, @quotation)   %> </div>
+              <div class="ui-block-c"> </div>
+            </div>
+          </fieldset>
+          
+          <fieldset data-role="controlgroup">
+            <div class="ui-grid-b">            
+              <div class="ui-block-a"> <%= renderLabel('language', 'LANGUAGESPOKEN', nil, @quotation) %> </div>
+              <div class="ui-block-b"> <%= getLookup('LANGUAGESPOKEN', 'language', @quotation.language, @quotation)   %> </div>
+              <div class="ui-block-c"> </div>
+            </div>
+          </fieldset>
+
+          <div data-role="fieldcontain">                        
+              <%= renderLabel('nsap', 'NSAP', nil, @quotation)    %>
+          
+              <%= renderRadioButton('nsap', @quotation.nsap, 'no', 'NO', @quotation) %>
+              <%= renderLabel('no', 'NO')   %>
+              <%= renderRadioButton('nsap', @quotation.nsap, 'yes', 'YES', @quotation) %>
+              <%= renderLabel('yes', 'YES')   %>
+              
+          </div>
+      
+        </fieldset>
+      </div>
+      
+      <div name="payor">      
+      <%= renderLegend('PayerInformation', 'PAYERINFORMATION') %>
+      <div class="illustrationdisplay" name = "PayerInformation">
+        <fieldset >
+          
+          <div data-role="fieldcontain">
+            <%= renderLabel('proposerFirstname', 'NAMESURNAME', nil, @quotation)   %>
+            <%= renderInputField('proposerFirstname', @quotation.proposerFirstname, 'Name', @quotation, ' maxlength="60"') %>
+          </div>
+            
+          <div data-role="fieldcontain">
+            <%= renderLabel('proposerDob', 'DATEOFBIRTH', nil, @quotation)   %>
+            <%= renderDateField('proposerDob', getScreenDate(@quotation.proposerDob), 'Date Of Birth', @quotation) %>
+          </div>
+                                                
+          <fieldset class="ui-grid-c">  
+            <div class="ui-block-a"><%= renderLabel('proposerAge', 'AGE', nil, @quotation)   %></div>
+            <div class="ui-block-b" id="ye"> <%= renderCountField('proposerAge', @quotation.proposerAge, 'Years', @quotation) %> <%= renderLabel('proposerAge','YEAR')   %></div>
+            <div class="ui-block-c" id="mo"> &nbsp; </div>
+            <div class="ui-block-d" id="da"> &nbsp; </div>
+          </fieldset>
+
+          <div data-role="fieldcontain">                        
+            <%= renderLabel('proposerGenderCd', 'GENDER', nil, @quotation)    %>
+            
+            <%= renderRadioButton('proposerGenderCd', @quotation.proposerGenderCd, 'propMale', 'MALE', @quotation) %>
+            <%= renderLabel('propMale', 'MALE')   %>
+            <%= renderRadioButton('proposerGenderCd', @quotation.proposerGenderCd, 'propFemale', 'FEMALE', @quotation) %>
+            <%= renderLabel('propFemale', 'FEMALE')   %>
+              
+          </div>
+    
+          <div data-role="fieldcontain">
+            <%= renderLabel('proposerEmailAddress','EMAILADDRESS', nil, @quotation)   %>
+            <%= renderEmailField('proposerEmailAddress', @quotation.proposerEmailAddress, 'Email address', @quotation) %>
+          </div>
+        
+          <div data-role="fieldcontain">
+            <%= renderLabel('proposerMobileNum', 'TELEPHONENUMBER', nil, @quotation)   %>
+            <%= renderTelephoneField('proposerMobileNum', @quotation.proposerMobileNum, 'Telephone Number', @quotation) %>
+          </div>
+        </fieldset>
+      </div>
+      </div>
+        
+        <%= renderLegend('basePlan','BASEPLAN') %>
+        <div class="illustrationdisplay" name = "basePlan">
+        <fieldset>
+        
+          <%= renderHiddenField('productId',@baseProduct.productId,'Product Id', @baseProduct) %>
+          <%= renderHiddenField('productTypeCd',@baseProduct.productTypeCd,'Product Type cd', @baseProduct) %>
+          
+          <fieldset data-role="controlgroup">
+            <div class="ui-grid-b">            
+              <div class="ui-block-a">
+                <ul data-role="listview" >
+                  <li class="collateral">
+                    <a href="#" name="BASE_COLLATERAL">
+                      <script>
+                        $('a[name="BASE_COLLATERAL"]').click(function () {  
+                          planCode = $("select[name='<%=getObjectMapping(@baseProduct)%>[planCode]']").val();
+                          if ( planCode != "" )
+                          {  
+                            $.get("/app/Collateral/showProductCollateral?planCode="+planCode,function(data) {});
+                          }
+                          else
+                          {
+                            showDialog("", "<%= getLabelValue('SELECTBASE')%>", 'warning', 0, 'capture');
+                          }
+                        }); 
+                      </script>                      
+                      <%= getLabelValue('BASEPLANTYPE') %>                      
+                    </a>
+                    
+                  </li>
+                </ul>                
+              </div>
+              <div class="ui-block-b" id="productPlanType"> <%= getLookup(MobiSys::BrowserHelper::DYNAMICLOOKUP, 'productFamilyCd', @baseProduct.productFamilyCd, @baseProduct, @paTypeLookups, " onchange=\"updateProducts(true);\"") %> </div>
+              <div class="ui-block-c" id="productPlanCode"> <%= getLookup(MobiSys::BrowserHelper::DYNAMICLOOKUP, 'planCode', @baseProduct.planCode, @baseProduct, @paPlanLookups, " onchange=\"planCodeChange(true);\"") %> </div>
+            </div>
+          </fieldset>
+
+          <fieldset data-role="controlgroup">
+            <div class="ui-grid-b">            
+              <div class="ui-block-a">
+                <%= renderLabel('term','CT/PPT', nil, @baseProduct)   %>
+              </div>
+              <div class="ui-block-b" id="term"> <%= getLookup('', 'productTerm', @baseProduct.productTerm, @baseProduct) %> </div>
+              <div class="ui-block-c" id="ppt"> <%= getLookup('', 'premiumPayingTerm', @baseProduct.premiumPayingTerm, @baseProduct) %> </div>
+            </div>
+          </fieldset>
+    
+          <fieldset data-role="controlgroup">
+            <div class="ui-grid-b">
+              <div class="ui-block-a">
+                <%= renderLabel('premiumsa', 'SAANNUALPREMIUM')   %>
+              </div>
+              <div class="ui-block-b">
+                <!-- <%= getLookup("PREMIUMSA", 'premiumsa', "SUMASSURED") %> -->
+                
+                <input type="radio" name="premiumsa" id="radio-choice-2" value="SUMASSURED" checked="checked"/>
+                <label for="radio-choice-2" class="c2l-radio"><%= getLabelValue('SUMASSURED')   %></label>
+                
+              </div>
+              <div class="ui-block-c">
+                  <%= renderAmountField('baseSumAssured',@baseProduct.baseSumAssured,'SA', @baseProduct, " style='max-width:140px;'") %>
+              </div>
+            </div>
+            <div class="ui-grid-b">
+              <div class="ui-block-a"> &nbsp; </div>
+              <div class="ui-block-b">
+                  <input type="radio" name="premiumsa" id="radio-choice-1" value="PREMIUM"/>
+                  <label for="radio-choice-1" class="c2l-radio"><%= getLabelValue('PREMIUM')   %></label>
+              </div>
+              <div class="ui-block-c">
+                  <%= renderPreciseAmountField('baseAnnualPremium',@baseProduct.baseAnnualPremium,'Premium', @baseProduct, " style='max-width:140px;'") %>
+              </div>
+            </div>
+          </fieldset>
+          
+          <div data-role="fieldcontain">
+            <%= renderLabel('modalPremium','BASEMODALPREMIUM', nil, @baseProduct)   %>
+            <%= renderAmountField('modalPremium',@baseProduct.modalPremium,'Modal Premium', @baseProduct) %>
+          </div>
+            
+          <fieldset data-role="controlgroup">
+            <div name="premiumType" class="ui-grid-b">
+              <div class="ui-block-a"><%= renderLabel('paymentTypeCd',"PREMIUMTYPE", nil, @baseProduct)%></div>
+              <div class="ui-block-b"><%= getLookup("PREMIUMTYPE", 'paymentTypeCd',@baseProduct.paymentTypeCd,@baseProduct)%></div>
+              <div class="ui-block-c"></div>
+            </div>
+          </fieldset>
+          
+          <fieldset data-role="controlgroup">
+              <div name="extraFieldsBase" class="ui-grid-c">
+                <div class="ui-block-a"><%= renderLabel('oe','OE',nil, @baseProduct) %></div>
+                <div class="ui-block-b"><%= renderAmountField('oe', @baseProduct.oe, nil, @baseProduct, nil)%></div>
+                <div class="ui-block-c"><%= renderLabel('emr','FLATEXTRA',nil, @baseProduct) %></div>
+                <div class="ui-block-d"><%= renderAmountField('emr', @baseProduct.emr, nil, @baseProduct, nil)%></div>
+              </div>
+          </fieldset>  
+            
+          <fieldset data-role="controlgroup">
+            <div name = "currencySelection" class="ui-grid-b">            
+              <div class="ui-block-a"> <%= renderLabel('currencyCd','CURRENCYCD', nil, @baseProduct)%> </div>
+              <div class="ui-block-b" name = "currencyDiv"> <%= getLookup(MobiSys::BrowserHelper::DYNAMICLOOKUP, 'currencyCd', @baseProduct.currencyCd, @baseProduct, @currencyLookups, 'onchange="calculatePremium(\'Quotation[QuotationProduct][0][baseSumAssured]\')"') %> </div>
+              <div class="ui-block-c"> </div>
+            </div>
+          </fieldset>
+          
+          <fieldset data-role="controlgroup">
+            <div name="premiumDiscount1" class="ui-grid-c">
+              <div class="ui-block-a"><%= renderLabel('premiumDiscount','PREMIUMDISCOUNT',nil, @baseProduct) %></div>
+              <div class="ui-block-b"><%= renderAmountField('premiumDiscount', @baseProduct.premiumDiscount, nil, @baseProduct, nil)%></div>
+              <div class="ui-block-c"><%= renderLabel('premiumDiscountDurantion','PREMIUMDISCOUNTDURATION',nil, @baseProduct) %></div>
+              <div class="ui-block-d"><%= renderAmountField('premiumDiscountDuration', @baseProduct.premiumDiscountDuration, nil, @baseProduct, nil)%></div>
+            </div>
+          </fieldset>
+          
+          <fieldset data-role="controlgroup">
+            <div name="flatLoading" class="ui-grid-c">
+              <div class="ui-block-a"><%= renderLabel('flatLoading','FLATLOADING',nil, @baseProduct) %></div>
+              <div class="ui-block-b"><%= renderAmountField('flatLoading', @baseProduct.flatLoading, nil, @baseProduct, nil)%></div>
+              <div class="ui-block-c"><%= renderLabel('flatLoadingDurantion','FLATLOADINGDURATION',nil, @baseProduct) %></div>
+              <div class="ui-block-d"><%= renderAmountField('flatLoadingDuration', @baseProduct.flatLoadingDuration, nil, @baseProduct, nil)%></div>
+            </div>
+         </fieldset>
+         
+          <fieldset data-role="controlgroup">
+            <div name="multipleLoadingLoading" class="ui-grid-c">
+              <div class="ui-block-a"><%= renderLabel('multipleLoading','MULTIPLELOADING',nil, @baseProduct) %></div>
+              <div class="ui-block-b"><%= renderAmountField('multipleLoading', @baseProduct.multipleLoading, nil, @baseProduct, nil)%></div>
+              <div class="ui-block-c"><%= renderLabel('multipleLoadingDurantion','MULTIPLELOADINGDURATION',nil, @baseProduct) %></div>
+              <div class="ui-block-d"><%= renderAmountField('multipleLoadingDuration', @baseProduct.multipleLoadingDuration, nil, @baseProduct, nil)%></div>
+            </div>  
+          </fieldset>
+          
+          <fieldset data-role="controlgroup">
+            <div name="dividendOptionLA" class="ui-grid-c">
+              <div class="ui-block-a"><%= renderLabel('dividendOptionCd','DIVIDENDOPTION',nil, @baseProduct) %></div>
+              <div class="ui-block-b"><%= getLookup('DIVIDENDOPTIONS','dividendOptionCd', @baseProduct.dividendOptionCd, @baseProduct, @dividendOptionLookups)%></div>
+              <div class="ui-block-c"><%= renderLabel('enhancedProtectionOptionTDBTarget','ENHANCEDTDBTARGET',nil, @baseProduct) %></div>
+              <div class="ui-block-d"><%= renderAmountField('enhancedProtectionOptionTDBTarget', @baseProduct.enhancedProtectionOptionTDBTarget, nil, @baseProduct, nil)%></div>
+            </div>  
+          </fieldset>  
+            
+          <fieldset data-role="controlgroup">
+            <div name="ropIndicatorCd" class="ui-grid-c">
+              <div class="ui-block-a"><%= renderLabel('ropIndicatorCd','ROPINDICATOR',nil, @baseProduct) %></div>
+              <div class="ui-block-b"><%= getLookup('YESNO','ropIndicatorCd', @baseProduct.ropIndicatorCd, @baseProduct, @ropLookups)%></div>
+              <div class="ui-block-c"><%= renderLabel('ropInterestRate','ROPRATE',nil, @baseProduct) %></div>
+              <div class="ui-block-d"><%= renderAmountField('ropInterestRate', @baseProduct.ropInterestRate, nil, @baseProduct, nil)%></div>
+            </div>
+          </fieldset>
+          
+          <fieldset data-role="controlgroup">
+            <div name="ropIndicatorCd1" class="ui-grid-c">
+              <div class="ui-block-a"><%= renderLabel('floorWithGuaranteedCashValueCd','FWGCV',nil, @baseProduct) %></div>
+              <div class="ui-block-b"><%= getLookup('YESNO','floorWithGuaranteedCashValueCd', @baseProduct.floorWithGuaranteedCashValueCd, @baseProduct, @ropLookups)%></div>
+              <div class="ui-block-c"><%= renderLabel('capWithBasicPlanFACd','CWBPFA',nil, @baseProduct) %></div>
+              <div class="ui-block-d"><%= getLookup('YESNO','capWithBasicPlanFACd', @baseProduct.capWithBasicPlanFACd, @baseProduct, @ropLookups)%></div>
+            </div>
+          </fieldset>
+
+          <div name="cashDropReinvest">          
+            <fieldset data-role="controlgroup">
+              <div class="ui-grid-b">            
+                <div class="ui-block-a">
+                  <%= renderLabel('cashDropReinvest','CASHDROPREINVEST', nil, @baseProduct)   %>
+                </div>
+                <div class="ui-block-b"> <%= getLookup('YESNO', 'cashDropReinvest', @baseProduct.cashDropReinvest, @baseProduct) %> </div>
+                <div class="ui-block-c">  </div>
+              </div>
+            </fieldset>
+          </div>
+
+          <div name="terminalBonusReinvest">          
+            <fieldset data-role="controlgroup">
+              <div class="ui-grid-b">            
+                <div class="ui-block-a">
+                  <%= renderLabel('terminalBonusReinvest','TERMINALBONUSREINVEST', nil, @baseProduct)   %>
+                </div>
+                <div class="ui-block-b"> <%= getLookup('YESNO', 'terminalBonusReinvest', @baseProduct.terminalBonusReinvest, @baseProduct) %> </div>
+                <div class="ui-block-c">  </div>
+              </div>
+            </fieldset>
+          </div>
+
+          <div name="dividendOption">          
+            <fieldset data-role="controlgroup">
+              <div class="ui-grid-b">            
+                <div class="ui-block-a">
+                  <%= renderLabel('dividendOption','DIVIDENDOPTION', nil, @baseProduct)   %>
+                </div>
+                <div class="ui-block-b" name = "dividendOptionLookup"> <%= getLookup('DIVIDENDOPTION', 'dividendOption', @baseProduct.dividendOption, @baseProduct) %> </div>
+                <div class="ui-block-c">  </div>
+              </div>
+            </fieldset>
+          </div>
+
+          <div name="endowmentOption">          
+            <fieldset data-role="controlgroup">
+              <div class="ui-grid-b">            
+                <div class="ui-block-a">
+                  <%= renderLabel('endowmentOption','ENDOWMENTOPTION', nil, @baseProduct)   %>
+                </div>
+                <div class="ui-block-b" name = "endowmentOptionLookup"> <%= getLookup('ENDOWMENTOPTION', 'endowmentOption', @baseProduct.endowmentOption, @baseProduct) %> </div>
+                <div class="ui-block-c">  </div>
+              </div>
+            </fieldset>
+          </div>
+
+          <div name="pdfOption">          
+            <fieldset data-role="controlgroup">
+              <div class="ui-grid-b">            
+                <div class="ui-block-a">
+                  <%= renderLabel('pdfOption','PDFOPTION', nil, @baseProduct)   %>
+                </div>
+                <div class="ui-block-b"> <%= getLookup('NOYES', 'pdfOption', @baseProduct.pdfOption, @baseProduct, nil, " onchange=\"updatePDFAmount(this.value);\"") %> </div>
+                <div class="ui-block-c"> <%= renderPreciseAmountField('pdfAmount', @baseProduct.pdfAmount, 'PDF amount', @baseProduct, " style='max-width:140px;'") %> </div>
+              </div>
+            </fieldset>
+              <script>
+                setReadOnly($("input[name='<%=getObjectMapping(@baseProduct) %>[pdfAmount]']"), true);
+              </script>
+
+          </div>
+
+        </fieldset>
+      </div>
+
+      <div name = "hybridinformationdiv">
+        <%= renderLegend('hybridInformation','HYBRIDINFORMATION') %>      
+        <div class="illustrationdisplay" name ='hybridInformation'>
+        
+            <fieldset>
+            
+              <div data-role="fieldcontain">
+                <%= renderLabel('premiumGuarantees','PREMIUMGUARANTEES', nil, @baseProduct)   %>
+                <%= renderCountField('premiumGuarantees', @baseProduct.premiumGuarantees,'Premium Guarantees', @baseProduct) %>
+              </div>
+            
+              <fieldset class="ui-grid-c">
+                <strong>
+                  <div class="ui-block-a"> </div>
+                  <div class="ui-block-b"> <%= renderLabel('premiumSplit','PREMIUMSPLIT','riderHeader') %> </div>
+                  <div class="ui-block-c"> <%= renderLabel('sumAssured','SUMASSURED','riderHeader') %> </div>
+                  <div class="ui-block-d"> <%= renderLabel('premium','PREMIUM','riderHeader') %> </div>
+                </strong>
+              </fieldset>
+            
+              <% @partialProducts.each do |quotationProduct| %>
+                
+                <%= renderObject(quotationProduct, @quotation) %>
+                <%= renderHiddenField('productId', quotationProduct.productId, 'Product Id', quotationProduct) %>
+                <%= renderHiddenField('productTypeCd', quotationProduct.productTypeCd, 'Product Type Cd', quotationProduct) %>
+                <%= renderHiddenField('selected', quotationProduct.selected, 'Selected', quotationProduct) %>
+                <%= renderHiddenField('planCode', quotationProduct.planCode, 'Plan code', quotationProduct) %>
+                
+                <fieldset class="ui-grid-c">
+                    <div class="ui-block-a collateraldiv"> 
+                      <ul data-role="listview" >
+                        <li class="collateral">
+                          <a href="#" name="<%=quotationProduct.planCode%>_COLLATERAL">
+                            <script>
+                              $('a[name="<%=quotationProduct.planCode%>_COLLATERAL"]').click(function () {  
+                                $.get("/app/Collateral/showProductCollateral?planCode=<%= quotationProduct.planCode %>",function(data) {});
+                              }); 
+                            </script>                      
+                            <%= renderLabel('planCode',quotationProduct.planCode+"LONG", nil, quotationProduct) %>                      
+                          </a>
+                          
+                        </li>
+                      </ul>
+                    </div>
+            
+                    <div class="ui-block-b">  
+                    <% if quotationProduct.premiumSplit != nil %>
+                      <%= renderCountField('premiumSplit', quotationProduct.premiumSplit, 'Premium Split', quotationProduct) %>
+                    <% end %>
+                    </div>
+                    <div class="ui-block-c"> 
+                      <%= renderPreciseAmountField('baseSumAssured', quotationProduct.baseSumAssured, 'Sum Assured', quotationProduct) %> 
+                      <script>
+                      function updateHybridSA<%=quotationProduct.planCode%>(sa)
+                      {
+                        $('input[name="<%= getObjectMapping(quotationProduct) %>[baseSumAssured]"]').val(sa);
+                      }
+                      </script>
+                    </div>
+                    <div class="ui-block-d"> 
+                      <%= renderPreciseAmountField('modalPremium', quotationProduct.modalPremium, 'Premium', quotationProduct) %> 
+                      <script>
+                      function updateHybridPremium<%=quotationProduct.planCode%>(premium)
+                      {
+                        $('input[name="<%= getObjectMapping(quotationProduct) %>[modalPremium]"]').val(premium);
+                      }
+                      </script>
+                    </div>
+                </fieldset>
+                
+                <script>
+                  setReadOnly($("input[name='<%=getObjectMapping(quotationProduct) %>[baseSumAssured]']"), true);
+                  setReadOnly($("input[name='<%=getObjectMapping(quotationProduct) %>[modalPremium]']"), true);
+                </script>
+            
+              <% end %>
+              
+            </fieldset>
+
+        </div>
+      </div>
+            
+      <div name = "riderinformationdiv">
+      <%= renderLegend('riderInformation','RIDERINFORMATION') %>
+      <div name="riderInformation">
+      <div class="illustrationdisplay">          
+      <fieldset>
+        <fieldset data-role="controlgroup">
+          <div class="ui-grid-c">            
+            <div class="ui-block-ab">
+               <%= getLabelValue('TOTALRIDERPREMIUM')   %>            
+            </div>
+            <div class="ui-block-c"> 
+              &nbsp; 
+            </div>
+            <div class="ui-block-d"> 
+              <%= renderAmountField('totalRiderPremium',nil,'Total Rider Premium') %> 
+            </div>
+          </div>
+        </fieldset>
+      </fieldset>
+      </div>
+      
+      <div class="illustrationdisplay">
+      <fieldset>        
+  
+        <fieldset class="ui-grid-f">
+          <strong>
+          <div class="ui-block-a"> </div>
+          <div class="ui-block-b"> <center> <%= renderLabel('planOption','PLANOPTION','riderHeader') %> </center> </div>
+          <div class="ui-block-c"><div name="extraFieldsHeader1"> <%=renderLabel('term','TERM','riderHeader')%> </div></div>
+          <div class="ui-block-e"><div name="extraFieldsHeader3"><%=renderLabel('oe','OE','riderHeader')%> </div></div>
+          <div class="ui-block-d"><div name="extraFieldsHeader2"><%=renderLabel('em','EMR','riderHeader')%> </div></div>
+          <div class="ui-block-f"> <%= renderLabel('sumAssured','SUMASSURED','riderHeader') %> </div>
+          <div class="ui-block-g"><div name="riderPremium"> <%= renderLabel('Premium','RIDERMODALPREMIUM','riderHeader') %> </div></div>
+          </strong>
+        </fieldset>
+
+
+        <%        
+        @sortedProductFamilies.each do |productFamily|          
+          
+          quotationProductList = @riderFamilies[productFamily.productFamilyId]
+          
+          if quotationProductList != nil
+        %>
+        <div name="productFamily_<%=productFamily.productFamilyId%>">
+        <fieldset class="ui-grid-c">
+          <strong>
+          <div class="ui-block-a"> <%= getLabelValue(productFamily.productFamilyId+"RIDERS") %> </div>
+          <div class="ui-block-b">  </div>
+          <div class="ui-block-c">  </div>
+          <div class="ui-block-d">  </div>
+          </strong>
+        </fieldset>
+
+        <%         
+            quotationProductList.each do |quotationProduct|
+        %>
+              <fieldset class="ui-grid-f" name="rider_<%=quotationProduct.productId%>">
+                
+                <%= renderObject(quotationProduct, @quotation) %>
+                <%= renderHiddenField('productId',quotationProduct.productId,'Product Id', quotationProduct) %>
+                <%= renderHiddenField('productTypeCd',quotationProduct.productTypeCd,'Product Type cd', quotationProduct) %>
+                <%#= renderHiddenField('premiumSAFl',@premiumDetailsHM[quotationProduct.productId].premiumSAFl,'Premium SA Fl', quotationProduct) %>
+                <%= renderHiddenField('productFamilyCd',quotationProduct.productFamilyCd,'product family cd', quotationProduct) %>
+          
+                <div class="ui-block-a">
+                  <%= renderCheckBox('selected', quotationProduct.selected, 'Selected', quotationProduct) %>
+                  <% if quotationProduct.productId == "PB" %>
+                  <%= renderHiddenField('selected', quotationProduct.selected, 'Selected', quotationProduct) %>
+                  <%end%>
+                  <%= renderLabel('selected','&nbsp;', nil, quotationProduct) %>
+                  <div class="collateraldiv">
+                    <ul data-role="listview" >
+                      <li class="collateral">
+                        <a href="#" name="<%=quotationProduct.productId%>_COLLATERAL">
+                          <script>
+                            $('a[name="<%=quotationProduct.productId%>_COLLATERAL"]').click(function () {  
+                              $.get("/app/Collateral/showProductCollateral?product=<%=quotationProduct.productId%>",function(data) {});
+                            }); 
+                          </script>                      
+                          <%= renderLabel('productId',quotationProduct.productId, nil, quotationProduct) %>                      
+                        </a>
+                        
+                      </li>
+                    </ul>
+                  </div>
+                   
+                </div>                
+                <div class="ui-block-b" id="<%=quotationProduct.productId%>">
+                  <% if quotationProduct.productId == "TR" %>
+                    <%= getLookup(MobiSys::BrowserHelper::DYNAMICLOOKUP, 'planCode', quotationProduct.planCode, quotationProduct, @paPlanLookups, ' onchange="calculatePremium(\"'+getObjectMapping(quotationProduct)+'[baseSumAssured]\");"') %>
+                  <% else %>
+                    <% if @premiumDetailsHM[quotationProduct.productId] != nil %>
+                    <%#  && @premiumDetailsHM[quotationProduct.productId].premiumSAFl == "COVERAGE"%>
+                      <%= getLookup(MobiSys::BrowserHelper::DYNAMICLOOKUP, 'productPlanOptionCd', quotationProduct.productPlanOptionCd, quotationProduct, @paPlanLookups, ' onchange="calculatePremium(\"'+getObjectMapping(quotationProduct)+'[baseSumAssured]\");"') %>
+                    <% else %>
+                          <% if quotationProduct.productId == "PB" %>
+                            <%= renderHiddenField('planCode','PBA','plan Code', quotationProduct) %>
+                          <% else %>
+                            <%= renderHiddenField('planCode',quotationProduct.planCode,'plan Code', quotationProduct) %>
+                          <% end %>
+                    <% end %>                  
+                  <% end %>
+                </div>
+                <div class="ui-block-c"><div name="extraFields1"><%= renderCountField('productTerm', quotationProduct.productTerm,'Product Term', quotationProduct)%></div></div>
+                <div class="ui-block-d"><div name="extraFields2"><%= renderAmountField('emr', quotationProduct.emr,'EMR', quotationProduct)%></div></div>
+                <div class="ui-block-e"><div name="extraFields3"><%= renderAmountField('oe', quotationProduct.oe,'OE', quotationProduct)%></div></div>
+                <div class="ui-block-f">
+                  <% if quotationProduct.productId == "PB" %>
+                      <%= renderHiddenField('baseSumAssured',quotationProduct.baseSumAssured,'Sum Assured', quotationProduct) %>
+                  <% else %> 
+                    <% if @premiumDetailsHM[quotationProduct.productId] != nil %> <%#&& @premiumDetailsHM[quotationProduct.productId].premiumSAFl == "SA" %>
+                      <%= renderAmountField('baseSumAssured', quotationProduct.baseSumAssured, 'Sum Assured', quotationProduct) %>
+                    <% end %>
+                  <% end %>
+                </div>
+                <div class="ui-block-g">  
+                  <%= renderHiddenField('baseAnnualPremium', quotationProduct.baseAnnualPremium, 'Premium', quotationProduct) %>
+                  <div name="riderPremium"><%= renderAmountField('modalPremium', quotationProduct.modalPremium, 'Modal Premium', quotationProduct) %></div>
+                </div>
+                
+                <script>
+                  try{
+                    objectMapping[objectCount] = "<%=getObjectMapping(quotationProduct)%>";
+                    objectCount++;
+                  } catch(e){alert(e);}
+                  
+                  <% if quotationProduct.productId == "PB" %>
+                    $('input[name="<%=getObjectMapping(quotationProduct)%>[selected]"]').attr('disabled', 'disabled');
+                    $('input[name="<%=getObjectMapping(quotationProduct)%>[baseSumAssured]"]').val(
+                      $('input[name="<%=getObjectMapping(@baseProduct)%>[baseAnnualPremium]"]').val()  
+                    );
+                    $('input[name="<%=getObjectMapping(quotationProduct)%>[baseSumAssured]"]').blur();
+                  <% end %>
+                  $('input[name="<%=getObjectMapping(quotationProduct)%>[selected]"]').change( function(){
+                    if(this.value == "on"){
+                      setReadOnly($('input[name="<%=getObjectMapping(quotationProduct)%>[baseSumAssured]"]'), false); 
+                      $('select[name="<%=getObjectMapping(quotationProduct)%>[productPlanOptionCd]"]').selectmenu('enable');
+                      updateRiderPlans( '<%=getObjectMapping(quotationProduct)%>', 
+                                        'productPlanOptionCd',
+                                        $('input[name="<%=getObjectMapping(quotationProduct)%>[productId]"]').val(),
+                                        true);
+                      $('select[name="<%=getObjectMapping(quotationProduct)%>[planCode]"]').selectmenu('enable');
+                      
+                      if($('input[name="<%=getObjectMapping(quotationProduct)%>[productId]"]').val()=="AI")
+                      {
+                        // enableDependantRider("RCCAI");
+                      }
+                      else if($('input[name="<%=getObjectMapping(quotationProduct)%>[productId]"]').val()=="ADD")
+                      {
+                        if($('input[name="<%=getObjectMapping(@quotation)%>[age]"]').val() >= 20){
+                          // enableDependantRider("RCCADD");
+                        }
+                      }
+                      else if($('input[name="<%=getObjectMapping(quotationProduct)%>[productId]"]').val()=="PPO")
+                      {
+                        if($('input[name="<%=getObjectMapping(@quotation)%>[age]"]').val() >=3){
+                          enableDependantRider("OPD");
+                        }
+                      }
+                      else if($('input[name="<%=getObjectMapping(quotationProduct)%>[productId]"]').val()=="RCCAI")
+                      {
+                        $('input[name="<%=getObjectMapping(quotationProduct)%>[baseSumAssured]"]').val(fetchDependantSAPR("AI", 5000000));
+                        $('input[name="<%=getObjectMapping(quotationProduct)%>[baseSumAssured]"]').blur();
+                      }
+                      else if($('input[name="<%=getObjectMapping(quotationProduct)%>[productId]"]').val()=="RCCADD")
+                      {
+                        $('input[name="<%=getObjectMapping(quotationProduct)%>[baseSumAssured]"]').val(fetchDependantSAPR("ADD", 5000000));
+                        $('input[name="<%=getObjectMapping(quotationProduct)%>[baseSumAssured]"]').blur();
+                      }
+                    }
+                    else // # if selected = off
+                    {                    
+                      setReadOnly($('input[name="<%=getObjectMapping(quotationProduct)%>[baseSumAssured]"]'), true);
+                      $('input[name="<%=getObjectMapping(quotationProduct)%>[baseSumAssured]"]').val('');                      
+                      $('input[name="<%=getObjectMapping(quotationProduct)%>[modalPremium]"]').val("");
+                      $('input[name="<%=getObjectMapping(quotationProduct)%>[baseAnnualPremium]"]').val("");
+                      $('select[name="<%=getObjectMapping(quotationProduct)%>[planCode]"]').selectmenu('disable');
+                      $('select[name="<%=getObjectMapping(quotationProduct)%>[planCode]"]').val("");                      
+                      $('select[name="<%=getObjectMapping(quotationProduct)%>[productPlanOptionCd]"]').selectmenu('disable');
+                      $('select[name="<%=getObjectMapping(quotationProduct)%>[productPlanOptionCd]"]').val("");
+                      
+
+                      if($('input[name="<%=getObjectMapping(quotationProduct)%>[productId]"]').val()=="AI")
+                      {
+                        //disableDependantRider("RCCAI");
+                      }
+                      else if($('input[name="<%=getObjectMapping(quotationProduct)%>[productId]"]').val()=="ADD")
+                      {                        
+                        //disableDependantRider("RCCADD");                       
+                      }
+                      else if($('input[name="<%=getObjectMapping(quotationProduct)%>[productId]"]').val()=="PPO")
+                      {
+                        disableDependantRider("OPD");
+                      }
+                      
+                      modalPremiumsList[$('input[name="<%=getObjectMapping(quotationProduct)%>[productId]"]').val()]="";
+                      
+                      updateModalPremiums();
+                      
+                    }
+
+                  });
+
+                </script>
+
+              </fieldset>
+            <%            
+          end
+        %>
+        <div data-role="fieldcontain">
+          <hr class="horizontalline"/>
+        </div>
+        </div>
+
+        <%
+          end
+        end
+        %>
+
+            </fieldset>
+          </div>
+        </div>
+      </div>
+      
+      <div name = "fundinformationdiv">
+        <%= renderLegend('fundsInformation','FUNDSINFORMATION') %>      
+        <div class="illustrationdisplay" name ='fundsInformation'>
+            <fieldset>
+              <fieldset data-role="controlgroup">
+                <div class="ui-grid-c">            
+                  <div class="ui-block-a">
+                     <%= getLabelValue('FUNDS') %>
+                  </div>
+                  <div class="ui-block-b"> 
+                    <span name="fundCount">0</span> 
+                  </div>
+                  <div class="ui-block-c"> 
+                    <%= getLabelValue('ALLOCATION') %> 
+                  </div>
+                  <div class="ui-block-d"> 
+                    <span name="allocationPerc">0%</span>
+                  </div>
+                </div>
+              </fieldset>            
+              
+              <hr class="horizontalline"/>
+    
+              <div name="fundList">          
+                <fieldset class="ui-grid-c">
+                  <strong>
+                  <div class="ui-block-a"> Funds </div>
+                  <div class="ui-block-b"> Allocation </div>
+                  <div class="ui-block-c"> &nbsp; </div>
+                  <div class="ui-block-d"> <%= getLabelValue('ACTION') %> </div>
+                  </strong>
+                </fieldset>
+                <%
+                @funds.each do |fund| %>
+                  <div name='<%= fund.fundCd %>'>
+                    <%= renderObject(fund, @baseProduct) %>
+                    <fieldset class="ui-grid-c">                    
+                      <div class="ui-block-a">
+                        <%= renderLabel('fundCd', fund.fundCd, nil, fund)   %>
+                        <%= renderHiddenField('fundCd', fund.fundCd, '', fund) %>
+                      </div>
+                      <div class="ui-block-b"> 
+                        <%= renderAmountField('allocationPerc', fund.allocationPerc, '', fund) %>
+                      </div>
+                      <div class="ui-block-c"> &nbsp; </div>
+                      <div class="ui-block-d"> 
+                        <a href='#' onclick="javascript:removeFund('<%= fund.fundCd %>');" data-role="button"><%= getLabelValue('REMOVE') %></a> 
+                      </div>
+                    </fieldset>
+                    <script>
+                      fundCount = $('span[name="fundCount"]').html();
+                      $('span[name="fundCount"]').html( parseInt(fundCount) + 1 );
+                      fundCount ++;
+                      allocationPerc = 0.0;
+                      $('input[name*="allocationPerc"]').each(function(i){
+                        allocationPerc += parseInt($(this).val());
+                      });
+                      
+                      $('span[name="allocationPerc"]').html( allocationPerc+'%' );
+  
+                    </script>
+                  </div>
+                <% end %>
+              </div>
+              
+              <hr class="horizontalline"/>
+              
+              <div data-role="fieldcontain" >
+                 <label for="search" class="lable"><%= getLabelValue('SEARCHINPUT')   %></label>
+                 <input type="search" name="search" id="Searchname" onchange="searchFunds(this.value);"/>
+              </div>
+              
+              <div name="fundSearch">
+              </div>
+            </fieldset>
+        </div>
+    
+      </div>
+      <!-- end fund information div -->
+              
+      <div name = 'topupinformationdiv'>
+        <%= renderLegend('topupInformation','TOPUPINFORMATION') %>      
+        <div class='illustrationdisplay' name ='topupInformation'>
+        
+            <div name="topupList">          
+              <fieldset class="ui-grid-c">
+                <strong>
+                  <div class="ui-block-a"> <%= getLabelValue('TOPUPYEAR') %> </div>
+                  <div class="ui-block-b"> <%= getLabelValue('TOPUPAMOUNT') %> </div>
+                  <div class="ui-block-c">  </div>
+                  <div class="ui-block-d"> <%= getLabelValue('ACTION') %> </div>
+                </strong>
+              </fieldset>
+                    <hr class="horizontalline"/>
+
+                    <%
+                     @topups.each do |topup| %>
+                      <div name='<%= topup.object %>'>
+                        <%= renderObject(topup, @baseProduct) %>
+                        <fieldset class="ui-grid-c">
+                          <div class="ui-block-a"> 
+                            <%= renderCountField('year', topup.year, nil, topup) %>
+                          </div>
+                          <div class="ui-block-b"> 
+                            <%= renderAmountField('topupAmt', topup.topupAmt, nil, topup) %> 
+                          </div>
+                          <div class="ui-block-c">
+                          </div>
+                          <div class="ui-block-d">
+                            <a href="javascript:removeTopup('<%= topup.object %>');" data-role="button"> <%= getLabelValue('REMOVE') %> </a>
+                          </div>
+                        </fieldset>
+                        
+                        <script>
+                          topupCount ++;
+                        </script>
+                      </div>
+                    <% end %>
+            </div>
+                    
+            <hr class="horizontalline"/>
+            
+            <fieldset class="ui-grid-b">
+              <strong>
+                <div class="ui-block-a-equi"> </div>
+                <div class="ui-block-b-equi"> <a href="javascript:addTopup();" data-role="button"> <%= getLabelValue('ADDTOPUP') %> </a> </div>
+                <div class="ui-block-c-equi"> </div>                
+              </strong>
+            </fieldset>
+
+        </div>
+      </div>
+      
+      <%= renderLegend('personalAccident','PERSONALACCIDENT', '+') %>      
+      <div class="illustrationdisplay" name ='personalAccident'>  
+        <fieldset>
+          
+          
+          <%#= renderObject(@paProduct, @quotation) %>
+          <%#= renderHiddenField('productTypeCd',@paProduct.productTypeCd,'Product Type cd', @paProduct) %>
+          <%#= renderHiddenField('productFamilyCd',@paProduct.productFamilyCd,'Product family cd', @paProduct) %>
+          
+          <fieldset data-role="controlgroup">
+            <div class="ui-grid-c">            
+              <div class="ui-block-a">
+                <ul data-role="listview" >
+                  <li class="collateral">
+                    <a href="#" name="PA_COLLATERAL">
+                      <script>
+                        $('a[name="PA_COLLATERAL"]').click(function () {
+                          productId = $("select[name='<%=getObjectMapping(@paProduct)%>[productId]']").val();
+                          if ( productId != "" )
+                          {  
+                            $.get("/app/Collateral/showProductCollateral?product="+productId,function(data) {});
+                          }
+                          else
+                          {
+                            showDialog("", "<%= getLabelValue('SELECTPA')%>", 'warning', 0, 'capture');
+                          }
+                        }); 
+                      </script>                      
+                      <%= getLabelValue('PAPLAN') %>                      
+                    </a>
+                    
+                  </li>
+                </ul> 
+                              
+              </div>
+              <div class="ui-block-b" id="paProductId"> 
+                <%= getLookup(MobiSys::BrowserHelper::DYNAMICLOOKUP, 'productId', @paProduct.productId, @paProduct, @paTypeLookups, " onchange=\"updatePAProducts(true);\"") %>
+              </div>
+              <div class="ui-block-c" id="paPlanCode"> 
+                <%= getLookup(MobiSys::BrowserHelper::DYNAMICLOOKUP, 'planCode', @paProduct.planCode, @paProduct, @paPlanLookups, "onchange='calculatePremium(\'"<<getObjectMapping(@paProduct)<<"[baseSumAssured]\');'") %> 
+              </div>
+              <div class="ui-block-d"> 
+                <%= renderAmountField('baseAnnualPremium', @paProduct.baseAnnualPremium, 'Premium', @paProduct) %>
+              </div>
+            </div>
+          </fieldset>
+          
+          <!--
+          <div data-role="fieldcontain">
+            <%= renderLabel('baseAnnualPremium', 'PAPREMIUM', nil, @paProduct)    %>
+            <%= renderAmountField('modalPremium', @paProduct.modalPremium, 'Premium', @paProduct) %>            
+          </div>
+          -->
+          
+        </fieldset>
+        </div>
+
+</form>
+
+<!-- script start -->
+<script type="text/javascript">
+
+      $('input[name="<%= getObjectMapping(@baseProduct)%>[premiumGuarantees]"]').blur( function(){
+        if (isNaN(this.value))      
+        {
+          $(this).val('');
+        }
+        else{
+          if(!$(this).hasClass("readonly"))
+          {
+            calculatePremium(this.name.replace("premiumGuarantees","baseSumAssured"));
+          }
+        }
+      });
+
+      $('input[name*="[premiumSplit]"]').blur( function(){        
+        if (isNaN(this.value))      
+        {
+          $(this).val('');
+        }
+        else{
+          if(!$(this).hasClass("readonly"))
+          {
+            calculatePremium('<%= getObjectMapping(@baseProduct)%>[baseSumAssured]');
+          }
+        }
+      });
+                          
+      
+      $(document).focus(function() {
+        setTimeout("onFocus()", 100);
+      });
+      
+      function onFocus(){        
+        val = $('input[name="<%=getObjectMapping(@quotation)%>[age]"]').val();
+        planCode = $('select[name="<%=getObjectMapping(@baseProduct)%>[planCode]"]').val();
+          showHideAgeSections(val, false);
+        if (val != "" && $('input[name="<%=getObjectMapping(@quotation)%>[dob]"]').val() == "")
+        {
+          getDOB(val, '<%=getObjectMapping(@quotation)%>[dob]');
+        }
+        
+        
+        updateAllProducts(false);
+        renderRiders();
+        updatePremiums();
+        renderLegends();
+      }
+      
+      var oldAgeValue = "";
+      $('input[name="<%=getObjectMapping(@quotation)%>[age]"]').focus( function(){
+        oldAgeValue = this.value;
+      });
+      
+      $('input[name="<%=getObjectMapping(@quotation)%>[age]"]').blur( function(){
+        if (oldAgeValue != this.value)
+        {          
+          if ( isNaN(this.value) || this.value < 0)      
+          {
+            $(this).val('');
+          }
+          else
+          {
+            showHideAgeSections(this.value, true);                
+            getDOB(this.value, '<%=getObjectMapping(@quotation)%>[dob]');
+            
+            updateAllProducts(true);
+          }
+        }        
+      });
+
+      $('input[name="<%=getObjectMapping(@quotation)%>[ageMonths]"]').blur( function(){
+        if ( isNaN(this.value) || this.value < 1 || this.value > 11)
+        {
+          $(this).val('');
+        }
+      });
+
+      $('input[name="<%=getObjectMapping(@quotation)%>[ageDays]"]').blur( function(){
+        if ( isNaN(this.value) || this.value < 1 || this.value > 30)
+        {
+          $(this).val('');
+        }
+      });
+        
+      $('input[name="<%=getObjectMapping(@quotation)%>[genderCd]"]').change( function(){
+        updateAllProducts(true);
+      });
+
+      $('input[name="<%=getObjectMapping(@quotation)%>[emailAddress]"]').change( function(){
+        
+        if(!testEmail(this.value))
+        {
+          $(this).val('');
+        }
+        
+      });
+
+      $('input[name="<%=getObjectMapping(@quotation)%>[proposerEmailAddress]"]').change( function(){
+        
+        if(!testEmail(this.value))
+        {
+          $(this).val('');
+        }
+        
+      });
+
+      function testEmail(value)
+      {
+        returnValue = true;
+        if (value != "")
+        {
+          emailPattern=new RegExp("[A-Za-z0-9._-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,4}");
+          returnValue = emailPattern.test(value);  
+        }
+        
+        return returnValue;
+      }
+      
+      $('input[name="<%=getObjectMapping(@quotation)%>[proposerAge]"]').blur( function(){
+        if ( isNaN(this.value) || this.value < 0)
+        {
+          $(this).val('');
+        }
+        else
+        {
+          getDOB(this.value, '<%=getObjectMapping(@quotation)%>[proposerDob]');
+        }
+        updateWOPSA($("input[name='<%=getObjectMapping(@baseProduct)%>[baseAnnualPremium]']").val());
+        updatePBCPremium();
+      });
+
+      $('input[name="<%=getObjectMapping(@quotation)%>[proposerGenderCd]"]').change( function(){        
+        updateWOPSA($("input[name='<%=getObjectMapping(@baseProduct)%>[baseAnnualPremium]']").val());
+        updatePBCPremium();        
+      });
+
+      $('input[name="<%=getObjectMapping(@quotation)%>[dob]"]').change( function(){
+        age = getAge(this.value, '<%=getObjectMapping(@quotation)%>[age]', '<%=getObjectMapping(@quotation)%>[ageMonths]', '<%=getObjectMapping(@quotation)%>[ageDays]');
+        showHideAgeSections(age, true);
+        updateAllProducts(true);
+      });
+
+      $('input[name="<%=getObjectMapping(@quotation)%>[proposerDob]"]').change( function(){        
+        getAge(this.value, '<%=getObjectMapping(@quotation)%>[proposerAge]', '', '');
+      });
+
+      $('input[name*="[baseSumAssured]"]').blur( function(){
+        planCode = $('select[name="<%=getObjectMapping(@baseProduct)%>[planCode]"]').val();
+        if (isNaN(this.value))      
+        {
+          $(this).val('');
+        }
+        else{
+          if(!$(this).hasClass("readonly") && planCode.indexOf("SIS") < 0)
+          {
+            calculatePremium(this.name);
+          }
+        }
+      });
+
+      $('input[name*="[baseAnnualPremium]"]').blur( function(){        
+        planCode = $('select[name="<%=getObjectMapping(@baseProduct)%>[planCode]"]').val();
+        if (isNaN(this.value))
+        {
+          $(this).val('');
+        }
+        else{
+          if(!$(this).hasClass("readonly") && planCode.indexOf("SIS") < 0)
+          {
+            calculateSA(this.name);
+          }  
+        }        
+      });
+
+      $('input[name="premiumsa"]').change( function () {        
+        planCode = $('select[name="<%=getObjectMapping(@baseProduct)%>[planCode]"]').val();
+        if (planCode.indexOf("SIS") < 0)
+        {
+          if (this.value == "SUMASSURED")
+          {
+            setReadOnly($("input[name='<%=getObjectMapping(@baseProduct)%>[baseSumAssured]']"), false);
+            setReadOnly($("input[name='<%=getObjectMapping(@baseProduct)%>[baseAnnualPremium]']"), true);
+          }
+          else // (this.value == "PREMIUM")
+          {
+            setReadOnly($("input[name='<%=getObjectMapping(@baseProduct)%>[baseSumAssured]']"), true);
+            setReadOnly($("input[name='<%=getObjectMapping(@baseProduct)%>[baseAnnualPremium]']"), false);
+          }
+        }
+      });
+
+      $("input[name*='[paymentFrequencyCd]']").change( function(){
+        updateModalPremiums();
+      });
+      
+      function showHideAgeSections(age, recurring)
+      {
+        planCode = $('select[name="<%=getObjectMapping(@baseProduct)%>[planCode]"]').val();
+        if (age == "")
+        {
+          hideMonthsDays();
+          hidePayor();            
+        }
+        else
+        {
+          if (age <= 15){
+            if(age == 0){
+              showMonthsDays();
+            }
+            else{
+              hideMonthsDays();
+            }
+            if (planCode.indexOf("SIS") < 0)
+            {
+              hidePayor();
+            }
+            else
+            {
+              showPayor(recurring);
+            }
+          }
+          else{
+            hideMonthsDays();
+            if (planCode.indexOf("SIS") < 0)
+            {
+              hidePayor();
+            }
+            else
+            {
+              showPayor(recurring);
+            }
+          }
+        }        
+  
+      }
+      
+      function updateAllProducts(reset){
+        //alert("updateAllProducts:"+reset);
+        
+        if(reset)
+        {
+          $('input[name*="[baseSumAssured]"]').val("");
+          $('input[name*="[baseAnnualPremium]"]').val("");
+          $('input[name*="[modalPremium]"]').val("");
+        }
+        else
+        {
+          setReadOnly($("input[name='Quotation[QuotationProduct][0][baseSumAssured]']"), false);
+          setReadOnly($("input[name='Quotation[QuotationProduct][0][baseAnnualPremium]']"), true);
+          setReadOnly($("input[name='Quotation[QuotationProduct][0][modalPremium]']"), true);
+          setReadOnly($("input[name='Quotation[QuotationProduct][1][baseAnnualPremium]']"), true);
+          setReadOnly($("input[name='Quotation[QuotationProduct][1][modalPremium]']"), true);
+        }
+        modalPremiumsList = new Array();
+        updatePAProducts(reset);
+        updateProducts(reset);        
+        updateModalPremiums();
+      }
+      
+      function renderRiders(){
+        try{
+          for(ctr = 0; ctr < objectCount; ctr++){
+            
+            // object mapping [selected]
+            var selectedLabel = "input[name='"+objectMapping[ctr]+"[selected]']" ;
+            if($(selectedLabel).is(':checked')){
+              try{
+                setReadOnly($('input[name="'+objectMapping[ctr]+'[baseSumAssured]"]'), false);    
+                $('select[name="'+objectMapping[ctr]+'[productPlanOptionCd]"]').selectmenu('enable');
+                $('select[name="'+objectMapping[ctr]+'[planCode]"]').selectmenu('enable');
+                productId = $("input[name='"+objectMapping[ctr]+"[productId]']").val();
+                if(productId== 'TR')
+                {
+                  updateRiderPlans( objectMapping[ctr], 
+                            'planCode',
+                            productId,
+                            false);
+                }
+                else{
+                  updateRiderPlans( objectMapping[ctr], 
+                            'productPlanOptionCd',
+                            productId,
+                            false);                  
+                }
+
+                if(productId=="AI")
+                {
+                  //enableDependantRider("RCCAI");
+                }
+                else if(productId=="ADD")
+                {
+                  if($('input[name="<%=getObjectMapping(@quotation)%>[age]"]').val() >= 20){
+                    //enableDependantRider("RCCADD");
+                  }
+                }
+                else if(productId=="PPO")
+                {
+                  if($('input[name="<%=getObjectMapping(@quotation)%>[age]"]').val() >=3){
+                    enableDependantRider("OPD");
+                  }
+                }
+
+              }catch(e){alert(e);}                  
+            }
+            else{
+              try{
+                setReadOnly($('input[name="'+objectMapping[ctr]+'[baseSumAssured]"]'), true);    
+                $('select[name="'+objectMapping[ctr]+'[productPlanOptionCd]"]').selectmenu('disable');
+                //$('select[name="'+objectMapping[ctr]+'[productPlanOptionCd]"]').val("").change();
+                $('select[name="'+objectMapping[ctr]+'[planCode]"]').selectmenu('disable');
+                //$('select[name="'+objectMapping[ctr]+'[planCode]"]').val("").change();
+                 
+                productId = $("input[name='"+objectMapping[ctr]+"[productId]']").val();
+                
+                if(productId=="AI")
+                {
+                  //disableDependantRider("RCCAI");
+                }
+                else if(productId=="ADD")
+                {
+                  //disableDependantRider("RCCADD");
+                }
+                else if(productId=="PPO")
+                {
+                  disableDependantRider("OPD");
+                }
+                
+                modalPremiumsList[productId]="";
+                updateModalPremiums();
+
+              }catch(e){alert(e);}
+            }
+
+            try{
+              setReadOnly($('input[name="'+objectMapping[ctr]+'[baseAnnualPremium]"]'), true);
+              setReadOnly($('input[name="'+objectMapping[ctr]+'[modalPremium]"]'), true);
+            }catch(e){alert(e);}
+
+          }
+        } catch(e){alert(e);}  
+      }
+      
+      function updateProducts(recurring){        
+        age = $('input[name="<%=getObjectMapping(@quotation)%>[age]"]').val();
+        genderCd = $('input[name="<%=getObjectMapping(@quotation)%>[genderCd]"]').filter(':checked').val();
+        occupationClass = $('select[name="<%=getObjectMapping(@quotation)%>[occupationCd]"]').val();
+        planType = $('select[name="<%=getObjectMapping(@baseProduct)%>[productFamilyCd]"]').val();
+        basePlan = $('select[name="<%=getObjectMapping(@baseProduct)%>[planCode]"]').val();
+        
+        //alert("updateProducts:"+recurring+";age:"+age+";gender:"+genderCd+";planType:"+planType);
+        if ( age != "" && genderCd != "" && genderCd!==undefined && occupationClass != "")
+        {
+          // base product filtering
+          $.ajax({
+                    url: "/app/Quotation/filterPlanTypes",
+                    data: {'age': age, 'genderCd': genderCd, 'occupationClass': occupationClass, 'planType':planType},
+                    success: function(data) {
+                        create = '<select id="<%=getObjectMapping(@baseProduct)%>[productFamilyCd]" name="<%=getObjectMapping(@baseProduct)%>[productFamilyCd]" onchange="updateProducts(true);">';
+                        create += '<option value=""><%=getLabelValue("SELECT_TYPE")%></option>';                          
+                        create += data;
+                        create += '</select>';
+                        $('#productPlanType').html(create);
+                        $("#productPlanType").trigger('create');
+                    }
+                 })
+                 
+          planType = $('select[name="<%=getObjectMapping(@baseProduct)%>[productFamilyCd]"]').val();
+          
+          if(recurring){
+            $('input[name="<%=getObjectMapping(@baseProduct)%>[baseAnnualPremium]"]').val('');
+            $('input[name="<%=getObjectMapping(@baseProduct)%>[modalPremium]"]').val('');
+            $('input[name="<%=getObjectMapping(@baseProduct)%>[baseSumAssured]"]').val('');
+            basePlan = "";
+            modalPremiumsList["PLAN"]="";
+            updateModalPremiums();
+            $("select[name='<%=getObjectMapping(@baseProduct)%>[planCode]']").val("");
+          }
+          
+          
+          
+          // base plan filtering
+          if( 1==1 /*planType != "" */ )
+          {
+            $.ajax({
+                      url: "/app/Quotation/filterProducts",
+                      data: {'age': age, 'genderCd': genderCd, 'occupationClass': occupationClass, 'planType': planType, 'planCode': basePlan},
+                      success: function(data) {
+                          create = '<select id="<%=getObjectMapping(@baseProduct)%>[planCode]" name="<%=getObjectMapping(@baseProduct)%>[planCode]" onchange="planCodeChange(true);">';
+                          create += '<option value=""><%=getLabelValue("SELECT_PLAN")%></option>';                                                    
+                          create += data;
+                          create += '</select>';
+                          $('#productPlanCode').html(create);
+                          $("#productPlanCode").trigger('create');
+                      }
+                   });
+          }          
+        }
+        updatePlanRelatedInfo(recurring);
+      }
+
+      function updatePAProducts(recurring){
+        
+        age = $('input[name="<%=getObjectMapping(@quotation)%>[age]"]').val();
+        genderCd = $('input[name="<%=getObjectMapping(@quotation)%>[genderCd]"]').filter(':checked').val();
+        if (age == "" || age > 15)
+        {        
+          occupationClass = $('select[name="<%=getObjectMapping(@quotation)%>[occupationCd]"]').val();
+        }
+        else // # age <= 15 (juvenile)
+        {        
+          occupationClass = JUVENILEOCCUPATIONCLASSFORPA;
+        }
+          
+        paProduct = $('select[name="<%=getObjectMapping(@paProduct)%>[productId]"]').val();
+        paPlan = $('select[name="<%=getObjectMapping(@paProduct)%>[planCode]"]').val();
+
+        if ( age != "" && genderCd != "" && genderCd!==undefined && occupationClass != "")
+        {
+        
+          // pa product filtering
+          $.ajax({
+                    url: "/app/Quotation/filterPAProducts",
+                    data: {'age': age, 'genderCd': genderCd, 'occupationClass': occupationClass, 'productId':paProduct},
+                    success: function(data) {
+                        create = '<select id="<%=getObjectMapping(@paProduct)%>[productId]" name="<%=getObjectMapping(@paProduct)%>[productId]" onchange="updatePAProducts(true);">';
+                        create += '<option value=""><%=getLabelValue("SELECT_TYPE")%></option>';                          
+                        create += data;
+                        create += '</select>';
+                        $('#paProductId').html(create);
+                        $("#paProductId").trigger('create');
+                    }
+                 })
+                 
+          paProduct = $('select[name="<%=getObjectMapping(@paProduct)%>[productId]"]').val();
+          
+          if(recurring){
+            $('input[name="<%=getObjectMapping(@paProduct)%>[baseAnnualPremium]"]').val('');
+            paPlan = "";
+            modalPremiumsList["PA"]="";
+            updateModalPremiums();
+          }
+          
+          // pa plan filtering
+          if( 1==1 /* paProduct != "" */ )
+          {
+            $.ajax({
+                      url: "/app/Quotation/filterPAPlans",
+                      data: {'age': age, 'genderCd': genderCd, 'occupationClass': occupationClass, 'productId': paProduct, 'planCode': paPlan},
+                      success: function(data) {
+                          create = '<select id="<%=getObjectMapping(@paProduct)%>[planCode]" name="<%=getObjectMapping(@paProduct)%>[planCode]" onchange="calculatePremium(\'<%=getObjectMapping(@paProduct)%>[baseSumAssured]\');">';
+                          create += '<option value=""><%=getLabelValue("SELECT_PLAN")%></option>';                                                    
+                          create += data;
+                          create += '</select>';
+                          $('#paPlanCode').html(create);
+                          $("#paPlanCode").trigger('create');
+                      }
+                   })
+          }                 
+        }
+      }
+      
+          function planCodeChange(recurring)
+                {
+                  updatePlanRelatedInfo(recurring);
+                  showHideAgeSections(recurring);
+                }
+      
+      function updatePlanRelatedInfo(recurring){
+        $('div[name*="riderinformationdiv"]').hide();
+        $('div[name*="fundinformationdiv"]').hide();
+        $('fieldset[name*="rider_"]').hide();
+        $('div[name*="productFamily_"]').hide();
+        $('div[name*="hybridinformationdiv"]').hide();        
+        $('div[name*="topupinformationdiv"]').hide();
+        $('div[name="cashDropReinvest"]').hide();
+        $('div[name="terminalBonusReinvest"]').hide();
+        $('div[name="dividendOption"]').hide();
+        $('div[name="endowmentOption"]').hide();
+        
+        $('div[name="premiumDiscount1"]').hide();
+        $('div[name="flatLoading"]').hide();
+        $('div[name="multipleLoadingLoading"]').hide();
+        $('div[name="dividendOptionLA"]').hide();
+        $('div[name*="ropIndicatorCd"]').hide();
+        $('div[name*="currencySelection"]').hide();
+        $('div[name="pdfOption"]').hide();
+        $('div[name*="premiumType"]').hide();
+        $('div[name*="extraFields"]').hide();
+        $('div[name*="riderPremium"]').show();
+        $('div[name*="channelCd"]').hide();
+        
+        if(recurring){
+          
+          
+          $('input[name="<%=getObjectMapping(@baseProduct)%>[baseAnnualPremium]"]').val('');
+          $('input[name="<%=getObjectMapping(@baseProduct)%>[modalPremium]"]').val('');
+          $('input[name="<%=getObjectMapping(@baseProduct)%>[baseSumAssured]"]').val('');
+          
+          for (productId in modalPremiumsList)
+          {
+            if(productId != "PA")
+            {
+              modalPremiumsList[productId] = "";
+              
+            }
+          }          
+          updateModalPremiums();
+        }
+
+        
+        age = $('input[name="<%=getObjectMapping(@quotation)%>[age]"]').val();
+        genderCd = $('input[name="<%=getObjectMapping(@quotation)%>[genderCd]"]').filter(':checked').val();
+        occupationClass = $('select[name="<%=getObjectMapping(@quotation)%>[occupationCd]"]').val();
+        planType = $('select[name="<%=getObjectMapping(@baseProduct)%>[productFamilyCd]"]').val();
+        planCode = $('select[name="<%=getObjectMapping(@baseProduct)%>[planCode]"]').val();
+        
+        //alert("planType:"+planType+";planCode:"+planCode);
+        
+        if (planCode != "")
+        {
+          if(planCode.indexOf("SIS") >= 0)
+          {
+            setReadOnly($("input[name='<%=getObjectMapping(@baseProduct) %>[premiumsa]']"), true);
+            setReadOnly($("input[name='<%=getObjectMapping(@baseProduct) %>[baseSumAssured]']"), false);
+            setReadOnly($("input[name='<%=getObjectMapping(@baseProduct) %>[baseAnnualPremium]']"), false);
+          }
+          else
+          {
+            setReadOnly($("input[name='<%=getObjectMapping(@baseProduct) %>[premiumsa]']"), false);
+            setReadOnly($("input[name='<%=getObjectMapping(@baseProduct) %>[baseAnnualPremium]']"), true);
+          }
+          
+          //render extra fields
+          $.ajax({
+            url: "/app/Quotation/checkExtraFields",
+            data: {'planCode': planCode},
+            success: function(data) {
+              data = data.replace("<div>","");
+              data = data.replace("</div>","");
+              if (data == 'YES')
+              {  
+                $('div[name*="extraFields"]').show();
+                $('div[name*="riderPremium"]').hide();
+                $('div[name*="channelCd"]').show();
+              }
+              else
+              {
+                $('div[name*="riderPremium"]').show();
+              }
+            }
+          });
+          
+          //render premiumtype fields
+          $.ajax({
+            url: "/app/Quotation/checkPremiumType",
+            data: {'planCode': planCode},
+            success: function(data) {
+              data = data.replace("<div>","");
+              data = data.replace("</div>","");
+              if (data == 'YES')
+                $('div[name*="premiumType"]').show();
+            }
+          });
+          
+          //render discount fields
+          $.ajax({
+            url: "/app/Quotation/checkDiscount",
+            data: {'planCode': planCode},
+            success: function(data) {
+              data = data.replace("<div>","");
+              data = data.replace("</div>","");
+              if (data == 'YES')
+                $('div[name*="premiumDiscount"]').show();
+            }
+          });
+          
+          //render flat loading fields
+          $.ajax({
+            url: "/app/Quotation/checkFlatLoading",
+            data: {'planCode': planCode},
+            success: function(data) {
+              data = data.replace("<div>","");
+              data = data.replace("</div>","");
+              if (data == 'YES')
+                $('div[name*="flatLoading"]').show();
+            }
+          });
+          
+          //render multi loading fields
+          $.ajax({
+            url: "/app/Quotation/checkMultipleLoading",
+            data: {'planCode': planCode},
+            success: function(data) {
+              data = data.replace("<div>","");
+              data = data.replace("</div>","");
+              if (data == 'YES')
+                $('div[name*="multipleLoading"]').show();
+            }
+          });
+          
+          //render rop fields
+          $.ajax({
+            url: "/app/Quotation/checkRop",
+            data: {'planCode': planCode},
+            success: function(data) {
+              data = data.replace("<div>","");
+              data = data.replace("</div>","");
+              if (data == 'YES')
+                $('div[name*="ropIndicatorCd"]').show();
+            }
+          });
+          
+          //render dividend fields
+          $.ajax({
+            url: "/app/Quotation/checkDividendOptionLA",
+            data: {'planCode': planCode},
+            success: function(data) {
+              data = data.replace("<div>","");
+              data = data.replace("</div>","");
+              if (data == 'YES')
+                $('div[name*="dividendOptionLA"]').show();
+            }
+          });
+    
+          currency = $("select[name='<%=getObjectMapping(@baseProduct)%>[currencyCd]']").val();
+          //alert ("Selected currency = " + currency)
+          //render currency drop down
+          $.ajax({
+            url: "/app/Quotation/getPlanCurrencies",
+            data: {'planCode': planCode, 'currency':currency},
+            success: function(data) {
+              data = data.replace("<div>","");
+              data = data.replace("</div>","");
+              if (data != "")
+              {              
+                $('div[name*="currencySelection"]').show();
+                                
+                create = '<select id="<%=getObjectMapping(@baseProduct)%>[currencyCd]" name="<%=getObjectMapping(@baseProduct)%>[currencyCd]" onchange="calculatePremium(\'<%=getObjectMapping(@baseProduct)%>[baseSumAssured]\');">';                          
+                create += data;
+                create += '</select>';
+                                
+                $("div[name='currencyDiv']").html(create);
+                $("div[name='currencyDiv']").trigger('create');
+              }
+            }
+          });
+            
+        }
+        
+        if ( age != "" && genderCd != "" && genderCd!==undefined && occupationClass != "" && planType != "")
+        {
+          
+            // render hybrid details
+            if (planType == 'HYBRID' && planCode != '')
+            {
+              $('div[name*="hybridinformationdiv"]').show();
+              if(recurring)
+              {          
+                renderHybridDetails(planCode, age, genderCd, occupationClass);
+              }
+            }
+            else
+            {
+              $('div[name*="hybridinformationdiv"]').hide();
+            }
+
+            // render term and ppt
+            if(recurring)
+            {
+              $.ajax({
+                        url: "/app/Quotation/filterCoverage",
+                        data: {'age': age, 'genderCd': genderCd, 'occupationClass': occupationClass, 'planType': planType, 'planCode': planCode},
+                        success: function(data) {
+                          create = '<select id="<%=getObjectMapping(@baseProduct)%>[productTerm]" name="<%=getObjectMapping(@baseProduct)%>[productTerm]" onchange="calculatePremium(\'<%=getObjectMapping(@baseProduct)%>[baseSumAssured]\');">';
+                          create += data;
+                          create += '</select>';
+                          $('#term').html(create);
+                          $("#term").trigger('create');                          
+                        }
+              });
+
+              $.ajax({
+                        url: "/app/Quotation/filterPaymentTerm",
+                        data: {'age': age, 'genderCd': genderCd, 'occupationClass': occupationClass, 'planType': planType, 'planCode': planCode},
+                        success: function(data) {
+                          create = '<select id="<%=getObjectMapping(@baseProduct)%>[premiumPayingTerm]" name="<%=getObjectMapping(@baseProduct)%>[premiumPayingTerm]">';
+                          create += data;
+                          create += '</select>';
+                          $('#ppt').html(create);
+                          $("#ppt").trigger('create');                          
+                        }
+              });
+            }
+            
+            // render riders
+            $.ajax({
+                      url: "/app/Quotation/filterRiders",
+                      data: {'age': age, 'genderCd': genderCd, 'occupationClass': occupationClass, 'planType': planType, 'planCode': planCode},
+                      success: function(data) {
+                        data = data.replace("<div>","");
+                        data = data.replace("</div>","");
+
+                        riderObjects = data.split(",");                        
+
+                        if(recurring)
+                        {
+                          
+                          $("input[name*='selected']").each( function(i){
+                            if($(this).is(':checked'))
+                            {
+                              $(this).click();
+                              
+                              labelName = $(this).attr("name");
+                              if ($("label[for='"+labelName+"']").hasClass("ui-checkbox-on")){
+                                $("label[for='"+labelName+"']").removeClass("ui-checkbox-on");
+                                $("label[for='"+labelName+"']").addClass("ui-checkbox-off");
+                              }
+                              
+                              $("label[for='"+labelName+"']").children("span").children("span").each(function(i){
+                                if($(this).hasClass("ui-icon-checkbox-on")){
+                                  $(this).removeClass("ui-icon-checkbox-on");
+                                  $(this).addClass("ui-icon-checkbox-off");
+                                }                            
+                              });
+                              
+                            }
+                            
+                          });
+                        }
+
+                        for (var i = 0; i < riderObjects.length; i++) {
+                            rider = riderObjects[i].split("|");                            
+                            if(rider.length > 0 && rider[0] != "" && rider[0] != "RCCADD" && rider[0] != "RCCAI" && rider[0] != "OPD" /*&& rider[0] != "PBC"*/)
+                            {                            
+                              $('fieldset[name="rider_'+ rider[0] +'"]').show();
+                              $('div[name="productFamily_'+ rider[1] +'"]').show();
+                              $('div[name*="riderinformationdiv"]').show();
+                              
+                            }
+                        }
+                      }
+                   });
+
+              /////////////////////////////
+              // check base plan parameters
+              /////////////////////////////
+                
+              // check cash drops
+              $.ajax({
+                        url: "/app/Quotation/checkCashDrop",
+                        data: {'age': age, 'genderCd': genderCd, 'occupationClass': occupationClass, 'planType': planType, 'planCode': planCode},
+                        success: function(data) {
+                          data = data.replace("<div>","");
+                          data = data.replace("</div>","");                          
+                          if (data == "ALLOWED")
+                          {
+                            $('div[name="cashDropReinvest"]').show();
+                          }
+                        }
+              });
+              
+              // check terminal bonus
+              $.ajax({
+                        url: "/app/Quotation/checkTerminalBonus",
+                        data: {'age': age, 'genderCd': genderCd, 'occupationClass': occupationClass, 'planType': planType, 'planCode': planCode},
+                        success: function(data) {
+                          data = data.replace("<div>","");
+                          data = data.replace("</div>","");
+                          if (data == "ALLOWED")
+                          {
+                            $('div[name="terminalBonusReinvest"]').show();
+                          }
+                        }
+              });
+
+                // check dividend option
+                $.ajax({
+                          url: "/app/Quotation/checkDividendOption",
+                          data: {'age': age, 'genderCd': genderCd, 'occupationClass': occupationClass, 'planType': planType, 'planCode': planCode},
+                          success: function(data) {
+                            data = data.replace("<div>","");
+                            data = data.replace("</div>","");
+                            if (data == "ALLOWED")
+                            {
+                              $('div[name="dividendOption"]').show();
+                            }
+                          }
+                });
+
+                // check endowment option
+                $.ajax({
+                          url: "/app/Quotation/checkEndowmentOption",
+                          data: {'age': age, 'genderCd': genderCd, 'occupationClass': occupationClass, 'planType': planType, 'planCode': planCode},
+                          success: function(data) {
+                            data = data.replace("<div>","");
+                            data = data.replace("</div>","");
+                            if (data == "ALLOWED")
+                            {
+                              $('div[name="endowmentOption"]').show();
+                            }
+                          }
+                });
+
+                // check PDF option
+                $.ajax({
+                          url: "/app/Quotation/checkPDFOption",
+                          data: {'age': age, 'genderCd': genderCd, 'occupationClass': occupationClass, 'planType': planType, 'planCode': planCode},
+                          success: function(data) {
+                            data = data.replace("<div>","");
+                            data = data.replace("</div>","");
+                            if (data == "ALLOWED")
+                            {
+                              $('div[name="pdfOption"]').show();
+                            }
+                          }
+                });
+                   
+               if ((planType == 'UNITLINKED' || planType == 'HYBRID') && planCode != '')
+               {
+                 $('div[name*="fundinformationdiv"]').show();
+                 $('div[name*="topupinformationdiv"]').show();
+               }
+               else
+               {
+                 $('div[name*="fundinformationdiv"]').hide(); 
+                 $('div[name*="topupinformationdiv"]').hide();
+               }
+               
+        }
+      }
+
+      function renderHybridDetails(planCode, age, genderCd, occupationClass)
+      {
+        quotationProductObjectName = '<%= getObjectMapping(@baseProduct) %>';
+        
+        $.ajax({
+      
+                  url: "/app/Quotation/addHybridDetails",
+                  data: {'age': age, 'genderCd': genderCd, 'occupationClass': occupationClass, 'planType': 'HYBRID', 'planCode': planCode, 'quotationProductObject': '<%= @baseProduct.object.to_s %>', 'quotationProductObjects': objectCount, 'quotationProductObjectName':quotationProductObjectName, 'quotationObject': '<%= getObjectMapping(@quotation)%>'},
+                  success: function(data) {
+                    $('div[name="hybridInformation"]').html("");
+                    $('div[name="hybridInformation"]').trigger('create');
+                    $('div[name="hybridInformation"]').html(data);                    
+                    $('div[name="hybridInformation"]').trigger('create');
+                  }                    
+               });          
+
+      }
+      
+      function updateRiderPlans(elementName, attributeName, riderProductId, recurring)
+      {
+        age = $('input[name="<%=getObjectMapping(@quotation)%>[age]"]').val();
+        genderCd = $('input[name="<%=getObjectMapping(@quotation)%>[genderCd]"]').filter(':checked').val();        
+        if (age <= 15 && riderProductId == "ADD")
+        {        
+          occupationClass = JUVENILEOCCUPATIONCLASSFORPA;
+        }
+        else // # others
+        {                  
+          occupationClass = $('select[name="<%=getObjectMapping(@quotation)%>[occupationCd]"]').val();
+        }
+
+
+        if(recurring)
+        {
+          planCode="";
+        }
+        else
+        {
+          planCode = $('select[name="'+elementName+'['+attributeName+']"]').val();
+        }
+        if ( age != "" && genderCd != "" && genderCd!==undefined && occupationClass != "" && riderProductId != "")
+        {
+            $.ajax({
+                      url: "/app/Quotation/filterRiderPlans",
+                      data: {'age': age, 'genderCd': genderCd, 'occupationClass': occupationClass, 'productId': riderProductId, 'planCode': planCode},
+                      async:   false,
+                      success: function(data) {
+                        if(riderProductId == "TR")
+                        {                          
+                          create = '<select id="'+elementName+'[planCode]" name="'+elementName+'[planCode]" onchange="calculatePremium(\''+elementName+'[baseSumAssured]\');">';                        
+                          create += '<option value=""><%=getLabelValue("SELECT_PLAN")%></option>';                                                    
+                          create += data;
+                          create += '</select>';
+                          $('#'+riderProductId).html(create);
+                          $('#'+riderProductId).trigger('create');
+                                                    
+                        }
+                        else{
+                          create = '<select id="'+elementName+'['+attributeName+']" name="'+elementName+'['+attributeName+']" onchange="calculatePremium(\''+elementName+'[baseSumAssured]\');">';                       
+                          create += '<option value=""><%=getLabelValue("SELECT_PLAN")%></option>';                                                    
+                          create += data;
+                          create += '</select>';
+                          if($('input[name="'+elementName+'[premiumSAFl]"]').val() == "COVERAGE")
+                          {                        
+                            $('#'+riderProductId).html(create);
+                            $('#'+riderProductId).trigger('create');
+                          }
+                          else // for other premiumSA types []
+                          {
+                            planCode = data.substring(data.indexOf('"')+1, data.indexOf('"',data.indexOf('"')+1));
+                            create = '<input type="hidden" id="'+elementName+'[planCode]" name="'+elementName+'[planCode]" value="'+planCode+'"/>'
+                            $('#'+riderProductId).html(create);
+                            $('#'+riderProductId).trigger('create');                            
+                          }
+                        }
+                      }
+                   });
+
+        }
+        
+      }
+          
+      function showPayor(recurring){
+        $('div[name="payor"]').show();
+        if(recurring){
+          $("select[name='<%=getObjectMapping(@quotation)%>[occupationCd]']").val(JUVENILEOCCUPATIONCLASS).change();          
+        }
+        $("select[name='<%=getObjectMapping(@quotation)%>[occupationCd]']").selectmenu('disable');
+      }
+      
+      function hidePayor(){
+        $('div[name="payor"]').hide();
+        $("input[name='<%=getObjectMapping(@quotation)%>[proposerFirstname]']").val('');
+        //$("input[name='<%=getObjectMapping(@quotation)%>[proposerGenderCd]']").val('');
+        $("input[name='<%=getObjectMapping(@quotation)%>[proposerAge]']").val('');
+        $("input[name='<%=getObjectMapping(@quotation)%>[proposerDob]']").val('');
+        $("input[name='<%=getObjectMapping(@quotation)%>[proposerEmailAddress]']").val('');
+        $("input[name='<%=getObjectMapping(@quotation)%>[proposerMobileNum]']").val('');
+        
+        // enable occupation class 
+        $("select[name='<%=getObjectMapping(@quotation)%>[occupationCd]']").selectmenu('enable');
+      }
+      
+      function showMonthsDays(){
+        $('#months').show();
+        $('#days').show();
+      }
+      
+      function hideMonthsDays(){
+        $('#months').hide();
+        $('#days').hide();
+      }
+
+
+      function getAge(birthDt, fieldId1, fieldId2, fieldId3)
+      {
+        age = 0;
+        $.ajax({
+                url: "/app/Quotation/getAge",
+                data: {'birthDt': birthDt},
+                success: function(data) {
+                  data = data.replace("<div>","");
+                  data = data.replace("</div>","");
+                  ageParts = data.split("|");
+                  $('input[name="'+ fieldId1 +'"]').val(ageParts[0]);
+                  age = ageParts[0];
+                  try{
+                    $('input[name="'+ fieldId2 +'"]').val(ageParts[1]);
+                    $('input[name="'+ fieldId3 +'"]').val(ageParts[2]);
+                  } catch(e){}
+                }
+              });
+        return age;
+      }
+      
+      function getDOB(age, fieldId)
+      {
+        $.ajax({
+                url: "/app/Quotation/getBirthDt",
+                data: {'age': age},
+                success: function(data) {
+                  data = data.replace("<div>","");
+                  data = data.replace("</div>","");
+                  
+                  $('input[name="'+ fieldId +'"]').val(data);
+                }
+              });
+        
+      }
+
+      function calculateSA(fieldName){
+      
+        annualPremium = $("input[name='"+fieldName+"']").val();
+        
+        productTypeCdName = fieldName.replace("baseAnnualPremium","productTypeCd");
+        productTypeCd = $("input[name='"+productTypeCdName+"']").val();
+                
+        if( productTypeCd == "RIDER")
+        {
+          productIdName = fieldName.replace("baseAnnualPremium","productId");
+          productId = $("input[name='"+productIdName+"']").val();
+        }
+        else
+        {
+          productId = "";
+        }
+        
+        planOptionCdName = fieldName.replace("baseAnnualPremium","productPlanOptionCd");
+        planOptionCd = $("select[name='"+planOptionCdName+"']").val();
+        
+        planCodeName = fieldName.replace("baseAnnualPremium","planCode");
+        planCode = $("select[name='"+planCodeName+"']").val();
+
+        modalPremiumName = fieldName.replace("baseAnnualPremium","modalPremium");        
+        sumAssured = fetchSumAssured(productId, annualPremium, planOptionCd, planCode, productTypeCd, modalPremiumName);
+        
+        updateModalPremiums();
+        
+        sumAssuredName = fieldName.replace("baseAnnualPremium","baseSumAssured");
+        $("input[name='"+sumAssuredName+"']").val(sumAssured);
+        
+        if(productTypeCd == "PLAN")
+        {
+          modalId = "PLAN";
+        }
+        else if ( productTypeCd == "PA" )
+        {
+          modalId = "PA";
+        }
+        else // # ( productTypeCd == "RIDER" )
+        {
+          modalId = productId;        
+        }
+        
+        updateModalPremium($("input[name='<%=getObjectMapping(@baseProduct)%>[paymentFrequencyCd]']").filter(':checked').val(), modalPremiumName, modalId);
+        
+        if( productTypeCd == "PLAN")
+        {
+          updateWOPSA(annualPremium);
+        }
+
+      }
+      
+      function calculatePremium(fieldName){
+        
+        sumAssured = $("input[name='"+fieldName+"']").val();
+        
+        productTypeCdName = fieldName.replace("baseSumAssured","productTypeCd");
+        productTypeCd = $("input[name='"+productTypeCdName+"']").val();
+        
+        basePlanCode = "";
+        planType = "";
+        if( productTypeCd == "RIDER")
+        {        
+          productIdName = fieldName.replace("baseSumAssured","productId");
+          productId = $("input[name='"+productIdName+"']").val();
+          
+          if(productId=="PB" || productId=="PBC")
+          {
+            basePlanCode = $("select[name='<%=getObjectMapping(@baseProduct)%>[planCode]']").val();
+          }
+          // round up PBC sumassured to next 1000
+          if (productId=="PBC")
+          {          
+            sumAssured = Math.ceil(sumAssured / 1000) * 1000;
+            $("input[name='"+fieldName+"']").val(sumAssured);                      
+          }
+          if (productId=="RPTDB")
+          {
+            sumAssured = $("input[name='<%=getObjectMapping(@baseProduct)%>[baseAnnualPremium]']").val();
+          }
+        }
+        else
+        {
+          planTypeName = fieldName.replace("baseSumAssured","productFamilyCd");
+          planType = $("select[name='"+planTypeName+"']").val();
+          productId = "";          
+        }
+
+        planOptionCdName = fieldName.replace("baseSumAssured","productPlanOptionCd");
+        planOptionCd = $("select[name='"+planOptionCdName+"']").val();
+        
+        planCodeName = fieldName.replace("baseSumAssured","planCode");
+        planCode = $("select[name='"+planCodeName+"']").val();
+        
+        if (planCode === undefined || planCode == "")
+        {
+          planCode = $("input[name='"+planCodeName+"']").val();
+        }
+        
+        termName = fieldName.replace("baseSumAssured","productTerm");
+        term = $("select[name='"+termName+"']").val();
+        
+        premiumPayingTermName = fieldName.replace("baseSumAssured","premiumPayingTerm");
+        premiumPayingTerm = $("select[name='"+premiumPayingTermName+"']").val();
+        
+        if (productId=="RPTDB")
+        {
+          term = $("select[name='<%=getObjectMapping(@baseProduct)%>[premiumPayingTerm]']").val();
+          premiumPayingTerm = $("select[name='<%=getObjectMapping(@baseProduct)%>[premiumPayingTerm]']").val();
+        }
+        
+        currencyCdName = fieldName.replace("baseSumAssured","currencyCd");
+        currencyCd = $("select[name='" + currencyCdName+"']").val();
+
+        modalPremiumName = fieldName.replace("baseSumAssured","modalPremium");
+        premium = fetchPremium(productId, sumAssured, planOptionCd, planCode, productTypeCd, basePlanCode, modalPremiumName, planType, term, premiumPayingTerm, currencyCd);
+        
+        updateModalPremiums();
+        
+        if(productTypeCd == "PA")
+        {
+          premium = Math.round(premium);
+        }
+      
+        premiumName = fieldName.replace("baseSumAssured","baseAnnualPremium");
+        $("input[name='"+premiumName+"']").val(premium);
+        
+        if(productTypeCd == "PLAN")
+        {
+          modalId = "PLAN";
+        }
+        else if ( productTypeCd == "PA" )
+        {
+          modalId = "PA";
+        }
+        else // # ( productTypeCd == "RIDER" )
+        {
+          modalId = productId;        
+        }
+
+        updateModalPremium($("input[name='<%=getObjectMapping(@baseProduct)%>[paymentFrequencyCd]']").filter(':checked').val(), modalPremiumName, modalId);
+
+        if( productTypeCd == "PLAN")
+        {        
+          updateWOPSA(premium);
+        }
+        
+        if( productTypeCd == "RIDER" && (productId == "AI" || productId == "ADD"))
+        {
+          sumAssured = fetchDependantSAPR(productId, 5000000);
+          riderSelectedObject = $('fieldset[name="rider_RCC'+productId+'"] > div > div > input[name*="selected"]');
+          riderObject = $('fieldset[name="rider_RCC'+productId+'"] > div > input[name*="baseSumAssured"]');
+          if ( riderSelectedObject.is(':checked'))
+          {          
+            riderObject.val(sumAssured);
+            riderObject.blur();
+          }
+        }
+          
+      }
+      
+      function fetchPremium(productId, sumAssured, planOptionCd, planCode, productTypeCd, basePlanCode, modalPremiumName, planType, term, premiumPayingTerm, currencyCd){
+
+        if (productId == "PB" || productId == "PBC")
+        {        
+          age = $('input[name="<%=getObjectMapping(@quotation)%>[proposerAge]"]').val();
+          genderCd = $('input[name="<%=getObjectMapping(@quotation)%>[proposerGenderCd]"]').filter(':checked').val();
+          occupationClass = $('select[name="<%=getObjectMapping(@quotation)%>[occupationCd]"]').val();          
+        }
+        else
+        {
+          age = $('input[name="<%=getObjectMapping(@quotation)%>[age]"]').val();
+          genderCd = $('input[name="<%=getObjectMapping(@quotation)%>[genderCd]"]').filter(':checked').val();
+          occupationClass = $('select[name="<%=getObjectMapping(@quotation)%>[occupationCd]"]').val();
+          smoker = $('input[name="<%=getObjectMapping(@quotation)%>[smoker]"]').filter(':checked').val();
+          
+          if (age <= 15 && (productId == "ADD" || productTypeCd == "PA"))
+          {        
+            occupationClass = JUVENILEOCCUPATIONCLASSFORPA;
+          }          
+        }
+        
+        //alert("age:"+age+";genderCd:"+genderCd+";occupationClass:"+occupationClass+";productTypeCd:"+productTypeCd+";productid:"+productId+";sumAssured:"+sumAssured+";planCode:"+planCode+";planOptionCd:"+planOptionCd+";planType:"+planType);
+                
+        premium = 0;        
+        if ( age != "" && genderCd != "" && genderCd!==undefined && occupationClass != "" && sumAssured != "" && (productId != "" || planCode != "") && (planCode !== undefined || planOptionCd !== undefined) && smoker != "")
+        {
+            ajaxURL = "/app/Quotation/getPremium";
+            premiumGuarantee = 0;
+            premiumSplit = 0;
+            if (planType == "HYBRID")
+            {
+              ajaxURL = "/app/Quotation/getHybridPremium";
+              premiumGuarantee = $('input[name="<%=getObjectMapping(@baseProduct)%>[premiumGuarantees]"]').val();
+              premiumSplit = $('input[name*="[premiumSplit]"]').val();
+            }
+            
+            $.ajax({
+                      url: ajaxURL,
+                      data: {'age': age, 'genderCd': genderCd, 'occupationClass': occupationClass, 'productId': productId, 'sumAssured': sumAssured, 'planOptionCd':planOptionCd, 'planCode': planCode, 'basePlanCode': basePlanCode, 'premiumGuarantee':premiumGuarantee, 'premiumSplit':premiumSplit, 'term':term, 'premiumPayingTerm':premiumPayingTerm, 'smoker':smoker, 'currenyCd':currencyCd},
+                      success: function(data) {
+                        data = data.replace("<div>","");
+                        data = data.replace("</div>","");
+                        modalPremiums = data+"|"+modalPremiumName;//.substring(data.indexOf("|")+1);
+                        try{
+                        premium = modalPremiums.split("|")[0];
+                        } 
+                        catch (e){ alert("premium error"); premium = 0; }                          
+                        
+                        try{
+                          if (productTypeCd == "PLAN")
+                          {
+                            modalPremiumsList["PLAN"] = modalPremiums;
+                          }
+                          else if (productTypeCd == "PA")
+                          {
+                            modalPremiumsList["PA"] = modalPremiums;
+                          }
+                          else{
+                            if(productId=="")
+                            {
+                              modalPremiumsList[planCode] = modalPremiums;
+                            }
+                            else
+                            {
+                              modalPremiumsList[productId] = modalPremiums;
+                            }
+                          }
+                        }catch(e){alert(e);}
+                      },
+                      async:   false
+                      
+                   });
+
+        }
+        return premium;
+        
+      }
+      
+      function fetchSumAssured(productId, annualPremium, planOptionCd, planCode, productTypeCd, modalPremiumName){
+        age = $('input[name="<%=getObjectMapping(@quotation)%>[age]"]').val();
+        genderCd = $('input[name="<%=getObjectMapping(@quotation)%>[genderCd]"]').filter(':checked').val();
+        occupationClass = $('select[name="<%=getObjectMapping(@quotation)%>[occupationCd]"]').val();
+        smoker = $('input[name="<%=getObjectMapping(@quotation)%>[smoker]"]').filter(':checked').val();
+        sumAssured = 0;        
+        if ( age != "" && genderCd != "" && genderCd!==undefined && occupationClass != "" && annualPremium != "" && (productId != "" || planCode != "") && smoker != "")
+        {
+            $.ajax({
+                      url: "/app/Quotation/getSumAssured",
+                      data: {'age': age, 'genderCd': genderCd, 'occupationClass': occupationClass, 'productId': productId, 'annualPremium': annualPremium, 'planOptionCd':planOptionCd, 'planCode': planCode, 'smoker':smoker},
+                      success: function(data) {
+                        data = data.replace("<div>","");
+                        data = data.replace("</div>","");                        
+                        modalPremiums = data+"|"+modalPremiumName;//.substring(data.indexOf("|")+1);
+                        
+                        try{
+                          sumAssured = modalPremiums.split("|")[0];
+                        } 
+                        catch (e){ alert("premium error"); sumAssured = 0; }
+                          
+                        try{
+                          if (productTypeCd == "PLAN")
+                          {
+                            modalPremiumsList["PLAN"] = modalPremiums;
+                          }
+                          else if (productTypeCd == "PA")
+                          {
+                            modalPremiumsList["PA"] = modalPremiums;
+                          }
+                          else{
+                            if(productId=="")
+                            {
+                              modalPremiumsList[planCode] = modalPremiums;
+                            }
+                            else
+                            {
+                              modalPremiumsList[productId] = modalPremiums;
+                            }
+                          }
+                        }catch(e){alert(e);}
+                      },
+                      async:   false
+                      
+                   });
+
+        }
+        return sumAssured;
+        
+      }
+
+      function updateModalPremiums()
+      {
+        pa_total = 0;
+        m_annual = 0;
+        m_semiannual = 0;
+        m_quarterly = 0;
+        m_monthly = 0;
+        rider_premium = 0;
+        
+        mode = $("input[name='<%=getObjectMapping(@baseProduct)%>[paymentFrequencyCd]']").filter(':checked').val();
+        
+        if(mode == "YEARLY")
+        {
+          MODE_INDEX = 1;
+        } 
+        else if(mode == "HALFYEARLY")
+        {
+          MODE_INDEX = 2;
+        }
+        else if(mode == "QUARTERLY")
+        {
+          MODE_INDEX = 3;
+        }
+        else if(mode == "MONTHLY")
+        {
+          MODE_INDEX = 4; 
+        }
+        
+        for(modalPremiums in modalPremiumsList)
+        {
+          //alert(modalPremiums+":"+modalPremiumsList[modalPremiums]);
+          modes = modalPremiumsList[modalPremiums].split("|");
+          
+          if (modes.length == 6)
+          {          
+            if(modalPremiums != "PLAN" && modalPremiums != "PA") // # only riders
+            {          
+              rider_premium += parseInt(modes[MODE_INDEX]);
+              pa_total += parseInt(modes[MODE_INDEX]);
+            }
+            else if (modalPremiums == "PLAN"){ // #only base 
+              pa_total += parseInt(modes[MODE_INDEX]);
+            }
+            else if (modalPremiums == "PA") // #only PA
+            {
+              pa_total += parseInt(modes[1]);            
+            }
+            
+            if(modalPremiums != "PA") // # only base and riders
+            {
+              m_annual += parseInt(modes[1]);
+              m_semiannual += parseInt(modes[2]); 
+              m_quarterly += parseInt(modes[3]);
+              m_monthly += parseInt(modes[4]);
+            }
+            try{
+              $("input[name='"+modes[5]+"']").val(modes[MODE_INDEX]);
+            }
+            catch(e){alert(e);}
+          }          
+        }
+        $("td[name='m_annual']").html(renderNumber(m_annual));
+        $("td[name='m_semiannual']").html(renderNumber(m_semiannual));
+        $("td[name='m_quarterly']").html(renderNumber(m_quarterly));
+        $("td[name='m_monthly']").html(renderNumber(m_monthly));
+        $("td[name='a_annual']").html(renderNumber(m_annual));
+        $("td[name='a_semiannual']").html(renderNumber(m_semiannual*2));
+        $("td[name='a_quarterly']").html(renderNumber(m_quarterly*4));
+        $("td[name='a_monthly']").html(renderNumber(m_monthly*12));
+        $("td[name='pa_annual']").html(renderNumber(pa_total));
+        $("input[name='totalRiderPremium']").val(rider_premium);
+        setReadOnly($("input[name='totalRiderPremium']"), true);
+      }
+      
+      function updateModalPremium(mode, field, id){
+        modalPremiums = modalPremiumsList[id];
+        if(modalPremiums !== undefined && modalPremiums != "")
+        { 
+          modalPremiumsSplit = modalPremiums.split("|");
+          modalPremium = 0;
+
+          if(mode == "YEARLY")
+          {
+            modalPremium = modalPremiumsSplit[1];
+          } 
+          else if(mode == "HALFYEARLY")
+          {
+            modalPremium = modalPremiumsSplit[2];
+          }
+          else if(mode == "QUARTERLY")
+          {
+            modalPremium = modalPremiumsSplit[3];
+          }
+          else if(mode == "MONTHLY")
+          {
+            modalPremium = modalPremiumsSplit[4];
+          }
+          
+          try{
+          $("input[name='"+field+"']").val(modalPremium);
+          }catch(e){alert("error while updating premium:"+e);}
+        }
+      }
+
+      function updatePremiums()
+      {
+        $('input[name*="[baseAnnualPremium]"]').each( function(){
+          premium = this.value;
+          if(premium != "")
+          {
+            productIdName = this.name.replace("baseAnnualPremium","productId");
+            productId = $("input[name='"+productIdName+"']").val();
+            if(productId === undefined)
+            {
+              productId = $("select[name='"+productIdName+"']").val();
+            }
+            
+            productTypeCdName = this.name.replace("baseAnnualPremium","productTypeCd");
+            productTypeCd = $("input[name='"+productTypeCdName+"']").val();
+            
+            modalPremiumName = this.name.replace("baseAnnualPremium","modalPremium");
+            fetchModalPremiums(productId, productTypeCd, premium, modalPremiumName);
+          }
+        });
+        updateModalPremiums();
+      }
+      
+      function fetchModalPremiums(productId, productTypeCd, annualPremium, modalPremiumName){
+        if ( annualPremium != "" && productId != "")
+        {
+            $.ajax({
+                      url: "/app/Quotation/getModalRates",
+                      data: {'productId': productId, 'annualPremium': annualPremium},
+                      success: function(data) {
+                        data = data.replace("<div>","");
+                        data = data.replace("</div>","");
+                        modalPremiums = data+"|"+modalPremiumName;
+                        try{
+                          if (productTypeCd == "PLAN")
+                          {
+                            modalPremiumsList["PLAN"] = modalPremiums;
+                          }
+                          else if (productTypeCd == "PA")
+                          {
+                            modalPremiumsList["PA"] = modalPremiums;
+                          }
+                          else
+                          {
+                              modalPremiumsList[productId] = modalPremiums;
+                          }
+                        }catch(e){alert(e);}
+                      },
+                      async: false
+                      
+                   });
+
+        }
+      }
+      
+      function enableDependantRider(rider){
+        $('fieldset[name="rider_'+rider+'"]').show();
+        
+      }
+      
+      function disableDependantRider(rider){
+        clickRiderObject = $('fieldset[name="rider_'+rider+'"] > div > div > input[name*="selected"]');
+        if(clickRiderObject.is(':checked')){
+          clickRiderObject.click();
+          riderObject = $('fieldset[name="rider_'+rider+'"] > div > div > input[name*="selected"]');
+          labelName = riderObject.attr("name");
+          if ($("label[for='"+labelName+"']").hasClass("ui-checkbox-on")){
+            $("label[for='"+labelName+"']").removeClass("ui-checkbox-on");
+            $("label[for='"+labelName+"']").addClass("ui-checkbox-off");
+          }
+          
+          $("label[for='"+labelName+"']").children("span").children("span").each(function(i){
+            if($(this).hasClass("ui-icon-checkbox-on")){
+              $(this).removeClass("ui-icon-checkbox-on");
+              $(this).addClass("ui-icon-checkbox-off");
+            }                            
+          });
+        }
+        
+        $('fieldset[name="rider_'+rider+'"]').hide();
+        
+      }
+
+      function fetchDependantSAPR(rider, maxSA){
+        riderObject = $('fieldset[name="rider_'+rider+'"] > div > div > input[name*="selected"]');
+        sumAssured = 0;
+        if (riderObject.is(':checked'))
+        {
+          labelName = riderObject.attr("name");
+          
+          sumAssuredName = labelName.replace("selected","baseSumAssured");
+          sumAssured = $("input[name='"+sumAssuredName+"']").val();
+        }
+       
+        if (sumAssured > maxSA)
+        {
+          sumAssured = maxSA
+        }
+        return sumAssured;
+      }
+
+      function updateWOPSA(annualPremium){        
+        riderObject = $('fieldset[name="rider_PB"] > div > input[name*="baseSumAssured"]');
+        riderObject.val(annualPremium);
+        riderObject.each( function(i){
+          calculatePremium(this.name);  
+        });
+                
+      }
+
+      function updatePBCPremium(){
+        riderObject = $('fieldset[name="rider_PBC"] > div > input[name*="baseSumAssured"]');
+        if(riderObject.val() != "")
+        {
+          riderObject.blur();
+        }
+      }
+      
+      function submitForm(){
+        $("a[name='save']").focus();
+        if(checkBasicDetails() && checkRecordExists())
+        {
+          //$.mobile.showPageLoadingMsg();
+          // # enable the disabled field so that value gets submitted. Field is disabled for juvenile cases
+          //$("select[name='<%=getObjectMapping(@quotation)%>[occupationCd]']").selectmenu('enable');
+          
+          // # submit form
+          document.quotationForm.submit();          
+        }  
+      }
+      
+      function checkBasicDetails(){
+        returnValue = true;
+        firstname = $("input[name='<%=getObjectMapping(@quotation)%>[firstname]']").val();
+        salesIllustrationCd = $("input[name='<%=getObjectMapping(@quotation)%>[quotationRefNum]']").val();
+        if ( firstname == ""){
+          showDialog("", "<%= getLabelValue('MANDATORYFORSAVE')%>", 'warning', 0, 'capture');
+          returnValue = false;
+        }
+        alert("Returning from checkBasicDetails with " + returnValue);
+        return returnValue;
+      }
+        
+      function occupationCdChanged(){
+        age = $("input[name='<%= getObjectMapping(@quotation)%>[age]']").val();
+        occupationCd = $("select[name='<%= getObjectMapping(@quotation)%>[occupationCd]']").val();
+        //alert("changed, age:"+age+" occ:"+occupationCd);
+        if( age != "" && age <= 15 && occupationCd != JUVENILEOCCUPATIONCLASS)
+        {
+          $("select[name='<%= getObjectMapping(@quotation)%>[occupationCd]']").val(JUVENILEOCCUPATIONCLASS).change();
+        }
+        updateAllProducts(true);
+      }
+
+      function checkRecordExists(){
+        returnValue = true;        
+        salesIllustrationCd = $("input[name='<%=getObjectMapping(@quotation)%>[quotationRefNum]']").val();
+        guid = $("input[name='<%=getObjectMapping(@quotation)%>[guid]']").val();
+        if ( salesIllustrationCd != ""){
+          
+          $.ajax({
+                    url: "/app/Quotation/checkQuotationRefNum",
+                    data: {'quotationRefNum': salesIllustrationCd, 'guid': guid},
+                    success: function(data) {
+                      data = data.replace("<div>","");
+                      data = data.replace("</div>","");
+                      try{
+                        if (data == "ALLOWSAVE")
+                        {
+                          returnValue = true;
+                        }
+                        else
+                        {
+                          returnValue = false;
+                        }
+                      }catch(e){alert(e);}
+                    },
+                    async: false                    
+                 });          
+        }
+        
+        if(!returnValue){
+          showDialog("", "<%= getLabelValue('OVERWRITE')%>", 'error', 0, 'capture');          
+          returnValue = false;
+        }
+        
+        return returnValue;
+      }
+
+      function searchFunds(searchParam)
+      {
+        basePlanCode = $("select[name='<%=getObjectMapping(@baseProduct)%>[planCode]']").val();
+        $.ajax({
+                  url: "/app/Quotation/searchFunds",
+                  data: {'basePlanCode': basePlanCode, 'search': searchParam},
+                  success: function(data) {
+                    $('div[name="fundSearch"]').html(data);                    
+
+                  },
+                  async: false                    
+               });          
+        
+      }
+      
+      $('img[name*="collapse"]').click( function(){
+        divName = this.name.replace("collapse_","");
+        val = $('input[name="state_'+divName+'"]').val();
+        // # replace image
+        if(val == "+")
+        {
+          $('input[name="state_'+divName+'"]').val('-');
+          $('img[name="collapse_'+divName+'"]').attr("src","/public/images/SalesIllustration/less.jpg");
+          $('div[name="'+divName+'"]').show();          
+        }
+        else // # val == "-"
+        {
+          $('input[name="state_'+divName+'"]').val('+');
+          $('img[name="collapse_'+divName+'"]').attr("src","/public/images/SalesIllustration/more.jpg");
+          $('div[name="'+divName+'"]').hide();
+        }
+            
+            
+      });
+
+      function addfund(fundCode){
+        quotationProductObjectName = '<%= getObjectMapping(@baseProduct) %>';
+        $.ajax({
+      
+                  url: "/app/Quotation/addFund",
+                  data: {'fundCode': fundCode, 'quotationProductObject': '<%= @baseProduct.object.to_s %>', 'fundObjects': fundCount, 'quotationProductObjectName':quotationProductObjectName},
+                  success: function(data) {
+
+                    $('div[name="fundList"]').append("<div name='"+fundCode+"'> </div>");
+                    data = data.replace("<div>||","");
+                    data = data.replace("||</div>","");
+                    
+                    $('div[name="'+fundCode+'"]').html(data);
+                    $('div[name="'+fundCode+'"]').trigger('create');
+                    
+                    fundCount = $('span[name="fundCount"]').html();
+                    $('span[name="fundCount"]').html( parseInt(fundCount) + 1 );
+                    fundCount ++;
+                  },
+                  async: false                    
+               });
+      }
+      
+      function removeFund(fundCode){
+        $('div[name="'+fundCode+'"]').remove();
+        fundCount = $('span[name="fundCount"]').html();
+        $('span[name="fundCount"]').html( parseInt(fundCount) - 1 );
+
+        allocationPerc = 0.0;
+        $('input[name*="allocationPerc"]').each(function(i){
+          allocationPerc += parseInt($(this).val());
+        });
+        
+        $('span[name="allocationPerc"]').html( allocationPerc+'%' );
+      }
+      
+      $('input[name*="allocationPerc"]').change(function(){
+        
+        allocationPerc = 0.0;
+        $('input[name*="allocationPerc"]').each(function(i){
+          allocationPerc += parseInt($(this).val());
+        });
+        $('span[name="allocationPerc"]').html( allocationPerc+'%' );
+        
+      });
+
+      function renderLegends(){
+        $('input[name*="state_"]').each(function(i){
+          if ( $(this).val() == "+")
+          {
+            divName = this.name.replace("state_","");
+            $('div[name="'+divName+'"]').hide();
+          }
+        });
+      }
+
+      function addTopup(){
+        quotationProductObjectName = '<%= getObjectMapping(@baseProduct) %>';
+        $.ajax({
+                url: "/app/Quotation/addTopup",
+                data: {'quotationProductObject': '<%= @baseProduct.object.to_s %>', 'topupObjects': topupCount, 'quotationProductObjectName':quotationProductObjectName},
+                success: function(data) {
+                  topupCount = topupCount + 1;
+                  newHTML = $('div[name="topupList"]').html() + data 
+                  $('div[name="topupList"]').html(newHTML);
+                  $('div[name="topupList"]').trigger('create');                  
+                }
+              });
+        
+      }
+
+      function removeTopup(topupName){
+        $('div[name="'+topupName+'"]').remove();
+      }
+
+      function updatePDFAmount(option){
+        if (option == "YES")
+        {
+          // calculate PDF amount
+          annualPremium = $("input[name='<%= getObjectMapping(@baseProduct)%>[baseAnnualPremium]']").val();
+          ppTerm = $("select[name='<%= getObjectMapping(@baseProduct)%>[premiumPayingTerm]']").val();
+          planCode = $("select[name='<%= getObjectMapping(@baseProduct)%>[planCode]']").val();
+          $.ajax({
+                  url: "/app/Quotation/computePDFAmount",
+                  data: {'annualPremium': annualPremium, 'ppTerm': ppTerm, 'planCode':planCode},
+                  success: function(data) {
+                    data = data.replace("<div>","");
+                    data = data.replace("</div>","");
+                    $("input[name='<%= getObjectMapping(@baseProduct)%>[pdfAmount]']").val(data);                    
+                  }
+                });          
+        }
+        else
+        {
+          // reset PDF amount
+          $("input[name='<%= getObjectMapping(@baseProduct)%>[pdfAmount]']").val(0);
+        }
+      }
+</script>  
+</div>

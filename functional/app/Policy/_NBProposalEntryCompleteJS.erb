@@ -1,0 +1,3352 @@
+<script type="text/javascript">
+var documentname = "";
+var file = "";
+var status = "";
+var reciveDtId = "";
+var image_count = "";
+/*---------------Document ready function start---------------*/
+$(document).ready(function () {
+	if($('#sym_current_Tab').val()=="tab_basic"){
+		tab_basic_pageTabLoaded();
+	}
+	else if($('#sym_current_Tab').val()=="tab_coverage"){
+		tab_coverage_pageTabLoaded();
+	}
+	else if($('#sym_current_Tab').val()=="tab_requirement"){
+		tab_requirement_pageTabLoaded();
+	}
+
+    initialFormSerialized = '';
+    if($("#policy_proposalNum").val()!=''){
+        initialFormSerialized = $('#EAPPProposal').serialize();
+    }
+	if($("#additionalOptionsFl").val()=="false"){
+		$(".quicklink").hide();
+	}
+	else{
+		$(".quicklink").show();
+	}
+	if (typeof window["attachMaskAll"] === "function") {
+        attachMaskAll();
+    }
+});
+
+//Method to disable / readonly all elements if policy number is generated
+function disableAllIfPolicyNumber(){
+	enableDisableQuickLinks();
+    if($('#policy_policyNum').val()!='' || (($("#policy_uwDecisionCd").val() == "ACCEPTEDRATED") && $('#sym_current_Tab').val() != "tab_coverage")) {
+        disableAllFormFields();
+        // $(".quicklink-details ul li[id='quicklink_paymentGateway']").remove();
+        // $(".quicklink-details ul li[id='quicklink_SUBMIT']").remove();
+        // $(".quicklink-details ul li[id='quicklink_signature']").remove();
+    }
+}
+
+function disablePartyFieldsIfQuotationRefGuide(party){
+	$('#' + party +'_partyTypeCd').selectmenu().selectmenu('disable').trigger("refresh");
+	$('#' + party +'_titleCd').selectmenu().selectmenu('disable').trigger("refresh");
+	
+	setReadOnly($('#' + party +'_firstName1'), true);
+	setReadOnly($('#' + party +'_middleName1'), true);
+	setReadOnly($('#' + party +'_lastName1'), true);
+	setReadOnly($('#' + party +'_extensionName1'), true);
+	setReadOnly($('#' + party +'_firstName2'), true);
+	setReadOnly($('#' + party +'_middleName2'), true);
+	setReadOnly($('#' + party +'_lastName2'), true);
+	setReadOnly($('#' + party +'_extensionName2'), true);
+	setReadOnly($('#' + party +'_age'), true);
+	setReadOnly($('#' + party +'_corporateName1'), true);
+	setReadOnly($('#'+party+'_otherTitle'),true);
+	setReadOnly($('#'+party+'_otherRelation'),true);
+	
+	$('input[type="radio"][id*="' + party +'_genderCd"]').checkboxradio().checkboxradio('disable').trigger("refresh");
+	$('#' + party +'_relationCd').selectmenu().selectmenu('disable').trigger("refresh");
+	$('input[type="radio"][id*="' + party +'_smoker"]').checkboxradio().checkboxradio('disable').trigger("refresh");
+	$('input[type="radio"][id*="' + party +'_nsap"]').checkboxradio().checkboxradio('disable').trigger("refresh");
+	$('#' + party +'_coverageCountryCd').selectmenu().selectmenu('disable').trigger("refresh");
+	$('#' + party +'_coverageCityCd').selectmenu().selectmenu('disable').trigger("refresh");
+	$('#' + party +'_maritalStatusCd').selectmenu().selectmenu('disable').trigger("refresh");
+	$('#' + party +'_birthDt').addClass('inputreadonly');
+}
+
+function disableFieldsIfQuotationRefGuid(){
+	if($('#policy_quotationRefGuid').val()!='' && $('#policy_policyNum').val()==''){
+		currentTab = $('#sym_current_Tab').val();
+		switch(currentTab){
+			case "tab_owner":
+				if ($("#PolicyProposerDO_titleCd").val() == "OTHER"){
+					$("#PolicyProposerDO_otherTitle").parents(".project-data").show();
+				}
+				else{
+					$("#PolicyProposerDO_otherTitle").parents(".project-data").hide();
+				}
+				disablePartyFieldsIfQuotationRefGuide("PolicyProposerDO");
+				break;
+			case "tab_primary":
+				if ($("#PolicyPrimaryLifeDO_titleCd").val() == "OTHER"){
+					$("#PolicyPrimaryLifeDO_otherTitle").parents(".project-data").show();
+				}
+				else{
+					$("#PolicyPrimaryLifeDO_otherTitle").parents(".project-data").hide();
+				}
+				$('input[type="checkbox"][id*="policy_insuredSameAsProposer"]').checkboxradio().checkboxradio('disable').trigger("refresh");
+				disablePartyFieldsIfQuotationRefGuide("PolicyPrimaryLifeDO");
+				break;
+			case "tab_joint":
+				if ($("#PolicyJointLifeDO_titleCd").val() == "OTHER"){
+					$("#PolicyJointLifeDO_otherTitle").parents(".project-data").show();
+				}
+				else{
+					$("#PolicyJointLifeDO_otherTitle").parents(".project-data").hide();
+				}
+				$('input[type="checkbox"][id*="policy_jointLife"]').checkboxradio().checkboxradio('disable').trigger("refresh");
+				disablePartyFieldsIfQuotationRefGuide("PolicyJointLifeDO");
+				break;
+
+			case "tab_coverage":
+				if($("#policy_uwDecisionCd").val() != "ACCEPTEDRATED"){
+					// Plan fields
+					$('#basePlan_productTerm').selectmenu().selectmenu('disable').trigger("refresh");
+					$('#basePlan_premiumPayingTerm').selectmenu().selectmenu('disable').trigger("refresh");
+					$('#basePlan_currencyCd').selectmenu().selectmenu('disable').trigger("refresh");
+					$('#basePlan_paymentTypeCd').selectmenu().selectmenu('disable').trigger("refresh");
+					$('#basePlan_paymentFrequencyCd').selectmenu().selectmenu('disable').trigger("refresh");
+
+					setReadOnly($('#basePlan_baseSumAssured'), true);
+					setReadOnly($('#basePlan_baseAnnualPremium'), true);
+					setReadOnly($('#basePlan_modalPremium'), true);    
+					setReadOnly($('#basePlan_capturedPremiumAmt'), true);
+
+					// Topup fields
+					$('input[type="checkbox"][id*="policy_initialTopupFl"]').checkboxradio().checkboxradio('disable').trigger("refresh");
+					setReadOnly($('#initialInvesttopup_topUpAmount'), true);
+
+					$('input[type="checkbox"][id*="policy_regularTopupFl"]').checkboxradio().checkboxradio('disable').trigger("refresh");
+					setReadOnly($('#regulartopup_topUpAmount'), true);
+					setReadOnly($('#regulartopup_topUpPeriod'), true);
+					setReadOnly($('#regulartopup_topupFrequencyVal'), true);
+
+					// Fund fields
+					$('#basePlan_portfolioModelCd').selectmenu().selectmenu('disable').trigger("refresh");
+					$('input[type="checkbox"][id*="basePlan_topUpAllocSameAsPremAllocFl"]').checkboxradio().checkboxradio('disable').trigger("refresh");
+					$('input[type="checkbox"][id*="policyFunds_removeButton"]').checkboxradio().checkboxradio('disable').trigger("refresh");
+					setReadOnly($('input[id*="policyFunds_allocationPerc"]'), true);
+					setReadOnly($('input[id*="policyFunds_topupAllocationPerc"]'), true);
+
+					// Rider fields
+					setReadOnly($('[id*="riderDetails_productTerm"]'), true);
+					setReadOnly($('[id*="riderDetails_premiumPayingTerm"]'), true);
+					setReadOnly($('[id*="riderDetails_baseSumAssured"]'), true);
+					setReadOnly($('[id*="riderDetails_coi"]'), true);
+					setReadOnly($('[id*="riderDetails_baseAnnualPremium"]'), true);
+					setReadOnly($('[id*="riderDetails_modalPremium"]'), true);
+					
+					$('input[type="checkbox"][id*="riderDetails_selected"]').checkboxradio().checkboxradio('disable').trigger("refresh");
+					$('select[id*="riderDetails_productSeq"]').selectmenu().selectmenu('disable').trigger("refresh");
+					$('select[id*="riderDetails_productPlanOptionCd"]').selectmenu().selectmenu('disable').trigger("refresh");
+					$('select[id*="riderDetails_policyProductInsured_roleCd"]').selectmenu().selectmenu('disable').trigger("refresh");
+					$('select[id*="riderDetails_policyProductInsured_insuredPartyRefGuid"]').selectmenu().selectmenu('disable').trigger("refresh");
+					$("#button-refreshRiders").attr('disabled','disabled');
+					$('a[id$="refreshRiders_addButton"]').parent().hide();
+				}
+				break;
+			case "tab_supplementary":
+				supplementaryList = document.querySelectorAll('input[id*="_supplementaryParty_object"]');
+				for(var j = 0; j < supplementaryList.length; j++){	
+					party = supplementaryList[j].id.replace("_object","");
+					var titleCd = document.getElementById(supplementaryList[j].id.replace("_object","_titleCd"));
+					if (titleCd != null){
+						if ($("#"+titleCd.id).val() == "OTHER"){
+							$("#"+titleCd.id.replace("_titleCd","_otherTitle")).parents(".project-data").show();
+						}
+						else{
+							$("#"+titleCd.id.replace("_titleCd","_otherTitle")).parents(".project-data").hide();
+						}
+					}
+					disablePartyFieldsIfQuotationRefGuide(party);
+					$('i[id$="_removed"]').hide();
+				}
+				$('a[id$="supplementaryDetails_addButton"]').parent().hide();
+				break;
+		}
+	}
+}
+
+function captureSignature() {
+	submitForm();
+	document.EAPPProposal.action = "captureSignature";
+	document.EAPPProposal.submit();
+	loading('show');
+}
+
+function captureAgentDeclaration() {
+	submitForm();
+	document.EAPPProposal.action = "captureAgentDeclaration";
+	// Check if form is modified else just trigger FETCH
+	initialFormSerialized = initialFormSerialized.replace(/sym_current_Tab=[^&]*&/i, "").replace(/sym_navbar=[^&]*&/i, "");
+	submitFormSerialized = $("#" +document.forms[0].id).serialize().replace(/sym_current_Tab=[^&]*&/i, "").replace(/sym_navbar=[^&]*&/i, "");
+	if(initialFormSerialized == submitFormSerialized) {
+		document.EAPPProposal.action = "captureAgentDeclaration?mode=FETCH";
+	}
+	document.EAPPProposal.submit();
+	loading('show');
+}
+
+function eappSubmit() {
+	submitForm();
+	document.EAPPProposal.action = "executeSubmit";
+	document.EAPPProposal.submit();
+	loading('show');
+}
+
+function executeAutoUWSubmit() {
+	submitForm();
+	document.EAPPProposal.action = "executeSubmit?doPolicySubmit=false";
+	document.EAPPProposal.submit();
+	loading('show');
+}
+
+function showPolicyResult() {
+	submitForm();
+	document.EAPPProposal.action = "showPolicyResult";
+	document.EAPPProposal.submit();
+	loading('show');
+}
+
+function paymentGateway() {
+	submitForm();
+	document.EAPPProposal.action = "executePaymentGateWay";
+	document.EAPPProposal.submit();
+	loading('show');
+}
+
+function submitForm(currentTab) {
+	if($("#policy_proposalNum").val() ==''){
+		initialFormSerialized = '';
+	}
+	return true;
+}
+
+function tab_basic_pageTabLoaded(){
+	if($('#sym_navbar').val() == '' || $('#sym_navbar').val() == 'tab_basic-basicDetails'){
+		policy_purposeOfInsuranceCd_func(document.getElementById("policy_purposeOfInsuranceCd"));
+		policy_sourceOfFund_func(document.getElementById("policy_sourceOfFund"));
+	}
+	basePlan_productId_onFocus(document.getElementById("basePlan_productId"));
+    basePlan_productFamilyCd_onFocus(document.getElementById("basePlan_productFamilyCd"));
+    basePlan_productPlanOptionCd_onFocus(document.getElementById("basePlan_productPlanOptionCd"));
+    basePlan_productVersion_onFocus(document.getElementById("basePlan_productVersion"));
+	disableAllIfPolicyNumber();
+	//initializeTab();
+}
+
+function tab_owner_pageTabLoaded(){
+	currentSubTab = $("#sym_navbar").val();
+	PolicyProposerDO_partyTypeCd_func();
+	switch(currentSubTab){
+		case "tab_owner-proposerDetailsTabContainer":
+			$("#PolicyProposerDO_corporateDetail").hide();
+			citizenshipCdObj = document.getElementById("PolicyProposerDO_citizenshipCd");
+			if(citizenshipCdObj != null){
+				hideShowOtherCitizenship(citizenshipCdObj);
+			}
+			PolicyProposerDO_relationCd_func(document.getElementById("PolicyProposerDO_relationCd"));		
+			 proposerPartyEmployment_occupationTypeCd_func();
+			break;
+		case "tab_owner-proposerContactDetailsTabContainer":
+			$("#PolicyProposerDO_home-permanent-business-bar li[name='officeAddressLi']").hide();
+			proposerPartyEmployment_occupationTypeCd_func();
+			partyTypeCd = $('#PolicyProposerDO_partyTypeCd').val();
+			changePartyHolderAddressTab('homeAddressContainer', 'PolicyProposerDO');
+			if (partyTypeCd == 'ORGANIZATION'){
+				changePartyHolderAddressTab('officeAddressContainer', 'PolicyProposerDO');
+			}
+			PolicyProposerDO_copyFromAddr1_func();
+			PolicyProposerDO_copyFromAddr2_func();
+			PolicyProposerDO_copyFromAddr3_func();
+			$("#PolicyProposerDO_copyFromAddr1").closest(".project-data").hide();
+			removeCopyFromAddrOptions("PolicyProposerDO");
+			break;
+	}	
+	
+	disableFieldsIfQuotationRefGuid();
+	disableAllIfPolicyNumber();
+}
+
+function tab_primary_pageTabLoaded(){
+	currentSubTab = $("#sym_navbar").val();
+	switch(currentSubTab){
+		case "tab_primary-insuredDetailsTabContainer":
+			citizenshipCdObj = document.getElementById("PolicyPrimaryLifeDO_citizenshipCd");
+			if(citizenshipCdObj != null){
+				hideShowOtherCitizenship(citizenshipCdObj);
+			}
+			PolicyPrimaryLifeDO_relationCd_func(document.getElementById("PolicyPrimaryLifeDO_relationCd"));
+			insuredPartyEmployment_occupationTypeCd_func();
+		break;
+	
+		case "tab_primary-insuredContactDetailsTabContainer":
+			insuredPartyEmployment_occupationTypeCd_func();
+			changePartyHolderAddressTab('homeAddressContainer', 'PolicyPrimaryLifeDO');
+			PolicyPrimaryLifeDO_copyFromAddr1_func();
+			PolicyPrimaryLifeDO_copyFromAddr2_func();
+			PolicyPrimaryLifeDO_copyFromAddr3_func();
+			removeCopyFromAddrOptions("PolicyPrimaryLifeDO");
+		break;
+	}
+	var partyTypeCdObj = document.querySelector('input[id*="insuredSameAsProposer"]:checked');
+	if(partyTypeCdObj != null){
+		policy_insuredSameAsProposer_func(partyTypeCdObj);
+	}
+	disableFieldsIfQuotationRefGuid();
+	disableAllIfPolicyNumber();
+}
+var occupationTypeCdList;
+function tab_supplementary_pageTabLoaded(){
+	if($("#sym_navbar").val() != undefined){
+		var currentSubTab = $("#sym_navbar").val().split('--')[0];
+	}
+	else{
+		var currentSubTab = ''
+	}
+	switch(currentSubTab){
+		case "tab_supplementary-supplementaryDetailsTabContainer":
+			var relationCd = document.querySelectorAll('select[id*="_supplementaryParty_relationCd"]');
+			for(var j = 0; j < relationCd.length; j++){	
+				supplementaryParty_relationCd_func(relationCd[j]);
+			}
+
+			var citizenshipCdObjList = document.querySelectorAll('select[id*="supplementaryParty_citizenshipCd"]');
+			for(var j = 0; j < citizenshipCdObjList.length; j++){	
+				hideShowOtherCitizenship(citizenshipCdObjList[j]);
+			}
+			var productPlanOptionCd = document.querySelectorAll('select[id*="supplementaryParty_productPlanOptionCd"]');
+		    for(var l = 0; l < productPlanOptionCd.length; l++)
+		    {
+		        supplementaryParty_productPlanOptionCd_onFocus(productPlanOptionCd[l]);
+		    }
+		    occupationTypeCdList = document.querySelectorAll('select[id*="_supplementaryPartyEmployment_occupationTypeCd"]');
+
+			for(var j = 0; j < occupationTypeCdList.length; j++){	
+				supplementaryParty_supplementaryPartyEmployment_occupationTypeCd_func(occupationTypeCdList[j]);
+			}
+		break;
+		
+		case "tab_supplementary-supplementaryContactDetailsTabContainer":
+			for(var j = 0; j < occupationTypeCdList.length; j++){	
+				party = occupationTypeCdList[j].id.replace("_supplementaryPartyEmployment_occupationTypeCd","");
+				$("#"+party+"_home-permanent-business-bar li[name='officeAddressLi']").hide();
+				supplementaryParty_supplementaryPartyEmployment_occupationTypeCd_func(occupationTypeCdList[j]);
+			}
+
+			var copyFromAddr1 = document.querySelectorAll('select[id*="_supplementaryParty_copyFromAddr1"]');
+			for(var j = 0; j < copyFromAddr1.length; j++){	
+				supplementaryParty_copyFromAddr1_func(copyFromAddr1[j]);
+				removeCopyFromAddrOptions(copyFromAddr1[j].id.replace('_copyFromAddr1',''));
+			}
+			var copyFromAddr2 = document.querySelectorAll('select[id*="_supplementaryParty_copyFromAddr2"]');
+			for(var j = 0; j < copyFromAddr2.length; j++){	
+				supplementaryParty_copyFromAddr2_func(copyFromAddr2[j]);
+			}
+			var copyFromAddr3 = document.querySelectorAll('select[id*="_supplementaryParty_copyFromAddr3"]');
+			for(var j = 0; j < copyFromAddr3.length; j++){	
+				supplementaryParty_copyFromAddr3_func(copyFromAddr3[j]);
+				changePartyHolderAddressTab('homeAddressContainer', copyFromAddr3[j].id.replace('_copyFromAddr3',''));
+			}
+		break;
+	}
+
+	disableFieldsIfQuotationRefGuid();
+	disableAllIfPolicyNumber();
+}
+
+function tab_joint_pageTabLoaded(){
+	currentSubTab = $("#sym_navbar").val();
+	switch(currentSubTab){
+		case "tab_joint-jointLifeDetailsTabContainer":
+			citizenshipCdObj = document.getElementById("PolicyJointLifeDO_citizenshipCd");
+			if(citizenshipCdObj != null){
+				hideShowOtherCitizenship(citizenshipCdObj);
+			}
+			PolicyJointLifeDO_relationCd_func(document.getElementById("PolicyJointLifeDO_relationCd"));
+			jointLifePartyEmployment_occupationTypeCd_func();
+		break;
+		
+		case "tab_joint-jointLifeContactDetailsTabContainer":
+			jointLifePartyEmployment_occupationTypeCd_func();
+			changePartyHolderAddressTab('homeAddressContainer', 'PolicyJointLifeDO');
+			PolicyJointLifeDO_copyFromAddr1_func();
+			PolicyJointLifeDO_copyFromAddr2_func();
+			PolicyJointLifeDO_copyFromAddr3_func();
+			removeCopyFromAddrOptions("PolicyJointLifeDO");
+		break;
+	}
+	var partyTypeCdObj = document.querySelector('input[id*="policy_jointLife"]');
+	policy_jointLife_func(partyTypeCdObj);
+	disableFieldsIfQuotationRefGuid();
+	disableAllIfPolicyNumber();
+}
+
+function tab_coverage_pageTabLoaded(){
+    var premiumSAFl = $('#basePlan_premiumSAFl').val();
+    enableDisableFormFields("basePlan_",premiumSAFl, false);
+    basePlan_portfolioModelCd_onFocus(document.getElementById("basePlan_portfolioModelCd"));
+    basePlan_productId_onFocus(document.getElementById("basePlan_productId"));
+    basePlan_productFamilyCd_onFocus(document.getElementById("basePlan_productFamilyCd"));
+    basePlan_productPlanOptionCd_onFocus(document.getElementById("basePlan_productPlanOptionCd"));
+    var topUpAllocSameAsPremAllocFl = document.getElementById("basePlan_topUpAllocSameAsPremAllocFl-0");
+    if(topUpAllocSameAsPremAllocFl!= null){
+        if(topUpAllocSameAsPremAllocFl.checked){
+            $("input[id*='policyFunds_topupAllocationPerc']").each(function(){
+                $("#"+id).attr("readonly","readonly");
+            });
+        }
+        else{
+            $("input[id*='policyFunds_topupAllocationPerc']").each(function(){
+                $(this).removeAttr("readonly");
+            });
+        }
+    }
+
+    $("input[id*='policyFunds_removeButton']").each(function(){
+        var removeButtonObj = document.getElementById($(this).attr('id'));
+        policyFunds_removeButton_func(removeButtonObj);
+    });
+    $("#policyFunds_allocationPerc_lbl").append("<span></span>");
+    $("#policyFunds_topupAllocationPerc_lbl").append("<span></span>");
+    updateFundTotal();
+    policy_initialTopupFl_func(document.getElementById("policy_initialTopupFl-0"));
+    policy_regularTopupFl_func(document.getElementById("policy_regularTopupFl-0"));
+    
+    var premiumPayingTerm = $('#premiumPayingTermFacet').val();
+    
+    var basePlan_allowedCurrency = $('#basePlan_allowedCurrency').val().split(',');
+    $('select#basePlan_currencyCd option').each(function(index,currentOption){
+        if (index > 0){
+            if ($.inArray($(this).val(), basePlan_allowedCurrency) == -1){
+                $(this).remove();
+            }
+        }
+    })
+
+    var basePlan_allowedPaymentTypeCd = $('#basePlan_allowedPaymentTypeCd').val().split(',');
+    $('select#basePlan_paymentTypeCd option').each(function(index,currentOption){
+        if (index > 0){
+            if ($.inArray($(this).val(), basePlan_allowedPaymentTypeCd) == -1){
+                $(this).remove();
+            }
+        }
+    })
+
+    var basePlan_allowedPaymentFrequencyCd = $('#basePlan_allowedPaymentFrequencyCd').val().split(',');
+    $('select#basePlan_paymentFrequencyCd option').each(function(index,currentOption){
+        if (index > 0){
+            if ($.inArray($(this).val(), basePlan_allowedPaymentFrequencyCd) == -1){
+                $(this).remove();
+            }
+        }
+    })
+
+   
+    if($('#basePlan_paymentTypeCd').val() == 'SINGLE') {
+        $('#basePlan_paymentFrequencyCd').attr('disabled', true).trigger("create");
+        $('#basePlan_premiumPayingTerm').attr('disabled', true).trigger("create");
+    }
+
+    if (premiumPayingTerm == 'true' ) {
+        setReadOnly($('#basePlan_premiumPayingTerm'), true);
+    }
+
+    var fundCd = document.querySelectorAll('select[id*="_policyFunds_fundCd"]');
+    for(var i = 0; i < fundCd.length; i++){
+        policyFunds_fundCd_onFocus(fundCd[i]);  
+    }
+
+    ridersOnLoad();
+	disableFieldsIfQuotationRefGuid();
+	disableAllIfPolicyNumber();
+}
+
+function ridersOnLoad(){
+	var ridersProductSeq = document.querySelectorAll('select[id*="_riderDetails_productSeq"]');
+	for(var i = 0; i < ridersProductSeq.length; i++){
+		riderDetails_productSeq_onFocus(ridersProductSeq[i]);	
+	}
+	
+	var allRidersPartyRoleCds = document.querySelectorAll('select[id*="_riderDetails_policyProductInsured_insuredPartyRefGuid"]');
+	for(var j = 0; j < allRidersPartyRoleCds.length; j++){
+		riderDetails_policyProductInsured_insuredPartyRefGuid_onFocus(allRidersPartyRoleCds[j]);
+	}
+	var ridersPartyRoleCds = document.querySelectorAll('select[id*="_riderDetails_policyProductInsured_roleCd"]');
+	for(var k = 0; k < ridersPartyRoleCds.length; k++){
+		riderDetails_policyProductInsured_roleCd_func(ridersPartyRoleCds[k]);
+	}
+	
+	var ridersPlanOptions = document.querySelectorAll('select[id*="_riderDetails_productPlanOptionCd"]');
+	for(var l = 0; l < ridersPlanOptions.length; l++){
+		riderDetails_productPlanOptionCd_onFocus(ridersPlanOptions[l]);
+	}
+	
+	var riders = document.querySelectorAll('select[id*="_riderDetails_productSeq"]');
+	for(var i = 0; i < riders.length; i++){
+		var riderId = riders[i].getAttribute('id');
+		var riderPrefix = riderId.replace('_productSeq','');
+		var riderPremiumSAFlField = riderId.replace('productSeq','premiumSAFl');
+		riderPremiumSAFl = $('#' + riderPremiumSAFlField).val(); 
+		enableDisableFormFields(riderPrefix + '_',riderPremiumSAFl, true);
+	}
+	if($('#riderAutoPopulationReqFlag').val() == "YES" ){
+        $('select[id*="_riderDetails_productSeq"]').selectmenu().selectmenu('disable');
+    }
+}
+
+function tab_nominee_pageTabLoaded(){
+	var navbarVal = $('#sym_navbar').val();
+	navbar = ''
+	if (navbarVal != undefined && navbarVal != '' && navbarVal != null){
+		navbar = navbarVal.split('-')[1];
+	}
+	if(navbar == '' || navbar == 'nomineeDetails'){
+		var partySameAsCd = document.querySelectorAll('select[id*="_nomineePolicyPartyRole_partySameAsCd"]');
+		for(var j = 0; j < partySameAsCd.length; j++){
+			nomineePolicyPartyRole_partySameAsCd_onFocus(partySameAsCd[j]);
+			nomineePolicyPartyRole_partySameAsCd_func(partySameAsCd[j]);		
+		}
+		checkForMinor();
+		var relationCd = document.querySelectorAll('select[id*="_nomineeParty_relationCd"]');
+		for(var j = 0; j < relationCd.length; j++){	
+			nomineeParty_relationCd_func(relationCd[j]);
+		}
+		var copyFromAddr1 = document.querySelectorAll('select[id*="_nomineeParty_copyFromAddr1"]');
+		for(var j = 0; j < copyFromAddr1.length; j++){	
+			nomineeParty_copyFromAddr1_func(copyFromAddr1[j]);
+			changePartyHolderAddressTab('homeAddressContainer', copyFromAddr1[j].id.replace('_copyFromAddr1',''));
+			removeCopyFromAddrOptions(copyFromAddr1[j].id.replace('_copyFromAddr1',''));
+		}
+		var copyFromAddr2 = document.querySelectorAll('select[id*="_nomineeParty_copyFromAddr2"]');
+		for(var j = 0; j < copyFromAddr2.length; j++){	
+			nomineeParty_copyFromAddr2_func(copyFromAddr2[j]);
+		}
+		var copyFromAddr3 = document.querySelectorAll('select[id*="_nomineeParty_copyFromAddr3"]');
+		for(var j = 0; j < copyFromAddr3.length; j++){	
+			nomineeParty_copyFromAddr3_func(copyFromAddr3[j]);
+		}
+		var citizenshipCdObjList = document.querySelectorAll('select[id*="nomineeParty_citizenshipCd"]');
+		for(var j = 0; j < citizenshipCdObjList.length; j++){	
+			hideShowOtherCitizenship(citizenshipCdObjList[j]);
+		}
+
+		var title = document.querySelectorAll('select[id*="_nomineeParty_titleCd"]');
+    	for(var j = 0; j < title.length; j++){ 
+        	nomineeParty_titleCd_func(title[j]);
+    	} 
+	}
+	else{
+		appointeeParty_relationCd_func(document.getElementById("appointeeParty_relationCd"));
+		nomineeParty_copyFromAddr1_func(document.getElementById("appointeeParty_copyFromAddr1"));
+		changePartyHolderAddressTab('homeAddressContainer', 'appointeeParty');
+		removeCopyFromAddrOptions('appointeeParty','');
+		nomineeParty_copyFromAddr2_func(document.getElementById("appointeeParty_copyFromAddr2"));
+		nomineeParty_copyFromAddr3_func(document.getElementById("appointeeParty_copyFromAddr3"));
+		hideShowOtherCitizenship(document.getElementById("appointeeParty_citizenshipCd"));
+		appointeeParty_titleCd_func(document.getElementById("appointeeParty_titleCd"));
+	}
+	disableAllIfPolicyNumber();
+}
+
+function tab_payment_pageTabLoaded(){
+	var navbarVal = $('#sym_navbar').val();
+	navbar = ''
+	if (navbarVal != undefined && navbarVal != '' && navbarVal != null){
+		navbar = navbarVal.split('-')[1];
+	}
+	if (navbar == 'renewalPaymentContainer'){
+		var payerTypeCd = $('#renewalPayment_payerTypeCd').val();
+		payerDependency('renewalPayment',payerTypeCd,'renewal',true);
+		var paymentMethodCd = $('[id*="renewalPayment_paymentMethodCd"]:input');
+      		for (var i = 0; i < paymentMethodCd.length; i++) {
+      			if (paymentMethodCd[i].type == "radio"){
+      				if (paymentMethodCd[i].checked){	
+      					$("#renewalPaymentDetails").show();
+         				renewalPayment_paymentMethodCd_func(paymentMethodCd[i],true)
+         			} 
+         			else{
+         				$("#renewalPaymentDetails").hide();
+         			}
+         		} 
+         		else{
+         			if ("(paymentMethodCd[i]):selected"){
+         				$("#renewalPaymentDetails").show();
+         				renewalPayment_paymentMethodCd_func(paymentMethodCd[i],true)
+         			}
+         			else{
+         				$("#renewalPaymentDetails").hide();
+         			}
+         		}	
+        	}
+		renewalFinancialAccount_micrNum_func(document.getElementById("renewalFinancialAccount_micrNum"));
+		if($("#renewalFinancialAccount_bankCd").is("select")){
+			renewalFinancialAccount_bankCd_onFocus(document.getElementById("renewalFinancialAccount_bankCd"));
+		}
+		if($("#renewalFinancialAccount_branchName").is("select")){
+			renewalFinancialAccount_branchName_onFocus(document.getElementById("renewalFinancialAccount_branchName"));
+		}
+		renewalPayer_titleCd_func();
+		var payerTypeCd = $('#renewalPayment_payerTypeCd').val();
+		var payerPartyRefGuid = $('#renewalPayment_payerPartyRefGuid').val();
+		if (payerTypeCd != '' && payerTypeCd != undefined){
+			createPayerNameList(payerTypeCd,payerPartyRefGuid,'renewalPayment_payerPartyRefGuid','RENEWALPREMIUM');
+		}
+		renewalPayer_relationCd_func();
+	}
+	else if(navbar == '' || navbar == 'initialPaymentContainer'){
+		var payerTypeCd = $('#inward_payerTypeCd').val();
+		payerDependency('inward',payerTypeCd,'initial',true);
+		$('i#grid_1_firstPremPolicyPaymentDtl_removed').hide();
+
+		var paymentMethodCd = document.querySelectorAll('select[id*="_firstPremPolicyPaymentDtl_paymentMethodCd"]');
+		for(var i = 0; i < paymentMethodCd.length; i++){
+			firstPremPolicyPaymentDtl_paymentMethodCd_func(paymentMethodCd[i],true);	
+		}
+
+		var micrNum = document.querySelectorAll('input[id*="_firstPremPolicyPaymentDtl_micrNum"]');
+		for(var i = 0; i < micrNum.length; i++){
+			firstPremPolicyPaymentDtl_micrNum_func(micrNum[i]);
+		}
+
+		var bankCd = document.querySelectorAll('select[id*="_firstPremPolicyPaymentDtl_bankCd"]');
+		for(var i = 0; i < bankCd.length; i++){
+			firstPremPolicyPaymentDtl_bankCd_onFocus(bankCd[i]);
+		}
+
+		var bankBranch = document.querySelectorAll('select[id*="_firstPremPolicyPaymentDtl_bankBranch"]');
+		for(var i = 0; i < bankBranch.length; i++){
+			firstPremPolicyPaymentDtl_bankBranch_onFocus(bankBranch[i]);
+		}
+		initialPayer_titleCd_func();  
+		var payerTypeCd = $('#inward_payerTypeCd').val();
+		var payerPartyRefGuid = $('#inward_payerPartyRefGuid').val();
+		if (payerTypeCd != '' && payerTypeCd != undefined){
+			createPayerNameList(payerTypeCd,payerPartyRefGuid,'inward_payerPartyRefGuid','INITIAL');
+		}
+		initialPayer_relationCd_func();
+	}
+	else if(navbar == 'refundPaymentContainer'){
+		var paymentMethodCd = $('[id*="refundPayment_paymentMethodCd"]:input');
+      		for (var i = 0; i < paymentMethodCd.length; i++) {
+      			if (paymentMethodCd[i].type == "radio"){
+      				if (paymentMethodCd[i].checked){
+      					$("#refundPaymentDetails").show();
+         				refundPayment_paymentMethodCd_func(paymentMethodCd[i],true)
+         			}
+         			else{
+         				$("#refundPaymentDetails").hide();
+         			} 
+         		} 
+         		else{
+         			if ("(paymentMethodCd[i]):selected"){
+         				$("#refundPaymentDetails").show();
+         				refundPayment_paymentMethodCd_func(paymentMethodCd[i],true)
+         			}
+         			else{
+         				$("#refundPaymentDetails").hide();
+         			}
+         		}	
+        	}
+		refundFinancialAccount_micrNum_func(document.getElementById("refundFinancialAccount_micrNum"));
+		if($("#refundFinancialAccount_bankCd").is("select")){
+			refundFinancialAccount_bankCd_onFocus(document.getElementById("refundFinancialAccount_bankCd"));
+		}
+		if($("#refundFinancialAccount_branchName").is("select")){
+			refundFinancialAccount_branchName_onFocus(document.getElementById("refundFinancialAccount_branchName"));
+		}
+	}
+	disableAllIfPolicyNumber();
+}
+
+function tab_questionnaire_pageTabLoaded(){
+	disableAllIfPolicyNumber();
+}
+
+function tab_requirement_pageTabLoaded(){
+	var serviceDocumentDocumentCd = document.querySelectorAll('select[id*="_serviceDocument_documentCd"]');
+	for(var i = 0; i < serviceDocumentDocumentCd.length; i++){
+		var documentCdId = serviceDocumentDocumentCd[i].getAttribute('id');
+        var servicedocGuid = documentCdId.replace('documentCd','guid');
+        var guidValue = $('#'+servicedocGuid).val();
+        if($('#multiDocMode').val() == 'true'){
+        	var servicedocselected = documentCdId.replace('documentCd','selected-0');
+	        if (!$('#'+servicedocselected).is(':checked')){
+	        	$('a[id="capture'+guidValue+'"]').addClass('readonly');
+	        }
+        }
+		serviceDocument_documentCd_onFocus(serviceDocumentDocumentCd[i]);
+	}
+
+	$(".tablist-content").hide();
+	$("#"+$("input[type='radio'][name='categorySelector']:checked").val()).show();
+	$("input[type='radio'][name='categorySelector']").change(function(){
+		$(".tablist-content").hide();
+		$("#"+$(this).val()).show();
+	});
+
+	$(".dirtyImage").clone().each(function(i,img){
+		parentkey = $(img).data("id").toString();
+		if(parentkey.indexOf(".")==-1) {
+			parentkey = parentkey+".0";
+		}
+		img.width = 1654;
+		$(img, {
+			load: function() {
+				finalFile = $(img).pixastic("desaturate").pixastic("resize",{'width':1654,'height':img.height })[0].toDataURL("image/jpeg");
+				$.ajax({
+					type: "POST",
+					url:"/app/Policy/updateProcessedImage", 
+					data:{'fileString': finalFile,'parentKey': parentkey},
+					success: function(){
+					}
+				});
+			}
+		});
+	});
+
+
+	$("#"+$(".categorySelector.active").attr("id")+"-panel").show();
+
+	$(".categorySelector").click(function(e){
+		e.preventDefault();
+		e.stopPropagation();
+
+		$(".requirement-content-wrapper-left ul p").removeClass("active");
+		$(this).addClass("active");
+		$(".tablist-content").hide();
+		$("#"+$(this).attr("id")+"-panel").show();
+	});
+
+	$("a[href='#full-image']").click(function(){
+		$("div#full-image img").attr("src",$(this).attr("for"));
+	});
+
+	$("#full-image").on({
+		popupbeforeposition: function() {
+			var maxHeight = $(window).height() - 100 + "px";
+			$("#full-image img").css("max-height", maxHeight);
+		}
+	});
+	disableAllIfPolicyNumber();
+
+	$("[id*='serviceDocument_isAutoGeneratedFl']").each(function(){
+		if($(this).val() == "YES_UW") {
+			identifier = $(this).attr("id").replace("_isAutoGeneratedFl","");
+			$("a[href*='"+identifier+"']").show();
+			$("a[href*='"+identifier+"']").parents("div.proof-left-multi").siblings("div.proof-right-multi").find("a").show();
+			$("input[id*='"+identifier+"_selected'][type='checkbox']").checkboxradio().checkboxradio("enable");
+			$("input[id*='_selected'][type='checkbox']").attr("disabled",false);
+			$("input[id*='"+identifier+"_removed']").val("");
+			$('.footer-bg a').show();
+		}
+	});
+}
+
+function tab_agentDeclaration_pageTabLoaded(){
+    initializeSignature();
+    disableAllIfPolicyNumber();
+}
+
+function tab_signature_pageTabLoaded(){
+ 	initializeSignature();
+    disableAllIfPolicyNumber();
+}
+
+function getAge(birthDt, fieldId1, fieldId2, fieldId3) {
+    $.ajax({
+    	url: "/app/Policy/getAge",
+     	data: {'birthDt': birthDt},
+     	async: false,
+        headers: {
+          'Transition-Enabled': false
+        },
+     	success: function(data) {
+     		var ageData = $.parseJSON(data);
+            ageParts = ageData.split("|");
+            $('#'+ fieldId1).val(ageParts[0]);
+            age = ageParts[0];
+            try {
+            	$('#'+ fieldId2).val(ageParts[1]);
+                $('#'+ fieldId3).val(ageParts[2]);
+            } catch(e){}
+          }
+    });
+ 	return age;
+}
+
+function getDOB(age, fieldId) {
+ 	$.ajax({
+   		url: "/app/Policy/getBirthDt",
+   		data: {'age':age},
+     	async: false,
+        headers: {
+          'Transition-Enabled': false
+        },
+   		success: function(data) {
+   			$('#'+ fieldId).val(data);
+   		}
+ 	});
+}
+
+function removeCopyFromAddrOptions(party){
+	$("#"+party+"_copyFromAddr1 option[value='RESIDENTIAL']").remove();
+	$("#"+party+"_copyFromAddr1 option[value='PERMANENT']").remove();
+	$("#"+party+"_copyFromAddr1 option[value='OFFICE']").remove();
+
+	$("#"+party+"_copyFromAddr2 option[value='PROPOSERRESIDENTIAL']").remove();
+	$("#"+party+"_copyFromAddr2 option[value='PERMANENT']").remove();
+	$("#"+party+"_copyFromAddr2 option[value='OFFICE']").remove();
+
+ 	$("#"+party+"_copyFromAddr3 option[value='OFFICE']").remove();
+}
+
+function changePartyHolderAddressTab(tabName, party){
+	$("#"+party+"_homeAddressContainer").hide();
+	$("#"+party+"_permanentAddressContainer").hide();
+	$("#"+party+"_officeAddressContainer").hide();
+	$("#"+party+"_"+tabName).show();
+	$("#"+party+"_home-permanent-business-bar li[name='homeAddressLi']>a").removeClass("ui-btn-active");
+	$("#"+party+"_home-permanent-business-bar li[name='permanentAddressLi']>a").removeClass("ui-btn-active");
+	$("#"+party+"_home-permanent-business-bar li[name='officeAddressLi']>a").removeClass("ui-btn-active");
+	str = "#"+party+"_home-permanent-business-bar li[name='" + tabName.substring(0,tabName.indexOf("Container")) + "Li']>a";
+	$(str).addClass("ui-btn-active");
+}
+
+function hideShowOtherCitizenship(object){
+	fieldId = object.id.replace("citizenshipCd","otherCitizenship")
+	citizenshipCd = object.value;
+	if(citizenshipCd=="OTHERS"){
+		$("#"+fieldId).closest(".project-data").show();
+	}
+	else{
+		$("#"+fieldId).closest(".project-data").hide();
+		$("#"+fieldId).val('');
+	}
+}
+
+function getBankBranchLookups(micrNum_id, micrNum) {
+	$.ajax({
+     	url: "/app/Policy/getBankBranchLookups",
+     	async: false,
+     	data: "micrNum="+micrNum,
+        headers: {
+          'Transition-Enabled': false
+        },
+     	success: function(data) {
+     		if (micrNum.toUpperCase() != "NOMICR") {
+	     		if (data != "") {
+					$("#"+micrNum_id.replace("micrNum","bankCd")).val(JSON.parse(data).bankName);
+					$("#"+micrNum_id.replace("micrNum","bankBranch")).val(JSON.parse(data).bankBranch);
+					$("#"+micrNum_id.replace("micrNum","branchName")).val(JSON.parse(data).branchName);
+				}
+   				setReadOnly($("#"+micrNum_id.replace("micrNum","bankCd")), true);
+   				setReadOnly($("#"+micrNum_id.replace("micrNum","bankBranch")), true);
+   				setReadOnly($("#"+micrNum_id.replace("micrNum","branchName")), true);
+			}
+       	}
+  	});
+}
+
+function clearAndHideShowPaymentData(object,onLoad) {
+	if (object != null){
+		inputType = object.type
+		if (inputType == "radio") {
+		var id = object.id.substring(object.id,object.id.lastIndexOf("-"));
+		}
+		else{
+			id = object.id
+		}
+		if(id.indexOf("renewal")>=0){
+			id = id.replace("renewalPayment","renewalFinancialAccount");
+		}
+		else if(id.indexOf("refund")>=0){
+			id = id.replace("refundPayment","refundFinancialAccount");
+		}
+
+		//Common fields in all three payment types
+		var micrNum_id = id.replace("paymentMethodCd","micrNum");
+		var bankCd_id = id.replace("paymentMethodCd","bankCd");
+		var accountName_id = id.replace("paymentMethodCd","accountName");
+
+		//Fields specific to Initial Payment
+		var paymentSubTypeCd_id = id.replace("paymentMethodCd","paymentSubTypeCd");
+		var bankBranch_id = id.replace("paymentMethodCd","bankBranch");
+		var instrumentDt_id = id.replace("paymentMethodCd","instrumentDt");
+		var inwardNum_id = id.replace("paymentMethodCd","inwardNum");
+		var qrcode_id = id.replace("paymentMethodCd","qrcode");
+
+		//Fields specific to Renewal & Refund Payment
+		var branchName_id = id.replace("paymentMethodCd","branchName");
+		var accountNum_id = id.replace("paymentMethodCd","accountNum");
+		var cardExpiryYear_id = id.replace("paymentMethodCd","cardExpiryYear");
+		var cardExpiryMnth_id = id.replace("paymentMethodCd","cardExpiryMnth");
+		var cardTypeCd_id = id.replace("paymentMethodCd","cardTypeCd");
+		
+		if (object.value == "CHEQUE") {
+			if(id.indexOf("renewal")>=0 || id.indexOf("refund")>=0){
+				$('#'+micrNum_id).parents(".project-data").hide();
+				$('#'+bankCd_id).parents(".project-data").hide();
+				$('#'+accountName_id).parents(".project-data").hide();
+				$('#'+branchName_id).parents(".project-data").hide();
+				$('#'+accountNum_id).parents(".project-data").hide();
+				$('#'+cardExpiryYear_id).parents(".project-data").hide();
+				$('#'+cardExpiryMnth_id).parents(".project-data").hide();
+				$('#'+cardTypeCd_id).parents(".project-data").hide();
+				$('#'+qrcode_id).hide();
+			}
+			else {
+				$('#'+paymentSubTypeCd_id).parents(".project-data").show();
+				$('#'+micrNum_id).parents(".project-data").show();
+				$('#'+bankCd_id).parents(".project-data").show();
+				$('#'+bankBranch_id).parents(".project-data").show();
+				$('#'+instrumentDt_id).parents(".project-data").show();
+				$('#'+inwardNum_id).parents(".project-data").show();
+				$('#'+accountName_id).parents(".project-data").show();
+				$('#'+qrcode_id).hide();
+			}
+		}
+		else if (object.value == "IPG") {
+			$('#'+paymentSubTypeCd_id).parents(".project-data").show();
+			$('#'+micrNum_id).parents(".project-data").hide();
+			$('#'+bankCd_id).parents(".project-data").hide();
+			$('#'+bankBranch_id).parents(".project-data").hide();
+			$('#'+instrumentDt_id).parents(".project-data").hide();
+			$('#'+inwardNum_id).parents(".project-data").show();
+			$('#'+accountName_id).parents(".project-data").hide();
+			$('#'+qrcode_id).hide();
+		}
+		else if (object.value == "ATM") {
+			$('#'+paymentSubTypeCd_id).parents(".project-data").hide();
+			$('#'+micrNum_id).parents(".project-data").hide();
+			$('#'+bankCd_id).parents(".project-data").hide();
+			$('#'+bankBranch_id).parents(".project-data").hide();
+			$('#'+instrumentDt_id).parents(".project-data").hide();
+			$('#'+inwardNum_id).parents(".project-data").show();
+			$('#'+accountName_id).parents(".project-data").hide();
+			$('#'+qrcode_id).hide();
+		}
+		else if (object.value == "creditCard") {
+			$('#'+micrNum_id).parents(".project-data").hide();
+			$('#'+bankCd_id).parents(".project-data").hide();
+			$('#'+branchName_id).parents(".project-data").hide();
+			$('#'+accountNum_id).parents(".project-data").show();
+			$('#'+accountName_id).parents(".project-data").show();
+			$('#'+cardExpiryYear_id).parents(".project-data").show();
+			$('#'+cardExpiryMnth_id).parents(".project-data").show();
+			$('#'+cardTypeCd_id).parents(".project-data").show();
+			$('#'+qrcode_id).hide();
+		}
+		else if (object.value == "directDebit" || object.value == "directCredit") {
+			$('#'+micrNum_id).parents(".project-data").show();
+			$('#'+bankCd_id).parents(".project-data").show();
+			$('#'+branchName_id).parents(".project-data").show();
+			$('#'+accountNum_id).parents(".project-data").show();
+			$('#'+accountName_id).parents(".project-data").show();
+			$('#'+cardExpiryYear_id).parents(".project-data").hide();
+			$('#'+cardExpiryMnth_id).parents(".project-data").hide();
+			$('#'+cardTypeCd_id).parents(".project-data").hide();
+			$('#'+qrcode_id).hide();
+		}
+		else if (object.value == "QRCODE") {
+			$('#'+qrcode_id).show();
+			$('#'+paymentSubTypeCd_id).parents(".project-data").hide();
+			$('#'+micrNum_id).parents(".project-data").hide();
+			$('#'+bankCd_id).parents(".project-data").hide();
+			$('#'+bankBranch_id).parents(".project-data").hide();
+			$('#'+instrumentDt_id).parents(".project-data").hide();
+			$('#'+inwardNum_id).parents(".project-data").hide();
+			$('#'+accountName_id).parents(".project-data").hide();
+		}
+		else {
+			//Common fields in all three payment types
+			$('#'+micrNum_id).parents(".project-data").hide();
+			$('#'+bankCd_id).parents(".project-data").hide();
+			$('#'+accountName_id).parents(".project-data").hide();
+
+			//Fields specific to Initial Payment
+			$('#'+paymentSubTypeCd_id).parents(".project-data").hide();
+			$('#'+bankBranch_id).parents(".project-data").hide();
+			$('#'+instrumentDt_id).parents(".project-data").hide();
+			$('#'+inwardNum_id).parents(".project-data").hide();
+
+			//Fields specific to Renewal & Refund Payment
+			$('#'+branchName_id).parents(".project-data").hide();
+			$('#'+accountNum_id).parents(".project-data").hide();
+			$('#'+cardExpiryYear_id).parents(".project-data").hide();
+			$('#'+cardExpiryMnth_id).parents(".project-data").hide();
+			$('#'+cardTypeCd_id).parents(".project-data").hide();
+			$('#'+qrcode_id).hide();
+		}
+
+		if(!onLoad){
+			//Common fields in all three payment types
+			$('#'+micrNum_id).val('');
+			$('#'+bankCd_id).val('');
+			if($('#'+bankCd_id).is("select")){
+				$('#'+bankCd_id).val('').selectmenu().selectmenu('refresh');
+			}
+			$('#'+accountName_id).val('');
+
+			//Fields specific to Initial Payment
+			$('#'+paymentSubTypeCd_id).val('').selectmenu().selectmenu('refresh');
+			$('#'+bankBranch_id).val('');
+			if($('#'+bankBranch_id).is("select")){
+				$('#'+bankBranch_id).val('').selectmenu().selectmenu('refresh');
+			}
+			$('#'+instrumentDt_id).val('');
+			$('#'+inwardNum_id).val('');
+
+			//Fields specific to Renewal & Refund Payment
+			$('#'+branchName_id).val('');
+			if($('#'+branchName_id).is("select")){
+				$('#'+branchName_id).val('').selectmenu().selectmenu('refresh');
+			}
+			$('#'+accountNum_id).val('');
+			$('#'+cardExpiryYear_id).val('').selectmenu().selectmenu('refresh');
+			$('#'+cardExpiryMnth_id).val('').selectmenu().selectmenu('refresh');
+			$('#'+cardTypeCd_id).val('').selectmenu().selectmenu('refresh');
+		}
+	}
+}
+
+
+/********* Basic Details related functions *********/
+function policy_purposeOfInsuranceCd_func(object){
+	if (object.value=="OTHERS"){
+		$("#policy_otherPurposeOfInsurance").parents('div.project-data').show();
+	}
+	else{
+		$("#policy_otherPurposeOfInsurance").parents('div.project-data').hide();
+	}
+}
+
+function policy_sourceOfFund_func(object){
+	if (object.value=="OTHERS"){
+		$("#policy_otherSourceOfFund").parents('div.project-data').show();
+	}
+	else{
+		$("#policy_otherSourceOfFund").parents('div.project-data').hide();
+	}
+}
+
+
+/********* Proposer Life related functions *********/
+function PolicyProposerDO_partyTypeCd_func(object){
+	var partyObj = "PolicyProposerDO";
+    partyTypeCd = $('#'+ partyObj +'_partyTypeCd');
+    if (partyTypeCd.fieldexists()){
+        if (partyTypeCd.val() == 'INDIVIDUAL')
+        {
+        	$("#"+partyObj+"_individualDetail").show();
+            $("#"+partyObj+"_corporateDetail").hide();
+           	$("#"+partyObj+"_home-permanent-business-bar").show();
+			$("#"+partyObj+"_homeAddressContainer").show();
+			$("#"+partyObj+"_homeAddressContainer").show();
+			$("#"+partyObj+"_officeAddressContainer").hide();
+			$("input[id='proposerPartyAddressOffice_removed']").val('YES');
+			$("#"+partyObj+"_permanentAddressContainer").hide();
+			$("#"+partyObj+"_copy-from-select1").show();
+			$("#"+partyObj+"_copy-from-select2").show();
+			$("#"+partyObj+"_copy-from-select3").show();
+			$("#"+partyObj+"_employmentDetailContainer").show();
+		    $("#"+partyObj+"_identityDetail").show();
+		    $('input[id*="_proposerPartyIdentity_removed"]').val('');
+		    $("#"+partyObj+"_residentContactDetail").show();
+	        $("#proposerPartyContactResidential_removed").val('');
+	        //Blank out all the Organization fields
+	        $('#'+ partyObj +'_corporateName1').val('');
+	        $('#'+ partyObj +'_corporateName2').val('');
+               
+        }
+        else if(partyTypeCd.val() == 'ORGANIZATION')
+        {
+        	$("#"+partyObj+"_individualDetail").hide();
+            $("#"+partyObj+"_corporateDetail").show();
+
+            //Blank out all the Individual fields
+			$("#"+partyObj+"_individualDetail input").val('');
+			$("#"+partyObj+"_individualDetail select").val('').change();
+			$("#"+partyObj+"_individualDetail input[type='radio']").attr("checked",false).checkboxradio("refresh");
+			
+			$("#"+partyObj+"_employmentDetailContainer input").val('');
+			$("#"+partyObj+"_employmentDetailContainer select").val('').change();
+
+			//Hide the contact details section and address details bar(home-permanent-business) if user selects Organisation from Type drop down
+            $("#"+partyObj+"_home-permanent-business-bar").hide();
+			$("#"+partyObj+"_homeAddressContainer").hide();
+			$("#"+partyObj+"_officeAddressContainer").show();
+			$("input[id='proposerPartyAddressOffice_removed']").val('');
+			$("#"+partyObj+"_permanentAddressContainer").hide();
+			$("#"+partyObj+"_copy-from-select1").hide();
+			$("#"+partyObj+"_copy-from-select2").hide();
+			$("#"+partyObj+"_copy-from-select3").hide();
+			$("#"+partyObj+"_employmentDetailContainer").hide();
+			$("#"+partyObj+"_identityDetail").hide();
+			$('input[id*="_proposerPartyIdentity_removed"]').val('YES');
+			$("#"+partyObj+"_residentContactDetail").hide();
+			$("#proposerPartyContactResidential_removed").val('YES');
+			$("input[id='proposerPartyContactResidential_extensionNum']").parents(".row-details").hide();
+
+        }
+    }
+}
+
+function proposerPartyEmployment_occupationTypeCd_func(object){
+	occType = $("#proposerPartyEmployment_occupationTypeCd").val();
+	if (occType == "BUSINESS" || occType == "EMPLOYED") {
+		$("#PolicyProposerDO_home-permanent-business-bar li[name='officeAddressLi']").show();
+		$("#PolicyProposerDO_employmentDetail").show();
+		$("#proposerPartyAddressOffice_removed").val('');
+		$("#PolicyProposerDO_officeAddressContainer").show();
+
+	}
+	else {
+		$("#PolicyProposerDO_home-permanent-business-bar li[name='officeAddressLi']").hide();
+		$("#PolicyProposerDO_employmentDetail").hide();
+		$("#PolicyProposerDO_officeAddressContainer").hide();
+		$("#proposerPartyEmployment_employerName,#proposerPartyEmployment_annualIncome").val('');
+		$('#proposerPartyEmployment_industryCd,#proposerPartyEmployment_natureOfDuty,#proposerPartyEmployment_occupationClass,#proposerPartyEmployment_pepCd').val('').change();
+	}
+}
+
+function PolicyProposerDO_relationCd_func(object){
+	if (object != null && object.value == "OTHER") {
+		$("#PolicyProposerDO_otherRelation").parents(".project-data").show();
+	}
+	else{
+		$("#PolicyProposerDO_otherRelation").val("");
+		$("#PolicyProposerDO_otherRelation").parents(".project-data").hide();	
+	}
+}
+
+function PolicyProposerDO_copyFromAddr1_func(object){
+	objectVal = $("#PolicyProposerDO_copyFromAddr1").val();
+	if (objectVal != "")
+		$('#PolicyProposerDO_home-address-details').hide();
+	else
+		$('#PolicyProposerDO_home-address-details').show();
+}
+
+function PolicyProposerDO_copyFromAddr2_func(object){
+	objectVal = $("#PolicyProposerDO_copyFromAddr2").val();
+	if (objectVal != "")
+		$('#PolicyProposerDO_permanent-address-details').hide();
+	else
+		$('#PolicyProposerDO_permanent-address-details').show();
+}
+
+function PolicyProposerDO_copyFromAddr3_func(object){
+	objectVal = $("#PolicyProposerDO_copyFromAddr3").val();
+	if (objectVal != "")
+		$('#PolicyProposerDO_office-address-details').hide();
+	else
+		$('#PolicyProposerDO_office-address-details').show();
+}
+
+function PolicyProposerDO_birthDt_func(object){
+    age = object.id.replace("birthDt","age");
+    getAge(object.value, age, '', '');
+}
+
+function PolicyProposerDO_age_func(object){
+	birthDt = object.id.replace("age","birthDt")
+    getDOB(object.value, birthDt);
+}
+
+function PolicyProposerDO_citizenshipCd_func(object){
+	hideShowOtherCitizenship(object);
+}
+
+function proposerPartyEmployment_industryCd_func() {
+    $('select#proposerPartyEmployment_natureOfDuty').val('').change();
+    $('select#proposerPartyEmployment_occupationClass').val('').change();
+}
+
+function proposerPartyEmployment_natureOfDuty_onFocus(obj){
+    if (obj != null){
+        id = obj.id;
+        lookupkey = obj.getAttribute("data-lookupkey");
+        industryCd = $('select#proposerPartyEmployment_industryCd').val();
+        filterCondition = {'industryCd' : industryCd};
+        loadLookupData(lookupkey, filterCondition, id);
+    }
+}
+
+function proposerPartyEmployment_occupationClass_onFocus(obj){
+    if (obj != null){
+        id = obj.id;
+        lookupkey = obj.getAttribute("data-lookupkey");
+        industryCd = $('select#proposerPartyEmployment_industryCd').val();
+        natureOfDuty = $('select#proposerPartyEmployment_natureOfDuty').val();
+        filterCondition = {'industryCd' : industryCd, 'natureOfDuty' : natureOfDuty};
+        loadLookupData(lookupkey, filterCondition, id);
+    }
+}
+
+
+/********* Primary Insured Life related functions *********/
+function insuredPartyEmployment_occupationTypeCd_func(object){
+	occType = $("#insuredPartyEmployment_occupationTypeCd").val();
+	if (occType == "BUSINESS" || occType == "EMPLOYED") {
+		$("#PolicyPrimaryLifeDO_home-permanent-business-bar li[name='officeAddressLi']").show();
+		$("#PolicyPrimaryLifeDO_employmentDetail").show();
+		$("#insuredPartyAddressOffice_removed").val('');
+		$("#PolicyPrimaryLifeDO_officeAddressContainer").show();
+	}
+	else {
+		$("#PolicyPrimaryLifeDO_home-permanent-business-bar li[name='officeAddressLi']").hide();
+		$("#PolicyPrimaryLifeDO_employmentDetail").hide();
+		$("#insuredPartyAddressOffice_removed").val('YES');
+		$("#PolicyPrimaryLifeDO_officeAddressContainer").show();
+
+	}
+}
+
+function PolicyPrimaryLifeDO_relationCd_func(object){
+	if (object != null && object.value == "OTHER") {
+		$("#PolicyPrimaryLifeDO_otherRelation").parents(".project-data").show();
+	}
+	else{
+		$("#PolicyPrimaryLifeDO_otherRelation").val("");
+		$("#PolicyPrimaryLifeDO_otherRelation").parents(".project-data").hide();	
+	}
+}
+
+function PolicyPrimaryLifeDO_copyFromAddr1_func(object){
+	var copyFromAddr1Value = $("#PolicyPrimaryLifeDO_copyFromAddr1").val();
+	if (copyFromAddr1Value != "")
+		$('#PolicyPrimaryLifeDO_home-address-details').hide();
+	else
+		$('#PolicyPrimaryLifeDO_home-address-details').show();
+}
+
+function PolicyPrimaryLifeDO_copyFromAddr2_func(object){
+	var copyFromAddr2Value = $("#PolicyPrimaryLifeDO_copyFromAddr2").val();
+	if (copyFromAddr2Value != "")
+		$('#PolicyPrimaryLifeDO_permanent-address-details').hide();
+	else
+		$('#PolicyPrimaryLifeDO_permanent-address-details').show();
+}
+
+function PolicyPrimaryLifeDO_copyFromAddr3_func(object){
+	var copyFromAdd3Value = $("#PolicyPrimaryLifeDO_copyFromAddr3").val();
+	if (copyFromAdd3Value != "")
+		$('#PolicyPrimaryLifeDO_office-address-details').hide();
+	else
+		$('#PolicyPrimaryLifeDO_office-address-details').show();
+}
+
+function PolicyPrimaryLifeDO_birthDt_func(object){
+    age = object.id.replace("birthDt","age");
+    getAge(object.value, age, '', '');
+}
+
+function PolicyPrimaryLifeDO_age_func(object){
+	birthDt = object.id.replace("age","birthDt")
+    getDOB(object.value, birthDt);
+}
+
+function policy_insuredSameAsProposer_func(object){
+	var objType = object.type;
+	var selected = '';
+	if(objType=="checkbox" && object.checked){
+		selected=true;
+	}
+	if(objType=="radio" && object.value=="YES"){
+		selected=true;	
+	}
+
+	//Blank out all the Individual fields
+	$("#primaryInsuredContainer input[type!='radio'][type!='hidden']").val('');
+	$("#primaryInsuredContainer select").val('').change();
+	$("#primaryInsuredContainer input[type='radio']").attr("checked",false).checkboxradio("refresh");
+	if(selected){
+		$("#primaryInsuredContainer").hide();
+		$("#PolicyPrimaryLifeDO_removed").val("YES");
+		$('#primaryPolicyPartyRole_partySameAsCd').val('PROPOSER');
+	}
+	else{
+		$("#primaryInsuredContainer").show();
+		$("#PolicyPrimaryLifeDO_removed").val("");
+		$('#primaryPolicyPartyRole_partySameAsCd').val('');
+	}
+}
+
+function PolicyPrimaryLifeDO_citizenshipCd_func(object){
+	hideShowOtherCitizenship(object);
+}
+
+function insuredPartyEmployment_industryCd_func() {
+    $('select#insuredPartyEmployment_natureOfDuty').val('').change();
+    $('select#insuredPartyEmployment_occupationClass').val('').change();
+}
+
+function insuredPartyEmployment_natureOfDuty_onFocus(obj){
+    if (obj != null){
+        id = obj.id;
+        lookupkey = obj.getAttribute("data-lookupkey");
+        industryCd = $('select#insuredPartyEmployment_industryCd').val();
+        filterCondition = {'industryCd' : industryCd};
+        loadLookupData(lookupkey, filterCondition, id);
+    }
+}
+
+function insuredPartyEmployment_occupationClass_onFocus(obj){
+    if (obj != null){
+        id = obj.id;
+        lookupkey = obj.getAttribute("data-lookupkey");
+        industryCd = $('select#insuredPartyEmployment_industryCd').val();
+        natureOfDuty = $('select#insuredPartyEmployment_natureOfDuty').val();
+        filterCondition = {'industryCd' : industryCd, 'natureOfDuty' : natureOfDuty};
+        loadLookupData(lookupkey, filterCondition, id);
+    }
+}
+
+
+/********* Joint Life related functions *********/
+function jointLifePartyEmployment_occupationTypeCd_func(object){
+	occType = $("#jointLifePartyEmployment_occupationTypeCd").val();
+	if (occType == "BUSINESS" || occType == "EMPLOYED") {
+		$("#PolicyJointLifeDO_home-permanent-business-bar li[name='officeAddressLi']").show();
+		$("#PolicyJointLifeDO_employmentDetail").show();
+		$("#jointLifePartyAddressOffice_removed").val('');
+		$("#PolicyJointLifeDO_officeAddressContainer").show();
+	}
+	else {
+		$("#PolicyJointLifeDO_home-permanent-business-bar li[name='officeAddressLi']").hide();
+		$("#PolicyJointLifeDO_employmentDetail").hide();
+		$("#jointLifePartyAddressOffice_removed").val('YES');
+		$("#PolicyJointLifeDO_officeAddressContainer").show();
+
+	}
+}
+
+function policy_jointLife_func(object){
+	if(object!= null){
+	    if(object.checked){
+	        $("#jointLifeContainer").show();
+	        $("#PolicyJointLifeDO_removed").val("");
+	        $("#jointLifePolicyPartyRole_removed").val("");
+	    }
+	    else {
+	        $("#jointLifeContainer").hide();
+	        $("#PolicyJointLifeDO_removed").val("YES");
+	        $("#jointLifePolicyPartyRole_removed").val("YES");
+	    }
+	}
+    else{
+        $("#jointLifeContainer").hide();
+        $("#PolicyJointLifeDO_removed").val("YES");
+        $("#jointLifePolicyPartyRole_removed").val("YES");
+    }
+}
+
+function PolicyJointLifeDO_relationCd_func(object){
+	if (object != null && object.value == "OTHER") {
+		$("#PolicyJointLifeDO_otherRelation").parents(".project-data").show();
+	}
+	else{
+		$("#PolicyJointLifeDO_otherRelation").val("");
+		$("#PolicyJointLifeDO_otherRelation").parents(".project-data").hide();	
+	}
+}
+
+function PolicyJointLifeDO_copyFromAddr1_func(object){
+	var copyFromAddr1Value = $("#PolicyJointLifeDO_copyFromAddr1").val();
+	if (copyFromAddr1Value != "")
+		$('#PolicyJointLifeDO_home-address-details').hide();
+	else
+		$('#PolicyJointLifeDO_home-address-details').show();
+}
+
+function PolicyJointLifeDO_copyFromAddr2_func(object){
+	var copyFromAddr2Value = $("#PolicyJointLifeDO_copyFromAddr2").val();
+	if (copyFromAddr2Value != "")
+		$('#PolicyJointLifeDO_permanent-address-details').hide();
+	else
+		$('#PolicyJointLifeDO_permanent-address-details').show();
+}
+
+function PolicyJointLifeDO_copyFromAddr3_func(object){
+	var copyFromAdd3Value = $("#PolicyJointLifeDO_copyFromAddr3").val();
+	if (copyFromAdd3Value != "")
+		$('#PolicyJointLifeDO_office-address-details').hide();
+	else
+		$('#PolicyJointLifeDO_office-address-details').show();
+}
+
+function PolicyJointLifeDO_birthDt_func(object){
+    age = object.id.replace("birthDt","age");
+    getAge(object.value, age, '', '');
+}
+
+function PolicyJointLifeDO_age_func(object){
+	birthDt = object.id.replace("age","birthDt")
+    getDOB(object.value, birthDt);
+}
+
+function PolicyJointLifeDO_citizenshipCd_func(object){
+	hideShowOtherCitizenship(object);
+}
+
+function jointLifePartyEmployment_industryCd_func() {
+    $('select#jointLifePartyEmployment_natureOfDuty').val('').change();
+    $('select#jointLifePartyEmployment_occupationClass').val('').change();
+}
+
+function jointLifePartyEmployment_natureOfDuty_onFocus(obj){
+    if (obj != null){
+        id = obj.id;
+        lookupkey = obj.getAttribute("data-lookupkey");
+        industryCd = $('select#jointLifePartyEmployment_industryCd').val();
+        filterCondition = {'industryCd' : industryCd};
+        loadLookupData(lookupkey, filterCondition, id);
+    }
+}
+
+function jointLifePartyEmployment_occupationClass_onFocus(obj){
+    if (obj != null){
+        id = obj.id;
+        lookupkey = obj.getAttribute("data-lookupkey");
+        industryCd = $('select#jointLifePartyEmployment_industryCd').val();
+        natureOfDuty = $('select#jointLifePartyEmployment_natureOfDuty').val();
+        filterCondition = {'industryCd' : industryCd, 'natureOfDuty' : natureOfDuty};
+        loadLookupData(lookupkey, filterCondition, id);
+    }
+}
+
+
+/********* Supplementary Life related functions *********/
+function supplementaryDetails_addButton_func(object){
+	var suplementaryInsuredCount = parseInt($('#suplementaryInsuredCount').val());
+	var supPolicyProductCount = parseInt($('#supPolicyProductCount').val());
+	var displayCount = $('#supplementaryDetails_addButton .button-add-section .notification').text();
+	currentTab = $('#sym_current_Tab').val();
+	 $.ajax({
+        url: "/app/Policy/addSupplementaryInsured",
+        data: {
+            'policyObject': $('#policy_object').val(), 
+            'suplementaryInsuredCount': suplementaryInsuredCount,
+            'supPolicyProductCount':supPolicyProductCount,
+            'sym_current_Tab':currentTab
+        },
+        success: function(data) {
+            suplementaryInsuredCount = suplementaryInsuredCount + 1;
+            $("#suplementaryInsuredCount").val(suplementaryInsuredCount);
+            
+            supPolicyProductCount = supPolicyProductCount + 1;
+            $("#supPolicyProductCount").val(supPolicyProductCount);
+
+            displayCount =  parseInt(displayCount) + 1; 
+            $('#supplementaryDetails_addButton .button-add-section .notification').text(displayCount);
+            sectionExist = $(".supplementaryDetails-main-class >.ui-collapsible-set >.ui-collapsible");
+            if (sectionExist.length > 0){
+                $(".supplementaryDetails-main-class > .ui-collapsible-set >.ui-collapsible:last").next('.clearfix').after(data);
+            }
+            else{
+                $(".supplementaryDetails-main-class >.ui-collapsible-set").prepend(data);
+            }
+
+            $(".supplementaryDetails-main-class").trigger('create');
+
+            supplementaryParty_relationCd_func(document.getElementById('grid_'+ suplementaryInsuredCount.toString() + "_supplementaryParty_relationCd"));
+			// changePartyHolderAddressTab('homeAddressContainer', 'grid_'+ suplementaryInsuredCount.toString() + "_supplementaryParty");
+			// removeCopyFromAddrOptions('grid_'+ suplementaryInsuredCount.toString() + "_supplementaryParty");
+			// supplementaryParty_supplementaryPartyEmployment_occupationTypeCd_func(document.getElementById('grid_'+ suplementaryInsuredCount.toString() + "_supplementaryParty_supplementaryPartyEmployment_occupationTypeCd"));
+			// hideShowOtherCitizenship(document.getElementById('grid_'+ suplementaryInsuredCount.toString() + "_supplementaryParty_citizenshipCd"));
+            
+            $(".datepicker:not(.inputreadonly)").datepicker({
+                changeMonth: true,
+                changeYear: true,
+                dateFormat: "dd/mm/yy",
+                yearRange: "c-100:c+100"
+            });
+        }
+    });
+}
+
+function supplementaryDetails_removed_func(object){
+	$("input#"+object.id.replace("supplementaryDetails","supplementaryParty")).val("YES");
+	$("input#"+object.id.replace("supplementaryDetails","supplementaryPolicyPartyRole")).val("YES");
+	$("input#"+object.id.replace("supplementaryDetails","supplementaryParty")).parents('.ui-collapsible').hide();
+	var displayCount = $('#supplementaryDetails_addButton .button-add-section .notification').text();
+	displayCount = parseInt(displayCount) - 1;
+	$('#supplementaryDetails_addButton .button-add-section .notification').text(displayCount);
+}
+
+function supplementaryParty_copyFromAddr1_func(object){
+	if (object.value != "")
+		$('#'+object.id.replace('copyFromAddr1','home-address-details')).hide();
+	else
+		$('#'+object.id.replace('copyFromAddr1','home-address-details')).show();
+}
+
+function supplementaryParty_copyFromAddr2_func(object){
+	if (object.value != "")
+		$('#'+object.id.replace('copyFromAddr2','permanent-address-details')).hide();
+	else
+		$('#'+object.id.replace('copyFromAddr2','permanent-address-details')).show();
+}
+
+function supplementaryParty_copyFromAddr3_func(object){
+	if (object.value != "")
+		$('#'+object.id.replace('copyFromAddr3','office-address-details')).hide();
+	else
+		$('#'+object.id.replace('copyFromAddr3','office-address-details')).show();
+}
+
+function supplementaryParty_relationCd_func(object){
+	if (object != null){
+		if (object.value == "OTHER") {
+			$("#"+object.id.replace('relationCd','otherRelation')).parents(".project-data").show();
+		}
+		else{
+			$("#"+object.id.replace('relationCd','otherRelation')).val("");
+			$("#"+object.id.replace('relationCd','otherRelation')).parents(".project-data").hide();	
+		}
+	}
+}
+
+function supplementaryParty_supplementaryPartyEmployment_occupationTypeCd_func(object){
+	party = object.id.replace("_supplementaryPartyEmployment_occupationTypeCd","");
+	occType = $("#"+party+"_supplementaryPartyEmployment_occupationTypeCd").val();
+	if (occType == "BUSINESS" || occType == "EMPLOYED") {
+		$("#"+party+"_home-permanent-business-bar li[name='officeAddressLi']").show();
+		$("#"+party+"_employmentDetail").show();
+		$("#"+party+"_supplementaryPartyAddressOffice_removed").val('');
+	}
+	else {
+		$("#"+party+"_home-permanent-business-bar li[name='officeAddressLi']").hide()
+		$("#"+party+"_supplementaryPartyAddressOffice_removed").val('YES');	
+		$("#"+party+"_employmentDetail").hide();
+		$("#"+party+"_supplementaryPartyEmployment_employerName").val('');
+		$("#"+party+"_supplementaryPartyEmployment_annualIncome").val('');
+		$("#"+party+"_supplementaryPartyEmployment_industryCd").val('').change();
+		$("#"+party+"_supplementaryPartyEmployment_natureOfDuty").val('').change();
+		$("#"+party+"_supplementaryPartyEmployment_occupationClass").val('').change();
+		$("#"+party+"_supplementaryPartyEmployment_pepCd").val('').change();
+        changePartyHolderAddressTab('homeAddressContainer',party);
+	}
+}
+
+function supplementaryParty_citizenshipCd_func(object){
+	hideShowOtherCitizenship(object);
+}
+
+function supplementaryParty_birthDt_func(object){
+    age = object.id.replace("birthDt","age");
+    getAge(object.value, age, '', '');
+}
+
+function supplementaryParty_age_func(object){
+	birthDt = object.id.replace("age","birthDt")
+    getDOB(object.value, birthDt);
+}
+
+function supplementaryParty_supplementaryPartyEmployment_industryCd_func(obj) {
+	natureOfDutyId = obj.id.replace("industryCd","natureOfDuty");
+	occupationClassId = obj.id.replace("industryCd","occupationClass");
+    $('select#'+natureOfDutyId).val('').change();
+    $('select#'+occupationClassId).val('').change();
+}
+
+function supplementaryParty_supplementaryPartyEmployment_natureOfDuty_onFocus(obj){
+    if (obj != null){
+        id = obj.id;
+        industryCdId = obj.id.replace("natureOfDuty","industryCd");
+        lookupkey = obj.getAttribute("data-lookupkey");
+        industryCd = $('select#'+industryCdId).val();
+        filterCondition = {'industryCd' : industryCd};
+        loadLookupData(lookupkey, filterCondition, id);
+    }
+}
+
+function supplementaryParty_supplementaryPartyEmployment_occupationClass_onFocus(obj){
+    if (obj != null){
+        id = obj.id;
+        lookupkey = obj.getAttribute("data-lookupkey");
+        industryCdId = obj.id.replace("occupationClass","industryCd");
+        natureOfDutyId = obj.id.replace("occupationClass","natureOfDuty");
+        industryCd = $('select#'+industryCdId).val();
+        natureOfDuty = $('select#'+natureOfDutyId).val();
+        filterCondition = {'industryCd' : industryCd, 'natureOfDuty' : natureOfDuty};
+        loadLookupData(lookupkey, filterCondition, id);
+    }
+}
+
+function supplementaryParty_productPlanOptionCd_onFocus(obj){
+    id = obj.id;
+    fieldId = id.replace('productPlanOptionCd','productSeq');
+    var baseProductSeq = $('#basePlan_productSeq').val();
+    lookupkey = obj.getAttribute("data-lookupkey");
+    filterCondition = {'productSeq': baseProductSeq};
+    loadLookupData(lookupkey, filterCondition, id);
+}
+
+function accordEvent(object) {
+	var navbarContentObj = $(object).parent().find('.subTabs > #navbarContent');
+	var navbarContent = $.trim(navbarContentObj.html())
+	if (navbarContent == ''){
+		$(object).parent().find('.subTabs >.ui-navbar ul li:first a')[0].click();
+	}
+}
+
+/********* Plan related functions *********/
+function calculateBasePlanValue(object){
+    $('#basePlan_productFamilyCd').selectmenu().selectmenu('enable');
+    $('#basePlan_productPlanOptionCd').selectmenu().selectmenu('enable');
+    $('#basePlan_productId').selectmenu().selectmenu('enable');
+    $('#basePlan_paymentFrequencyCd').selectmenu().selectmenu('enable');
+    $('#basePlan_premiumPayingTerm').selectmenu().selectmenu('enable');
+    $('#basePlan_baseSumAssured').trigger('blur');
+    $.ajax({                                    
+        url: "/app/Policy/ajaxCalculatePremium",
+        data: $('#EAPPProposal').serializeHash(),
+        success: function(data) {
+            var policyProduct = JSON.parse(data);
+            $.each(policyProduct, function(key, val) {
+                var selectObject = $("select[id='basePlan_"+key+"']");
+                if (selectObject.find('option[value="'+val +'"]').length <= 0) {
+                    selectObject.append("<option value="+val+">"+val+"</option>");
+                }
+                selectObject.val(val);
+                selectObject.selectmenu('refresh');
+
+                $("input[id='basePlan_"+key+"']").val(val);
+                $("input[id='basePlan_"+key+"']").trigger('blur');
+                $("input[id='basePlan_"+key+"'][type='radio']").checkboxradio().checkboxradio('refresh');
+            });
+            var premiumSAFl = $('#basePlan_premiumSAFl').val();
+            enableDisableFormFields("basePlan_",premiumSAFl, false);
+            $('#basePlan_productFamilyCd').selectmenu().selectmenu('disable');
+            $('#basePlan_productPlanOptionCd').selectmenu().selectmenu('disable');
+            $('#basePlan_productId').selectmenu().selectmenu('disable');
+            $('#basePlan_paymentFrequencyCd').selectmenu().selectmenu('disable');
+            $('#basePlan_premiumPayingTerm').selectmenu().selectmenu('disable');
+        }
+    });
+}
+
+function enableDisableFormFields (idPrefix, premiumSAFl, isRiderFl) {
+	if(!isRiderFl)
+	{
+	    $("#"+idPrefix+'productFamilyCd').selectmenu().selectmenu('disable');
+	    $("#"+idPrefix+'productPlanOptionCd').selectmenu().selectmenu('disable');
+	    $("#"+idPrefix+'productId').selectmenu().selectmenu('disable');
+	}
+    setReadOnly($("#"+idPrefix+"maxTargetPremium"), true);
+    setReadOnly($("#"+idPrefix+"minTargetPremium"), true);
+    setReadOnly($("#"+idPrefix+"recommendedPremium"), true);
+    setReadOnly($("#"+idPrefix+"unapliedPremium"), true);
+    setReadOnly($("#"+idPrefix+"extraPremium"), true);
+
+    if (premiumSAFl == 'PREMIUM'){
+        setReadOnly($("#"+idPrefix+"baseSumAssured"), true);
+        setReadOnly($("#"+idPrefix+"baseAnnualPremium"), true);
+        setReadOnly($("#"+idPrefix+"modalPremium"), false);
+    }
+    if (premiumSAFl == 'SA'){
+        setReadOnly($("#"+idPrefix+"baseSumAssured"), false);
+        setReadOnly($("#"+idPrefix+"baseAnnualPremium"), true);
+        setReadOnly($("#"+idPrefix+"modalPremium"), true); 
+    }
+    if (premiumSAFl == 'DUAL'){
+        setReadOnly($("#"+idPrefix+"baseSumAssured"), false);
+        setReadOnly($("#"+idPrefix+"baseAnnualPremium"), false);
+        setReadOnly($("#"+idPrefix+"modalPremium"), true); 
+    }
+    if(premiumSAFl == 'ANNUALPREMIUM'){
+        setReadOnly($("#"+idPrefix+"baseSumAssured"), true);
+        setReadOnly($("#"+idPrefix+"baseAnnualPremium"), false);
+        setReadOnly($("#"+idPrefix+"modalPremium"), true); 
+    }
+    if(premiumSAFl == 'COMPUTEDSA'){
+        setReadOnly($("#"+idPrefix+"baseSumAssured"), false);
+        setReadOnly($("#"+idPrefix+"baseAnnualPremium"), false);
+        setReadOnly($("#"+idPrefix+"modalPremium"), false); 
+    }
+    if((premiumSAFl == 'MONTHLYINCOME') || (premiumSAFl == 'ANNUALINCOME')){
+        setReadOnly($("#"+idPrefix+"baseSumAssured"), true);
+        setReadOnly($("#"+idPrefix+"baseAnnualPremium"), true);
+        setReadOnly($("#"+idPrefix+"modalPremium"), true); 
+    }
+
+    $.each($("#"+idPrefix+"readOnlyFields").val().split(","), function(index, value){
+		setReadOnly($("#"+idPrefix+value), true);
+		$("select#"+idPrefix+value).selectmenu().selectmenu('disable');
+    });
+}
+
+function defaultPPTerm(){
+    var premiumPayingTerm = $('#premiumPayingTermFacet').val();
+    var paymentTypeCd = $('select#basePlan_paymentTypeCd').val();
+    var baseProductTerm = $('select#basePlan_productTerm').val();
+    if(paymentTypeCd == 'SINGLE') {
+        if($('select#basePlan_premiumPayingTerm option[value="1"]').length == 0) {
+            $('select#basePlan_premiumPayingTerm').append('<option val="1">1</option>');
+        }
+        $('select#basePlan_premiumPayingTerm').val("1").selectmenu("refresh");
+        $('select#basePlan_paymentFrequencyCd').val("SINGLE").selectmenu("refresh");
+
+        $('select#basePlan_paymentFrequencyCd').selectmenu('disable');
+
+        $('select#basePlan_premiumPayingTerm').selectmenu('disable');
+    }
+    else if((paymentTypeCd == 'REGULAR') && (premiumPayingTerm == 'true')) {
+        $('select#basePlan_premiumPayingTerm').val(baseProductTerm);
+        $('select#basePlan_premiumPayingTerm').selectmenu('disable');
+    }
+    else {
+        $('select#basePlan_paymentFrequencyCd').selectmenu('enable');
+        $('select#basePlan_premiumPayingTerm').selectmenu('enable');
+    }
+}  
+
+function basePlan_capturedPremiumAmt_func(object){
+    calculateBasePlanValue(object);
+}
+
+function basePlan_baseSumAssured_func(object){
+    calculateBasePlanValue(object);
+}
+
+function basePlan_productTerm_func(object){
+    defaultPPTerm();
+}
+
+function basePlan_paymentTypeCd_func(object){
+    defaultPPTerm();
+}
+
+function basePlan_premiumHolidayFl_func(object){
+    defaultPPTerm();
+}
+
+function basePlan_productTerm_onFocus(object){
+    $.ajax({
+        url: "/app/Policy/getProductTerm",
+        data: $('#EAPPProposal').serializeHash(),
+        async: false,
+        headers: {
+            'Transition-Enabled': false
+        },
+        success: function(data) {
+            $('#basePlan_productTerm').html(data).selectmenu("refresh");
+        }
+    }); 
+}
+
+function basePlan_premiumPayingTerm_onFocus(object){
+    $.ajax({
+        url: "/app/Policy/getPremiumPayingTerm",
+        data: $('#EAPPProposal').serializeHash(),
+        async: false,
+        headers: {
+            'Transition-Enabled': false
+        },
+        success: function(data) {
+            $('#basePlan_premiumPayingTerm').html(data).selectmenu("refresh");
+        }
+    }); 
+}
+
+function basePlan_portfolioModelCd_onFocus(object){
+	$.ajax({
+		url: "/app/Policy/getPortfolioModelCd",
+		data: $('#EAPPProposal').serializeHash(),
+		async: false,
+		headers: {
+			'Transition-Enabled': false
+		},
+		success: function(data) {
+			$('#basePlan_portfolioModelCd').html(data).selectmenu("refresh");
+		}
+	}); 
+}
+
+function basePlan_portfolioModelCd_func(object){
+	$.ajax({
+		url: "/app/Policy/prePopulateFunds",
+		data: {
+			'form': $('#EAPPProposal').serializeHash(),
+			'gridID': "policyFunds",
+			'columns': 'fundCd,allocationPerc,topupAllocationPerc',
+		},
+		async: false,
+		headers: {
+			'Transition-Enabled': false
+		},
+		success: function(data) {
+			$('.policyFunds-main-class .table-section > table > tbody').html(data)
+			$(".policyFunds-main-class .table-section > table > tbody").trigger('create');
+            var fundCd = document.querySelectorAll('select[id*="_policyFunds_fundCd"]');
+            for(var i = 0; i < fundCd.length; i++){
+                policyFunds_fundCd_onFocus(fundCd[i]);  
+            }
+		}
+	}); 
+}
+
+function basePlan_topUpAllocSameAsPremAllocFl_func(object) {
+	if (object!=null){
+		if(object.checked){
+			$("input[id*='policyFunds_allocationPerc']").each(function(){
+				id = $(this).attr("id").replace("allocationPerc","topupAllocationPerc");
+				$("#"+id).val($(this).val());
+				$("#"+id).attr("readonly","readonly");
+			});
+		}
+		else{
+			$("input[id*='policyFunds_topupAllocationPerc']").each(function(){
+				$(this).val("");
+				$(this).removeAttr("readonly");
+			});
+		}
+	}
+}
+
+function basePlan_productId_onFocus(object){
+    if(object!=null){
+        loadLookupData(object.getAttribute("data-lookupkey"), {}, object.id);    
+    }
+}
+
+function basePlan_productVersion_onFocus(obj){
+    if (obj != null){
+		id = obj.id;
+		var productId = $('#basePlan_productId').val();
+		lookupkey = obj.getAttribute("data-lookupkey");
+		filterCondition = {'productId': productId};
+		loadLookupData(lookupkey, filterCondition, id);
+	}
+}
+
+function basePlan_productFamilyCd_onFocus(object){
+    if(object!=null){
+        loadLookupData(object.getAttribute("data-lookupkey"), {}, object.id);
+    }
+}
+
+function basePlan_productPlanOptionCd_onFocus(obj){
+	if (obj != null){
+		id = obj.id;
+		var productSeq = $('#basePlan_productSeq').val();
+		lookupkey = obj.getAttribute("data-lookupkey");
+		filterCondition = {'productSeq': productSeq};
+		loadLookupData(lookupkey, filterCondition, id);
+	}
+}
+
+function policyFunds_removeButton_func(object) {
+    var checkboxMode = object.getAttribute("data-checkbox-mode");
+    var id = object.id.replace("removeButton","removed");
+    var allocationPercId = object.id.replace("removeButton","allocationPerc");
+    var topupAllocationPercId = object.id.replace("removeButton","topupAllocationPerc");
+
+    if(checkboxMode == "add"){
+        if(object.checked){
+            $("#"+id).val("");
+            $("#"+allocationPercId).removeAttr("readonly");
+            $("#"+topupAllocationPercId).removeAttr("readonly");
+        }
+        else{
+            $("#"+id).val("YES");
+            $("#"+allocationPercId).val('');
+            $("#"+allocationPercId).attr("readonly","readonly");
+            $("#"+topupAllocationPercId).val('');
+            $("#"+topupAllocationPercId).attr("readonly","readonly");
+        }
+    }
+    updateFundTotal();
+}
+
+function policyFunds_fundCd_onFocus(object) {
+    loadLookupData(object.getAttribute("data-lookupkey"), {}, object.id);
+}
+
+//Method to update total allocation percentage
+function updateFundTotal() {
+    var allocationPerc = 0;
+    var topupAllocationPerc = 0;
+
+    $('input[id*="policyFunds_allocationPerc"]').each(function() {
+        if ($("[id='"+$(this).attr('id').replace("allocationPerc", "removed")+"']").val() != "YES"){
+
+            allocationPerc += parseInt($(this).val());
+        }
+    });
+    
+    $('input[id*="policyFunds_topupAllocationPerc"]').each(function() {
+        if ($("[id='"+$(this).attr('id').replace("topupAllocationPerc", "removed")+"']").val() != "YES"){
+            topupAllocationPerc += parseInt($(this).val());
+        }
+    });
+    
+    if(!isNaN(allocationPerc)){
+    	$("#policyFunds_allocationPerc_lbl span").html(' (' + allocationPerc+'%)');
+    }
+    if(!isNaN(topupAllocationPerc)){
+    	$("#policyFunds_topupAllocationPerc_lbl span").html(' (' + topupAllocationPerc+'%)');
+    }
+}
+
+function policyFunds_allocationPerc_func(object){
+    if(!isNaN(object.value)){
+        var removed = object.id.replace("allocationPerc", "removed");
+        if($("#basePlan_topUpAllocSameAsPremAllocFl-0").prop("checked")==true){
+            var id = object.id.replace("allocationPerc","topupAllocationPerc");
+            $("#"+id).val(object.value);
+            $("#"+id).attr("readonly","readonly");
+        }
+        if(parseInt(object.value) >= 0){
+            $("#"+removed).val('');
+        }
+        else{
+            $("#"+removed).val('YES');
+        }
+        updateFundTotal();
+    }
+}
+
+function policyFunds_topupAllocationPerc_func(object){
+    if(!isNaN(object.value)){
+        updateFundTotal();
+    }
+}
+
+
+/**************TopUp related function**************/
+function policy_initialTopupFl_func(object) {
+    if (object != null) {
+        if(object.checked){
+            $("#initialInvesttopup_removed").val("");
+            setReadOnly($("#initialInvesttopup_topUpAmount"), false);
+            $("[id*='initialInvesttopup_']").parents('.project-data').show();
+        }
+        else{
+            $("#initialInvesttopup_removed").val("YES");
+            $("[id*='initialInvesttopup_']").parents('.project-data').hide();
+            $("#initialInvesttopup_topUpAmount").val('');
+        }
+    }
+}
+
+function policy_regularTopupFl_func(object) {
+    if (object != null) {
+        if(object.checked){
+            $("#regulartopup_removed").val("");
+            setReadOnly($("#regulartopup_topUpPeriod"), false);
+            setReadOnly($("#regulartopup_topUpAmount"), false);
+            setReadOnly($("#regulartopup_topupFrequencyVal"), false);
+            $("[id*='regulartopup_']").parents('.project-data').show();
+        }
+        else{
+            $("#regulartopup_removed").val("YES");
+            $("[id*='regulartopup_']").parents('.project-data').hide();
+            $("#regulartopup_topUpPeriod").val('');
+            $("#regulartopup_topUpAmount").val('');
+            $("#regulartopup_topupFrequencyVal").val('');
+        }
+    }
+}
+
+
+/********* Rider related functions *********/
+function riderDetails_removed_func(object){
+	var fieldObject = $('#'+object.id).parent().find('select[name*="[productSeq]"]');
+	var objectFieldName = fieldObject.attr('name');
+	if(parseInt(objectFieldName.indexOf("[productSeq]")) > 0) {
+		var riderObjectName = objectFieldName.substring(0, (objectFieldName.length-12));
+		// alert('Do you want to remove Rider?');
+		raiseAlert("ERR_DEL_RIDER",[],locale);
+		$('input[name="'+riderObjectName+'[removed]"]').val('YES'); 
+		$('input[name="'+riderObjectName+'[object]"]').parents('.riderData').hide();
+		var displayCount = $('#riderDetails_addButton .notification').text();
+		displayCount = parseInt(displayCount) - 1;
+		$('#riderDetails_addButton .notification').text(displayCount);
+	}
+}
+
+function riderDetails_addButton_func(object) {	
+	var displayCount = $('#riderDetails_addButton .notification').text();
+	$.ajax({
+		url: "/app/Policy/addRider",
+		data: {
+			'policyObject': $('#policy_object').val(),
+			'riderObjects': (parseInt(displayCount) - 1) + 100, 
+		},
+		success: function(data) {
+			displayCount =  parseInt(displayCount) + 1; 
+			objectIndex = (parseInt(displayCount)-1) + 100
+			$('#riderDetails_addButton .notification').text(displayCount);
+			sectionExist = $(".riderDetails-main-class .riderData");
+			if (sectionExist.length > 0){
+				$(".riderDetails-main-class .riderData:last").after(data);
+			}
+			else{
+				$(".riderDetails-main-class").prepend(data);
+			}
+			$(".riderDetails-main-class").trigger('create');
+			$(document).ready(function(){
+				$('#grid_'+objectIndex+'_riderDetails_insuredPartyRefGuid').parents('.project-data').hide();
+			});
+		} 
+	});	
+}
+
+function riderDetails_productSeq_onFocus(obj){
+	id = obj.id;
+	var basePlanProductSeq = $('#basePlan_productSeq').val();
+	lookupkey = obj.getAttribute("data-lookupkey");
+	filterCondition = {'productSeq': basePlanProductSeq};
+	loadLookupData(lookupkey, filterCondition, id);
+}
+
+function riderDetails_productPlanOptionCd_onFocus(obj){
+	id = obj.id;
+    selectedValue = $('#'+id).val();
+    applicablePlanOptionsId = id.replace('productPlanOptionCd','applicablePlanOptions');
+    var riderApplicablePlanOptions = $('#'+applicablePlanOptionsId).val();
+    if ($('#riderAutoPopulationReqFlag').val() == "YES" && riderApplicablePlanOptions != null && riderApplicablePlanOptions != '' && riderApplicablePlanOptions != undefined){
+        var optionStr = '' 
+        options = riderApplicablePlanOptions.split(',');
+        length = options.length;
+        for(var k=0; k<length; k++){
+            if(options[k])
+            {
+                option = options[k].split('|');
+                optionStr = optionStr + "<option value ='"+option[0]+"'";
+                if(selectedValue == option[1]){
+                    optionStr = optionStr + 'selected'
+                }
+                optionStr = optionStr + '>' + option[1] + "</option>"
+            }
+        }
+        $('#'+id).html(optionStr);
+        $('#'+id).selectmenu().selectmenu("refresh");
+    }
+    else{
+        fieldId = id.replace('productPlanOptionCd','productSeq');
+        riderProductSeq = document.getElementById(fieldId);
+    	lookupkey = obj.getAttribute("data-lookupkey");
+    	filterCondition = {'productSeq': riderProductSeq.value};
+    	loadLookupData(lookupkey, filterCondition, id);
+    }
+}
+
+function riderDetails_policyProductInsured_roleCd_func(obj){
+	var objectId = obj.id;
+	var objectFieldName = objectId.replace('roleCd','insuredPartyRefGuid');
+	if(obj.value == 'SUPPLEMENTARY')
+	{
+		$('select[id="' + objectFieldName + '"]').parents('.project-data').show();
+	}else
+	{
+		$('select[id="' + objectFieldName + '"]').parents('.project-data').hide();
+	}	
+}
+
+function riderDetails_policyProductInsured_insuredPartyRefGuid_onFocus(obj){
+	id = obj.id;
+	lookupkey = obj.getAttribute("data-lookupkey");
+    quotationObject = document.getElementById('quotation_object');
+	filterCondition = {'object': quotationObject.value};
+	loadLookupData(lookupkey, filterCondition, id);
+}
+
+function riderDetails_productSeq_func(obj){
+	var riderProductSeqObj = obj.id;
+	var riderRemovedObj = id.replace('productSeq','removed');
+	var riderObject = id.replace('productSeq','object');
+	var riderObjectValue = $('#' + riderObject).val();
+	var riderIndex = obj.name.replace('Policy[PolicyProduct][','');
+	riderIndex = riderIndex.replace('][productSeq]','');
+	
+	if ($('#' + riderProductSeqObj).val() != "") {
+		$('#' + riderRemovedObj).val('');
+		$.ajax({
+			url: "/app/Policy/refreshRiderSection",
+			method: 'POST',
+			data : $('#EAPPProposal').serialize() + '&riderObject='+riderObjectValue + '&riderCount='+riderIndex, 
+			success: function(data) {
+				$('#'+ riderObject).parents('.riderData').replaceWith(data);
+				$(".riderDetails-main-class").trigger('create');			
+				riderDetails_productSeq_onFocus(document.getElementById(riderProductSeqObj));
+				var riderPrefix = riderProductSeqObj.replace('_productSeq','');
+				var riderPremiumSAFlField = riderProductSeqObj.replace('productSeq','premiumSAFl');
+				var riderPremiumSAFl = $('#' + riderPremiumSAFlField).val(); 
+				enableDisableFormFields(riderPrefix + '_',riderPremiumSAFl, true);
+				$('#grid_'+riderIndex+'_riderDetails_insuredPartyRefGuid').parents('.project-data').hide();
+			}
+	    }); 
+	}
+	else {
+		$('#' + riderRemovedObj).val('YES');
+	}
+}
+
+// function refreshPrePolulatedRider(){
+//     $('input[id*="_riderDetails_selected"][type!="hidden"]').checkboxradio().checkboxradio('enable');
+//     $('select[id*="_riderDetails_productSeq"]').selectmenu().selectmenu('disable');
+
+//     $.ajax({
+//         url: "/app/Policy/refreshPrePolulatedRider",
+//         method: 'POST',
+//         data: $('#EAPPProposal').serialize(),
+//         async: false,
+//         success: function(data){
+//             $('div#riderMainWrapper').html(data);
+//             $('div#riderMainWrapper').trigger('create');
+//             ridersOnLoad();
+//             if($('#riderAutoPopulationReqFlag').val() == "YES" ){
+// 				showDialog("", "resetRiderValue", 'warning', 0, 'e-application');
+
+//             }
+//         }
+//     });
+// }
+
+function populateRider(accordionKey){
+    var riderInitialCount = $('#riderInitialCount'+accordionKey).val()
+    $.ajax({
+        url: "/app/Policy/populateRider",
+        method: 'POST',
+        data: $('#EAPPProposal').serialize() + "&accordionKey="+accordionKey+"&riderInitialCount="+riderInitialCount,
+        success: function(data){
+            $('div#riderAutoPopulationDiv'+accordionKey).html(data);
+            $('div#riderAutoPopulationDiv'+accordionKey).trigger('create');
+
+            var ridersPlanOptions = document.querySelectorAll('div#riderAutoPopulationDiv'+accordionKey+' select[id*="_riderDetails_productPlanOptionCd"]');
+            for(var l = 0; l < ridersPlanOptions.length; l++){
+                riderDetails_productPlanOptionCd_onFocus(ridersPlanOptions[l]);
+            }
+            
+            var riders = document.querySelectorAll('div#riderAutoPopulationDiv'+accordionKey+' [id*="_riderDetails_productSeq"]');
+            for(var i = 0; i < riders.length; i++){
+                var riderId = riders[i].getAttribute('id');
+                var riderPrefix = riderId.replace('_productSeq','');
+                var riderPremiumSAFlField = riderId.replace('productSeq','premiumSAFl');
+                riderPremiumSAFl = $('#' + riderPremiumSAFlField).val(); 
+
+                if ($('#'+riderPrefix+'_selected-0').is(':checked')){
+                    $('#'+riderId).parents('tr').find('select').selectmenu().selectmenu('enable');
+                    $('#'+riderId).parents('tr').find('input[type!=hidden][type!=checkbox]').removeClass('readonly');
+                    $('#'+riderId).parents('tr').find('input[type!=hidden][type!=checkbox]').removeAttr('readonly');
+                    $('#'+riderId).parents('tr').find('a').removeClass('readonly');
+                    enableDisableFormFields(riderPrefix + '_',riderPremiumSAFl, false); 
+                }
+                else{
+                    $('#'+riderId).parents('tr').find('select').selectmenu().selectmenu('disable');
+                    $('#'+riderId).parents('tr').find('input[type!=hidden][type!=checkbox]').addClass('readonly');
+                    $('#'+riderId).parents('tr').find('a').addClass('readonly');
+                    $('#'+riderId).parents('tr').find('input[type!=hidden][type!=checkbox]').attr('readonly');
+                }
+            }
+
+            var riderDisableField = document.querySelectorAll('div#riderAutoPopulationDiv'+accordionKey+' input[id*="_riderDetails_riderDisableField"]');
+            for(var i = 0; i < riderDisableField.length; i++){
+                selectedId = riderDisableField[i].id.replace('riderDisableField','selected-0') 
+                if (riderDisableField[i].value == 'YES'){
+                    $('#'+selectedId).checkboxradio().checkboxradio('disable');
+                }
+                else{
+                    $('#'+selectedId).checkboxradio().checkboxradio('enable');
+                }
+            }
+            disableFieldsIfQuotationRefGuid();
+			disableAllIfPolicyNumber();
+        }
+    });
+    
+}
+
+function addMore_riderDetails(currentRiderIdPrefix) {
+    var riderGuid = $('#'+currentRiderIdPrefix+'_guid').val();
+    // NOTE: The selector is the hidden DIV element.
+    $("#riderLoadingDiv-"+riderGuid).simpledialog2({
+        width : '80%',
+        top: '25%',
+        left: '10%',
+        themeDialog: 'a'
+    });
+    $('.ui-simpledialog-container').css('max-width','100%');
+}
+
+/********* Beneficiary Life related functions *********/
+function nomineePolicyPartyRole_partySameAsCd_onFocus(object){
+	id = object.id;
+	lookupkey = object.getAttribute("data-lookupkey");
+	partyRoles  = $('#selectedPartyRoles').val();
+	policyObject = $('#policy_object').val();
+	filterCondition = {'object' : policyObject, 'partyRoles':partyRoles};
+	loadLookupData(lookupkey, filterCondition, id);
+}
+
+function nomineePolicyPartyRole_partySameAsCd_func(object){
+	if(object != null){
+		var refGuid_id = object.id.replace('partySameAsCd','refGuid');
+		if(object.value != "" && object.value != "OTHER"){
+			hideBeneficiaryDetails(object.id.replace('nomineePolicyPartyRole_partySameAsCd','nomineeParty'), true);
+
+			if(object.value == "SUPPLEMENTARY"){
+				$("#"+refGuid_id).parents('.row-details').show();
+				nomineePolicyPartyRole_refGuid_onFocus(document.getElementById(refGuid_id));
+			}
+			else{
+				$("#"+refGuid_id).parents('.row-details').hide();
+				$("#"+refGuid_id).val('').change();
+			}
+		}
+		else{
+			hideBeneficiaryDetails(object.id.replace('nomineePolicyPartyRole_partySameAsCd','nomineeParty'), false);
+			$("#"+refGuid_id).parents('.row-details').hide();
+		}
+		checkForMinor();
+	}
+}
+
+function nomineeParty_relationCd_func(obj){
+	if (obj != null){
+	    var relation = $('#'+obj.id).val();
+	    if (relation == "OTHER")
+	    {
+	        $('input[id*="_nomineeParty_otherRelation"]').parents(".project-data").show();
+	        $('p[id*="_nomineeParty_otherRelation_lbl"]').show();
+        	$('input[id*="_nomineeParty_otherRelation"]').show();
+	    } 
+	    else
+	    {
+	        $('input[id*="_nomineeParty_otherRelation"]').parents(".project-data").hide();
+	        $('input[id*="_nomineeParty_otherRelation"]').val("");
+	    }
+	}
+}
+
+function nomineePolicyPartyRole_refGuid_onFocus(object){
+	objectId = object.id;
+	lookupkey = object.getAttribute("data-lookupkey");
+	policyObject = $('#policy_object').val();
+	filterCondition = {'object' : policyObject};
+	loadLookupData(lookupkey, filterCondition, objectId);	
+}
+
+function nomineePolicyPartyRole_refGuid_func(object){
+	checkForMinor();
+}
+
+function nomineeParty_birthDt_func(object){
+    age = object.id.replace("birthDt","age");
+    getAge(object.value, age, '', '');
+    checkForMinor();
+}
+
+function nomineeParty_age_func(object){
+	birthDt = object.id.replace("age","birthDt")
+    getDOB(object.value, birthDt);
+	checkForMinor();
+}
+
+function nomineeParty_percentage_func(object){
+	if (isNaN(object.value)) {
+    	// alert('Please enter valid percentage');
+    	raiseAlert("ERR_PLZENTER_PERCENTAGE",[],locale);
+    	object.value = object.value.replace(/[^0-9]/g, '');
+  	}
+}
+
+function nomineeDetails_addButton_func(object){
+	var displayCount = $('#nomineeDetails_addButton .button-add-section .notification').text();
+	var nomineeLifeCount = parseInt($('#nomineeLifeCount').val());
+    $.ajax({
+        url: "/app/Policy/addBeneficiary",
+        data: {
+            'policyObject': $('#policy_object').val(), 
+            'nomineeLifeCount': nomineeLifeCount,
+            'displayCount':displayCount
+        },
+        success: function(data) {
+            displayCount =  parseInt(displayCount) + 1; 
+            $('#nomineeDetails_addButton .button-add-section .notification').text(displayCount);
+           
+            var sectionExist = $(".nomineeDetails-main-class >.ui-collapsible-set >.ui-collapsible");
+            if (sectionExist.length > 0){
+                $(".nomineeDetails-main-class > .ui-collapsible-set >.ui-collapsible:last").next('.clearfix').after(data);
+            }
+            else{
+                $(".nomineeDetails-main-class >.ui-collapsible-set").prepend(data);
+            }
+            $(".nomineeDetails-main-class").trigger('create');
+            
+            var currentNomineeCount = nomineeLifeCount + 1; 
+            $('#nomineeLifeCount').val(currentNomineeCount);
+
+    	    nomineePolicyPartyRole_partySameAsCd_func(document.getElementById('grid_'+ currentNomineeCount.toString() + '_nomineePolicyPartyRole_partySameAsCd'));
+			nomineeParty_relationCd_func(document.getElementById('grid_'+ currentNomineeCount.toString() + "_nomineeParty_relationCd"));
+			changePartyHolderAddressTab('homeAddressContainer', 'grid_'+ currentNomineeCount.toString() + "_nomineeParty");
+			removeCopyFromAddrOptions('grid_'+ currentNomineeCount.toString() + "_nomineeParty");
+		    nomineeParty_titleCd_func(document.getElementById('grid_'+currentNomineeCount.toString()+"_nomineeParty_titleCd"));
+            $(".datepicker:not(.inputreadonly)").datepicker({
+                changeMonth: true,
+                changeYear: true,
+                dateFormat: "dd/mm/yy",
+				yearRange: "c-100:c+100"
+            });
+        }
+    });
+}
+
+function nomineeDetails_removed_func(object){
+	deletePopup(object,"DELETE_CONFIRMATION",'Beneficiary');
+}
+
+function deleteBeneficiary_Callback_func(object){
+	$("input#"+object.id.replace("nomineeDetails","nomineeParty")).val("YES");
+	$("input#"+object.id.replace("nomineeDetails","nomineePolicyPartyRole")).val("YES");
+	$("input#"+object.id.replace("nomineeDetails","nomineeParty")).parents('.ui-collapsible').hide();
+	var displayCount = $('#nomineeDetails_addButton .button-add-section .notification').text();
+	displayCount = parseInt(displayCount) - 1;
+	$('#nomineeDetails_addButton .button-add-section .notification').text(displayCount);	
+	checkForMinor();
+}
+
+function checkForMinor(){
+	var majorAge = $('#ageFacet').val(); 
+	var minorFlag = false;
+	var policyObject = $('#policy_object').val();
+	var removed = ""
+	$("input[id*='_nomineeParty_removed']").each(function(){
+		removed = $(this).val();
+	});				
+	$("input[id*='_nomineeParty_age']").each(function(){
+		if (minorFlag) { return false; }
+		var partySameAsCdId = $(this).attr("id").replace('nomineeParty_age','nomineePolicyPartyRole_partySameAsCd');
+		
+		var age = $(this).val();
+
+		if (($('#'+partySameAsCdId).val() == 'OTHER' || $('#'+partySameAsCdId).val() == '') && age.length > 0 && parseInt(age) < parseInt(majorAge) && removed != "YES"){
+			if ($('#'+partySameAsCdId.replace("partySameAsCd","nomineeRefGuid")).val() == $('#'+$(this).attr("id").replace("age","guid")).val()){
+				minorFlag = true;
+			}
+		}
+		else if ($('#'+partySameAsCdId).val() == 'SUPPLEMENTARY') {
+			guid = $('#'+partySameAsCdId.replace("partySameAsCd","refGuid")).val();
+			$.ajax({
+				url: "/app/Policy/getPartyAge",
+				data: "policyObject="+policyObject+"&guid="+guid,
+				async: false,
+				headers: {
+					'Transition-Enabled': false
+				},
+				success: function(data) {
+					var age = parseInt(data);
+					if (parseInt(age) < parseInt(majorAge) && age != "" && removed != "YES"){
+						minorFlag = true;
+						return false;
+					}	
+				}
+			});
+		}
+		else {
+			roleCd = $('#'+partySameAsCdId).val();
+			$.ajax({
+				url: "/app/Policy/getPartyAge",
+				data: "policyObject="+policyObject+"&roleCd="+roleCd,
+				async: false,
+				headers: {
+					'Transition-Enabled': false
+				},
+				success: function(data) {
+					var age = parseInt(data);
+					if (parseInt(age) < parseInt(majorAge) && age != "" && removed != "YES") {
+						minorFlag = true;
+						return false;
+					}	
+				}
+			});
+		}
+	});
+	if(minorFlag) {
+		$("#tab_nominee .tab-name>.ui-block-b").show();
+	}
+	else {
+		$("#tab_nominee .tab-name>.ui-block-b").hide();
+	}
+}
+
+function hideBeneficiaryDetails(object, hide){
+	if(hide){
+		clearPartyDetailsFields(object);
+		clearNomineeAddressFields('#'+object+'_nomineePartyAddressHome');
+		clearNomineeAddressFields('#'+object+'_nomineePartyAddressPermanent');
+		clearNomineeAddressFields('#'+object+'_nomineePartyAddressOffice');
+		$('#'+object+'_nomineePartyEmail_emailAddress').val('');
+		clearNomineeContactFields('#'+object+'_nomineePartyContactResidential');
+		clearNomineeContactFields('#'+object+'_nomineePartyContactOffice');
+		clearNomineeContactFields('#'+object+'_nomineePartyContactMobile'); 
+
+		$('#'+object+'_partyDetails').hide();
+		$('#'+object+'_partyAddress').hide();
+		$('#'+object+'_contactDetail').hide();
+		$('#'+object+'_nationalityDetails').hide();
+	}
+	else{
+		$('#'+object+'_partyDetails').show();
+		$('#'+object+'_partyAddress').show();
+		$('#'+object+'_contactDetail').show();
+		$('#'+object+'_nationalityDetails').show();
+	} 
+}
+
+function clearPartyDetailsFields(fieldId){
+	$('#'+fieldId+'_firstName1').val('');
+	$('#'+fieldId+'_middleName1').val('');
+	$('#'+fieldId+'_lastName1').val('');
+	$('#'+fieldId+'_extensionName1').val('');
+	$('#'+fieldId+'_firstName2').val('');
+	$('#'+fieldId+'_middleName2').val('');
+	$('#'+fieldId+'_lastName2').val('');
+	$('#'+fieldId+'_extensionName2').val('');
+	$('#'+fieldId+'_birthDt').val('');
+	$('#'+fieldId+'_age').val('');
+	$('#'+fieldId+'_placeOfBirth').val('');
+	$('#'+fieldId+'_motherMaidenFirstname').val('');
+	$('#'+fieldId+'_motherMaidenLastname').val('');
+	$('#'+fieldId+'_fatherFirstName1').val('');
+	$('#'+fieldId+'_fatherMiddleName1').val('');
+	$('#'+fieldId+'_fatherLastName1').val('');
+	$('#'+fieldId+'_titleCd').val('').change();
+	// Nationality
+	$('#'+fieldId+'_otherCitizenship').val('');
+	$('#'+fieldId+'_citizenshipCd').val('').change();
+	$('#'+fieldId+'_religionCd').val('').change();
+	$('#'+fieldId+'_raceCd').val('').change();
+	$('input[id*="'+fieldId+'_nonResidentFl"]').attr("checked",false).checkboxradio("refresh");
+}
+
+function clearNomineeAddressFields(fieldId){
+	$(fieldId+'_copyFromAddr1').val('').change();
+	$(fieldId+'_copyFromAddr2').val('').change();
+	$(fieldId+'_copyFromAddr3').val('').change();
+	
+	$(fieldId+'_addressLine1Lang1').val('');
+	$(fieldId+'_addressLine1Lang2').val('');
+	$(fieldId+'_addressLine2Lang1').val('');
+	$(fieldId+'_addressLine2Lang2').val('');
+	$(fieldId+'_addressLine3Lang1').val('');
+	$(fieldId+'_addressLine4Lang1').val('');
+	$(fieldId+'_addressLine4Lang2').val('');
+	$(fieldId+'_pinCode').val('');
+	$(fieldId+'_districtCd').val('');
+	$(fieldId+'_cityCd').val('').change();
+	$(fieldId+'_removed').val('').change();
+	$(fieldId+'_countryCd').val('').change();
+}
+
+function clearNomineeContactFields(fieldId){
+	$(fieldId+'_countryCd').val('');
+	$(fieldId+'_stdCode').val('');
+	$(fieldId+'_contactNum').val('');
+	$(fieldId+'_extensionNum').val('');
+}
+
+function nomineeParty_copyFromAddr1_func(object){
+	if (object.value != "")
+		$('#'+object.id.replace('copyFromAddr1','home-address-details')).hide();
+	else
+		$('#'+object.id.replace('copyFromAddr1','home-address-details')).show();
+}
+
+function nomineeParty_copyFromAddr2_func(object){
+	if (object.value != "")
+		$('#'+object.id.replace('copyFromAddr2','permanent-address-details')).hide();
+	else
+		$('#'+object.id.replace('copyFromAddr2','permanent-address-details')).show();
+}
+
+function nomineeParty_copyFromAddr3_func(object){
+	if (object.value != "")
+		$('#'+object.id.replace('copyFromAddr3','office-address-details')).hide();
+	else
+		$('#'+object.id.replace('copyFromAddr3','office-address-details')).show();
+}
+
+function nomineeParty_citizenshipCd_func(object){
+	hideShowOtherCitizenship(object);
+}
+
+function nomineeParty_titleCd_func(object){
+    if (object != null){
+        if (object.value == "OTHER") {
+            $("#"+object.id.replace('titleCd','otherTitle')).parents(".project-data").show();
+        }
+        else{
+            $("#"+object.id.replace('titleCd','otherTitle')).val("");
+            $("#"+object.id.replace('titleCd','otherTitle')).parents(".project-data").hide(); 
+        }
+    }
+}
+ 
+function appointeeParty_birthDt_func(object){
+	age = object.id.replace("birthDt","age");
+	getAge(object.value, age, '', '');
+}
+ 
+function appointeeParty_age_func(object){
+    birthDt = object.id.replace("age","birthDt")
+	getDOB(object.value, birthDt);
+}
+
+function appointeeParty_relationCd_func(object){
+    var relation = $('#appointeeParty_relationCd').val();
+    if (relation == "OTHER")
+    {
+        $("#appointeeParty_otherRelation").parents(".project-data").show();
+        $("#appointeeParty_otherRelation_lbl").show();
+        $("#appointeeParty_otherRelation").show();
+    }
+    else
+    {
+        $("#appointeeParty_otherRelation").parents(".project-data").hide();
+        $("#appointeeParty_otherRelation").val("");
+    }
+}
+
+function appointeeParty_copyFromAddr1_func(object){
+	if (object.value != "")
+		$('#'+object.id.replace('copyFromAddr1','home-address-details')).hide();
+	else
+		$('#'+object.id.replace('copyFromAddr1','home-address-details')).show();
+}
+
+function appointeeParty_copyFromAddr2_func(object){
+	if (object.value != "")
+		$('#'+object.id.replace('copyFromAddr2','permanent-address-details')).hide();
+	else
+		$('#'+object.id.replace('copyFromAddr2','permanent-address-details')).show();
+}
+
+function appointeeParty_copyFromAddr3_func(object){
+	if (object.value != "")
+		$('#'+object.id.replace('copyFromAddr3','office-address-details')).hide();
+	else
+		$('#'+object.id.replace('copyFromAddr3','office-address-details')).show();
+}
+
+function appointeeParty_citizenshipCd_func(object){
+	hideShowOtherCitizenship(object);
+}
+
+function appointeeParty_titleCd_func(object){
+	var title = $("#appointeeParty_titleCd").val();
+    if (title == "OTHER")
+    {
+        $("#appointeeParty_otherTitle").parents(".project-data").show();
+    }
+    else
+    {
+    	$("#appointeeParty_otherTitle").val("");
+        $("#appointeeParty_otherTitle").parents(".project-data").hide();
+    }
+}
+
+/*****Payment tab related functions******/
+function firstPremPolicyPaymentDtl_addButton_func(object) {
+	var inwardDetailCount = parseInt($('#inwardDetailCount').val());
+    var displayCount = $('#firstPremPolicyPaymentDtl_addButton .button-add-section .notification').text();
+    if (($("#grid_"+inwardDetailCount+"_firstPremPolicyPaymentDtl_paymentMethodCd")).val() == "" && ($("#grid_"+inwardDetailCount+"_firstPremPolicyPaymentDtl_removed")).val() != "YES" &&
+    	($("#grid_"+inwardDetailCount+"_firstPremPolicyPaymentDtl_inwardAmount")).val() == "")
+    {
+    	raiseAlert(getLabelValue('ERR_ADDRECORD'),[],locale);
+    }
+    else{
+	    $.ajax({                                    
+	        url: "/app/Policy/addInitialPaymentMethod",
+	        async: false,
+	        data: {'inwardObject': $('#inward_object').val(), 'policyObject': $('#policy_object').val(), 'inwardDetailCount' : inwardDetailCount},
+	        headers: {
+	        'Transition-Enabled': false
+	        },
+	        success: function(data) {
+	        	$('#inwardDetailCount').val(inwardDetailCount + 1);
+	            displayCount =  parseInt(displayCount) + 1; 
+	            var gridCount = (inwardDetailCount+1).toString();
+	            $('#firstPremPolicyPaymentDtl_addButton .button-add-section .notification').text(displayCount);
+	            sectionExist = $(".firstPremPolicyPaymentDtl-main-class >.ui-collapsible-set >.ui-collapsible");
+	            if (sectionExist.length > 0){
+	                $(".firstPremPolicyPaymentDtl-main-class > .ui-collapsible-set >.ui-collapsible:last").next('.clearfix').after(data);
+	            }
+	            else{
+	                $(".firstPremPolicyPaymentDtl-main-class >.ui-collapsible-set").prepend(data);
+	            }
+	            $(".firstPremPolicyPaymentDtl-main-class").trigger('create');
+	            var paymentMethodCd = document.querySelector('select[id="grid_'+gridCount+'_firstPremPolicyPaymentDtl_paymentMethodCd"]');
+				firstPremPolicyPaymentDtl_paymentMethodCd_func(paymentMethodCd,true);
+
+				var micrNum = document.querySelectorAll('input[id*="_firstPremPolicyPaymentDtl_micrNum"]');
+				for(var i = 0; i < micrNum.length; i++){
+					firstPremPolicyPaymentDtl_micrNum_func(micrNum[i]);
+				}
+
+				var bankCd = document.querySelectorAll('select[id*="_firstPremPolicyPaymentDtl_bankCd"]');
+				for(var i = 0; i < bankCd.length; i++){
+					firstPremPolicyPaymentDtl_bankCd_onFocus(bankCd[i]);
+				}
+
+				var bankBranch = document.querySelectorAll('select[id*="_firstPremPolicyPaymentDtl_bankBranch"]');
+				for(var i = 0; i < bankBranch.length; i++){
+					firstPremPolicyPaymentDtl_bankBranch_onFocus(bankBranch[i]);
+				}
+				$(".datepicker:not(.inputreadonly)").datepicker({
+                changeMonth: true,
+                changeYear: true,
+                dateFormat: "dd/mm/yy",
+                yearRange: "c-100:c+100"
+            });
+	       	}
+	    });
+	}
+}
+
+function firstPremPolicyPaymentDtl_removed_func(object){
+	deletePopup(object,"DELETE_CONFIRMATION",'Payment');
+}
+
+function deletePayment_Callback_func(object){
+    var fieldObject = $('#'+object.id).parent().find('input[name*="[guid]"]');
+    var objectFieldName = fieldObject.attr('name');
+    if(parseInt(objectFieldName.indexOf("[guid]")) > 0)
+    {
+        var inwardDetailObjectName = objectFieldName.substring(0, (objectFieldName.length-6));
+        $('input[name="'+inwardDetailObjectName+'[removed]"]').val('YES'); 
+        $('input[name="'+inwardDetailObjectName+'[object]"]').parents('.ui-collapsible').hide();
+        var displayCount = $('#firstPremPolicyPaymentDtl_addButton .button-add-section .notification').text();
+        displayCount = parseInt(displayCount) - 1;
+        $('#firstPremPolicyPaymentDtl_addButton .button-add-section .notification').text(displayCount);
+    }
+}
+
+function firstPremPolicyPaymentDtl_paymentMethodCd_func(object,onLoad){
+	clearAndHideShowPaymentData(object,onLoad);
+}
+
+function firstPremPolicyPaymentDtl_micrNum_func(object){
+	var micrNum = object.value;
+	if (micrNum.toUpperCase() === "NOMICR") {
+		setReadOnly($('#'+object.id.replace("micrNum","bankCd")), false);
+		setReadOnly($('#'+object.id.replace("micrNum","bankBranch")), false);
+	}
+	else {
+		getBankBranchLookups(object.id, micrNum);
+	}
+}
+
+function firstPremPolicyPaymentDtl_bankCd_onFocus(object){
+	if (object != null && object.nodeName == "SELECT"){
+		id = object.id;
+		lookupkey = object.getAttribute("data-lookupkey");
+		filterCondition = {};
+		loadLookupData(lookupkey, filterCondition, id);
+	}
+}
+
+function firstPremPolicyPaymentDtl_bankBranch_onFocus(object){
+	if (object != null && object.nodeName == "SELECT"){
+		id = object.id;
+		lookupkey = object.getAttribute("data-lookupkey");
+		bankCd = $("#"+id.replace("bankBranch","bankCd")).val();
+		filterCondition = {'bankCd' : bankCd};
+		loadLookupData(lookupkey, filterCondition, id);
+	}
+}
+
+function payerDependency(object, payerTypeCd, paymentType, onLoad) {
+	if (payerTypeCd == "AGENT") {
+		$('select#'+object+'_payerPartyRefGuid').attr('disabled','disabled');
+		$('select#'+object+'_payerPartyRefGuid').selectmenu('disable');
+		$('#'+paymentType+'Payer_removed').val("YES");
+		$('#'+paymentType+'PaymentContainer').hide();
+		$("#"+paymentType+"Payer").hide();
+	}
+	else if (payerTypeCd == "OTHER") {
+		$('select#'+object+'_payerPartyRefGuid').attr('disabled','disabled');
+		$('select#'+object+'_payerPartyRefGuid').selectmenu('disable');
+		$('#'+paymentType+'Payer_removed').val("");
+		$('#'+paymentType+'PaymentContainer').show();
+		$("#"+paymentType+"Payer").show();
+		$('#'+object+'Payer_home-permanent-business-bar li[name="officeAddressLi"]').hide();
+		$("#"+object+"Payer_corporateDetail").hide();
+		citizenshipCdObj = document.getElementById(object+"_citizenshipCd");
+		if(citizenshipCdObj != null){
+			hideShowOtherCitizenship(citizenshipCdObj);
+		}
+		if (paymentType == 'initial'){
+			initialPayerPartyEmployment_occupationTypeCd_func();
+			changePartyHolderAddressTab('homeAddressContainer', 'initialPayer');
+			initialPayer_copyFromAddr1_func();
+			initialPayer_copyFromAddr2_func();
+			initialPayer_copyFromAddr3_func();
+			$("#initialPayer_copyFromAddr1").closest(".project-data").hide();
+			removeCopyFromAddrOptions("initialPayer");
+		}
+		else if(paymentType == 'renewal'){
+			renewalPayerPartyEmployment_occupationTypeCd_func();
+			changePartyHolderAddressTab('homeAddressContainer', 'renewalPayer');
+			renewalPayer_copyFromAddr1_func();
+			renewalPayer_copyFromAddr2_func();
+			renewalPayer_copyFromAddr3_func();
+			$("#renewalPayer_copyFromAddr1").closest(".project-data").hide();
+			removeCopyFromAddrOptions("renewalPayer");
+		}
+	}
+	else if (payerTypeCd == "SUPPLEMENTARY") {
+		if (onLoad) {
+			$('select#'+object+'_payerPartyRefGuid').removeAttr('disabled');
+		}
+		else {
+			$('select#'+object+'_payerPartyRefGuid').selectmenu('enable');
+		}
+		$('input[name="'+object+'[payerPartyRefGuid]"]').attr('disabled','disabled');
+		$('#'+paymentType+'Payer_removed').val("YES");
+		$('#'+paymentType+'PaymentContainer').hide();
+		$("#"+paymentType+"Payer").hide();
+	}
+	else{
+		$('select#'+object+'_payerPartyRefGuid').removeAttr('disabled');
+		$('select#'+object+'_payerPartyRefGuid').selectmenu('disable');
+		$('#'+object+'_payerPartyRefGuid').attr('disabled','disabled');
+		$('#'+paymentType+'Payer_removed').val("YES");
+		$('#'+paymentType+'PaymentContainer').hide();
+		$("#"+paymentType+"Payer").hide();
+	}
+}
+
+function inward_payerTypeCd_func() {
+	payerTypeCd = $('#inward_payerTypeCd').val();
+	payerDependency('inward',payerTypeCd,'initial',false)
+	$('#inward_payerPartyRefGuid').val('').selectmenu().selectmenu('refresh');
+	inward_payerPartyRefGuid_onFocus();
+}
+
+function inward_payerTypeCd_onFocus(object) {
+	var existingLivesRoleCd = $('input[name="existingLivesRoleCd"]').val().split(',');
+    $('select#inward_payerTypeCd option').each(function(index,currentOption){
+        if (index > 0){
+            if(($.inArray($(this).val(), existingLivesRoleCd) == -1 ) && ($(this).val() != 'OTHER')){
+                $(this).remove();
+            }
+        }
+    })
+}
+
+function inward_payerPartyRefGuid_onFocus(object) {
+	payerTypeCd = $('#inward_payerTypeCd').val();
+	if (payerTypeCd != '' && payerTypeCd != undefined){
+		createPayerNameList(payerTypeCd,'','inward_payerPartyRefGuid','INITIAL');
+	}
+}
+
+function initialPayerPartyEmployment_occupationTypeCd_func(){
+	occType = $("#initialPayerPartyEmployment_occupationTypeCd").val();
+	if (occType == "BUSINESS" || occType == "EMPLOYED") {
+		$("#initialPayer_home-permanent-business-bar li[name='officeAddressLi']").show();
+		$("#initialPayer_employmentDetail").show();
+		$("#initialPayerPartyAddressOffice_removed").val('');
+	}
+	else {
+		$("#initialPayer_home-permanent-business-bar li[name='officeAddressLi']").hide();
+		$("#initialPayer_employmentDetail").hide();
+		$("#initialPayerPartyAddressOffice_removed").val('YES');
+		$("#initialPayer_officeAddressContainer").hide();
+
+	}
+}
+
+function initialPayerPartyEmployment_industryCd_func() {
+    $('select#initialPayerPartyEmployment_natureOfDuty').val('').change();
+    $('select#initialPayerPartyEmployment_occupationClass').val('').change();
+}
+
+function initialPayerPartyEmployment_natureOfDuty_onFocus(obj){
+    if (obj != null){
+        id = obj.id;
+        lookupkey = obj.getAttribute("data-lookupkey");
+        industryCd = $('select#initialPayerPartyEmployment_industryCd').val();
+        filterCondition = {'industryCd' : industryCd};
+        loadLookupData(lookupkey, filterCondition, id);
+    }
+}
+
+function initialPayerPartyEmployment_occupationClass_onFocus(obj){
+    if (obj != null){
+        id = obj.id;
+        lookupkey = obj.getAttribute("data-lookupkey");
+        industryCd = $('select#initialPayerPartyEmployment_industryCd').val();
+        natureOfDuty = $('select#initialPayerPartyEmployment_natureOfDuty').val();
+        filterCondition = {'industryCd' : industryCd, 'natureOfDuty' : natureOfDuty};
+        loadLookupData(lookupkey, filterCondition, id);
+    }
+}
+
+function initialPayer_copyFromAddr1_func(object){
+	objectVal = $("#initialPayer_copyFromAddr1").val();
+	if (objectVal != "")
+		$('#initialPayer_home-address-details').hide();
+	else
+		$('#initialPayer_home-address-details').show();
+}
+
+function initialPayer_copyFromAddr2_func(object){
+	objectVal = $("#initialPayer_copyFromAddr2").val();
+	if (objectVal != "")
+		$('#initialPayer_permanent-address-details').hide();
+	else
+		$('#initialPayer_permanent-address-details').show();
+}
+
+function initialPayer_copyFromAddr3_func(object){
+	objectVal = $("#initialPayer_copyFromAddr3").val();
+	if (objectVal != "")
+		$('#initialPayer_office-address-details').hide();
+	else
+		$('#initialPayer_office-address-details').show();
+}
+
+function initialPayer_birthDt_func(object){
+    age = object.id.replace("birthDt","age");
+    getAge(object.value, age, '', '');
+}
+
+function initialPayer_age_func(object){
+	birthDt = object.id.replace("age","birthDt")
+    getDOB(object.value, birthDt);
+}
+
+function initialPayer_titleCd_func(object){
+	var title = $("#initialPayer_titleCd").val();
+    if (title == "OTHER")
+    {
+        $("#initialPayer_otherTitle").parents(".project-data").show();
+    }
+    else
+    {
+        $("#initialPayer_otherTitle").parents(".project-data").hide();
+        $("#initialPayer_otherTitle").val("");
+    }
+}
+
+function initialPayer_relationCd_func(object){
+    var relation = $('#initialPayer_relationCd').val();
+    if (relation == "OTHER")
+    {
+        $("#initialPayer_otherRelation").parents(".project-data").show();
+        $("#initialPayery_otherRelation_lbl").show();
+        $("#initialPayer_otherRelation").show();
+    }
+    else
+    {
+        $("#initialPayer_otherRelation").parents(".project-data").hide();
+        $("#initialPayer_otherRelation").val("");
+    }
+}
+function renewalPayment_payerTypeCd_func(argument) {
+	payerTypeCd = $('#renewalPayment_payerTypeCd').val();
+	payerDependency('renewalPayment',payerTypeCd,'renewal',false);
+	$('#renewalPayment_payerPartyRefGuid').val('').selectmenu().selectmenu('refresh');
+	renewalPayment_payerPartyRefGuid_onFocus();
+}
+
+function renewalPayment_payerTypeCd_onFocus(object) {
+	var existingLivesRoleCd = $('input[name="existingLivesRoleCd"]').val().split(',');
+    $('select#renewalPayment_payerTypeCd option').each(function(index,currentOption){
+        if (index > 0){
+            if(($.inArray($(this).val(), existingLivesRoleCd) == -1 ) && ($(this).val() != 'OTHER')){
+                $(this).remove();
+            }
+        }
+    })
+}
+
+function createPayerNameList(roleCd,fieldValue,comboBoxTo,paymentInstructionTypeCd){  
+	$.ajax({
+		url: "/app/Policy/filterParty",
+		data: { 'roleCd': roleCd, 'fieldValue': fieldValue,'policyObject': $('#policy_object').val(),'paymentInstructionTypeCd':paymentInstructionTypeCd },
+		async: false,
+		success: function(data){
+			if(data != null){
+				$('#'+comboBoxTo).html(data).trigger('create');
+				option_value = $('#'+comboBoxTo).find('option:eq(1)').val();
+				$('#'+comboBoxTo).val(option_value).change();
+				$('#'+comboBoxTo).selectmenu().selectmenu("refresh");	
+            }
+		}
+	});
+}
+
+function renewalPayment_payerPartyRefGuid_onFocus(object) {
+	payerTypeCd = $('#renewalPayment_payerTypeCd').val();
+	if (payerTypeCd != '' && payerTypeCd != undefined){
+		createPayerNameList(payerTypeCd,'','renewalPayment_payerPartyRefGuid','RENEWALPREMIUM');
+	}
+}
+
+function renewalPayerPartyEmployment_occupationTypeCd_func(){
+	occType = $("#renewalPayerPartyEmployment_occupationTypeCd").val();
+	if (occType == "BUSINESS" || occType == "EMPLOYED") {
+		$("#renewalPayer_home-permanent-business-bar li[name='officeAddressLi']").show();
+		$("#renewalPayer_employmentDetail").show();
+		$("#renewalPayerPartyAddressOffice_removed").val('');
+	}
+	else {
+		$("#renewalPayer_home-permanent-business-bar li[name='officeAddressLi']").hide();
+		$("#renewalPayer_employmentDetail").hide();
+		$("#renewalPayerPartyAddressOffice_removed").val('YES');
+		$("#renewalPayer_officeAddressContainer").hide();
+
+	}
+}
+
+function renewalPayerPartyEmployment_industryCd_func() {
+    $('select#renewalPayerPartyEmployment_natureOfDuty').val('').change();
+    $('select#renewalPayerPartyEmployment_occupationClass').val('').change();
+}
+
+function renewalPayerPartyEmployment_natureOfDuty_onFocus(obj){
+    if (obj != null){
+        id = obj.id;
+        lookupkey = obj.getAttribute("data-lookupkey");
+        industryCd = $('select#renewalPayerPartyEmployment_industryCd').val();
+        filterCondition = {'industryCd' : industryCd};
+        loadLookupData(lookupkey, filterCondition, id);
+    }
+}
+
+function renewalPayerPartyEmployment_occupationClass_onFocus(obj){
+    if (obj != null){
+        id = obj.id;
+        lookupkey = obj.getAttribute("data-lookupkey");
+        industryCd = $('select#renewalPayerPartyEmployment_industryCd').val();
+        natureOfDuty = $('select#renewalPayerPartyEmployment_natureOfDuty').val();
+        filterCondition = {'industryCd' : industryCd, 'natureOfDuty' : natureOfDuty};
+        loadLookupData(lookupkey, filterCondition, id);
+    }
+}
+
+function renewalPayer_copyFromAddr1_func(object){
+	objectVal = $("#renewalPayer_copyFromAddr1").val();
+	if (objectVal != "")
+		$('#renewalPayer_home-address-details').hide();
+	else
+		$('#renewalPayer_home-address-details').show();
+}
+
+function renewalPayer_copyFromAddr2_func(object){
+	objectVal = $("#renewalPayer_copyFromAddr2").val();
+	if (objectVal != "")
+		$('#renewalPayer_permanent-address-details').hide();
+	else
+		$('#renewalPayer_permanent-address-details').show();
+}
+
+function renewalPayer_copyFromAddr3_func(object){
+	objectVal = $("#renewalPayer_copyFromAddr3").val();
+	if (objectVal != "")
+		$('#renewalPayer_office-address-details').hide();
+	else
+		$('#renewalPayer_office-address-details').show();
+}
+
+function renewalPayer_birthDt_func(object){
+    age = object.id.replace("birthDt","age");
+    getAge(object.value, age, '', '');
+}
+
+function renewalPayer_age_func(object){
+	birthDt = object.id.replace("age","birthDt")
+    getDOB(object.value, birthDt);
+}
+
+function renewalPayment_paymentMethodCd_func(object,onLoad){
+	$("#renewalPaymentDetails").show();
+	clearAndHideShowPaymentData(object,onLoad);
+}
+
+function renewalFinancialAccount_micrNum_func(object){
+	var micrNum = object.value;
+	if (micrNum.toUpperCase() === "NOMICR") {
+		setReadOnly($('#'+object.id.replace("micrNum","bankCd")), false);
+		setReadOnly($('#'+object.id.replace("micrNum","branchName")), false);
+	}
+	else {
+		getBankBranchLookups(object.id, micrNum);
+	}
+}
+
+function renewalFinancialAccount_bankCd_onFocus(object){
+	if (object != null && object.nodeName == "SELECT"){
+		id = object.id;
+		lookupkey = object.getAttribute("data-lookupkey");
+		filterCondition = {};
+		loadLookupData(lookupkey, filterCondition, id);
+	}
+}
+
+function renewalFinancialAccount_branchName_onFocus(object){
+	if (object != null && object.nodeName == "SELECT"){
+		id = object.id;
+		lookupkey = object.getAttribute("data-lookupkey");
+		bankCd = $("#"+id.replace("branchName","bankCd")).val();
+		filterCondition = {'bankCd' : bankCd};
+		loadLookupData(lookupkey, filterCondition, id);
+	}
+}
+
+
+function renewalPayer_relationCd_func(object){
+    var relation = $('#renewalPayer_relationCd').val();
+    if (relation == "OTHER")
+    {
+        $("#renewalPayerotherRelation").parents(".project-data").show();
+        $("#renewalPayer_otherRelation_lbl").show();
+        $("#renewalPayer_otherRelation").show();
+    }
+    else
+    {
+        $("#renewalPayer_otherRelation").parents(".project-data").hide();
+        $("#renewalPayer_otherRelation").val("");
+    }
+}
+
+
+function refundPayment_paymentMethodCd_func(object,onLoad){
+	$("#refundPaymentDetails").show();
+	clearAndHideShowPaymentData(object,onLoad);
+}
+
+function refundFinancialAccount_micrNum_func(object){
+	var micrNum = object.value;
+	if (micrNum.toUpperCase() === "NOMICR") {
+		setReadOnly($('#'+object.id.replace("micrNum","bankCd")), false);
+		setReadOnly($('#'+object.id.replace("micrNum","branchName")), false);
+	}
+	else {
+		getBankBranchLookups(object.id, micrNum);
+	}
+}
+
+function refundFinancialAccount_bankCd_onFocus(object){
+	if (object != null && object.nodeName == "SELECT"){
+		id = object.id;
+		lookupkey = object.getAttribute("data-lookupkey");
+		filterCondition = {};
+		loadLookupData(lookupkey, filterCondition, id);
+	}
+}
+
+function refundFinancialAccount_branchName_onFocus(object){
+	if (object != null && object.nodeName == "SELECT"){
+		id = object.id;
+		lookupkey = object.getAttribute("data-lookupkey");
+		bankCd = $("#"+id.replace("branchName","bankCd")).val();
+		filterCondition = {'bankCd' : bankCd};
+		loadLookupData(lookupkey, filterCondition, id);
+	}
+}
+
+function renewalPayer_titleCd_func(object){
+	var title = $("#renewalPayer_titleCd").val();
+    if (title == "OTHER")
+    {
+        $("#renewalPayer_otherTitle").parents(".project-data").show();
+    }
+    else
+    {
+    	$("#renewalPayer_otherTitle").val("");
+        $("#renewalPayer_otherTitle").parents(".project-data").hide();
+       
+    } 
+}
+
+/********* Requirement functions *********/
+function serviceDocument_documentCd_onFocus(obj){
+    if (obj != null){
+        id = obj.id;
+        lookupkey = obj.getAttribute("data-lookupkey");
+        categoryCd = $("#"+id.replace("documentCd","docCategoryCd")).val();
+        filterCondition = {'categoryCd' : categoryCd};
+        loadLookupData(lookupkey, filterCondition, id);
+    }
+}
+
+function takePicture(gridID) {
+	key = $('#'+gridID+'_docCategoryCd').val();
+	serviceDocGuid = $('#'+gridID+'_guid').val();
+	file = gridID+'_imageURL';
+	status = gridID+'_acceptanceStatusCd';
+	reciveDtId = gridID+'_receivedDt';
+	image_count = gridID+'_imageCount';
+	documentname = key
+	$.ajax({
+		url:"/app/Policy/takePicture", 
+		data: {'parentRefGuid':serviceDocGuid},
+		async: false,
+		success: function(data){
+		}
+	});
+}
+
+function updateFile(filename) {
+	filename = filename.split('@SEPARATOR');
+	url = filename[0];
+	data = "<div class='proof-img' name='"+filename[1]+"'><a href='#full-image' data-rel='popup' data-position-to='window' data-transition='pop' for='"+url+"' data-imagevalue='"+filename[1]+"'><img class='dirtyImage' data-id='"+filename[1]+"' src='"+url+"'/></a><a style='position:absolute;top:0;z-index:99;right:0;' id='deleteAnchor"+filename[1]+"'  href=javascript:deletePopup('"+filename[1]+"','DELETE_CONFIRMATION','image'); data-servicedocGuid='"+filename[2]+"'><img src='/public/jazz/images/del.jpg' alt='Delete' title='Delete'></a></div>"
+	$("#tab-"+documentname+"-proof-panel div.attach-image-section[name='"+filename[2]+"']").append(data).trigger("refresh");
+
+	var currentDate = new Date();
+	$('#'+file).val(filename);
+	$('#'+status).val("RECEIVED");
+	$('#'+reciveDtId).val(currentDate.getDate()+"/"+(currentDate.getMonth()+1)+"/"+currentDate.getFullYear());
+	imageCount = $('#'+image_count).val();
+	
+	if (isNaN(parseInt(imageCount)) || isNaN(parseInt(imageCount)) < 0){
+		imageCount = 0
+	}
+	$('#'+image_count).val(parseInt(imageCount) + 1);
+	
+	$("a[href='#full-image']").click(function(){
+		$("div#full-image img").attr("src",$(this).attr("for"));
+	});
+
+	$("#full-image").on({
+		popupbeforeposition: function() {
+			var maxHeight = $(window).height() - 100 + "px";
+			$("#full-image img").css("max-height", maxHeight);
+		}
+	});
+}
+
+function removeImages(servicedocGuid, imagevalue, numberOfimages) {
+	imagevalue = imagevalue || "";
+	numberOfimages = numberOfimages || "single";
+	var servicedocObj = servicedocGuid.replace('_','.');
+	var servicedocObjId = $('input[value="'+servicedocObj+'"]').attr('id');
+	var imageCountId = servicedocObjId.replace('object','imageCount');
+	var imageCount = $('#'+imageCountId).val();
+	if(isNaN(parseInt(imageCount)) || isNaN(parseInt(imageCount)) < 0){
+		imageCount = 0
+	}
+	$.ajax({                                    
+		url: "/app/Policy/removeImage",
+		async: false,
+		data: {'imageObject': imagevalue,'servicedocGuid': servicedocGuid,'numberOfimages':numberOfimages},
+		success: function(data) {
+			if(data != null){
+	            var parseData = $.parseJSON(data);
+	            var objects = parseData.split(",");
+	            $.each(objects, function(index, value) {
+					$(".proof-img[name='"+value+"']").remove();
+	            })
+			}
+		}
+	});
+	if (numberOfimages == 'single'){
+		$(".proof-img[name='"+imagevalue+"']").remove();
+		$("div#full-image").popup( "close" );
+		$('#'+imageCountId).val(parseInt(imageCount) - 1);
+	}
+	else{
+		$('#'+imageCountId).val(0);
+	}
+}
+
+
+function serviceDocument_selected_func(obj){
+	selectedID = obj.id.substring(0, obj.id.indexOf('-'));
+	var guidId = selectedID.replace('selected','guid');
+    var servicedocGuid = $('#'+guidId).val();
+    var imageCountId = selectedID.replace('selected','imageCount');
+    var imageCount = $('#'+imageCountId).val();
+    if (isNaN(parseInt(imageCount)) || isNaN(parseInt(imageCount)) < 0){
+		imageCount = 0
+	}
+	
+    if (obj != null){
+    	if(obj.checked == false){
+    		if (imageCount > 0) {
+				deletePopup(servicedocGuid,'DELETE_CONFIRMATION','images');
+			}
+			$('a[id="capture'+servicedocGuid+'"]').addClass('readonly');
+		}
+		else{
+			$('a[id="capture'+servicedocGuid+'"]').removeClass('readonly');
+		}
+    }
+}
+
+function serviceDocument_documentCd_func(obj){
+    if (obj != null){
+        var imageCountId = obj.id.replace('documentCd','imageCount');
+        var guidId = obj.id.replace('documentCd','guid');
+        var servicedocGuid = $('#'+guidId).val();
+        var imageCount = $('#'+imageCountId).val();
+        if (isNaN(parseInt(imageCount)) || isNaN(parseInt(imageCount)) < 0){
+			imageCount = 0
+		}
+		if (imageCount > 0) {
+			deletePopup(servicedocGuid,'DELETE_CONFIRMATION','images');
+		}
+    }
+}
+
+function deleteimage_Callback_func(imageObject) {
+	var servicedocGuid = $('[id="deleteAnchor'+imageObject+'"]').attr('data-servicedocGuid');
+	removeImages(servicedocGuid, imageObject);
+}
+
+function deleteimages_Callback_func(servicedocGuid) {
+	removeImages(servicedocGuid, '', 'all');
+}
+
+function deleteNOimages_Callback_func(servicedocGuid) {
+    if($('#multiDocMode').val() == 'true'){
+		var servicedocObj = servicedocGuid.replace('_','.');
+		var servicedocObjId = $('input[value="'+servicedocObj+'"]').attr('id');
+		var selectedtId = servicedocObjId.replace('object','selected-0');
+		$('#'+selectedtId).prop('checked', true);
+		newName = $('#'+selectedtId).attr('name').replace('_hid','');
+		$('#'+selectedtId).attr('name', newName);
+		$('#'+selectedtId).val('YES');
+		$('label[for="'+selectedtId+'"]').removeClass('ui-checkbox-off');
+		$('label[for="'+selectedtId+'"]').addClass('ui-checkbox-on');
+	}
+}
+
+function deleteNOimage_Callback_func(imageObject) {
+}
+
+function redirect_to_browser(doc_guid, documentCd,policyObject){
+	if (documentCd == 'SINGLEDOC'){
+		$("select.docc").each(function(){
+			documentCdName = $(this).attr('name');
+			guidName = documentCdName.replace('documentCd', 'guid');
+			eachDocGuid = $('input[name="'+guidName+'"]').val();
+			if (eachDocGuid == doc_guid){
+				documentCd = $(this).val();
+			}
+		});
+	}
+	$.ajax({                                    
+		url: "/app/Policy/take_cam_pic",
+		method: 'POST',
+		async: false,
+		data: $("#" +document.forms[0].id).serialize() + '&serviceDocument_guid='+doc_guid+'&service_docc='+documentCd+'&policyObject='+policyObject,
+		headers: {
+        	'Transition-Enabled': false
+        },
+		success: function(){
+		}
+	});
+}
+
+function getCollateral(objectId,fieldName){
+    var id = objectId.replace('helpLink',fieldName);
+    var productId = $('#'+id).val();
+    $.ajax({
+        url: "/app/Collateral/showpopup",
+        data: { medianame: productId},
+        headers: {'Transition-Enabled': false},
+        success: function(data){
+            
+        }
+    });
+
+}
+
+function enableDisableQuickLinks(){
+	var uwDecisionCd = $('#policy_uwDecisionCd').val();
+	var statusCd = $('#statusCd').val();
+	var counterOfferDecisionCd = $('#counterOfferDecisionCd').val();
+	$("a[data-url='#tab_agentDeclaration']").css('pointer-events','none');
+	if (statusCd == "ACCEPTED" || statusCd == "SIGNED" || statusCd == "PAYMENTDONE" || statusCd == "DECLARATIONCOMPLETE" || $('#policy_policyNum').val() != ""){
+		disableAllFormFields();
+	}
+	if (statusCd == "UWCOMPLETE" || statusCd == "PAYMENTFAILED"){
+		if($('#sym_current_Tab').val() != "tab_coverage"){
+			disableAllFormFields();
+		}
+	}
+}
+
+function previewEapp() {
+	submitForm();
+	document.EAPPProposal.action = "previewEapp";
+	// Check if form is modified else just trigger FETCH
+	initialFormSerialized = initialFormSerialized.replace(/sym_current_Tab=[^&]*&/i, "").replace(/sym_navbar=[^&]*&/i, "");
+	submitFormSerialized = $("#" +document.forms[0].id).serialize().replace(/sym_current_Tab=[^&]*&/i, "").replace(/sym_navbar=[^&]*&/i, "");
+	if(initialFormSerialized == submitFormSerialized) {
+		document.EAPPProposal.action = "previewEapp?mode=FETCH";
+	}
+	document.EAPPProposal.submit();
+	loading('show');
+}
+
+function acceptEappPreview() {
+	loading('show');
+    $.ajax({
+        url: "/app/Policy/acceptEappPreview",
+        data: { 'form': $('#EAPPProposal').serializeHash()},
+        success: function(data) {
+        }
+    });  
+}
+
+function checkPaymentStatus() {
+	policy_object = $("#policy_object").val();
+	$("#paymentReceipt").popup('open');
+    /*$.ajax({
+        url: "/app/Policy/checkPaymentStatus",
+        data: {'policy_object': policy_object},
+        async: false,
+        headers: {
+          'Transition-Enabled': false
+        },
+        success: function(data) {
+            raiseAlert(data,[],locale);
+        }
+    });*/
+
+    // disableFieldsIfQuotationRefGuid();
+    // disableAllIfPolicyNumber();
+}
+
+function genPdfFile() {
+	loading('show');
+	policy_object = $("#policy_object").val();
+    $.ajax({
+        url: "/app/Policy/genPdfFile",
+        data: {'policy_object': policy_object},
+        success: function(data) {
+        }
+    });  
+}
+
+// this should always be the last call, write any functions above this
+var insuranceTypeCd = $('#policy_insuranceTypeCd').val();
+insertAfterScriptPath = $('script[src="/app/Policy/NBProposalEntryComplete.js"]')
+if(insuranceTypeCd == 'AUTO'){
+    includeJs("/app/Policy/NBProposalEntryAuto_Jazz.js", insertAfterScriptPath);
+}
+else if(insuranceTypeCd == 'TRAVEL'){
+    includeJs("/app/Policy/NBProposalEntryTravel_Jazz.js", insertAfterScriptPath);
+}
+else if(insuranceTypeCd == 'HEALTH'){
+    includeJs("/app/Policy/NBProposalEntryHealth_Jazz.js", insertAfterScriptPath);
+}
+else{
+    includeJs("/app/Policy/NBProposalEntryLife_Jazz.js", insertAfterScriptPath);
+}
+</script>

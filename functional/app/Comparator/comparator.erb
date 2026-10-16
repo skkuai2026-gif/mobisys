@@ -1,0 +1,375 @@
+<div data-role="page" id="comparatorPage" data-url="<%= Rho::RhoConfig.start_path %>/">
+
+
+<!-- Content div -->
+<div class="contentdiv">
+      
+<!-- Menu -->
+  <div style="width:100%;">
+   <ul id="css3menu1" class="topmenu" style="width:100%;">
+      <li class="topfirst" style="width:20%;">
+        <a href="/app/Level0/entrypoint" style="padding:0;">
+          <img src="<%=@collateralHM['HDFCLOGO'].fileName%>" alt="<%=@collateralHM['HDFCLOGO'].header%>" height="57px"/>
+        </a>
+      </li>
+      <% 
+        last = @level0s.length-1
+        @level0s.each_with_index{|level0,index|
+         
+          if index == last
+            menuString = "lastmenu"
+          else
+            menuString = "topmenu"
+          end
+      %>
+          <li class="<%=menuString%>" style="width:16%;">
+            <%
+              if level0.menu == "YES"
+                %>
+                <a href="#">
+                <%
+              elsif level0.menu == "NO"
+                %>
+                <a href="/app/Level0/{<%=level0.object%>}/click?level0id=<%=level0.object%>">
+                <%
+              end
+              
+              if level0.levelCd == @level0.levelCd
+                %>
+                  <label class="level0label0selected"><%= level0.name1 %></label>
+                <%
+              else
+                %>
+                  <label class="level0label0"><%= level0.name1 %></label>
+                <%
+              end
+            %>
+              <BR>
+              <label class="level0label1"><%= level0.name2 %></label>
+            </a>
+            <%
+              if level0.menu == "YES"
+                %>
+                  <ul>
+                    <%
+                      @level1s.each do |level1|
+                        if level1.level0_levelCd == level0.levelCd
+                          %>
+                          <li style="position:relative;display:inline-block;">
+                            <a href="/app/Level1/{<%=level0.object%>}/click?level1id=<%=level1.object%>">
+                              <img src="<%=@collateralHM[level1.icon].fileName%>" alt="<%=@collateralHM[level1.icon].header%>"/>
+                            </a>
+                          </li>
+                          <% 
+                        end 
+                      end 
+                    %>
+                  </ul>
+                <%
+              end
+            %>
+          </li>
+          <% 
+        } 
+      %>
+    </ul>
+  </div>
+<!-- end Menu -->
+  
+    <!-- Main Content -->
+    <div class="landingpagecontent">
+        <div class="landingpagetop">
+          <div class="level0header">
+            <label class="level0landinglabel0"><%= @level0.name1 %></label>
+            <br>
+            <label class="level0landinglabel1"><%= @level0.name2 %></label>    
+          </div>
+          <div class="level0text">
+            <%= @level0.text %>
+          </div>
+        </div>
+        
+        <div class="landingpagemenu">
+        <center>
+            <div id="tab1" style="display: block;">
+              <div class="divblock">
+                <div class="hdfcDv">
+                  <center><img src="/public/images/hdfc_life.gif" width="87" height="38"></center>
+                  <p>  <select NAME="category" id="category" class="styled">
+                  <option value="1">Select Product Category</option>
+                </select></p>
+                  <p>  <select NAME="product" id="product" class="styled">
+                  <option value="1">Select Product</option>
+                </select></p>
+                </div>
+                <div class="insuranceDv">
+                  <center><img src="/public/images/other_insurance.gif" width="194" height="39"></center>
+                   <p>  <select NAME="compt" id="compt" class="styled">
+                  <option value="1">Select Insurance Player</option>
+                   </select></p>
+                   <p>  <select NAME="comptProduct" id="comptProduct" class="styled">
+                  <option value="1">Select Product </option>
+                  </select></p>
+                </div>
+              </div>
+               <center>
+                 <img name="submit" id="submit" src="/public/images/compare_plans.gif" width="165" height="46" border="0"/>
+               </center>
+              </div> 
+        </center>
+        </div>
+    </div>
+    <!-- End Main Content -->
+  
+  </div>
+  <!-- End Content div -->
+
+     <!-- Footer div -->
+<!--   
+     <div class="footer-docs" >
+       <% randomId = rand.to_s[2..-1] %>
+       <TABLE width=100%>
+         <TR>
+           <TD> <a href="/app/Level0/entrypoint" style="color:#FFF; text-decoration:none;">Home</a> </TD>
+           <TD> | </TD>
+           <TD> <a href="#" id="<%#=randomId%>" style="color:#FFF; text-decoration:none;">About&nbsp;Us</a> </TD>
+                     <script>
+                       $("#<%#=randomId%>").click(function () {  
+                         $.get("/app/Collateral/showpopup?medianame=<%#=@collateralHM['ABOUTUS'].collateralCd%>",function(data) {});
+                       }); 
+                     </script>
+           <TD> | </TD>
+           <TD> <a href="<%#= :back %>" style="color:#FFF; text-decoration:none;">Back</a> </TD>
+           <TD> | </TD>
+           <TD> <a href="/app" style="color:#FFF; text-decoration:none;">Admin</a> </TD>
+           <TD width=100%> &nbsp; </TD>        
+           <TD> <a href="/app/Level0/exit" style="color:#FFF; text-decoration:none;">Exit</a> </TD>
+         </TR>
+       </TABLE>
+     </div>    
+-->   
+     <!-- End Footer div -->
+  
+    <SCRIPT LANGUAGE="JavaScript">
+       
+       function Comparator(categoryCd,productCd,competitorCd,competitorProductCd,collateralCd)
+       {
+         this.categoryCd=categoryCd;
+         this.productCd=productCd;
+         this.competitorCd=competitorCd;
+         this.competitorProductCd=competitorProductCd;
+         this.collateralCd=collateralCd;
+       }
+       
+       var compArray = new Array();
+       
+      <% @comparators.each do |comparator|   %>              
+       compArray[compArray.length] = new Comparator('<%=comparator.categoryCd%>','<%=comparator.productCd%>','<%=comparator.competitorCd%>','<%=comparator.competitorProductCd%>','<%=comparator.collateralCd%>');
+     <% end %>
+ 
+     var unique = function(origArr,paramName) {  
+           var newArr = [],  
+               origLen = origArr.length,  
+               found,  
+               x, y;  
+         
+           for ( x = 0; x < origLen; x++ ) {  
+               found = undefined;  
+               for ( y = 0; y < newArr.length; y++ ) {  
+                   if ( eval('origArr[x].'+paramName) === eval('newArr[y].'+paramName)) {  
+                     found = true;  
+                     break;  
+                   }  
+               }  
+               if ( !found) newArr.push( origArr[x] );  
+           }  
+          return newArr;  
+       }; 
+       
+       
+       function comptForProduct(productCd){
+        var newArr = new Array(); 
+       
+        for(i=0;i<compArray.length;i++){
+       
+          if(compArray[i].productCd===productCd){
+           newArr[newArr.length] = compArray[i];
+       
+          }
+        }
+       
+        return newArr;  
+       }
+       
+       function productForCompt(competitorCd,productCd,categoryCd){
+        var newArr = new Array(); 
+       
+        for(i=0;i<compArray.length;i++){
+       
+          if(compArray[i].competitorCd===competitorCd &&
+            compArray[i].productCd===productCd &&
+            compArray[i].categoryCd===categoryCd
+          ){
+           newArr[newArr.length] = compArray[i];
+       
+          }
+        }
+       
+        return newArr;  
+       }
+       
+       function collateralForSelection(categoryCd,productCd,competitorCd,competitorProductCd){
+       
+         for(i=0;i<compArray.length;i++){
+           if(compArray[i].competitorProductCd===competitorProductCd &&
+             compArray[i].competitorCd===competitorCd &&
+             compArray[i].productCd===productCd &&
+             compArray[i].categoryCd===categoryCd
+            ){
+             return compArray[i].collateralCd;
+           }
+          }
+          return '';
+          
+       }
+       
+       
+       function productForCategory(categoryCd){
+        var newArr = new Array(); 
+       
+        for(i=0;i<compArray.length;i++){
+       
+          if(compArray[i].categoryCd===categoryCd){
+           newArr[newArr.length] = compArray[i];
+       
+          }
+        }
+       
+        return newArr;  
+       }
+       
+       function populateSelect(newOptions,select,paramName){
+       
+         //alert(paramName);
+     
+         if(select.prop) {
+           var options = select.prop('options');
+         }
+         else {
+           var options = select.attr('options');
+         }
+       
+         $('option', select).remove();
+     
+     
+            if(paramName=='categoryCd'){
+                select.append('<option>Select Product Category</option>');
+             }
+             else if(paramName=='productCd'){
+               
+                select.append('<option>Select Product</option>');
+             }
+             else if(paramName=='competitorCd'){
+                select.append('<option>Select Insurance Player</option>');
+             }
+             else if(paramName=='competitorProductCd'){
+                select.append('<option>Select Product</option>');
+             }
+     
+         
+         
+
+         for(i=0;i<newOptions.length;i++){
+           
+           if(paramName=='categoryCd'){
+             select.append('<option value="'+newOptions[i].categoryCd+'">'+newOptions[i].categoryCd+'</option>');
+           }
+           else if(paramName=='productCd'){
+             
+             select.append('<option value="'+newOptions[i].productCd+'">'+newOptions[i].productCd+'</option>');
+           }
+           else if(paramName=='competitorCd'){
+             
+             select.append('<option value="'+newOptions[i].competitorCd+'">'+newOptions[i].competitorCd+'</option>');
+           }
+           else if(paramName=='competitorProductCd'){
+             
+             select.append('<option value="'+newOptions[i].competitorProductCd+'">'+newOptions[i].competitorProductCd+'</option>');
+           }
+           
+         }
+       
+       
+       }
+
+
+       
+       
+             
+    $( '#comparatorPage' ).live( 'pageinit',function(event){
+         
+         
+         $('#category').change(function() {
+             var product = $('#product');
+             var productArr = productForCategory($('#category').val());
+             productArr = unique(productArr,'productCd');  
+             populateSelect(productArr,product,'productCd');
+         
+             if(productArr.length==1){
+               $('#product').change();
+             }else{
+               $('option', $('#compt')).remove();
+               $('option', $('#comptProduct')).remove();
+             }
+          });
+         
+          
+       
+       
+         $('#product').change(function() {
+             var compt = $('#compt');
+             var comptArr = comptForProduct($('#product').val());
+             //alert(comptArr.length);
+             comptArr = unique(comptArr,'competitorCd');  
+             populateSelect(comptArr,compt,'competitorCd');
+             if(comptArr.length==1){
+               $('#compt').change();
+             }else{
+               $('option', $('#comptProduct')).remove();
+             }
+         });
+       
+       
+         $('#compt').change(function() {
+           var comptProduct = $('#comptProduct');
+           var comptProductArr = productForCompt($('#compt').val(),$('#product').val(),$('#category').val());
+           comptProductArr = unique(comptProductArr,'competitorProductCd');  
+           populateSelect(comptProductArr,comptProduct,'competitorProductCd');
+       
+         });
+       
+       
+         $('#submit').click(function() {
+           var collateralTxt = collateralForSelection($('#category').val(),$('#product').val(),$('#compt').val(),$('#comptProduct').val());
+           var url = '/app/Comparator/click?fileName='+collateralTxt;
+           $.get(url,function(data) {});
+       
+         });
+         
+         var myarray = unique(compArray,'categoryCd');  
+         var select = $('#category');
+         populateSelect(myarray,select,'categoryCd');
+         select.change();
+         //var selectpr = $('#product');
+         //selectpr.change();
+         //var selectcomp = $('#compt');
+         //selectcomp.change();
+         //alert('done');
+        });
+ 
+   </SCRIPT>
+</div>
+
+<!-- End Page div -->
+  
+   

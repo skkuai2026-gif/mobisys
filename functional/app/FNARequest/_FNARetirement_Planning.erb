@@ -1,0 +1,427 @@
+<link rel="stylesheet" href="/public/css/FNA/shame.css">     
+<div data-role="content" id="capture" style="-webkit-transform: none;">
+<form method="POST" action="<%= url_for :action => :submitFNARetirementNeed %>" name="FNARetirementNeedForm" id="FNARetirementNeedForm">
+<%= renderObject(@fnaRequest) %>
+<%= renderObject(@fnaProposer, @fnaRequest) %>
+<%= renderObject(@fnaRetirementNeed, @fnaRequest) %>
+<input type="hidden"  id ="changeRetirementNeed" name="changeRetirementNeed" value=""/>
+<div class="header" style="padding-top:15px;">
+        <span class="title"><%= getLabelValue('INSURED_NEED') %></span>
+        <span class="description"><%= getLabelValue('FIN_FIGURES') %></span>
+        <!-- <span class="set-right required-note" style="padding-top:0px;"><%#= getLabelValue('REQD_FIELDS') %></span> -->
+    </div>
+    <div class="illustrationdisplay">
+        <div class="card">
+           <div class="legend rates-header">
+            <label class="strongLabel"><%= getLabelValue('EXPECTED_RATES') %></label>
+            <a id="inline" href="javascript: openPDF();" style="width: 100%;font-weight: bold;color: #4a7295;font-size: 14px;" ><%= getLabelValue('AVERAGE_RATES') %></a>
+            </div>
+            <div data-role="dualfieldcontain" class="ui-dual-field-contain ui-body ui-br">
+                <div class="half">
+                    <div class="group">
+                       <%= renderNumericField('inflationRate', thosandSeperator(@fnaRequest.inflationRate.to_s) ,'inflationRate', @fnaRequest, ' maxlength="6" pattern="/([^\s])" onkeypress="return isNumberKey(event)" onchange="return checkifNumdeci(this.value, this.id)" class="material-input"') %>
+                       <%= renderLabel('inflationRate', 'EXPECTEDINFLATIONRATE', 'mandatory material-label', @fnaRequest) %>
+                    </div>
+                </div>
+                <div class="half">
+                    <div class="group">
+                    <%= renderNumericField('returnRate', thosandSeperator(@fnaRequest.returnRate.to_s) ,'returnRate', @fnaRequest, ' maxlength="6" pattern="/([^\s])" onkeypress="return isNumberKey(event)" onchange="return checkifNumdeci(this.value, this.id)" class="material-input"') %>
+                       <%= renderLabel('returnRate', 'EXPECTEDRETURNRATE', 'mandatory material-label', @fnaRequest) %>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <br/>
+        <div class="tabs">
+            <div style="margin-bottom: 0px;">
+                <a href="#" onclick="changeTab($(this))" data-url="getNeeds"><p><%= getLabelValue('LIFEPROTNEEDS') %></p></a>
+            </div>
+            <div style="margin-bottom: 0px;">
+                <a href="#" onclick="changeTab($(this))" data-url="healthNeeds"><p><%= getLabelValue('OTHER_LIFE_RISK_NEED') %></p></a>
+            </div>
+            <div style="margin-bottom: 0px;">
+                <a href="#" onclick="changeTab($(this))" data-url="retirementNeeds"><p class="active"><%= getLabelValue('RETIREMENT_PLANNING') %></p></a>
+            </div>
+            <div style="margin-bottom: 0px;">
+                <a href="#" onclick="changeTab($(this))" data-url="otherTargetSaving"><p><%= getLabelValue('OTHER_TARGET_SAVINGS') %></p></a>
+            </div>
+            <div style="margin-bottom: 0px;">
+                <a href="#" onclick="changeTab($(this))" data-url="shortfallSummary"><p><%= getLabelValue('SHORTFALL_SUMMARY') %></p></a>
+            </div>
+        </div>
+      <div class="clear" style="border-top: 5px solid #eaab00;"></div>
+        <div class="tabs-content">
+          <div class="card">
+           <div class="note"><%= getLabelValue('ALL_VALUES_IN_HKD') %></div>
+           <div data-role="dualfieldcontain" class="ui-dual-field-contain ui-body ui-br">
+            <div class="quarter with-spacer">
+             <div class="group">
+             <%= renderNumericField('totRetirementNeedAmt', thosandSeperator(@totRetirementNeedAmt.to_s) ,'totRetirementNeedAmt', @fnaRetirementNeed, ' maxlength="10" pattern="/([^\s])" class="material-input " readonly="true" tabindex="-1" style="background-color: #c8c8c8 !important;margin-top:7px !important;"') %>
+                <%= renderLabel('totRetirementNeedAmt', 'REQT_NEEDS', 'mandatory material-label', @fnaRetirementNeed) %>
+                <%= attachMask("#{getObjectMapping(@fnaRetirementNeed)}[totRetirementNeedAmt]") %> 
+              </div>
+            </div>
+            <div class="operation-label"> - </div>
+            <div class="quarter with-spacer" style="width: 22.5% !important;">
+              <div class="group">
+              <% projectedMRFfundatretire = @projectedMRFfundatretire  if defined?(@projectedMRFfundatretire) %>
+              <%= renderNumericField('PROJECTED_MPF', thosandSeperator(projectedMRFfundatretire.to_s) ,'PROJECTED_MPF', nil, ' maxlength="10" pattern="/([^\s])" class="material-input " readonly="true" tabindex="-1" style="background-color: #c8c8c8 !important;margin-top:7px !important;"') %>
+                <%= renderLabel('PROJECTED_MPF', 'PROJECTED_MPF_ORSO_FUND', 'mandatory material-label', nil, 'style="width: 22.5% !important;"') %>
+              </div>
+            </div>
+            <div class="operation-label"> - </div>
+            <div class="quarter with-spacer">
+              <div class="group">
+              <% projectedLumpSumAmt = @projectedLumpSumAmt  if defined?(@projectedLumpSumAmt) %>
+              <%= renderNumericField('TOTAL_RET_FUND_RES', thosandSeperator(projectedLumpSumAmt.to_s) ,'TOTAL_RET_FUND_RES', nil, ' maxlength="10" pattern="/([^\s])" class="material-input " readonly="true" tabindex="-1" style="background-color: #c8c8c8 !important;margin-top:7px !important;"') %>
+                <%= renderLabel('TOTAL_RET_FUND_RES', 'RESERVED_RET_FUND', 'mandatory material-label', nil) %>
+              </div>
+            </div>
+            <div class="operation-label"> = </div>
+            <div class="quarter with-spacer">
+              <div class="group">
+              <% shortfall = @shortfall  if defined?(@shortfall) %>
+                <%= renderNumericField('SHORTFALL_RISK_PROT_NEEDS', thosandSeperator(shortfall.to_s) ,'SHORTFALL_RISK_PROT_NEEDS', nil, ' maxlength="10" pattern="/([^\s])" class="material-input " readonly="true" tabindex="-1" style="background-color: #c8c8c8 !important;margin-top:7px !important;"') %>
+                <%= renderLabel('SHORTFALL_RISK_PROT_NEEDS', 'SHORTFALL_RISK_PROT_NEEDS', 'mandatory material-label', nil) %>
+              </div>
+            </div>
+        </div>
+      </div>   
+
+      <!-- Tejashree started working on this -->
+
+
+      <div class="card">
+        <div data-role="dualfieldcontain" class="ui-dual-field-contain ui-body ui-br">
+          <div class="third with-spacer">
+            <div class="group">
+               <%= renderNumericField('monthlySavingsReqdAmt', thosandSeperator(@fnaRetirementNeed.monthlySavingsReqdAmt.to_s) ,'monthlySavingsReqdAmt', @fnaRetirementNeed, ' maxlength="10" pattern="/([^\s])" class="material-input " tabindex="-1" readonly="true" style="background-color: #c8c8c8 !important;margin-top:7px !important;"') %>
+                <%= renderLabel('monthlySavingsReqdAmt', 'MONTHLY_SAVINGS', 'mandatory material-label', @fnaRetirementNeed) %>
+                <%= attachMask("#{getObjectMapping(@fnaRetirementNeed)}[monthlySavingsReqdAmt]") %>
+            </div>
+          </div>
+          <div class="operation-label"> <%= getLabelValue('OR') %> </div>
+          <div class="third with-spacer">
+            <div class="group">
+              <%= renderNumericField('lumsumReqdAmt', thosandSeperator(@fnaRetirementNeed.lumsumReqdAmt.to_s),'lumsumReqdAmt', @fnaRetirementNeed, ' maxlength="10" pattern="/([^\s])" class="material-input " readonly="true" tabindex="-1" style="background-color: #c8c8c8 !important;margin-top:7px !important;"') %>
+                <%= renderLabel('lumsumReqdAmt', 'LUMSUM_INVESTMENT', 'mandatory material-label', @fnaRetirementNeed) %>
+                <%= attachMask("#{getObjectMapping(@fnaRetirementNeed)}[lumsumReqdAmt]") %>
+            </div>
+          </div>
+          <div class="operation-label"></div>
+          <div class="third with-spacer">
+            <div class="group">
+              <label class="material-label"><%= getLabelValue('AMT_MEET_SHORTFALL') %></label>
+            </div>
+          </div>
+        </div>
+      </div>
+
+
+
+       <div class="card">
+        <div class="legend"><label class="strongLabel"><%= getLabelValue('INSURED_RETIREMENT_AGE_DETAILS') %></label></div>
+        <div data-role="dualfieldcontain" class="ui-dual-field-contain ui-body ui-br">
+          <div class="third with-spacer">
+            <div class="group">
+              <%= renderNumericField('retirementAge', @fnaRetirementNeed.retirementAge ,'retirementAge', @fnaRetirementNeed, ' maxlength="3" pattern="/([^\s])" class="material-input"  onkeypress="return numbersonly(event)"  onchange="return checkifNum(this.value, this.id)"') %>
+              <%= renderLabel('retirementAge', 'RET_AGE', 'mandatory material-label', @fnaRetirementNeed) %> 
+              <%= attachMask("#{getObjectMapping(@fnaRetirementNeed)}[retirementAge]") %>
+            </div>
+          </div>
+          <div class="operation-label"> - </div>
+          <div class="third with-spacer">
+            <div class="group">
+              <%= renderNumericField('currentAge', @fnaRetirementNeed.currentAge ,'currentAge', @fnaRetirementNeed, ' maxlength="3" pattern="/([^\s])" onkeypress="return numbersonly(event)"  onchange="return checkifNum(this.value, this.id)" class="material-input "') %>
+              <%= renderLabel('currentAge', 'CURRENT_AGE', 'mandatory material-label', @fnaRetirementNeed) %>
+              <%= attachMask("#{getObjectMapping(@fnaRetirementNeed)}[currentAge]") %>
+            </div>
+          </div>
+          <div class="operation-label"> = </div>
+          <div class="third with-spacer">
+            <div class="group">
+              <%= renderNumericField('YRS_TO_RETIREMENT', @yearstoretire ,'YRS_TO_RETIREMENT', nil, ' maxlength="3" pattern="/([^\s])" class="material-input " tabindex="-1" readonly="true" style="background-color: #c8c8c8 !important;margin-top:7px !important;"') %>
+              <%= renderLabel('YRS_TO_RETIREMENT', 'YRS_TO_RETIREMENT', 'mandatory material-label', nil) %>
+            </div>
+          </div>
+        </div>
+
+
+
+
+
+        <div data-role="dualfieldcontain" class="ui-dual-field-contain ui-body ui-br">
+          <div class="third with-spacer">
+            <div class="group">
+              <%= renderLabel('ageExpectancy', 'FNAAGEEXPECTANCY', 'mandatory fieldLabel ui-input-text', @fnaRetirementNeed) %>
+              <%= getLookup('FNAAGEEXPECTANCY', 'ageExpectancy', @fnaRetirementNeed.ageExpectancy, @fnaRetirementNeed, 'pattern="/([^\s])" class="material-select"') %>  
+            </div>
+          </div>
+          <div class="operation-label"> - </div>
+          <div class="third with-spacer">
+             <div class="group">
+               <%= renderNumericField('RET_AGE', @fnaRetirementNeed.retirementAge ,'retirementAge', nil, ' maxlength="3" pattern="/([^\s])" class="material-input" onkeypress="return numbersonly(event)"  onchange="return checkifNum(this.value, this.id)" tabindex="-1" readonly="true" style="background-color: #c8c8c8 !important;margin-top:7px !important;"') %>
+              <%= renderLabel('RET_AGE', 'RET_AGE', 'mandatory material-label', nil) %> 
+              <%= attachMask("#{getObjectMapping(@fnaRetirementNeed)}[retirementAge]") %>
+            </div>
+          </div>
+          <div class="operation-label"> = </div>
+          <div class="third with-spacer">
+            <div class="group">
+            <% @expectedretperiod = @expectedretperiod1  if defined?(@expectedretperiod1) %> 
+              <%= renderNumericField('EXPECTED_RET_PERIOD', thosandSeperator(@expectedretperiod.to_s) ,'EXPECTED_RET_PERIOD', nil, ' maxlength="3" pattern="/([^\s])" class="material-input " tabindex="-1" readonly="true" style="background-color: #c8c8c8 !important;margin-top:7px !important;"') %>
+              <%= renderLabel('EXPECTED_RET_PERIOD', 'EXPECTED_RET_PERIOD', 'mandatory material-label',nil) %>
+            </div>
+          </div>
+        </div>
+
+        <div data-role="dualfieldcontain" class="ui-dual-field-contain ui-body ui-br">
+          <div class="third with-spacer">
+            <div class="group">
+              <p><%= getLabelValue('HK_EXPECTANCY_85') %></p>
+            </div>
+          </div>
+        </div>
+
+
+
+
+        <div class="legend"><label class="strongLabel"><%= getLabelValue('RETIREMENT_FUND_NEED') %></label></div>
+        <div data-role="dualfieldcontain" class="ui-dual-field-contain ui-body ui-br">
+          <div class="third long-text">
+            <div class="group">
+               <%= renderNumericField('monthlyExpensesPVAmt', thosandSeperator(@fnaRetirementNeed.monthlyExpensesPVAmt.to_s) ,'monthlyExpensesPVAmt', @fnaRetirementNeed, ' maxlength="10" pattern="/([^\s])" onkeypress="return numbersonly(event)"  onchange="return checkifNum(this.value, this.id)" class="material-input "') %>
+                <%= renderLabel('monthlyExpensesPVAmt', 'MONTHLY_RET_EXPENSES_PV', 'mandatory material-label', @fnaRetirementNeed) %>
+                <%= attachMask("#{getObjectMapping(@fnaRetirementNeed)}[monthlyExpensesPVAmt]") %>
+            </div>
+          </div>
+          <div class="third long-text">
+            <div class="group">
+              <%= renderNumericField('monthlyExpensesFVAmt', thosandSeperator(@fnaRetirementNeed.monthlyExpensesFVAmt.to_s) ,'monthlyExpensesFVAmt', @fnaRetirementNeed, ' maxlength="10" pattern="/([^\s])" class="material-input " tabindex="-1" readonly="true" style="background-color: #c8c8c8 !important;margin-top:7px !important;"') %>
+                <%= renderLabel('monthlyExpensesFVAmt', 'MONTHLY_RET_EXPENSES_FV', 'mandatory material-label', @fnaRetirementNeed) %>
+                <%= attachMask("#{getObjectMapping(@fnaRetirementNeed)}[monthlyExpensesFVAmt]") %>
+            </div>
+          </div>
+          <div class="third">
+            <div class="group">
+              <%= renderNumericField('totRetirementNeedAmt', thosandSeperator(@fnaRetirementNeed.totRetirementNeedAmt.to_s) ,'totRetirementNeedAmt', @fnaRetirementNeed, ' maxlength="10" pattern="/([^\s])" class="material-input " tabindex="-1" readonly="true" style="background-color: #c8c8c8 !important;margin-top:7px !important;"') %>
+                <%= renderLabel('totRetirementNeedAmt', 'TOTAL_RET_NEED', 'mandatory material-label', @fnaRetirementNeed) %>
+                <%= attachMask("#{getObjectMapping(@fnaRetirementNeed)}[totRetirementNeedAmt]") %>
+            </div>
+          </div>
+        </div>
+
+
+        <div class="legend"><label class="strongLabel"><%= getLabelValue('RET_FUND_RES_RET') %></label></div>
+        <div data-role="dualfieldcontain" class="ui-dual-field-contain ui-body ui-br">
+          <div class="third long-text">
+            <div class="group">
+              <%= renderNumericField('futureContributionAmt', thosandSeperator(@fnaRetirementNeed.futureContributionAmt.to_s),'futureContributionAmt', @fnaRetirementNeed, ' maxlength="10" pattern="/([^\s])" onkeypress="return numbersonly(event)"  onchange="return checkifNum(this.value, this.id)" class="material-input "') %>
+                <%= renderLabel('futureContributionAmt', 'MONTHLY_MPF_FUT_CONT', 'mandatory material-label', @fnaRetirementNeed) %>
+                <%= attachMask("#{getObjectMapping(@fnaRetirementNeed)}[futureContributionAmt]") %>
+            </div>
+          </div>
+          <div class="third long-text">
+            <div class="group">
+              <%= renderNumericField('futureContributionRate', @fnaRetirementNeed.futureContributionRate ,'futureContributionRate', @fnaRetirementNeed, ' maxlength="6" pattern="/([^\s])" onkeypress="return isNumberKey(event)" onchange="return checkifNumdeci(this.value, this.id)" class="material-input decimal"') %>
+                <%= renderLabel('futureContributionRate', 'EXPECTED_RETURN_RATE_PERC', 'mandatory material-label', @fnaRetirementNeed) %>
+                <%= attachMask("#{getObjectMapping(@fnaRetirementNeed)}[futureContributionRate]") %>
+            </div>
+          </div>
+          <div class="third">
+            <div class="group">
+              <%= renderNumericField('totFutureContributionAmt', thosandSeperator(@fnaRetirementNeed.totFutureContributionAmt.to_s),'totFutureContributionAmt', @fnaRetirementNeed, ' maxlength="10" pattern="/([^\s])" class="material-input " tabindex="-1" readonly="true" style="background-color: #c8c8c8 !important;margin-top:7px !important;"') %>
+                <%= renderLabel('totFutureContributionAmt', 'TOTALVALUE', 'mandatory material-label', @fnaRetirementNeed) %>
+                <%= attachMask("#{getObjectMapping(@fnaRetirementNeed)}[totFutureContributionAmt]") %>
+            </div>
+          </div>
+        </div>
+
+
+
+        <div data-role="dualfieldcontain" class="ui-dual-field-contain ui-body ui-br">
+          <div class="third long-text">
+            <div class="group">
+              <%= renderNumericField('accumulatedAmt', thosandSeperator(@fnaRetirementNeed.accumulatedAmt.to_s) ,'accumulatedAmt', @fnaRetirementNeed, ' maxlength="10" pattern="/([^\s])" onkeypress="return numbersonly(event)"  onchange="return checkifNum(this.value, this.id)" class="material-input "') %>
+                <%= renderLabel('accumulatedAmt', 'MPF_ACC_VALUE', 'mandatory material-label', @fnaRetirementNeed) %>
+                <%= attachMask("#{getObjectMapping(@fnaRetirementNeed)}[accumulatedAmt]") %>
+            </div>
+          </div>
+          <div class="third long-text">
+            <div class="group">
+              <%= renderNumericField('accumulatedRate', @fnaRetirementNeed.accumulatedRate ,'accumulatedRate', @fnaRetirementNeed, ' maxlength="6" pattern="/([^\s])" onkeypress="return isNumberKey(event)" onchange="return checkifNumdeci(this.value, this.id)" class="material-input decimal"') %>
+                <%= renderLabel('accumulatedRate', 'EXPECTED_RETURN_RATE_PERC', 'mandatory material-label', @fnaRetirementNeed) %>
+                <%= attachMask("#{getObjectMapping(@fnaRetirementNeed)}[accumulatedRate]") %>
+            </div>
+          </div>
+          <div class="third">
+            <div class="group">
+              <%= renderNumericField('totAccumulatedAmt', thosandSeperator(@fnaRetirementNeed.totAccumulatedAmt.to_s) ,'totAccumulatedAmt', @fnaRetirementNeed, ' maxlength="10" pattern="/([^\s])" class="material-input " tabindex="-1" readonly="true" style="background-color: #c8c8c8 !important;margin-top:7px !important;"') %>
+                <%= renderLabel('totAccumulatedAmt', 'TOTALVALUE', 'mandatory material-label', @fnaRetirementNeed) %>
+                <%= attachMask("#{getObjectMapping(@fnaRetirementNeed)}[totAccumulatedAmt]") %>
+            </div>
+          </div>
+        </div>
+
+
+
+        <div data-role="dualfieldcontain" class="ui-dual-field-contain ui-body ui-br">
+          <div class="third offset-66">
+            <div class="group">
+            <% projectedMRFfundatretire = @projectedMRFfundatretire  if defined?(@projectedMRFfundatretire) %>
+              <%= renderNumericField('PROJECTED_MPF', thosandSeperator(projectedMRFfundatretire.to_s) ,'PROJECTED_MPF', nil, ' maxlength="10" pattern="/([^\s])" class="material-input " tabindex="-1" readonly="true" style="background-color: #c8c8c8 !important;margin-top:7px !important;"') %>
+                <%= renderLabel('PROJECTED_MPF', 'PROJECTED_MPF', 'mandatory material-label', nil) %>
+            </div>
+          </div>
+        </div>
+
+
+        <div data-role="dualfieldcontain" class="ui-dual-field-contain ui-body ui-br">
+          <div class="third long-text">
+            <div class="group">
+              <%= renderNumericField('otherMontlySavingsAmt', thosandSeperator(@fnaRetirementNeed.otherMontlySavingsAmt.to_s) ,'otherMontlySavingsAmt', @fnaRetirementNeed, ' maxlength="10" pattern="/([^\s])" onkeypress="return numbersonly(event)"  onchange="return checkifNum(this.value, this.id)" class="material-input "') %>
+                <%= renderLabel('otherMontlySavingsAmt', 'OTHER_MONTHLY_SAVINGS', 'mandatory material-label', @fnaRetirementNeed) %>
+                <%= attachMask("#{getObjectMapping(@fnaRetirementNeed)}[otherMontlySavingsAmt]") %>
+            </div>
+          </div>
+          <div class="third long-text">
+            <div class="group">
+              <%= renderNumericField('otherMontlySavingsRate', @fnaRetirementNeed.otherMontlySavingsRate,'otherMontlySavingsRate', @fnaRetirementNeed, ' maxlength="6" pattern="/([^\s])" onkeypress="return isNumberKey(event)" onchange="return checkifNumdeci(this.value, this.id)" class="material-input decimal"') %>
+                <%= renderLabel('otherMontlySavingsRate', 'EXPECTED_RETURN_RATE_PERC', 'mandatory material-label', @fnaRetirementNeed) %>
+                <%= attachMask("#{getObjectMapping(@fnaRetirementNeed)}[otherMontlySavingsRate]") %>
+            </div>
+          </div>
+          <div class="third">
+            <div class="group">
+              <%= renderNumericField('totOtherSavingsAmt', thosandSeperator(@fnaRetirementNeed.totOtherSavingsAmt.to_s) ,'totOtherSavingsAmt', @fnaRetirementNeed, ' maxlength="10" pattern="/([^\s])" class="material-input " tabindex="-1" readonly="true" style="background-color: #c8c8c8 !important;margin-top:7px !important;"') %>
+                <%= renderLabel('totOtherSavingsAmt', 'TOTALVALUE', 'mandatory material-label', @fnaRetirementNeed) %>
+                <%= attachMask("#{getObjectMapping(@fnaRetirementNeed)}[totOtherSavingsAmt]") %>
+            </div>
+          </div>
+        </div>
+
+
+        <div data-role="dualfieldcontain" class="ui-dual-field-contain ui-body ui-br">
+          <div class="third long-text">
+            <div class="group">
+              <%= renderNumericField('otherLumpsumAmt', thosandSeperator(@fnaRetirementNeed.otherLumpsumAmt.to_s) ,'otherLumpsumAmt', @fnaRetirementNeed, ' maxlength="10" pattern="/([^\s])" onkeypress="return numbersonly(event)"  onchange="return checkifNum(this.value, this.id)" class="material-input "') %>
+                <%= renderLabel('otherLumpsumAmt', 'OTHER_LUMPSUM_INV_RET', 'mandatory material-label', @fnaRetirementNeed) %>
+                <%= attachMask("#{getObjectMapping(@fnaRetirementNeed)}[otherLumpsumAmt]") %>
+            </div>
+          </div>
+          <div class="third long-text">
+            <div class="group">
+              <%= renderNumericField('otherLumpsumRate', @fnaRetirementNeed.otherLumpsumRate,'otherLumpsumRate', @fnaRetirementNeed, ' maxlength="6" pattern="/([^\s])" onkeypress="return isNumberKey(event)" onchange="return checkifNumdeci(this.value, this.id)" class="material-input decimal"') %>
+                <%= renderLabel('otherLumpsumRate', 'EXPECTED_RETURN_RATE_PERC', 'mandatory material-label', @fnaRetirementNeed) %>
+                <%= attachMask("#{getObjectMapping(@fnaRetirementNeed)}[otherLumpsumRate]") %>
+            </div>
+          </div>
+          <div class="third">
+            <div class="group">
+              <%= renderNumericField('totOtherLumpSumAmt', thosandSeperator(@fnaRetirementNeed.totOtherLumpSumAmt.to_s) ,'totOtherLumpSumAmt', @fnaRetirementNeed, ' maxlength="10" pattern="/([^\s])" class="material-input " tabindex="-1" readonly="true" style="background-color: #c8c8c8 !important;margin-top:7px !important;"') %>
+                <%= renderLabel('totOtherLumpSumAmt', 'TOTALVALUE', 'mandatory material-label', @fnaRetirementNeed) %>
+                <%= attachMask("#{getObjectMapping(@fnaRetirementNeed)}[totOtherLumpSumAmt]") %>
+            </div>
+          </div>
+        </div>
+
+
+        <div data-role="dualfieldcontain" class="ui-dual-field-contain ui-body ui-br">
+          <div class="third offset-66">
+            <div class="group">
+            <% projectedLumpSumAmt = @projectedLumpSumAmt  if defined?(@projectedLumpSumAmt) %>
+               <%= renderNumericField('TOTAL_RET_FUND_RES', thosandSeperator(projectedLumpSumAmt.to_s) ,'TOTAL_RET_FUND_RES', nil, ' maxlength="10" pattern="/([^\s])" class="material-input " tabindex="-1" readonly="true" style="background-color: #c8c8c8 !important;margin-top:7px !important;"') %>
+                <%= renderLabel('TOTAL_RET_FUND_RES', 'TOTAL_RET_FUND_RES', 'mandatory material-label', nil) %>
+            </div>
+          </div>
+        </div>
+      </div>
+       <% if @fnaRequest.statusCd.to_s == "FNASIGNED" || @fnaRequest.statusCd.to_s == "FNASUBMIT" || @fnaRequest.statusCd.to_s == "SYNCDONE"  %>
+       <% else %>
+       <div class="ui-dual-field-contain ui-body ui-br">
+        <div class="half">
+          <a class="button_UI_1 ui-link ui-btn selected" onclick="calculateretirementplanningneeds()"><%= getLabelValue('CALCULATE') %></a>
+        </div>
+      </div>   
+      <% end %>
+	</div>
+  <div class="ui-dual-field-contain ui-body ui-br">
+      <div class="half">
+        <a class="button_UI_1 ui-link ui-btn selected" onclick="changeTab($(this))" data-url="otherTargetSaving"><%= getLabelValue('NEXT_SECTION') %></a>
+      </div>
+    </div>  
+	 
+	</div>
+  
+    <style >
+
+    .third.long-text label {
+             width: 29.5% !important;
+        }
+        .button_UI {
+            background-color:#efbc33!important;
+            border-radius: 7px;
+            border-style: none;
+            color: #003946 !important;
+            display: inline-block;
+            font-size: 14px !important;
+            max-width: 200px;
+            margin: 0;
+            text-shadow: none !important;
+            font-weight: 700;
+            text-align: center;
+            line-height: 1.3;
+            /*padding: .8em 1.5em !important;*/
+            width: 100px;
+        }
+
+        .button_UI_1 {
+            background-color:#efbc33!important;
+            border-radius: 7px;
+            border-style: none;
+            color: #003946 !important;
+            display: inline-block;
+            font-size: 14px !important;
+            max-width: 200px;
+            margin: 0;
+            text-shadow: none !important;
+            font-weight: 700;
+            text-align: center;
+            line-height: 1.3;
+            /*padding: .8em 1.5em !important;*/
+            /*width: 100px;*/
+        }
+ 
+    </style>
+
+<%= render(:partial => 'FNARetirement_PlanningJS')%>
+</form>
+</div>
+
+
+ <div class="" data-role="dualfieldcontain" align="">
+        <div class="">
+            <div class="group" style="font-size: 14px;">
+                <%= getLabelValue('INSTRUCTION_TEXT_NEEDS2') %>
+            </div>
+        </div>     
+    </div>
+    
+<!--  <div class="" data-role="dualfieldcontain">
+        <div class="half"  align="left" style="margin:0% 0% 0% 2%">
+            <div class="group">
+                <a href="#" id="previousTab"  class="button_UI ui-link ui-btn selected"  style="" onclick="previousTab()">
+                    <%#= getLabelValue('PREVIOUS') %>
+                </a>
+
+            </div>
+        </div>
+
+        <div class="half" align="right">
+            <div class="group" >
+                <a href="#"  id="nextTab"  class="button_UI ui-link ui-btn selected"  style="" onclick="nextTab()" >
+                    <%#= getLabelValue('NEXT') %> 
+                </a>   
+            </div>
+        </div>
+    </div> -->

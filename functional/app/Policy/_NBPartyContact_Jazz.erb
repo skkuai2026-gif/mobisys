@@ -1,0 +1,23 @@
+<div id="<%=@tagName%>_contactDetail">
+	<% partyContactPckg = "PartyContactDO" %>
+	<%= subPanelTagStart("contact",false) %>
+		<%= modelTagStart(resiTagId, party_resi_contact, party) %>
+			<% if $companyFieldMetaDataCache.include?((partyPckg + ".residentalContactReqd").to_sym) && ($companyFieldMetaDataCache.include?((partyContactPckg + ".countryCd").to_sym) || $companyFieldMetaDataCache.include?((partyContactPckg + ".stdCode").to_sym) || $companyFieldMetaDataCache.include?((partyContactPckg + ".contactNum").to_sym) || $companyFieldMetaDataCache.include?((partyContactPckg + ".extensionNum").to_sym)) %>
+				<div id="<%=@tagName%>_residentContact">
+					<%= render(:partial => 'NBPartySingleContact_Jazz', :locals => { :partyContactPckg => partyContactPckg, :contactLabel => 'contactResi'}) %>
+				</div>
+			<% end %>
+		<% modelTagEnd %>
+		<%= modelTagStart(offTagId, party_off_contact, party) %>
+			<% if $companyFieldMetaDataCache.include?((partyPckg + ".officeContactReqd").to_sym) && ($companyFieldMetaDataCache.include?((partyContactPckg + ".countryCd").to_sym) || $companyFieldMetaDataCache.include?((partyContactPckg + ".stdCode").to_sym) || $companyFieldMetaDataCache.include?((partyContactPckg + ".contactNum").to_sym) || $companyFieldMetaDataCache.include?((partyContactPckg + ".extensionNum").to_sym)) %>
+				<%= render(:partial => 'NBPartySingleContact_Jazz', :locals => { :partyContactPckg => partyContactPckg, :contactLabel => 'contactOffice'}) %>
+			<% end %>
+		<% modelTagEnd %>
+		<%= modelTagStart(mobTagId, party_mob_contact, party) %>
+			<% if $companyFieldMetaDataCache.include?((partyPckg + ".mobileContactReqd").to_sym) && ($companyFieldMetaDataCache.include?((partyContactPckg + ".countryCd").to_sym) || $companyFieldMetaDataCache.include?((partyContactPckg + ".stdCode").to_sym) || $companyFieldMetaDataCache.include?((partyContactPckg + ".contactNum").to_sym) || $companyFieldMetaDataCache.include?((partyContactPckg + ".extensionNum").to_sym)) %>
+				<%= render(:partial => 'NBPartySingleContact_Jazz', :locals => { :partyContactPckg => partyContactPckg, :contactLabel => 'contactMobile'}) %>
+			<% end %>
+		<% modelTagEnd %>
+		<%= render(:partial => 'NBPartyEmail_Jazz', :locals => { :id => emailModelId , :party => party, :emailObject => partyEmailObject})  %>
+	<%= subPanelTagEnd %>
+</div>

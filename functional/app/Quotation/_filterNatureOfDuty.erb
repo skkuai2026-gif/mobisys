@@ -1,0 +1,14 @@
+<%
+require 'CommonModules/mobisysbrowserhelper'
+@natureOfDutyLookups.each do|nod|
+%>
+  <option value="<%= nod.cd%>" <% 
+          if @natureOfDutyValue == nod.cd
+            %>
+            selected
+            <%
+          end
+        %> >
+    <%= getLabelValue(nod.desc) %>
+  </option>
+<% end %>

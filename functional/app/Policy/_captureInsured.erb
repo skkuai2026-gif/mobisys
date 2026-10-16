@@ -1,0 +1,60 @@
+<form method="POST" action="<%= url_for :action => :submitInsuredDetails %>" name="insuredForm" id="insuredForm">
+	<!-- Rendering of objects (Has to be defined inside form tag to be considered)Start -->
+	<%= renderObject(@policy)%>
+	
+	<%= renderObject(@party, @policy)%>
+	<%= renderObject(@policyPartyRole, @policy)%>
+
+	<%= renderObject(@partyIdentity1, @party) %>
+	<%= renderObject(@partyIdentity2, @party) %>
+
+	<%= renderObject(@homeAddress, @party)%>
+	<%= renderObject(@businessAddress, @party)%>
+	<%= renderObject(@permanentAddress, @party)%>
+
+	<%= renderObject(@partyContactHome, @party) %>
+	<%= renderObject(@partyContactOffice, @party) %>
+	<%= renderObject(@partyContactMobile, @party) %>
+	<%= renderObject(@partyEmail, @party) %>
+
+	<%= renderObject(@partyEmployment, @party) %>
+	<!-- Rendering of objects End -->
+
+	<div class="illustrationdisplay">
+		<div class="legend"><%= renderLabel('primaryPartyInsured','primaryPartyInsured','strongLabel') %></div>
+		
+		<% if @proposerExists %>
+			<div data-role="dualfieldcontain">
+		        <div class="half" style="width: 86%;">
+		    	    <%= renderRadioButton('partySameAsCd', @policyPartyRole.partySameAsCd, "#{getObjectMapping(@policyPartyRole)}_proposer", 'PROPOSER', @policyPartyRole) %>
+		            <%= renderLabel("#{getObjectMapping(@policyPartyRole)}_proposer", 'sameAsProposer','headermode')   %>
+		            <%= renderRadioButton('partySameAsCd', @policyPartyRole.partySameAsCd, "#{getObjectMapping(@policyPartyRole)}_other", '', @policyPartyRole) %>
+		            <%= renderLabel("#{getObjectMapping(@policyPartyRole)}_other", 'differentFromProposer','headermode')   %>
+		      	</div>
+		    </div>
+	    <% end %>
+	</div>
+
+	<div id="insuredcontent">
+		<%= renderHiddenField('removed', @party.removed, 'Removed', @party) %>
+		<%= render(:partial => 'capturePartyDetails') %>
+		
+		<% if @facetData[:renderIdentityPanel] %>
+			<%= render(:partial => 'capturePartyIdentity') %>
+		<% end %>
+		
+		<% if @facetData[:renderOccupationPanel] %>
+			<%= render(:partial => 'capturePartyEmployment') %>
+		<% end %>
+		
+		<% if @facetData[:renderAddressPanel] %>
+			<%= render(:partial => 'capturePartyAddress') %>
+		<% end %>
+		
+		<% if @facetData[:renderContactPanel] %>
+			<%= render(:partial => 'capturePartyContact')%>
+		<% end %>
+	</div>
+
+	<%= render(:partial => 'captureInsuredJS')%>
+</form>

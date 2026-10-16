@@ -1,0 +1,106 @@
+<div data-role="page" id="illustration">
+	<div data-role="header" data-position="inline">
+		<script src="/public/js/RGraph/RGraph.common.core.js"></script>
+    	<script src="/public/js/RGraph/RGraph.line.js"></script>
+    	<h1><%= getLabelValue('ILLUSTRATION')%></h1>
+	    <div class="headerButtons" name = "headerButtons">     
+	      <a href="#" id = "back" name="back" onclick="location.href='<%= url_for :action => :illustration1, :id=>@quotation.object %>';" data-direction="reverse">
+	        <img src="/public/images/SalesIllustration/icon_BackArrow-Red.png">
+	      </a>
+    	</div>
+    </div>
+	<div data-role="content">
+
+		<%= render :partial => "benefitIllustrationTable"%>    	
+		
+	</div> <!-- content div ends here-->
+	<script>
+	$(document).ready(function()
+    {	
+    	if("<%=@baseQuotationProduct.currencyCd%>" == "USD"){
+    		$('div[name="lineGraph"]').html("<span style='float:left;font-size:14px;'>"+"<%=getLabelValue('USD')%>"+"</span><canvas id='lineCanvas' name='lineCanvas' width='"+ $(document).width() * 0.9 +"px' height='300px'>[No canvas support]</canvas><span style='float:right;font-size:14px;'>"+"<%=getLabelValue('policyYear')%>"+"</span>");
+    		}
+    	else if("<%=@baseQuotationProduct.currencyCd%>" == "IDR"){
+    		$('div[name="lineGraph"]').html("<span style='float:left;font-size:14px;'>"+"<%=getLabelValue('Rupiah')%>"+"</span><canvas id='lineCanvas' name='lineCanvas' width='"+ $(document).width() * 0.9 +"px' height='300px'>[No canvas support]</canvas><span style='float:right;font-size:14px;'>"+"<%=getLabelValue('policyYear')%>"+"</span>");
+    		}
+      	$('div[name="lineGraph"]').trigger('create');
+
+      	var line_xcord = new Array();
+		for (var i= 0; i<=20; i++)
+		{
+			line_xcord.push(i)
+		}
+		var line_graph_key = new Array();
+		line_graph_key = <%=@lineGraphKey%>
+
+		<%lowDeathBenefit = Array.new
+		lowDeathBenefit[0] = 0
+		@deathBenefitArray[0..19].each do |low_death_benefit|
+			if low_death_benefit[0] < 0
+				low_death_benefit[0] = 0
+				lowDeathBenefit.push(low_death_benefit[0])
+			else
+				lowDeathBenefit.push(low_death_benefit[0])
+	    	end
+		end
+		%>
+		var lowDeathBenefitValue = new Array();
+		lowDeathBenefitValue = <%=lowDeathBenefit%>
+		
+
+		<%mediumDeathBenefit = Array.new
+		mediumDeathBenefit[0] = 0
+		@deathBenefitArray[0..19].each do |medium_death_benefit|
+			if medium_death_benefit[1] < 0
+				medium_death_benefit[1] = 0
+				mediumDeathBenefit.push(medium_death_benefit[1])
+			else
+				mediumDeathBenefit.push(medium_death_benefit[1])
+	    	end
+		end
+		%>
+		var mediumDeathBenefitValue = new Array();
+		mediumDeathBenefitValue = <%=mediumDeathBenefit%>
+
+		<%highDeathBenefit = Array.new
+		highDeathBenefit[0] = 0
+		@deathBenefitArray[0..19].each do |high_death_benefit|
+
+			if high_death_benefit[2] < 0
+				high_death_benefit[2] = 0
+				highDeathBenefit.push(high_death_benefit[2])
+			else
+				highDeathBenefit.push(high_death_benefit[2])
+	    	end
+		end
+		%>
+		var highDeathBenefitValue = new Array();
+		highDeathBenefitValue = <%=highDeathBenefit%>
+		
+		var deathBenefitValueArray = new Array();
+		deathBenefitValueArray.push(lowDeathBenefitValue);
+		deathBenefitValueArray.push(mediumDeathBenefitValue);
+		deathBenefitValueArray.push(highDeathBenefitValue);
+
+		myGraphLow = new RGraph.Line('lineCanvas', deathBenefitValueArray);
+		myGraphLow.Set('chart.tickmarks', 'endcircle');
+		myGraphLow.Set('chart.labels', line_xcord);
+		myGraphLow.Set('chart.ylabels.inside',true);
+		myGraphLow.Set('chart.text.size',10);
+		//myGraphLow.Set('chart.xmin',0);
+        //myGraphLow.Set('chart.xmax',20);
+		myGraphLow.Set('background.grid.autofit.numvlines',20);
+		myGraphLow.Set('key',line_graph_key);
+
+		myGraphLow.Draw();
+
+        RGraph.Register(myGraphLow);
+      
+      window.onclick = function ()
+      {
+          RGraph.Redraw();
+      }
+      
+  });
+	</script>
+</div>

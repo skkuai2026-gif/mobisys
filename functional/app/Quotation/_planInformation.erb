@@ -1,0 +1,306 @@
+<%= renderLegend('basePlan','BASEPLAN') %>
+<div class="illustrationdisplay" name = "basePlan">
+  <%= renderHiddenField('currentLayout',@quotation.currentLayout,'Product Id', @quotation) %>
+  <%= renderHiddenField('productId',@baseProduct.productId,'Product Id', @baseProduct) %>
+  <%= renderHiddenField('productTypeCd',@baseProduct.productTypeCd,'productTypeCd', @baseProduct) %>
+
+  <fieldset data-role="controlgroup">
+    <div class="ui-grid-b">            
+      <div class="ui-block-a">
+        <ul data-role="listview" >
+          <li class="collateral">
+            <a href="#" name="BASE_COLLATERAL">
+              <script>
+                $('a[name="BASE_COLLATERAL"]').click(function () {  
+                  planCode = $("select[name='<%=getObjectMapping(@baseProduct)%>[planCode]']").val();
+                  if ( planCode != "" )
+                  {  
+                    $.get("/app/Collateral/showProductCollateral?planCode="+planCode,function(data) {});
+                  }
+                  else
+                  {
+                    showDialog("", "<%= getLabelValue('SELECTBASE')%>", 'warning', 0, 'capture');
+                  }
+                }); 
+              </script>                      
+              <%= getLabelValue('BASEPLANTYPE') %>                      
+            </a>            
+          </li>
+        </ul>                
+      </div>
+      <div class="ui-block-b" id="productPlanType">
+        <%= getLookup('DYNAMICLOOKUP', 'productFamilyCd', @baseProduct.productFamilyCd, @baseProduct, @paTypeLookups, " onchange=\"updateProducts(true);\"") %>
+      </div>
+      <div class="ui-block-c" id="productPlanCode">
+        <%= getLookup('DYNAMICLOOKUP', 'planCode', @baseProduct.planCode, @baseProduct, @paPlanLookups, " onchange=\"planCodeChange(true);\"") %>
+      </div>
+    </div>
+  </fieldset>
+
+  <fieldset data-role="controlgroup">
+    <div class="ui-grid-b">            
+      <div class="ui-block-a">
+        <%= renderLabel('term','CT/PPT', nil, @baseProduct)   %>
+      </div>
+      <div class="ui-block-b" id="term">
+        <%= getLookup('', 'productTerm', @baseProduct.productTerm, @baseProduct) %>
+      </div>
+      <div class="ui-block-c" id="ppt">
+        <%= getLookup('', 'premiumPayingTerm', @baseProduct.premiumPayingTerm, @baseProduct) %>
+      </div>
+    </div>
+  </fieldset>
+
+  <fieldset data-role="controlgroup">
+    <div class="ui-grid-b">
+      <div class="ui-block-a">
+        <%= renderLabel('premiumsa', 'SAANNUALPREMIUM')   %>
+      </div>
+      <div class="ui-block-b">
+        <!-- <%= getLookup("PREMIUMSA", 'premiumsa', "SUMASSURED") %> -->        
+        <input type="radio" name="premiumsa" id="radio-choice-2" value="SUMASSURED" checked="checked"/>
+        <label for="radio-choice-2" class="c2l-radio"><%= getLabelValue('SUMASSURED')   %></label>       
+      </div>
+      <div class="ui-block-c">
+        <%= renderAmountField('baseSumAssured',@baseProduct.baseSumAssured,'SA', @baseProduct, " style='max-width:140px;'") %>
+      </div>
+    </div>
+    <div class="ui-grid-b">
+      <div class="ui-block-a"> &nbsp; </div>
+      <div class="ui-block-b">
+        <input type="radio" name="premiumsa" id="radio-choice-1" value="PREMIUM"/>
+        <label for="radio-choice-1" class="c2l-radio"><%= getLabelValue('PREMIUM')   %></label>
+      </div>
+      <div class="ui-block-c">
+        <%= renderPreciseAmountField('baseAnnualPremium',@baseProduct.baseAnnualPremium,'Premium', @baseProduct, " style='max-width:140px;'") %>
+      </div>
+    </div>
+  </fieldset>
+    
+  <div data-role="fieldcontain">
+    <%= renderLabel('modalPremium','modalPremium', nil, @baseProduct)   %>
+    <%= renderAmountField('modalPremium',@baseProduct.modalPremium,'Modal Premium', @baseProduct) %>
+  </div>  
+  
+  <div data-role="dualfieldcontain">
+    <div class="half">
+      <%= renderLabel('paymentTypeCd',"paymentTypeCd", nil, @baseProduct)%>
+      <%= getLookup("PREMIUMTYPE", 'paymentTypeCd',@baseProduct.paymentTypeCd,@baseProduct)%>
+    </div>
+    <div class="half">
+      <%= renderLabel('paymentFrequencyCd',"paymentFrequencyCd", nil, @baseProduct)%>
+      <%= getLookup('FREQUENCY', 'paymentFrequencyCd',@baseProduct.paymentFrequencyCd,@baseProduct)%>
+    </div>
+  </div>
+
+  <div  data-role="dualfieldcontain">
+    <div class="half">
+      <%= renderLabel('multiplier',"multiplier", nil, @baseProduct)%>
+      <%= getLookup('TERMVALUE', 'multiplier',@baseProduct.multiplier,@baseProduct)%>
+    </div>
+    <div class="half">
+      <%= renderLabel('currencyCd',"currencyCd", nil, @baseProduct)%>
+      <%= getLookup('CURRENCYMASTER', 'currencyCd',@baseProduct.currencyCd,@baseProduct)%>
+    </div>
+  </div>
+
+  <div data-role="dualfieldcontain">
+    <div class="half">
+      <%= renderLabel('annuityAge', 'annuityAge', nil, @baseProduct)   %>
+      <%= renderCountField('annuityAge', @baseProduct.annuityAge, 'Years', @baseProduct) %> <%= renderLabel('annuityAge','YEAR')   %>
+    </div>
+    <div class="half">
+      <%= renderLabel('annuityPerc','annuityPerc', nil, @baseProduct)   %>
+      <%= renderAmountField('annuityPerc', @baseProduct.annuityPerc,'Premium Guarantees', @baseProduct) %>
+    </div>
+  </div>
+
+  <fieldset data-role="controlgroup">
+    <div  class="ui-grid-b">
+      <div class="ui-block-a">
+        <%= renderLabel('annuityOptionCd',"annuityOptionCd", nil, @baseProduct)%>
+      </div>
+      <div class="ui-block-b">
+        <%= getLookup('FREQUENCY', 'annuityOptionCd',@baseProduct.annuityOptionCd,@baseProduct)%>
+      </div>
+      <div class="ui-block-c"></div>
+    </div>
+  </fieldset>
+
+  <fieldset data-role="controlgroup">
+    <div class="ui-grid-c">
+      <div class="ui-block-a">
+        <%= renderLabel('ropInterestRate','ropInterestRate',nil, @baseProduct) %>
+      </div>
+      <div class="ui-block-b">
+        <%= renderAmountField('ropInterestRate', @baseProduct.ropInterestRate, nil, @baseProduct, nil)%>
+      </div>
+      <div class="ui-block-c">
+        <%= renderLabel('lowReturnRate','lowReturnRate',nil, @baseProduct) %>
+      </div>
+      <div class="ui-block-d">
+        <%= renderAmountField('lowReturnRate', @baseProduct.lowReturnRate, nil, @baseProduct, nil)%>
+      </div>
+    </div>
+  </fieldset> 
+
+  <fieldset data-role="controlgroup">
+    <div class="ui-grid-c">
+      <div class="ui-block-a">
+        <%= renderLabel('mediumReturnRate','mediumReturnRate',nil, @baseProduct) %>
+      </div>
+      <div class="ui-block-b">
+        <%= renderAmountField('mediumReturnRate', @baseProduct.mediumReturnRate, nil, @baseProduct, nil)%>
+      </div>
+      <div class="ui-block-c">
+        <%= renderLabel('highReturnRate','highReturnRate',nil, @baseProduct) %>
+      </div>
+      <div class="ui-block-d">
+        <%= renderAmountField('highReturnRate', @baseProduct.highReturnRate, nil, @baseProduct, nil)%>
+      </div>
+    </div>
+  </fieldset> 
+
+  <fieldset data-role="controlgroup">
+    <div name="extraFieldsBase" class="ui-grid-c">
+      <div class="ui-block-a">
+        <%= renderLabel('oe','occuExtra',nil, @baseProduct) %>
+      </div>
+      <div class="ui-block-b">
+        <%= renderAmountField('oe', @baseProduct.oe, nil, @baseProduct, nil)%>
+      </div>
+      <div class="ui-block-c">
+        <%= renderLabel('emr','Flat Extra',nil, @baseProduct) %>
+      </div>
+      <div class="ui-block-d">
+        <%= renderAmountField('emr', @baseProduct.emr, nil, @baseProduct, nil)%>
+      </div>
+    </div>
+  </fieldset>  
+      
+  <fieldset data-role="controlgroup">
+    <div name = "currencySelection" class="ui-grid-b">            
+      <div class="ui-block-a"> <%= renderLabel('currencyCd','currencyCd', nil, @baseProduct)%> </div>
+      <div class="ui-block-b" name = "currencyDiv"> <%= getLookup('DYNAMICLOOKUP', 'currencyCd', @baseProduct.currencyCd, @baseProduct, @currencyLookups, 'onchange="calculatePremium(\'Quotation[QuotationProduct][0][baseSumAssured]\')"') %> </div>
+      <div class="ui-block-c"> </div>
+    </div>
+  </fieldset>
+    
+  <fieldset data-role="controlgroup">
+    <div name="premiumDiscount1" class="ui-grid-c">
+      <div class="ui-block-a"><%= renderLabel('premiumDiscount','PREMIUMDISCOUNT',nil, @baseProduct) %></div>
+      <div class="ui-block-b"><%= renderAmountField('premiumDiscount', @baseProduct.premiumDiscount, nil, @baseProduct, nil)%></div>
+      <div class="ui-block-c"><%= renderLabel('premiumDiscountDurantion','PREMIUMDISCOUNTDURATION',nil, @baseProduct) %></div>
+      <div class="ui-block-d"><%= renderAmountField('premiumDiscountDuration', @baseProduct.premiumDiscountDuration, nil, @baseProduct, nil)%></div>
+    </div>
+  </fieldset> 
+    
+  <fieldset data-role="controlgroup">
+    <div name="flatLoading" class="ui-grid-c">
+      <div class="ui-block-a"><%= renderLabel('flatLoading','FLATLOADING',nil, @baseProduct) %></div>
+      <div class="ui-block-b"><%= renderAmountField('flatLoading', @baseProduct.flatLoading, nil, @baseProduct, nil)%></div>
+      <div class="ui-block-c"><%= renderLabel('flatLoadingDurantion','FLATLOADINGDURATION',nil, @baseProduct) %></div>
+      <div class="ui-block-d"><%= renderAmountField('flatLoadingDuration', @baseProduct.flatLoadingDuration, nil, @baseProduct, nil)%></div>
+    </div>
+ </fieldset>
+   
+  <fieldset data-role="controlgroup">
+    <div name="multipleLoadingLoading" class="ui-grid-c">
+      <div class="ui-block-a"><%= renderLabel('multipleLoading','MULTIPLELOADING',nil, @baseProduct) %></div>
+      <div class="ui-block-b"><%= renderAmountField('multipleLoading', @baseProduct.multipleLoading, nil, @baseProduct, nil)%></div>
+      <div class="ui-block-c"><%= renderLabel('multipleLoadingDurantion','MULTIPLELOADINGDURATION',nil, @baseProduct) %></div>
+      <div class="ui-block-d"><%= renderAmountField('multipleLoadingDuration', @baseProduct.multipleLoadingDuration, nil, @baseProduct, nil)%></div>
+    </div>  
+  </fieldset>
+    
+  <fieldset data-role="controlgroup">
+    <div name="dividendOptionLA" class="ui-grid-c">
+      <div class="ui-block-a"><%= renderLabel('dividendOptionCd','DIVIDENDOPTION',nil, @baseProduct) %></div>
+      <div class="ui-block-b"><%= getLookup('DIVIDENDOPTIONS','dividendOptionCd', @baseProduct.dividendOptionCd, @baseProduct, @dividendOptionLookups)%></div>
+      <div class="ui-block-c"><%= renderLabel('enhancedProtectionOptionTDBTarget','ENHANCEDTDBTARGET',nil, @baseProduct) %></div>
+      <div class="ui-block-d"><%= renderAmountField('enhancedProtectionOptionTDBTarget', @baseProduct.enhancedProtectionOptionTDBTarget, nil, @baseProduct, nil)%></div>
+    </div>  
+  </fieldset>  
+      
+  <fieldset data-role="controlgroup">
+    <div name="ropIndicatorCd" class="ui-grid-c">
+      <div class="ui-block-a"><%= renderLabel('ropIndicatorCd','ROPINDICATOR',nil, @baseProduct) %></div>
+      <div class="ui-block-b"><%= getLookup('YESNO','ropIndicatorCd', @baseProduct.ropIndicatorCd, @baseProduct, @ropLookups)%></div>
+      <div class="ui-block-c"><%= renderLabel('ropInterestRate','ROPRATE',nil, @baseProduct) %></div>
+      <div class="ui-block-d"><%= renderAmountField('ropInterestRate', @baseProduct.ropInterestRate, nil, @baseProduct, nil)%></div>
+    </div>
+  </fieldset>
+    
+  <fieldset data-role="controlgroup">
+    <div name="ropIndicatorCd1" class="ui-grid-c">
+      <div class="ui-block-a"><%= renderLabel('floorWithGuaranteedCashValueCd','FWGCV',nil, @baseProduct) %></div>
+      <div class="ui-block-b"><%= getLookup('YESNO','floorWithGuaranteedCashValueCd', @baseProduct.floorWithGuaranteedCashValueCd, @baseProduct, @ropLookups)%></div>
+      <div class="ui-block-c"><%= renderLabel('capWithBasicPlanFACd','CWBPFA',nil, @baseProduct) %></div>
+      <div class="ui-block-d"><%= getLookup('YESNO','capWithBasicPlanFACd', @baseProduct.capWithBasicPlanFACd, @baseProduct, @ropLookups)%></div>
+    </div>
+  </fieldset>
+
+  <div name="cashDropReinvest">          
+    <fieldset data-role="controlgroup">
+      <div class="ui-grid-b">            
+        <div class="ui-block-a">
+          <%= renderLabel('cashDropReinvest','CASHDROPREINVEST', nil, @baseProduct)   %>
+        </div>
+        <div class="ui-block-b"> <%= getLookup('YESNO', 'cashDropReinvest', @baseProduct.cashDropReinvest, @baseProduct) %> </div>
+        <div class="ui-block-c">  </div>
+      </div>
+    </fieldset>
+  </div>
+
+  <div name="terminalBonusReinvest">          
+    <fieldset data-role="controlgroup">
+      <div class="ui-grid-b">            
+        <div class="ui-block-a">
+          <%= renderLabel('terminalBonusReinvest','TERMINALBONUSREINVEST', nil, @baseProduct)   %>
+        </div>
+        <div class="ui-block-b"> <%= getLookup('YESNO', 'terminalBonusReinvest', @baseProduct.terminalBonusReinvest, @baseProduct) %> </div>
+        <div class="ui-block-c">  </div>
+      </div>
+    </fieldset>
+  </div>
+
+  <div name="dividendOption">          
+    <fieldset data-role="controlgroup">
+      <div class="ui-grid-b">            
+        <div class="ui-block-a">
+          <%= renderLabel('dividendOption','DIVIDENDOPTION', nil, @baseProduct)   %>
+        </div>
+        <div class="ui-block-b" name = "dividendOptionLookup"> <%= getLookup('DIVIDENDOPTION', 'dividendOption', @baseProduct.dividendOption, @baseProduct) %> </div>
+        <div class="ui-block-c">  </div>
+      </div>
+    </fieldset>
+  </div>
+
+  <div name="endowmentOption">          
+    <fieldset data-role="controlgroup">
+      <div class="ui-grid-b">            
+        <div class="ui-block-a">
+          <%= renderLabel('endowmentOption','ENDOWMENTOPTION', nil, @baseProduct)   %>
+        </div>
+        <div class="ui-block-b" name = "endowmentOptionLookup"> <%= getLookup('ENDOWMENTOPTION', 'endowmentOption', @baseProduct.endowmentOption, @baseProduct) %> </div>
+        <div class="ui-block-c">  </div>
+      </div>
+    </fieldset>
+  </div>
+
+  <div name="pdfOption">          
+    <fieldset data-role="controlgroup">
+      <div class="ui-grid-b">            
+        <div class="ui-block-a">
+          <%= renderLabel('pdfOption','PDFOPTION', nil, @baseProduct)   %>
+        </div>
+        <div class="ui-block-b"> <%= getLookup('NOYES', 'pdfOption', @baseProduct.pdfOption, @baseProduct, nil, " onchange=\"updatePDFAmount(this.value);\"") %> </div>
+        <div class="ui-block-c"> <%= renderPreciseAmountField('pdfAmount', @baseProduct.pdfAmount, 'PDF amount', @baseProduct, " style='max-width:140px;'") %> </div>
+      </div>
+    </fieldset>
+  </div>
+</div>
+
+<script>
+  setReadOnly($("input[name='<%=getObjectMapping(@baseProduct) %>[pdfAmount]']"), true);
+</script>

@@ -1,0 +1,51 @@
+<% if @tabToBeLoaded == "tab_selProduct" %>
+	<%= tabTagStart("tab_selProduct") %>
+		<%= render(:file => 'CommonModules/ProductSelectionTravel_Jazz.erb')%>
+		
+		<% if @baseProduct %>
+			<%= modelTagStart("basePlan", @baseProduct, @quotation) %>
+			<div style="display: none;">
+				<%= inputTag("productTypeCd") %>
+				<%= inputTag("productFamilyCd") %>
+				<%= inputTag("productVersion") %>
+				<%= inputTag("productSeq") %>
+				<%= inputTag("productId") %>
+				<%= inputTag("productPlanOptionCd") %>
+			</div>
+			<% modelTagEnd %>
+		<% end %>
+		<div style="display: none;">
+			<%= inputTag("quotationRefNum") %>
+		</div>
+	<%= tabTagEnd %>
+<% end %>
+
+<% if @tabToBeLoaded == "tab_basic" %>
+	<%
+	$prdSelectionFacet ||= $rhoconfig[:prdSelection]
+    if MobiSys::ProductUtil.getCompanyFacetValue($prdSelectionFacet).to_s != "" && $rhoconfig[:tab_based_product_selection]
+        $ignore_product = true
+    end
+	%>
+	<%= tabTagStart("tab_basic") %>
+		<%= render :partial => "QuoteBasicTravel_Jazz" %>
+	<%= tabTagEnd %>
+	<% $ignore_product = nil %>
+	
+	<% if @partyGuidMapping %>
+		<input type="hidden" name="partyGuidMapping" id="partyGuidMapping" value='<%= @partyGuidMapping %>'/> 
+	<% end %>
+<% end %>
+
+<% if @tabToBeLoaded == "tab_rider" %>
+	<%= tabTagStart("tab_rider") %>
+		<%= render :partial => "QuoteRider_Jazz" %>
+	<%= tabTagEnd %>
+<% end %>
+
+<% if @tabToBeLoaded == "tab_premiumSummary" %>
+	<%= tabTagStart("tab_premiumSummary") %>
+		<%= render :partial => "QuoteSummaryTravel_Jazz" %>
+	<%= tabTagEnd %>
+<% end %>
+	

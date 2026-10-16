@@ -1,0 +1,172 @@
+<script type="text/javascript">
+var documentname = "";
+var file = "";
+var status = "";
+var reciveDtId = "";
+var image_count = "";
+
+
+function takePicture(fieldName) {
+	key = $('input[id="'+fieldName+'[docCategoryCd]"]').val();
+	serviceDocGuid = $('input[name="'+fieldName+'[guid]"]').val();
+	file = fieldName+'[imageURL]';
+	status = fieldName+'[acceptanceStatusCd]';
+	reciveDtId = fieldName+'[receivedDt]';
+	image_count = fieldName+'[imageCount]';
+	documentname = key
+	$.ajax({
+		url:"/app/Policy/takePicture", 
+		data: {'parentRefGuid':serviceDocGuid},
+		success: function(data){}
+	});
+	$('input[id^="view"]').button("enable");
+	$('input[id="view'+key+'"]').val("<%= getLabelValue('hidePic')%>");
+	$('input[id="view'+key+'"]').button("refresh");
+}
+
+
+function updateFile(filename) {
+	filename = filename.split('@');
+	var data = "<li name='"+filename[1]+"'>";
+	// data += "<a href='"+filename[0]+"' rel='gallery'";
+	data += "<img class=\"dirtyImage\" data-id='"+filename[1]+"' src='"+filename[0]+"' width='100px' height='100px'/>";
+	// data += "</a>"
+	data += "<a name='REMOVE' value='remove_"+filename[1]+"' onclick=removeImage('"+filename[1]+"','"+filename[2]+"') ><img src='/public/images/delete.png' width='30px' height='30px'></a>";
+	data += "</li>";
+
+	$('div[name="requirementimage_'+documentname+'"]').append(data);
+	$('div[name="requirementimage_'+documentname+'"]').show();
+
+	$('input[id="'+file+'"]').val(filename);
+	$('input[id="'+status+'"]').val("RECEIVED");
+	$('input[id="'+reciveDtId+'"]').val("<%=getScreenDate(Time.now.to_s)%>");
+}
+
+
+function view(documentId) {
+	if($('div[name="requirementimage_'+documentId+'"]').is(':visible')) {
+		$('input[id="view'+documentId+'"]').val("<%= getLabelValue('viewPic')%>");
+		$('input[id="view'+documentId+'"]').button("refresh");
+
+		$('div[name="requirementimage_'+documentId+'"]').hide();       
+	}
+	else {
+		$('input[id="view'+documentId+'"]').val("<%= getLabelValue('hidePic')%>");
+		$('input[id="view'+documentId+'"]').button("refresh");
+
+		$('div[name="requirementimage_'+documentId+'"]').show();
+	} 
+}
+
+function submitForm() {
+	if(initialRequirementForm != $('#requirementForm').serialize()) {
+		$.ajax({                                    
+			url: "/app/Policy/reSubmitDocuments",
+			method: 'POST',
+			async: false,
+			data: $('#requirementForm').serialize(),
+			headers: {
+	        	'Transition-Enabled': false
+	        },
+			success: function(){
+				$("a#submit").hide();
+				$(".dirtyImage").clone().each(function(i,img){
+					parentkey = $(img).data("id").toString();
+					if(parentkey.indexOf(".")==-1) {
+						parentkey = parentkey+".0";
+					}
+					img.width = 1654;
+					$(img, {
+    					load: function() {
+    						finalFile = $(img).pixastic("desaturate").pixastic("resize",{'width':1654,'height':img.height })[0].toDataURL("image/jpeg");
+							$.ajax({
+								type: "POST",
+								url:"/app/Policy/updateProcessedImage", 
+								data:{'fileString': finalFile,'parentKey': parentkey},
+								success: function(){
+								}
+							});
+    					}
+					});
+				});
+			}
+		});
+	}
+}
+
+
+function removeImage(imagevalue, servicedocGuid) {
+	$.ajax({                                    
+		url: "/app/Policy/removeImage",
+		async: false,
+		data: {'parentKey': imagevalue,'servicedocGuid': servicedocGuid},
+		success: function() {
+			<% if @windows_platform %>
+				location.reload();
+			<% end %>	
+		}
+	});
+	$("li[name='"+imagevalue+"']").remove();
+	if ($(".requirementImageReupload li").length <= 0) {
+		$('input[id^="view"]').button("disable").button("refresh");
+		$(".requirementImageReupload").html("");
+	}
+}
+
+
+$(document).ready(function(){
+
+	// $("#single_2").fancybox({
+ //    	openEffect	: 'elastic',
+ //    	closeEffect	: 'elastic',
+
+ //    	helpers : {
+ //    		title : {
+ //    			type : 'inside'
+ //    		}
+ //    	}
+ //    });
+
+ //    $("a[href$='.jpg'],a[href$='.jpeg'],a[href$='.png'],a[href$='.gif']").attr('rel', 'gallery').fancybox({
+ //    	openEffect	: 'elastic',
+ //    	closeEffect	: 'elastic',
+
+ //    	helpers : {
+ //    		title : {
+ //    			type : 'inside'
+ //    		}
+ //    	}
+ //    });
+	$('div[name^="requirementimage_"]').hide();
+
+	if ($(".requirementImageReupload li").length <= 0) {
+		$('input[id^="view"]').attr("disabled", true).trigger("create");
+	}
+
+	$(".docc").each(function(){
+		var obj = $(this).parents('div[data-role="dualfieldcontain"]').find('.capture');
+		link = obj.attr("onclick");
+		length = link.search("&service_docc");
+		if(length < 0) {
+			substring = link;
+		}
+		else {
+			substring = link.substring(0, length);
+		}
+		obj.attr("onclick", substring+"&service_docc="+$(this).val()+"';");
+	});
+
+	$(".docc").change(function(){
+		var obj = $(this).parents('div[data-role="dualfieldcontain"]').find('.capture');
+		link = obj.attr("onclick");
+		length = link.search("&service_docc");
+		if(length < 0) {
+			substring = link;
+		}
+		else {
+			substring = link.substring(0, length);
+		}
+		obj.attr("onclick", substring+"&service_docc="+$(this).val()+"';");
+	});
+});
+</script>

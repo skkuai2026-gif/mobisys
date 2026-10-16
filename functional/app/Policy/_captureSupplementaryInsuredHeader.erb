@@ -1,0 +1,6 @@
+<h3 class="supHeaderDetails<%= @suplementaryInsuredCount %>">
+	<span class="numberSpan"><%= (@visibleSupplementaryCount.to_i + 1)%></span> <%= renderLabel('supplementaryInsured', 'Supplementary Insured')%>
+</h3>
+<fieldset style='margin-left: 92%; margin-top: 1%; position: absolute; z-index: 500;'>
+	<input type="button" data-inline="true" data-icon="delete" data-iconpos="notext" onclick="deleteSupplementaryInsured('<%= @suplementaryInsuredCount %>');">
+</fieldset>

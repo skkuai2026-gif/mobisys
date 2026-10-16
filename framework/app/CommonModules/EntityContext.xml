@@ -1,0 +1,881 @@
+<StateActionMappings>
+	<StateActionMapping type="VALIDATION" name="Validation" policy="ALL">
+		<State>
+			<BusinessObjects>
+				<BusinessObject type="MAP" objectpath="java.util" name="HashMap" alias="UserProperties"/>
+				<BusinessObject type="UserDO" objectpath="com.c2lbiz.symbiosys.systemcommon.dataobjects.security" name="UserDO" alias="User"/>
+				<BusinessObject type="SecurityUserDO" objectpath="com.c2lbiz.symbiosys.components.security.dataobjects.security" name="SecurityUserDO" alias="SecurityUser"/>
+				<BusinessObject type="PartyDO" objectpath="com.c2lbiz.symbiosys.insurance.businesscommon.dataobjects.party" name="PartyDO" alias="Party"/>
+				<BusinessObject type="PartyAddressDO" objectpath="com.c2lbiz.symbiosys.insurance.businesscommon.dataobjects.party" name="PartyAddressDO" alias="PartyAddress"/>
+				<BusinessObject type="DataElementDO" objectpath="com.c2lbiz.symbiosys.systemcommon.dataobjects.masters.DataElementDO" name="DataElementDO" alias="DataElement"/>
+				<BusinessObject type="ServiceDocumentDO" objectpath="com.c2lbiz.symbiosys.systemcommon.dataobjects.service.ServiceDocumentDO" name="ServiceDocumentDO" alias="ServiceDocument"/>
+				<BusinessObject type="ServiceDO" objectpath="com.c2lbiz.symbiosys.systemcommon.dataobjects.service" name="ServiceDO" alias="Service"/>
+				<BusinessObject type="PolicyDO" objectpath="com.c2lbiz.symbiosys.insurance.businesscommon.dataobjects.policy" name="PolicyDO" alias="Policy"/>
+				<BusinessObject type="PolicyPaymentDO" objectpath="com.c2lbiz.symbiosys.insurance.businesscommon.dataobjects.policy" name="PolicyPaymentDO" alias="PolicyPayment"/>
+				<BusinessObject type="PolicyProductDO" objectpath="com.c2lbiz.symbiosys.insurance.businesscommon.dataobjects.policy" name="PolicyProductDO" alias="PolicyProduct"/>
+				<BusinessObject type="PolicyTopUpDO" objectpath="com.c2lbiz.symbiosys.insurance.businesscommon.dataobjects.policy" name="PolicyTopUpDO" alias="PolicyTopUp"/>
+				<BusinessObject type="PartyIdentityDO" objectpath="com.c2lbiz.symbiosys.insurance.businesscommon.dataobjects.party" name="PartyIdentityDO" alias="PartyIdentity"/>
+				<BusinessObject type="PartyEmploymentDO" objectpath="com.c2lbiz.symbiosys.insurance.businesscommon.dataobjects.party" name="PartyEmploymentDO" alias="PartyEmployment"/>
+				<BusinessObject type="PartyContactDO" objectpath="com.c2lbiz.symbiosys.insurance.businesscommon.dataobjects.party" name="PartyContactDO" alias="PartyContact"/>
+				<BusinessObject type="PartyEmailDO" objectpath="com.c2lbiz.symbiosys.insurance.businesscommon.dataobjects.party" name="PartyEmailDO" alias="PartyEmail"/>				
+				<BusinessObject type="PolicyAdditionalFieldsDO" objectpath="com.c2lbiz.symbiosys.insurance.businesscommon.dataobjects.policy" name="PolicyAdditionalFieldsDO" alias="PolicyAdditionalFields"/>
+				<BusinessObject type="QuotationDO" objectpath="com.c2lbiz.symbiosys.insurance.businesscommon.dataobjects.quotation.QuotationDO" name="QuotationDO" alias="Quotation"/>
+				<BusinessObject type="QuotationProductDO" objectpath="com.c2lbiz.symbiosys.insurance.businesscommon.dataobjects.policy" name="QuotationProductDO" alias="QuotationProduct"/>
+				<BusinessObject type="QuotationProductExtraDO" objectpath="com.c2lbiz.symbiosys.insurance.businesscommon.dataobjects.policy" name="QuotationProductExtraDO" alias="QuotationProductExtra"/>
+				<BusinessObject type="QuotationPartyDO" objectpath="com.c2lbiz.symbiosys.insurance.businesscommon.dataobjects.quotation.QuotationPartyDO" name="QuotationPartyDO" alias="QuotationParty"/>
+				<BusinessObject type="InwardDO" objectpath="com.c2lbiz.symbiosys.insurance.businesscommon.dataobjects.collection.InwardDO" name="InwardDO" alias="Inward"/>
+				<BusinessObject type="FacetUIDO" objectpath="com.c2lbiz.symbiosys.insurance.dataobjects.product.FacetUIDO" name="FacetUIDO" alias="Facet"/>
+				<BusinessObject type="IllustrationFacetDO" objectpath="com.c2lbiz.symbiosys.insurance.businesscommon.dataobjects.product.IllustrationFacetDO" name="IllustrationFacetDO" alias="IllustrationFacet"/>
+				<BusinessObject type="IllustrationModelDO" objectpath="com.c2lbiz.symbiosys.insurance.businesscommon.dataobjects.product.IllustrationModelDO" name="IllustrationModelDO" alias="IllustrationModel"/>
+				<BusinessObject type="QuotationTopUpDO" objectpath="com.c2lbiz.symbiosys.insurance.businesscommon.dataobjects.quotation.QuotationTopUpDO" name="QuotationTopUpDO" alias="QuotationTopUp"/>
+				<BusinessObject type="ProductDO" objectpath="com.c2lbiz.symbiosys.insurance.businesscommon.dataobjects.product" name="ProductDO" alias="Product"/>
+				<BusinessObject type="RequestDO" objectpath="com.c2lbiz.symbiosys.systemcommon.dataobjects.masters.RequestDO" name="RequestDO" alias="Request"/>
+				<BusinessObject type="RuleDefinitionDO" objectpath="com.c2lbiz.symbiosys.systemcommon.dataobjects.masters.RuleDefinitionDO" name="RuleDefinitionDO" alias="RuleDefinition"/>
+				<BusinessObject type="PartyFinancialAccountDO" objectpath="com.c2lbiz.symbiosys.insurance.businesscommon.dataobjects.party.PartyFinancialAccountDO" name="PartyFinancialAccountDO" alias="PartyFinancialAccount"/>
+				<BusinessObject type="LookupData" objectpath="com.c2lbiz.symbiosys.systemcommon.dataobjects.masters.LookupDataDO" name="LookupDataDO" alias="LookupData"/>
+				<BusinessObject type="Lookup" objectpath="com.c2lbiz.symbiosys.systemcommon.dataobjects.masters.LookupDO" name="LookupDO" alias="Lookup"/>
+				<BusinessObject type="InwardDetailsDO" objectpath="com.c2lbiz.symbiosys.insurance.businesscommon.dataobjects.collection.InwardDetailsDO" name="InwardDetailsDO" alias="InwardDetails"/>
+				<BusinessObject type="InwardDO" objectpath="com.c2lbiz.symbiosys.insurance.businesscommon.dataobjects.collection.InwardDO" name="InwardDO" alias="Inward"/>
+				<BusinessObject type="PolicyPartyRoleDO" objectpath="com.c2lbiz.symbiosys.insurance.businesscommon.dataobjects.policy" name="PolicyPartyRoleDO" alias="PolicyPartyRole"/>
+				<BusinessObject type="ServiceSignatureDO" objectpath="com.c2lbiz.symbiosys.systemcommon.dataobjects.service.ServiceSignatureDO" name="ServiceSignatureDO" alias="ServiceSignature"/>
+				<BusinessObject type="CustomerDetailViewDO" objectpath="com.c2lbiz.symbiosys.insurance.businesscommon.dataobjects.party.CustomerDetailViewDO" name="CustomerDetailViewDO" alias="CustomerDetailView"/>
+				<BusinessObject type="ClaimDO" objectpath="com.c2lbiz.symbiosys.insurance.businesscommon.dataobjects.party.ClaimDO" name="ClaimDO" alias="Claim"/>
+				<BusinessObject type="ClaimDiagnosisDtlDO" objectpath="com.c2lbiz.symbiosys.insurance.businesscommon.dataobjects.party.ClaimDiagnosisDtlDO" name="ClaimDiagnosisDtlDO" alias="ClaimDiagnosisDtl"/>
+				<BusinessObject type="TableTypeConditionDO" objectpath="com.c2lbiz.symbiosys.insurance.businesscommon.dataobjects.master.TableTypeConditionDO" name="TableTypeConditionDO" alias="TableTypeCondition"/>
+			</BusinessObjects>
+		</State>
+		<Expressions name="PolicyServicingSet" >
+			<Expression name="ClaimSubType" path="claimSubTypeCd" applyOn="Claim"/>
+			<Expression name="DiagnosisType" path="diagnosisTypeCd" applyOn="ClaimDiagnosisDtl"/>
+		</Expressions>
+		<Expressions name="CollectionSet" >
+			<Expression name="PaymentMethod" path="paymentMethodCd"  applyOn="InwardDetails"/>
+			<Expression name="PaymentMethodCreditCard" path="paymentMethodCd=='CREDITCARD'"  applyOn="InwardDetails"/>
+			<Expression name="PaymentMethodDirectDebit" path="paymentMethodCd=='DIRECTDEBIT'"  applyOn="InwardDetails"/>
+			<Expression name="InwardSubTypeCdDP" path="inwardSubTypeCd=='DEFICITPAYMENT'"  applyOn="Inward"/>
+			<Expression name="InwardSubTypeCdLR" path="inwardSubTypeCd=='LOADINGREVERT'"  applyOn="Inward"/>
+			<Expression name="InwardSubTypeCdARFR" path="processStatusCd=='adjustmentPendingReceiptEntry'||processStatusCd=='waitingForIPASUpdate'"  applyOn="Inward"/>
+			<Expression name="InwardSubTypeCdPD" path="inwardSubTypeCd=='PROPOSALDOCUMENT'"  applyOn="Inward"/>
+			<Expression name="EntrySourceCdTS" path="entrySourceCd=='TELESALES'"  applyOn="Inward"/>
+			<Expression name="EntrySourceCdPor" path="entrySourceCd=='PORTAL'"  applyOn="Inward"/>
+			<Expression name="CardType" path="cardTypeCd"  applyOn="InwardDetails"/>
+			<Expression name="DepositStatusCd" path="depositStatusCd"  applyOn="InwardDetails"/>
+		    <Expression name="AccountType" path="acctTypeCd"  applyOn="InwardPolicy"/>
+		    <Expression name="ProductFamily" path="productFamilyCd=='TRAVEL'"  applyOn="InwardPolicy"/>    
+			<Expression name="ReceiptReferenceNum" path="receiptReferenceNum==null" applyOn="Inward"/>
+			<Expression name="DirectInwardEntry" path="entrySourceCd==null" applyOn="Inward"/>
+			<Expression name="IntimationSource" path="intimationSourceCd=='PORTAL'" applyOn="Inward"/>
+			<Expression name="ChqRepresentation" path="isChqRepresentation" applyOn="Inward"/>
+			<Expression name="InwardTypeCdA" path="inwardTypeCd=='AGENT'"  applyOn="Inward"/>
+			<Expression name="InwardTypeCdNBR" path="inwardTypeCd=='NEWBUSINESSR'"  applyOn="Inward"/>
+			<Expression name="isMicrApplicable" path="isMicrApplicable"  applyOn="Inward"/>
+		</Expressions>
+		<Expressions name="UserPropertiesForUI" >
+			<Expression name="LocationProperty" path="this.UserDO_userLocationId"  applyOn="UserProperties"/>
+		</Expressions>
+		<Expressions name="UserValidation" >
+			<Expression name="Location" path="userLocationId"  applyOn="User"/>
+			<Expression name="Environment" path="offlineField"  applyOn="User"/>
+		</Expressions>
+		<Expressions name="ServiceSignatureSet" >
+			<Expression name="SignatureTypeCd" path="signatureTypeCd"  applyOn="ServiceSignature"/> 
+ 		</Expressions>
+ 		<Expressions name="PartySet" >
+			<Expression name="Role" path="roleCd"  applyOn="Party"/>
+			<Expression name="ContactType" path="contactTypeCd"  applyOn="PartyContact"/>
+			<Expression name="AddressType" path="addressTypeCd"  applyOn="PartyAddress"/>
+			<Expression name="IdentityTypeCd" path="identityTypeCd"  applyOn="PartyIdentity"/>
+			<Expression name="EmailType" path="emailTypeCd"  applyOn="PartyEmail"/>
+			<Expression name="OccupationTypeCd" path="occupationTypeCd"  applyOn="PartyEmployment"/>
+			<Expression name="isMicrApplicableForPartyfin" path="isMicrApplicable"  applyOn="PartyFinancialAccount"/>
+			<Expression name="partyTypeCd" path="partyTypeCd"  applyOn="Party"/>
+			<Expression name="PaymentMethodCd" path="paymentMethodCd"  applyOn="PartyFinancialAccount"/>
+			<Expression name="EntityName" path="entityName" applyOn="CustomerDetailView"/>
+			<Expression name="RelationCd" path="relationCd"  applyOn="Party"/>
+		</Expressions>
+		<Expressions name="DataElementSet" >
+			<Expression name="SystemUser" path="systemUserCd"  applyOn="DataElement"/>
+		</Expressions>
+		<Expressions name="ServiceSet" >
+			<Expression name="ServiceType" path="serviceTypeCd"  applyOn="Service"/>
+			<Expression name="CurrentTask" path="currentTaskCd"  applyOn="Service"/>
+         	<Expression name="CurrentTaskPrePropUpload" path="currentTaskCd=='propBranchDataEntryTask'"  applyOn="Service"/>
+			<Expression name="DeadTaskList" path="currentTaskCd=='propPolicyActiveTask'||currentTaskCd=='propRejectedTask'"  applyOn="Service"/>
+			<Expression name="CurrentTaskPreProdWithdrawDataEntry" path="currentTaskCd=='productWithdrawalDataEntryTask'" applyOn="Service"/>
+		</Expressions>
+		
+ 		<Expressions name="ServiceDocumentSet" >
+			<Expression name="AutoGeneratedFl" path="isAutoGeneratedFl"  applyOn="ServiceDocument"/> 
+ 		</Expressions> 
+			
+		<Expressions name="QuotationSet" >
+			<Expression name="ProductFamily" path="productFamilyCd"  applyOn="Quotation"/>
+			<Expression name="PremiumSAFl" path="premiumSAFl"  applyOn="QuotationProduct"/>
+			<Expression name="ProductTypeCd" path="productTypeCd"  applyOn="QuotationProduct"/>		
+			<Expression name="isEditableQuoRefNumFl" path="isEditableQuoRefNumFl"  applyOn="Quotation"/>
+			<Expression name="TermTypeCd" path="termTypeCd"  applyOn="Quotation"/>
+			<Expression name="PPTermTypeCd" path="pptermTypeCd"  applyOn="Quotation"/>
+			<Expression name="MultiplierTypeCd" path="multiplierTypeCd"  applyOn="Quotation"/>
+			<Expression name="TopUpTypeCd" path="topUpTypeCd"  applyOn="QuotationTopUp"/>
+			<Expression name="termCalculationBasisCd" path="termCalculationBasisCd"  applyOn="Quotation"/>
+			<Expression name="proposerLASame" path="proposerLASame"  applyOn="Quotation"/>
+			<Expression name="proposerLASameOffline" path="proposerLASame=='COPYFROMINSURED'"  applyOn="Quotation"/>
+			<Expression name="jointLife" path="jointLife"  applyOn="Quotation"/>
+			<Expression name="roleCd" path="roleCd"  applyOn="QuotationParty"/>
+			<Expression name="isAgeEditableFl" path="isAgeEditableFl"  applyOn="Quotation"/>
+			<Expression name="isQuotationDtEditableFl" path="isQuotationDtEditableFl"  applyOn="Quotation"/>
+			<Expression name="isPremiumHolidayFlSelected" path="isPremiumHolidayFlSelected"  applyOn="Quotation"/>
+			
+			<Expression name="PremiumHolidayFl" path="premiumHolidayFl"  applyOn="QuotationProduct"/>
+			<Expression name="premiumOffsetFl" path="premiumOffsetFl"  applyOn="QuotationProduct"/>
+			<Expression name="annuityOptionCd" path="annuityOptionCd"  applyOn="QuotationProduct"/>
+			<Expression name="pdfRequiredFl" path="pdfRequiredFl"  applyOn="QuotationProduct"/>
+			<Expression name="retirementOptionFl" path="retirementOptionFl"  applyOn="QuotationProduct"/>
+			<Expression name="solverTypeCd" path="solverTypeCd"  applyOn="QuotationProduct"/>
+			<Expression name="targetFundFl" path="targetFundFl"  applyOn="QuotationProduct"/>
+			<Expression name="withdrawalFl" path="withdrawalFl"  applyOn="Quotation"/>
+			<Expression name="initialTopupFl" path="initialTopupFl"  applyOn="Quotation"/>
+			<Expression name="regularTopupFl" path="regularTopupFl"  applyOn="Quotation"/>
+			<Expression name="pptCalcBasis" path="pptCalcBasis"  applyOn="Quotation"/>
+			<Expression name="withdrawalTypeCd" path="solverTypeCd"  applyOn="Quotation"/>
+			<Expression name="topUpAllocSameAsPremAllocFl" path="topUpAllocSameAsPremAllocFl"  applyOn="QuotationProduct"/>
+			<Expression name="premiumOffsetOptionCd" path="premiumOffsetOptionCd"  applyOn="QuotationProduct"/>
+			<Expression name="decisionCd" path="decisionCd"  applyOn="QuotationProductExtra"/>
+			<Expression name="processingTypeCd" path="processingTypeCd"  applyOn="QuotationProductExtra"/>
+			<Expression name="loadingTypeCd" path="loadingTypeCd"  applyOn="QuotationProductExtra"/>
+			<Expression name="topupOptionCd" path="topupOptionCd"  applyOn="Quotation"/>
+			<Expression name="builtInRiderFl" path="builtInRiderFl"  applyOn="QuotationProduct"/>
+			<Expression name="partyTypeCd" path="partyTypeCd"  applyOn="QuotationParty"/>
+			<Expression name="isTopupTypeRequiredFl" path="isTopupTypeRequiredFl"  applyOn="Quotation"/>
+			<Expression name="companyCd" path="companyCd"  applyOn="Quotation"/>
+			<Expression name="paymentTypeCd" path="paymentTypeCd"  applyOn="QuotationProduct"/>	
+			<Expression name="paymentFrequencyCd" path="paymentFrequencyCd"  applyOn="QuotationProduct"/>
+			<Expression name="insuranceTypeCd" path="insuranceTypeCd"  applyOn="Quotation"/>
+			<Expression name="lifeInsuranceTypeCd" path="insuranceTypeCd==null||insuranceTypeCd=='LIFE'"  applyOn="Quotation"/>
+			<Expression name="relationCd" path="relationCd"  applyOn="QuotationParty"/>
+			
+		</Expressions>
+		<Expressions name="PolicySet" >
+			<Expression name="BaseProductFamily" path="baseProductFamilyCd"  applyOn="Policy"/>
+			
+			<Expression name="BaseProductId" path="baseProductId"  applyOn="Policy"/>
+			<Expression name="PaymentType" path="policyPaymentType"  applyOn="Policy"/>
+			<Expression name="PaymentInstructionTypeCd" path="paymentInstructionTypeCd"  applyOn="PolicyPayment"/>
+			<Expression name="ProductType" path="productTypeCd"  applyOn="PolicyProduct"/>
+			<Expression name="PremiumSAFl" path="premiumSAFl"  applyOn="PolicyProduct"/>
+			<Expression name="TopUpTypeCd" path="topUpTypeCd"  applyOn="PolicyTopUp"/>
+			<Expression name="RiderCd" path="($.productId in listPolicyProductDOList)"  applyOn="Policy"/>
+			<Expression name="FormName" path="formName"  applyOn="Policy"/>
+			<Expression name="PolicyStatus" path="policyStatusCd"  applyOn="Policy"/>
+			<Expression name="PaymentMethodCd" path="paymentMethodCd"  applyOn="PolicyPayment"/>
+			<Expression name="PurposeOfInsuranceCd" path="purposeOfInsuranceCd"  applyOn="Policy"/>
+			<Expression name="SourceOfFund" path="sourceOfFund"  applyOn="Policy"/>
+			<Expression name="IntimationSourceCd" path="intimationSourceCd=='ESUBMISSION'"  applyOn="Policy"/>
+			<Expression name="initialTopupFl" path="initialTopupFl"  applyOn="Policy"/>
+			<Expression name="regularTopupFl" path="regularTopupFl"  applyOn="Policy"/>
+			<Expression name="uwDecisionCd" path="uwDecisionCd"  applyOn="Policy"/>
+			<Expression name="Role" path="roleCd"  applyOn="PolicyPartyRole"/>
+			<Expression name="insuranceTypeCd" path="insuranceTypeCd"  applyOn="Policy"/>
+			<Expression name="lifeInsuranceTypeCd" path="insuranceTypeCd==null||insuranceTypeCd=='LIFE'"  applyOn="Policy"/>
+			<Expression name="linkToEapp" path="quotationRefNum!=null"  applyOn="Policy"/>
+		</Expressions>
+		<Expressions name="UserSet" >
+			<Expression name="Privilege" path="($.privilegeCd in privilegeList)"  applyOn="SecurityUser"/>
+		</Expressions>
+ 	<!-- 	<Expressions name="InwardSet" > 
+ 			<Expression name="ReceiptPurpose" path="receiptPurpose"  applyOn="Inward"/> 
+ 		</Expressions>  -->
+		<Expressions name="FacetSet" >
+			<Expression name="FacetTypeCd" path="facetTypeCd"  applyOn="Facet"/>
+		</Expressions>
+		<Expressions name="IllustrationFacetSet" >
+			<Expression name="ComputePerInstanceOf" path="computePerInstanceOf"  applyOn="IllustrationFacet"/>
+		</Expressions>
+		<Expressions name="IllustrationModelSet" >
+			<Expression name="ModelFor" path="modelFor"  applyOn="IllustrationModel"/>
+		</Expressions>
+		
+		<Expressions name="ProductSet" >
+			<Expression name="ProductTypeCd" path="productTypeCd"  applyOn="Product"/>    
+		</Expressions>
+		<Expressions name="RequestSet" >
+			<Expression name="requestTypeCd" path="requestTypeCd"  applyOn="Request"/>		
+		</Expressions>
+		<Expressions name="RuleDefinitionSet" >
+			<Expression name="definitionTypeCd" path="definitionTypeCd"  applyOn="RuleDefinition"/>		
+		</Expressions>
+		<Expressions name="UWDecisionMaster">
+			<Expression name="lookupData" path="lookupKey"  applyOn="LookupData"/>	
+			<Expression name="lookup" path="lookupKey"  applyOn="Lookup"/>
+		</Expressions>
+		<Expressions name="TableTypeSet" >
+			<Expression name="fixedDynamicCondTypeCd" path="fixedDynamicCondTypeCd"  applyOn="TableTypeCondition"/>
+		</Expressions>
+		<Mapping>
+			<BusinessContext refExpressions="UWDecisionMaster" name="UWDECISIONMASTERLOOKUPDATA" match="ALL">
+				<ContextProperty name="UWDECISIONMASTERLOOKUPDATA"  refExpression="lookupData"  value="UWDECISION"/>
+			</BusinessContext>
+			<BusinessContext refExpressions="UWDecisionMaster" name="UWDECISIONMASTERLOOKUP" match="ALL">
+				<ContextProperty name="UWDECISIONMASTERLOOKUP"  refExpression="lookup"  value="UWDECISION"/>
+			</BusinessContext>
+			<BusinessContext refExpressions="RuleDefinitionSet" name="DYNAMICQS" match="ALL">
+				<ContextProperty name="definitionTypeCd"  refExpression="definitionTypeCd"  value="DYNAMIC_QS"/>
+			</BusinessContext>
+		    <BusinessContext refExpressions="RequestSet" name="PRODUCTWITHDRAWAL" match="ALL">
+				<ContextProperty name="requestTypeCd"  refExpression="requestTypeCd"  value="PRODUCTWITHDRAWAL"/>
+			</BusinessContext>
+			<BusinessContext refExpressions="ServiceDocumentSet" name="AUTOGENERATEDREQ" match="ALL">
+				<ContextProperty name="AUTOGENERATEDREQ"  refExpression="AutoGeneratedFl"  value="YES"/>
+			</BusinessContext>
+			
+			<BusinessContext refExpressions="PolicySet" name="BASEPLAN" match="ALL">
+				<ContextProperty name="BASEPLAN"  refExpression="ProductType"  value="PLAN"/>
+			</BusinessContext>
+			<BusinessContext refExpressions="PolicySet" name="PLAN" match="ALL">
+				<ContextProperty name="PLAN"  refExpression="ProductType"  value="PLAN"/>
+			</BusinessContext>
+			<BusinessContext refExpressions="PolicySet" name="RIDER" match="ALL">
+				<ContextProperty name="RIDER"  refExpression="ProductType"  value="RIDER"/>
+			</BusinessContext>
+			
+			<BusinessContext refExpressions="DataElementSet" name="DATAELEMENT" match="ALL">
+				<ContextProperty name="USER"  refExpression="SystemUser"  value="USER"/>
+			</BusinessContext>
+			<BusinessContext refExpressions="PartySet" name="PERMANENT" match="ALL">
+				<ContextProperty name="PERMANENT"  refExpression="AddressType"  value="PERMANENT"/>
+			</BusinessContext>
+			
+			<BusinessContext refExpressions="PartySet" name="PERSONAL" match="ALL">
+				<ContextProperty name="EmailType"  refExpression="EmailType"  value="PERSONAL"/>
+			</BusinessContext>
+			<BusinessContext refExpressions="PartySet" name="ALTERNATE" match="ALL">
+				<ContextProperty name="EmailType"  refExpression="EmailType"  value="ALTERNATE"/>
+			</BusinessContext>
+			
+			<BusinessContext refExpressions="PartySet" name="COMMUNICATION" match="ALL">
+				<ContextProperty name="COMMUNICATION"  refExpression="AddressType"  value="COMMUNICATION"/>
+			</BusinessContext>
+			<BusinessContext refExpressions="PartySet" name="RESIDENTIAL" match="ALL">
+				<ContextProperty name="RESIDENTIAL"  refExpression="AddressType"  value="RESIDENTIAL"/>
+			</BusinessContext>
+			<BusinessContext refExpressions="PartySet" name="PRIMARY" match="ALL">
+				<ContextProperty name="PRIMARY"  refExpression="Role"  value="PRIMARY"/>
+			</BusinessContext>
+				<BusinessContext refExpressions="PartySet" name="PROPOSER" match="ALL">
+				<ContextProperty name="PROPOSER"  refExpression="Role"  value="PROPOSER"/>
+			</BusinessContext>
+			<BusinessContext refExpressions="PartySet" name="PROPCUMINS" match="ALL">
+				<ContextProperty name="PROPCUMINS"  refExpression="Role"  value="PROPCUMINS"/>
+			</BusinessContext>
+			<BusinessContext refExpressions="ServiceSet" name="PROPOSAL" match="ALL">
+				<ContextProperty name="CREATEPROPOSAL"  refExpression="ServiceType"  value="CREATEPROPOSAL"/>
+			</BusinessContext>
+			<BusinessContext refExpressions="ServiceSet" name="CREATEQUOTATION" match="ALL">
+				<ContextProperty name="CREATEQUOTATION"  refExpression="ServiceType"  value="CREATEQUOTATION"/>
+			</BusinessContext>			
+			<BusinessContext refExpressions="ServiceSet" name="CREATEUSER" match="ALL">
+				<ContextProperty name="CREATEUSER" refExpression="ServiceType" value="CREATEUSER" />
+			</BusinessContext>
+	    	<BusinessContext refExpressions="ServiceSet" name="PostProposalUpload" match="ALL">
+				<ContextProperty name="PostProposalUpload"  refExpression="CurrentTaskPrePropUpload"  value="FALSE"/>
+			</BusinessContext>
+			<BusinessContext refExpressions="ServiceSet" name="PostProdWithdrawDataEntryTask" match="ALL">
+				<ContextProperty name="PostProdWithdrawDataEntryTask"  refExpression="CurrentTaskPreProdWithdrawDataEntry"  value="FALSE"/>
+			</BusinessContext>
+			<BusinessContext refExpressions="ServiceSet" name="PreProdWithdrawDataEntryTask" match="ALL">
+				<ContextProperty name="PreProdWithdrawDataEntryTask"  refExpression="CurrentTaskPreProdWithdrawDataEntry"  value="TRUE"/>
+			</BusinessContext>
+			<BusinessContext refExpressions="ServiceSet" name="RISKRULE" match="ALL">
+				<ContextProperty name="CREATERISK"  refExpression="ServiceType"  value="CREATERISK"/>
+			</BusinessContext>
+			<BusinessContext refExpressions="ServiceSet" name="CREATECONTEXTQS" match="ALL">
+				<ContextProperty name="CREATECONTEXTQS"  refExpression="ServiceType"  value="CREATECONTEXTQS"/>
+			</BusinessContext>
+			<BusinessContext refExpressions="PolicySet" name="UNITLINKED" match="ALL">
+				<ContextProperty name="UNITLINKED"  refExpression="BaseProductFamily"  value="VUL"/>
+			</BusinessContext>
+			<BusinessContext refExpressions="UserValidation" name="HeadOffice" match="ALL">
+				<ContextProperty name="Location"  refExpression="Location"  value="HO"/>
+			</BusinessContext>
+			
+			<BusinessContext refExpressions="UserValidation" name="AGENTONLINE" match="ALL">
+				<ContextProperty name="Environment"  refExpression="Environment"  value="AGENTONLINE"/>
+			</BusinessContext>
+			<BusinessContext refExpressions="UserValidation" name="BACKOFFICE" match="ALL">
+				<ContextProperty name="Environment"  refExpression="Environment"  value="BACKOFFICE"/>
+			</BusinessContext>
+			
+			<BusinessContext refExpressions="UserPropertiesForUI" name="HeadOffice" match="ALL">
+				<ContextProperty name="Location"  refExpression="LocationProperty"  value="HO"/>
+			</BusinessContext>
+			<BusinessContext refExpressions="UserPropertiesForUI" name="Branch" match="ALL">
+				<ContextProperty name="Location"  refExpression="LocationProperty"  value="BR"/>
+			</BusinessContext>
+			<BusinessContext refExpressions="PartySet" name="MOBILE" match="ALL">
+				<ContextProperty name="ContactType"  refExpression="ContactType"  value="MOBILE"/>
+			</BusinessContext>
+			<BusinessContext refExpressions="PartySet" name="RESIDENTIAL" match="ALL">
+				<ContextProperty name="ContactType"  refExpression="ContactType"  value="RESIDENTIAL"/>
+			</BusinessContext>
+			<BusinessContext refExpressions="PartySet" name="OFFICE" match="ALL">
+				<ContextProperty name="ContactType"  refExpression="ContactType"  value="OFFICE"/>
+			</BusinessContext>
+			<BusinessContext refExpressions="PolicySet" name="SINGLE" match="ALL">
+				<ContextProperty name="SINGLE"  refExpression="PaymentType"  value="SINGLE"/>
+			</BusinessContext>
+			<BusinessContext refExpressions="PolicySet" name="REGULAR" match="ALL">
+				<ContextProperty name="REGULAR"  refExpression="PaymentType"  value="REGULAR"/>
+			</BusinessContext>
+			<BusinessContext refExpressions="PartySet" name="APPOINTEE" match="ALL">
+				<ContextProperty name="APPOINTEE"  refExpression="Role"  value="APPOINTEE"/>
+			</BusinessContext>
+			<BusinessContext refExpressions="PartySet" name="NOMINEE" match="ALL">
+				<ContextProperty name="NOMINEE"  refExpression="Role"  value="NOMINEE"/>
+			</BusinessContext>
+			<BusinessContext refExpressions="PolicySet" name="FIRSTPAYMENT" match="ALL">
+				<ContextProperty name="FIRSTPAYMENT"  refExpression="PaymentInstructionTypeCd"  value="FIRSTPREMIUM"/>
+			</BusinessContext>
+			<BusinessContext refExpressions="PolicySet" name="RENEWALPREMIUM" match="ALL">
+				<ContextProperty name="RENEWALPREMIUM"  refExpression="PaymentInstructionTypeCd"  value="RENEWALPREMIUM"/>
+			</BusinessContext>
+			<BusinessContext refExpressions="PolicySet" name="REFUNDPAYMENT" match="ALL">
+				<ContextProperty name="REFUNDPAYMENT"  refExpression="PaymentInstructionTypeCd"  value="REFUND"/>
+			</BusinessContext>
+		
+			<BusinessContext refExpressions="UserSet" name="UW_PR" match="ALL">
+				<ContextProperty name="UW_PR"  refExpression="Privilege"  value="UW_PR"/>
+			</BusinessContext>
+			<BusinessContext refExpressions="UserSet" name="SALES_PR" match="ALL">
+				<ContextProperty name="SALES_PR"  refExpression="Privilege"  value="SALES_PR"/>
+			</BusinessContext>
+			<BusinessContext refExpressions="ServiceSet" name="DeadQueueTask" match="ALL">
+				<ContextProperty name="DeadQueueTask"  refExpression="DeadTaskList"  value="TRUE"/>
+			</BusinessContext>
+			<BusinessContext refExpressions="ServiceSet" name="LiveQueueTask" match="ALL">
+				<ContextProperty name="LiveQueueTask"  refExpression="DeadTaskList"  value="FALSE"/>
+			</BusinessContext>
+            <BusinessContext refExpressions="QuotationSet" name="UNITLINKED" match="ALL">
+				<ContextProperty name="UNITLINKED"  refExpression="ProductFamily"  value="VUL"/>
+			</BusinessContext>
+			
+			<BusinessContext refExpressions="QuotationSet" name="PRIMARY" match="ALL">
+				<ContextProperty name="PRIMARY"  refExpression="roleCd"  value="PRIMARY"/>
+			</BusinessContext>
+			 <BusinessContext refExpressions="QuotationSet" name="PROPOSER" match="ALL">
+				<ContextProperty name="PROPOSER"  refExpression="roleCd"  value="PROPOSER"/>
+			</BusinessContext>
+			 <BusinessContext refExpressions="QuotationSet" name="JOINT" match="ALL">
+				<ContextProperty name="JOINT"  refExpression="roleCd"  value="JOINT"/>
+			</BusinessContext>
+			 <BusinessContext refExpressions="QuotationSet" name="SUPPLEMENTARY" match="ALL">
+				<ContextProperty name="SUPPLEMENTARY"  refExpression="roleCd"  value="SUPPLEMENTARY"/>
+			</BusinessContext>
+			
+			
+			<BusinessContext refExpressions="PolicySet" name="PREMIUM" match="ALL">
+				<ContextProperty name="PREMIUM"  refExpression="PremiumSAFl"  value="PREMIUM"/>
+			</BusinessContext>
+			<BusinessContext refExpressions="PolicySet" name="SA" match="ALL">
+				<ContextProperty name="SA"  refExpression="PremiumSAFl"  value="SA"/>
+			</BusinessContext>
+				<BusinessContext refExpressions="PolicySet" name="ANNUALINCOME" match="ALL">
+				<ContextProperty name="ANNUALINCOME"  refExpression="PremiumSAFl"  value="ANNUALINCOME"/>
+			</BusinessContext>
+ 			<BusinessContext refExpressions="PolicySet" name="ANNUALPREMIUM" match="ALL">
+				<ContextProperty name="ANNUALPREMIUM"  refExpression="PremiumSAFl"  value="ANNUALPREMIUM"/>
+			</BusinessContext>
+			<BusinessContext refExpressions="PolicySet" name="DUAL" match="ALL">
+				<ContextProperty name="DUAL"  refExpression="PremiumSAFl"  value="DUAL"/>
+			</BusinessContext>
+  			<BusinessContext refExpressions="PolicySet" name="MONTHLYINCOME" match="ALL">
+				<ContextProperty name="MONTHLYINCOME"  refExpression="PremiumSAFl"  value="MONTHLYINCOME"/>
+			</BusinessContext>
+			
+            <BusinessContext refExpressions="QuotationSet" name="PREMIUM" match="ALL">
+				<ContextProperty name="PREMIUM"  refExpression="PremiumSAFl"  value="PREMIUM"/>
+			</BusinessContext>
+		    <BusinessContext refExpressions="QuotationSet" name="SA" match="ALL">
+				<ContextProperty name="SA"  refExpression="PremiumSAFl"  value="SA"/>
+			</BusinessContext>
+			<BusinessContext refExpressions="QuotationSet" name="ANNUALINCOME" match="ALL">
+				<ContextProperty name="ANNUALINCOME"  refExpression="PremiumSAFl"  value="ANNUALINCOME"/>
+			</BusinessContext>
+		    <BusinessContext refExpressions="QuotationSet" name="ANNUALPREMIUM" match="ALL">
+				<ContextProperty name="ANNUALPREMIUM"  refExpression="PremiumSAFl"  value="ANNUALPREMIUM"/>
+			</BusinessContext>
+			<BusinessContext refExpressions="QuotationSet" name="DUAL" match="ALL">
+				<ContextProperty name="DUAL"  refExpression="PremiumSAFl"  value="DUAL"/>
+			</BusinessContext>
+		    <BusinessContext refExpressions="QuotationSet" name="MONTHLYINCOME" match="ALL">
+				<ContextProperty name="MONTHLYINCOME"  refExpression="PremiumSAFl"  value="MONTHLYINCOME"/>
+			</BusinessContext>
+			
+			<BusinessContext refExpressions="QuotationSet" name="PLAN" match="ALL">
+				<ContextProperty name="PLAN"  refExpression="ProductTypeCd"  value="PLAN"/>
+			</BusinessContext>
+			<BusinessContext refExpressions="QuotationSet" name="RIDER" match="ALL">
+				<ContextProperty name="RIDER"  refExpression="ProductTypeCd"  value="RIDER"/>
+			</BusinessContext>
+			
+			<BusinessContext refExpressions="QuotationSet" name="FIXEDTERM" match="ALL">
+				<ContextProperty name="FIXEDTERM"  refExpression="TermTypeCd"  value="FIXED"/>
+			</BusinessContext>
+			<BusinessContext refExpressions="QuotationSet" name="FIXEDPPTERM" match="ALL">
+				<ContextProperty name="FIXEDPPTERM"  refExpression="PPTermTypeCd"  value="FIXED"/>
+			</BusinessContext>
+			<BusinessContext refExpressions="QuotationSet" name="FIXEDMULTIPLIER" match="ALL">
+				<ContextProperty name="FIXEDMULTIPLIER"  refExpression="MultiplierTypeCd"  value="FIXED"/>
+			</BusinessContext>
+			<BusinessContext refExpressions="QuotationSet" name="EDITABLEREFNUM" match="ALL">
+				<ContextProperty name="EDITABLEREFNUM"  refExpression="isEditableQuoRefNumFl"  value="YES"/>
+			</BusinessContext>
+			<BusinessContext refExpressions="QuotationSet" name="EDITABLEAGE" match="ALL">
+				<ContextProperty name="EDITABLEAGE"  refExpression="isAgeEditableFl"  value="YES"/>
+			</BusinessContext>
+			<BusinessContext refExpressions="QuotationSet" name="TOPUPTYPESELECTNOTREQUIRED" match="ALL">
+				<ContextProperty name="ISTOPUPREQUIREDFL"  refExpression="isTopupTypeRequiredFl"  value="NO"/>
+			</BusinessContext>
+			<BusinessContext refExpressions="QuotationSet" name="PAYMENTTYPECDLIMITED" match="ALL">
+				<ContextProperty name="PAYMENTTYPECDLIMITED"  refExpression="paymentTypeCd"  value="LIMITED"/>
+			</BusinessContext>
+			
+			
+			<BusinessContext refExpressions="QuotationSet" name="PAYMENTFREQUENCYCDYR" match="ALL">
+				<ContextProperty name="PAYMENTFREQUENCYCDYR"  refExpression="paymentFrequencyCd"  value="YEARLY"/>
+			</BusinessContext>
+			<BusinessContext refExpressions="QuotationSet" name="PREMIUMHOLIDAYFLSELECTED" match="ALL">
+				<ContextProperty name="PREMIUMHOLIDAYFLSELECTED"  refExpression="isPremiumHolidayFlSelected"  value="YES"/>
+			</BusinessContext>
+			<BusinessContext refExpressions="QuotationSet" name="EDITABLEQUOTATIONDT" match="ALL">
+				<ContextProperty name="EDITABLEQUOTATIONDT"  refExpression="isQuotationDtEditableFl"  value="YES"/>
+			</BusinessContext>
+			<BusinessContext refExpressions="QuotationSet" name="PREMIUMOFFSET" match="ALL">
+				<ContextProperty name="PREMIUMOFFSET"  refExpression="premiumOffsetFl"  value="YES"/>
+			</BusinessContext>
+			<BusinessContext refExpressions="QuotationSet" name="CAPTUREANNUITYOPTION" match="ALL">
+				<ContextProperty name="CAPTUREANNUITYOPTION"  refExpression="annuityOptionCd"  value="YES"/>
+			</BusinessContext>
+			<BusinessContext refExpressions="QuotationSet" name="PDFDETAILSREQUIRED" match="ALL">
+				<ContextProperty name="PDFDETAILSREQUIRED"  refExpression="pdfRequiredFl"  value="YES"/>
+			</BusinessContext>
+			
+			<BusinessContext refExpressions="QuotationSet" name="PDFCOMPRESSED" match="ALL">
+				<ContextProperty name="PDFCOMPRESSED"  refExpression="pdfRequiredFl"  value="COMPRESSED"/>
+			</BusinessContext>
+			<BusinessContext refExpressions="QuotationSet" name="PDFLUMPSUM" match="ALL">
+				<ContextProperty name="PDFLUMPSUM"  refExpression="pdfRequiredFl"  value="LUMPSUM"/>
+			</BusinessContext>
+			<BusinessContext refExpressions="QuotationSet" name="PDFNONE" match="ALL">
+				<ContextProperty name="PDFNONE"  refExpression="pdfRequiredFl"  value="NONE"/>
+			</BusinessContext>
+			
+			<BusinessContext refExpressions="QuotationSet" name="RETIREMENTREQUIRED" match="ALL">
+				<ContextProperty name="RETIREMENTREQUIRED"  refExpression="retirementOptionFl"  value="YES"/>
+			</BusinessContext>
+			<BusinessContext refExpressions="QuotationSet" name="TARGETFUNDVALUE" match="ALL">
+				<ContextProperty name="TARGETFUNDVALUE"  refExpression="targetFundFl"  value="YES"/>
+			</BusinessContext>
+			<BusinessContext refExpressions="QuotationSet" name="WITHDRAWALSREQUIRED" match="ALL">
+				<ContextProperty name="WITHDRAWALSREQUIRED"  refExpression="withdrawalFl"  value="YES"/>
+			</BusinessContext>
+			<BusinessContext refExpressions="QuotationSet" name="INITIALINVESTMENTREQUIRED" match="ALL">
+				<ContextProperty name="INITIALINVESTMENTREQUIRED"  refExpression="initialTopupFl"  value="YES"/>
+			</BusinessContext>
+			<BusinessContext refExpressions="QuotationSet" name="REGULARTOPUPSREQUIRED" match="ALL">
+				<ContextProperty name="REGULARTOPUPSREQUIRED"  refExpression="regularTopupFl"  value="YES"/>
+			</BusinessContext>
+			<BusinessContext refExpressions="QuotationSet" name="ISPPTDIFFERENTFROMPT" match="ALL">
+				<ContextProperty name="ISPPTDIFFERENTFROMPT"  refExpression="pptCalcBasis"  value="YES"/>
+			</BusinessContext>
+			<BusinessContext refExpressions="QuotationSet" name="TOPUPALLOCSAMEASPREMALLOCFL" match="ALL">
+				<ContextProperty name="TOPUPALLOCSAMEASPREMALLOCFL"  refExpression="topUpAllocSameAsPremAllocFl"  value="YES"/>
+			</BusinessContext>
+			<BusinessContext refExpressions="QuotationSet" name="FASOLVER" match="ALL">
+				<ContextProperty name="FASOLVER"  refExpression="solverTypeCd"  value="FASOLVER"/>
+			</BusinessContext>
+			<BusinessContext refExpressions="QuotationSet" name="AMOUNTSOLVER" match="ALL">
+				<ContextProperty name="AMOUNTSOLVER"  refExpression="solverTypeCd"  value="AMOUNTSOLVER"/>
+			</BusinessContext>
+			<BusinessContext refExpressions="QuotationSet" name="REGULARAMOUNTSOLVER" match="ALL">
+				<ContextProperty name="REGULARAMOUNTSOLVER"  refExpression="withdrawalTypeCd"  value="REGULARAMOUNTSOLVER"/>
+			</BusinessContext>
+			<BusinessContext refExpressions="QuotationSet" name="PERIODSOLVER" match="ALL">
+				<ContextProperty name="PERIODSOLVER"  refExpression="withdrawalTypeCd"  value="PERIODSOLVER"/>
+			</BusinessContext>
+			<BusinessContext refExpressions="QuotationSet" name="MAXIMUMAMOUNTSOLVER" match="ALL">
+				<ContextProperty name="MAXIMUMAMOUNTSOLVER"  refExpression="withdrawalTypeCd"  value="MAXIMUMAMOUNTSOLVER"/>
+			</BusinessContext>
+			<BusinessContext refExpressions="QuotationSet" name="DATAENTRY" match="ALL">
+				<ContextProperty name="DATAENTRY"  refExpression="withdrawalTypeCd"  value="DATAENTRY"/>
+			</BusinessContext>
+			<BusinessContext refExpressions="QuotationSet" name="WITHDRAWALOFCOUPON" match="ALL">
+				<ContextProperty name="WITHDRAWALOFCOUPON"  refExpression="withdrawalTypeCd"  value="WITHDRAWALOFCOUPON"/>
+			</BusinessContext>
+			<BusinessContext refExpressions="QuotationSet" name="PREMIUMOFFSETOPTION" match="ALL">
+				<ContextProperty name="PREMIUMOFFSETOPTION"  refExpression="premiumOffsetOptionCd"  value="EARLYOFFSET"/>
+			</BusinessContext>
+						
+			<BusinessContext refExpressions="QuotationSet" name="REGULARPAY" match="ALL">
+				<ContextProperty name="REGULARPAY"  refExpression="termCalculationBasisCd"  value="REGULARPAY"/>
+			</BusinessContext>
+			
+			<BusinessContext refExpressions="QuotationSet" name="PROPOSERLASAME" match="ALL">
+				<ContextProperty name="PROPOSERLASAME"  refExpression="proposerLASame"  value="YES"/>
+			</BusinessContext>
+			<BusinessContext refExpressions="QuotationSet" name="PROPOSERLASAMEOFFLINE" match="ALL">
+				<ContextProperty name="PROPOSERLASAMEOFFLINE"  refExpression="proposerLASameOffline"  value="true"/>
+			</BusinessContext>
+			<BusinessContext refExpressions="QuotationSet" name="PROPOSERLADIFFERENT" match="ALL">
+				<ContextProperty name="PROPOSERLADIFFERENT"  refExpression="proposerLASame"  value="NO"/>
+			</BusinessContext>
+			<BusinessContext refExpressions="QuotationSet" name="PROPOSERLADIFFERENTOFFLINE" match="ALL">
+				<ContextProperty name="PROPOSERLADIFFERENTOFFLINE"  refExpression="proposerLASameOffline"  value="false"/>
+			</BusinessContext>
+			<BusinessContext refExpressions="QuotationSet" name="JOINTLIFE" match="ALL">
+				<ContextProperty name="JOINTLIFE"  refExpression="jointLife"  value="YES"/>
+			</BusinessContext>
+			
+			<BusinessContext refExpressions="QuotationSet" name="REGULARTOPUP" match="ALL">
+				<ContextProperty name="REGULARTOPUP"  refExpression="TopUpTypeCd"  value="REGULARTOPUP"/>
+			</BusinessContext>
+			<BusinessContext refExpressions="QuotationSet" name="ADHOCTOPUP" match="ALL">
+				<ContextProperty name="ADHOCTOPUP"  refExpression="TopUpTypeCd"  value="ADHOCTOPUP"/>
+			</BusinessContext>
+			<BusinessContext refExpressions="QuotationSet" name="INITIALINVESTMENT" match="ALL">
+				<ContextProperty name="INITIALINVESTMENT"  refExpression="TopUpTypeCd"  value="INITIALINVESTMENT"/>
+			</BusinessContext>
+			<BusinessContext refExpressions="QuotationSet" name="TRANSFERTOPUP" match="ALL">
+				<ContextProperty name="TRANSFERTOPUP"  refExpression="TopUpTypeCd"  value="TRANSFERTOPUP"/>
+			</BusinessContext>
+			<BusinessContext refExpressions="QuotationSet" name="STANDARD" match="ALL">
+				<ContextProperty name="STANDARD"  refExpression="decisionCd"  value="STANDARD"/>
+			</BusinessContext>
+			<BusinessContext refExpressions="QuotationSet" name="LOADINGBOTH" match="ALL">
+				<ContextProperty name="LOADINGBOTH"  refExpression="loadingTypeCd"  value="BOTH"/>
+			</BusinessContext>
+			<BusinessContext refExpressions="QuotationSet" name="LOADINGFLAT" match="ALL">
+				<ContextProperty name="LOADINGFLAT"  refExpression="loadingTypeCd"  value="FLAT"/>
+			</BusinessContext>
+			<BusinessContext refExpressions="QuotationSet" name="LOADINGPERCENTAGE" match="ALL">
+				<ContextProperty name="LOADINGPERCENTAGE"  refExpression="loadingTypeCd"  value="PERCENTAGE"/>
+			</BusinessContext>		
+			<BusinessContext refExpressions="QuotationSet" name="DERIVED" match="ALL">
+				<ContextProperty name="DERIVED"  refExpression="processingTypeCd"  value="DERIVED"/>
+			</BusinessContext>
+			<BusinessContext refExpressions="QuotationSet" name="ENTERABLE" match="ALL">
+				<ContextProperty name="ENTERABLE"  refExpression="processingTypeCd"  value="ENTERABLE"/>
+			</BusinessContext>
+			
+			<BusinessContext refExpressions="QuotationSet" name="TFCALCULATIONWITHOUTPH" match="ALL">
+				<ContextProperty name="TFCALCULATIONWITHOUTPH"  refExpression="topupOptionCd"  value="TFCALCULATIONWITHOUTPH"/>
+			</BusinessContext>
+			<BusinessContext refExpressions="QuotationSet" name="TFCALCULATIONWITHPH" match="ALL">
+				<ContextProperty name="TFCALCULATIONWITHPH"  refExpression="topupOptionCd"  value="TFCALCULATIONWITHPH"/>
+			</BusinessContext>
+			<BusinessContext refExpressions="QuotationSet" name="EXCESSWITHOUTPH" match="ALL">
+				<ContextProperty name="EXCESSWITHOUTPH"  refExpression="topupOptionCd"  value="EXCESSWITHOUTPH"/>
+			</BusinessContext>
+			<BusinessContext refExpressions="QuotationSet" name="EXCESSWITHPH" match="ALL">
+				<ContextProperty name="EXCESSWITHPH"  refExpression="topupOptionCd"  value="EXCESSWITHPH"/>
+			</BusinessContext>
+			<BusinessContext refExpressions="QuotationSet" name="EXCESSANDTFCALCULATIONWITHPH" match="ALL">
+				<ContextProperty name="EXCESSANDTFCALCULATIONWITHPH"  refExpression="topupOptionCd"  value="EXCESSANDTFCALCULATIONWITHPH"/>
+			</BusinessContext>
+			<BusinessContext refExpressions="QuotationSet" name="BUILTINRIDERNO" match="ALL">
+				<ContextProperty name="BUILTINRIDERNO"  refExpression="builtInRiderFl"  value="NO"/>
+			</BusinessContext>
+			
+			<BusinessContext refExpressions="QuotationSet" name="INDIVIDUAL" match="ALL">
+				<ContextProperty name="INDIVIDUAL"  refExpression="partyTypeCd"  value="INDIVIDUAL"/>
+			</BusinessContext>
+			<BusinessContext refExpressions="QuotationSet" name="ORGANIZATION" match="ALL">
+				<ContextProperty name="ORGANIZATION"  refExpression="partyTypeCd"  value="ORGANIZATION"/>
+			</BusinessContext>
+			<BusinessContext refExpressions="PolicySet" name="REGULARTOPUP" match="ALL">
+				<ContextProperty name="REGULARTOPUP"  refExpression="TopUpTypeCd"  value="REGULARTOPUP"/>
+			</BusinessContext>
+			<BusinessContext refExpressions="PolicySet" name="INITIALINVESTMENT" match="ALL">
+				<ContextProperty name="INITIALINVESTMENT"  refExpression="TopUpTypeCd"  value="INITIALINVESTMENT"/>
+			</BusinessContext>
+			<BusinessContext refExpressions="PolicySet" name="INITIALINVESTMENTREQUIRED" match="ALL">
+				<ContextProperty name="INITIALINVESTMENTREQUIRED"  refExpression="initialTopupFl"  value="YES"/>
+			</BusinessContext>
+			<BusinessContext refExpressions="PolicySet" name="REGULARTOPUPSREQUIRED" match="ALL">
+				<ContextProperty name="REGULARTOPUPSREQUIRED"  refExpression="regularTopupFl"  value="YES"/>
+			</BusinessContext>
+			
+			<BusinessContext refExpressions="InwardPartySet" name="MOBILE" match="ALL">
+				<ContextProperty name="ContactType"  refExpression="ContactType"  value="MOBILE"/>
+			</BusinessContext>
+			<BusinessContext refExpressions="InwardPartySet" name="RESIDENTIAL" match="ALL">
+				<ContextProperty name="ContactType"  refExpression="ContactType"  value="RESIDENTIAL"/>
+			</BusinessContext>
+			<BusinessContext refExpressions="InwardPartySet" name="OFFICE" match="ALL">
+				<ContextProperty name="ContactType"  refExpression="ContactType"  value="OFFICE"/>
+			</BusinessContext>
+			
+			<BusinessContext refExpressions="ServiceSet" name="RECEIPTDATAENTRYTASK" match="ALL">
+				<ContextProperty name="RECEIPTDATAENTRYTASK"  refExpression="CurrentTask"  value="receiptDataEntryTask"/>
+			</BusinessContext>
+			<BusinessContext refExpressions="ServiceSet" name="CORRECTIONTASK" match="ALL">
+				<ContextProperty name="CORRECTIONTASK"  refExpression="CurrentTask"  value="correctionTask"/>
+			</BusinessContext>
+			<BusinessContext refExpressions="ServiceSet" name="INTFTRANSFER" match="ALL">
+				<ContextProperty name="INTFTRANSFER"  refExpression="CurrentTask"  value="intfTxfr"/>
+			</BusinessContext>
+			<BusinessContext refExpressions="ServiceSet" name="PISDATAENTRYTASK" match="ALL">
+				<ContextProperty name="PISDATAENTRYTASK"  refExpression="CurrentTask"  value="pisDataEntryTask"/>
+			</BusinessContext>
+			<BusinessContext refExpressions="ServiceSet" name="BANKVOUCHERVERIFYTASK" match="ALL">
+				<ContextProperty name="BANKVOUCHERVERIFYTASK"  refExpression="CurrentTask"  value="bnkVoucherVerifyTask"/>
+			</BusinessContext>
+			<BusinessContext refExpressions="ServiceSet" name="PISCANCELTASK" match="ALL">
+				<ContextProperty name="PISCANCELTASK"  refExpression="CurrentTask"  value="pisCancelTask"/>
+			</BusinessContext>
+			<BusinessContext refExpressions="ServiceSet" name="PISINTFTRANSFER" match="ALL">
+				<ContextProperty name="PISINTFTRANSFER"  refExpression="CurrentTask"  value="pisIntfTxfr"/>
+			</BusinessContext>
+		
+			<BusinessContext refExpressions="InwardSet" name="FPD" match="ALL">
+				<ContextProperty name="FPD"  refExpression="ReceiptPurpose"  value="FPD"/>
+			</BusinessContext>
+			<BusinessContext refExpressions="InwardSet" name="RPD" match="ALL">
+				<ContextProperty name="RPD"  refExpression="ReceiptPurpose"  value="RPD"/>
+			</BusinessContext>
+			<BusinessContext refExpressions="InwardSet" name="APD" match="ALL">
+				<ContextProperty name="APD"  refExpression="ReceiptPurpose"  value="APD"/>
+			</BusinessContext>
+			<BusinessContext refExpressions="FacetSet" name="SALESILLUUIFACET" match="ALL">
+				<ContextProperty name="SALESILLUUIFACET"  refExpression="FacetTypeCd"  value="PRDSELECTION"/>
+			</BusinessContext>
+			<BusinessContext refExpressions="FacetSet" name="PRDPREPOPULATE" match="ALL">
+				<ContextProperty name="PRDPREPOPULATE"  refExpression="FacetTypeCd"  value="PRDPREPOPULATE"/>
+			</BusinessContext>
+			<BusinessContext refExpressions="IllustrationFacetSet" name="POLICYINSTANCE" match="ALL">
+				<ContextProperty name="POLICYINSTANCE"  refExpression="ComputePerInstanceOf"  value="POLICY"/>
+			</BusinessContext>
+			<BusinessContext refExpressions="IllustrationFacetSet" name="LIFEINSTANCE" match="ALL">
+				<ContextProperty name="LIFEINSTANCE"  refExpression="ComputePerInstanceOf"  value="LIFE"/>
+			</BusinessContext>			
+			<BusinessContext refExpressions="IllustrationFacetSet" name="FUNDINSTANCE" match="ALL">
+				<ContextProperty name="FUNDINSTANCE"  refExpression="ComputePerInstanceOf"  value="FUND"/>
+			</BusinessContext>	
+			<BusinessContext refExpressions="IllustrationFacetSet" name="RIDERINSTANCE" match="ALL">
+				<ContextProperty name="RIDERINSTANCE"  refExpression="ComputePerInstanceOf"  value="RIDER"/>
+			</BusinessContext>						
+			<BusinessContext refExpressions="IllustrationModelSet" name="PREMIUMMODEL" match="ALL">
+				<ContextProperty name="PREMIUMMODEL"  refExpression="ModelFor"  value="PREMIUM"/>
+			</BusinessContext>
+			<BusinessContext refExpressions="IllustrationModelSet" name="SIMODEL" match="ALL">
+				<ContextProperty name="SIMODEL"  refExpression="ModelFor"  value="SI"/>
+			</BusinessContext>
+			<BusinessContext refExpressions="IllustrationModelSet" name="SAMODEL" match="ALL">
+				<ContextProperty name="SAMODEL"  refExpression="ModelFor"  value="SA"/>
+			</BusinessContext>
+			<BusinessContext refExpressions="IllustrationModelSet" name="TERMMODEL" match="ALL">
+				<ContextProperty name="TERMMODEL"  refExpression="ModelFor"  value="TERM"/>
+			</BusinessContext>
+			<BusinessContext refExpressions="IllustrationModelSet" name="PRODUCTMODEL" match="ALL">
+				<ContextProperty name="PRODUCTMODEL"  refExpression="ModelFor"  value="PRODUCT"/>
+			</BusinessContext>
+			<BusinessContext refExpressions="IllustrationModelSet" name="POLICYMODEL" match="ALL">
+				<ContextProperty name="POLICYMODEL"  refExpression="ModelFor"  value="POLICY"/>
+			</BusinessContext>
+			<BusinessContext refExpressions="CollectionSet" name="PAYMENTMETHODCREDITCARD" match="ALL">
+				<ContextProperty name="PAYMENTMETHODCREDITCARD"  refExpression="PaymentMethodCreditCard"  value="TRUE"/>
+			</BusinessContext>
+			<BusinessContext refExpressions="CollectionSet" name="PAYMENTMETHODDIRECTDEBIT" match="ALL">
+				<ContextProperty name="PAYMENTMETHODDIRECTDEBIT"  refExpression="PaymentMethodDirectDebit"  value="TRUE"/>
+			</BusinessContext>
+			<BusinessContext refExpressions="CollectionSet" name="INWARDSUBTYPEARFR" match="ALL">
+				<ContextProperty name="INWARDSUBTYPEARFR"  refExpression="InwardSubTypeCdARFR"  value="TRUE"/>
+			</BusinessContext>
+			
+			<BusinessContext refExpressions="CollectionSet" name="INWARDTYPECDA" match="ALL">
+				<ContextProperty name="INWARDTYPECDA"  refExpression="InwardTypeCdA"  value="TRUE"/>
+			</BusinessContext>
+			<BusinessContext refExpressions="CollectionSet" name="INWARDTYPECDNBR" match="ALL">
+				<ContextProperty name="INWARDTYPECDNBR"  refExpression="InwardTypeCdNBR"  value="TRUE"/>
+			</BusinessContext>
+			<BusinessContext refExpressions="IllustrationModelSet" name="UWMODEL" match="ALL">
+				<ContextProperty name="UWMODEL"  refExpression="ModelFor"  value="UNDERWRITING"/>
+			</BusinessContext>
+			
+            <BusinessContext refExpressions="PolicySet" name="ATMTRANSFER" match="ALL">
+				<ContextProperty name="ATMTRANSFER"  refExpression="PaymentMethodCd"  value="ATMTRANSFER"/>
+			</BusinessContext>
+			
+			<BusinessContext refExpressions="PartySet" name="SUPPLEMENTARY" match="ALL">
+				<ContextProperty name="SUPPLEMENTARY"  refExpression="Role"  value="SUPPLEMENTARY"/> 
+			</BusinessContext>
+			<BusinessContext refExpressions="PartySet" name="PAYER" match="ALL">
+				<ContextProperty name="PAYER"  refExpression="Role"  value="PAYER"/> 
+			</BusinessContext>
+			<BusinessContext refExpressions="PartySet" name="JOINT" match="ALL">
+				<ContextProperty name="JOINT"  refExpression="Role"  value="JOINT"/> 
+			</BusinessContext>
+			
+            <BusinessContext refExpressions="PolicySet" name="INSURANCEPURPOSE" match="ALL">
+                <ContextProperty name="INSURANCEPURPOSE"  refExpression="PurposeOfInsuranceCd"  value="OTHERS"/>
+            </BusinessContext>   
+            
+             <BusinessContext refExpressions="PolicySet" name="FUNDSOURCE" match="ALL">
+                <ContextProperty name="FUNDSOURCE"  refExpression="SourceOfFund"  value="OTHERS"/>
+            </BusinessContext> 
+            
+            <BusinessContext refExpressions="PolicySet" name="NOTESUBMISSION" match="ALL">
+				<ContextProperty name="NOTESUBMISSION"  refExpression="IntimationSourceCd"  value="false"/>
+			</BusinessContext>  
+			<BusinessContext refExpressions="PolicySet" name="ESUBMISSION" match="ALL">
+				<ContextProperty name="ESUBMISSION"  refExpression="IntimationSourceCd"  value="true"/>
+			</BusinessContext> 
+			<BusinessContext refExpressions="ProductSet" name="PRODUCTRIDER" match="ALL">
+				<ContextProperty name="PRODUCTRIDER"  refExpression="ProductTypeCd"  value="RIDER"/>
+			</BusinessContext>
+			
+			<BusinessContext refExpressions="FacetSet" name="PRDOTHERS" match="ALL">
+				<ContextProperty name="PRDOTHERS"  refExpression="FacetTypeCd"  value="PRDOTHERS"/>
+			</BusinessContext>
+			
+			<BusinessContext refExpressions="FacetSet" name="PRDMINMAX" match="ALL">
+				<ContextProperty name="PRDMINMAX"  refExpression="FacetTypeCd"  value="PRDMINMAX"/>
+			</BusinessContext>
+			
+			<BusinessContext refExpressions="ServiceSet" name="CREATEROLE" match="ALL">
+				<ContextProperty name="CREATEROLE" refExpression="ServiceType" value="CREATEROLE" />
+			</BusinessContext>
+			
+			<BusinessContext refExpressions="ServiceSet" name="CREATEPRIVILEGE" match="ALL">
+				<ContextProperty name="CREATEPRIVILEGE" refExpression="ServiceType" value="CREATEPRIVILEGE" />
+			</BusinessContext>
+			
+			<BusinessContext refExpressions="PartySet" name="OCCUPATIONTYPE" match="ALL">
+				<ContextProperty name="OCCUPATIONTYPE"  refExpression="OccupationTypeCd"  value="BUSINESS,EMPLOYED"/>
+			</BusinessContext>
+			
+			<BusinessContext refExpressions="CollectionSet" name="ISMICRAPPLICABLE" match="ALL">
+				<ContextProperty name="ISMICRAPPLICABLE"  refExpression="isMicrApplicable"  value="NO"/>
+			</BusinessContext>
+			
+			<BusinessContext refExpressions="PartySet" name="MICRAPPLICABLE" match="ALL">
+				<ContextProperty name="MICRAPPLICABLE"  refExpression="isMicrApplicableForPartyfin"  value="NO"/>
+			</BusinessContext>	
+			<BusinessContext refExpressions="PartySet" name="INDIVIDUAL" match="ALL">
+				<ContextProperty name="INDIVIDUAL"  refExpression="partyTypeCd"  value="INDIVIDUAL"/>
+			</BusinessContext>
+			<BusinessContext refExpressions="PartySet" name="ORGANIZATION" match="ALL">
+				<ContextProperty name="ORGANIZATION"  refExpression="partyTypeCd"  value="ORGANIZATION"/>
+			</BusinessContext>
+			 <BusinessContext refExpressions="CollectionSet" name="CHEQUE" match="ALL">
+				<ContextProperty name="CHEQUE"  refExpression="PaymentMethod"  value="CHEQUE"/>
+			</BusinessContext>
+			<BusinessContext refExpressions="PartySet" name="DIRECTDEBIT" match="ALL">
+				<ContextProperty name="DIRECTDEBIT"  refExpression="PaymentMethodCd"  value="directDebit"/>
+			</BusinessContext>
+			<BusinessContext refExpressions="PartySet" name="CREDITCARD" match="ALL">
+				<ContextProperty name="CREDITCARD"  refExpression="PaymentMethodCd"  value="creditCard"/>
+			</BusinessContext>
+			<BusinessContext refExpressions="PartySet" name="DIRECTCREDIT" match="ALL">
+				<ContextProperty name="DIRECTCREDIT"  refExpression="PaymentMethodCd"  value="directCredit"/>
+			</BusinessContext>
+			<BusinessContext refExpressions="PolicySet" name="UWDECISIONCOMPLETE" match="ALL">
+				<ContextProperty name="UWDECISIONCOMPLETE"  refExpression="uwDecisionCd"  value="COMPLETE"/>
+			</BusinessContext>
+			<BusinessContext refExpressions="PolicySet" name="PRIMARY" match="ALL">
+				<ContextProperty name="PRIMARY"  refExpression="Role"  value="PRIMARY"/>
+			</BusinessContext>
+				<BusinessContext refExpressions="PolicySet" name="PROPOSER" match="ALL">
+				<ContextProperty name="PROPOSER"  refExpression="Role"  value="PROPOSER"/>
+			</BusinessContext>
+			<BusinessContext refExpressions="PolicySet" name="APPOINTEE" match="ALL">
+				<ContextProperty name="APPOINTEE"  refExpression="Role"  value="APPOINTEE"/>
+			</BusinessContext>
+			<BusinessContext refExpressions="PolicySet" name="NOMINEE" match="ALL">
+				<ContextProperty name="NOMINEE"  refExpression="Role"  value="NOMINEE"/>
+			</BusinessContext>
+			 <BusinessContext refExpressions="PolicySet" name="JOINT" match="ALL">
+				<ContextProperty name="JOINT"  refExpression="Role"  value="JOINT"/>
+			</BusinessContext>
+			 <BusinessContext refExpressions="PolicySet" name="SUPPLEMENTARY" match="ALL">
+				<ContextProperty name="SUPPLEMENTARY"  refExpression="Role"  value="SUPPLEMENTARY"/>
+			</BusinessContext>
+			<BusinessContext refExpressions="ServiceSignatureSet" name="AGENTDECLARATION" match="ALL">
+				<ContextProperty name="AGENTDECLARATION" refExpression="SignatureTypeCd" value="AGENTDECLARATION"/>
+			</BusinessContext>
+			<BusinessContext refExpressions="ServiceSignatureSet" name="EAPPSIGNATURE" match="ALL">
+				<ContextProperty name="EAPPSIGNATURE" refExpression="SignatureTypeCd" value="SIGNATURECAPTURE"/>
+			</BusinessContext>
+			<BusinessContext refExpressions="ServiceSignatureSet" name="AGENTSIGNATURECAPTURE" match="ALL">
+				<ContextProperty name="AGENTSIGNATURECAPTURE" refExpression="SignatureTypeCd" value="AGENTSIGNATURECAPTURE"/>
+			</BusinessContext>
+			
+			<BusinessContext refExpressions="PolicyServicingSet" name="HEALTHCLAIM" match="ALL">
+				<ContextProperty name="HEALTHCLAIM"  refExpression="ClaimSubType"  value="HEALTH"/>
+			</BusinessContext>
+			<BusinessContext refExpressions="PolicyServicingSet" name="LIFECLAIM" match="ALL">
+				<ContextProperty name="LIFECLAIM"  refExpression="ClaimSubType"  value="LIFE"/>
+			</BusinessContext>
+			<BusinessContext refExpressions="PolicyServicingSet" name="DIAGNOSISTYPEICD" match="ALL">
+				<ContextProperty name="DIAGNOSISTYPEICD"  refExpression="DiagnosisType"  value="ICD"/>
+			</BusinessContext>
+			<BusinessContext refExpressions="PolicyServicingSet" name="DIAGNOSISTYPEPROCEDURE" match="ALL">
+				<ContextProperty name="DIAGNOSISTYPEPROCEDURE"  refExpression="DiagnosisType"  value="PROCEDURE"/>
+			</BusinessContext>
+			<BusinessContext refExpressions="PartySet" name="CUSTOMERINFO" match="ALL">
+				<ContextProperty name="CUSTOMERINFO"  refExpression="EntityName"  value="CUSTOMERINFO"/>
+			</BusinessContext>
+			<BusinessContext refExpressions="PartySet" name="PROPOSALINFO" match="ALL">
+				<ContextProperty name="PROPOSALINFO"  refExpression="EntityName"  value="PROPOSALINFO"/>
+			</BusinessContext>
+			<BusinessContext refExpressions="PartySet" name="POLICYINFO" match="ALL">
+				<ContextProperty name="POLICYINFO"  refExpression="EntityName"  value="POLICYINFO"/>
+			</BusinessContext>
+			<BusinessContext refExpressions="PartySet" name="CLAIMINFO" match="ALL">
+				<ContextProperty name="CLAIMINFO"  refExpression="EntityName"  value="CLAIMINFO"/>
+			</BusinessContext>
+			<BusinessContext refExpressions="PartySet" name="ENDORSEINFO" match="ALL">
+				<ContextProperty name="ENDORSEINFO"  refExpression="EntityName"  value="ENDORSEMENTINFO"/>
+			</BusinessContext>
+			
+			<BusinessContext refExpressions="QuotationSet" name="TRAVEL" match="ALL">
+				<ContextProperty name="TRAVEL"  refExpression="insuranceTypeCd"  value="TRAVEL"/>
+			</BusinessContext>
+			<BusinessContext refExpressions="QuotationSet" name="HEALTH" match="ALL">
+				<ContextProperty name="HEALTH"  refExpression="insuranceTypeCd"  value="HEALTH"/>
+			</BusinessContext>
+			<BusinessContext refExpressions="QuotationSet" name="AUTO" match="ALL">
+				<ContextProperty name="AUTO"  refExpression="insuranceTypeCd"  value="AUTO"/>
+			</BusinessContext> 
+			<BusinessContext refExpressions="QuotationSet" name="LIFE" match="ALL">
+				<ContextProperty name="LIFE"  refExpression="lifeInsuranceTypeCd"  value="true"/>
+			</BusinessContext> 
+			
+			<BusinessContext refExpressions="PolicySet" name="TRAVEL" match="ALL">
+				<ContextProperty name="TRAVEL"  refExpression="insuranceTypeCd"  value="TRAVEL"/>
+			</BusinessContext>
+			<BusinessContext refExpressions="PolicySet" name="HEALTH" match="ALL">
+				<ContextProperty name="HEALTH"  refExpression="insuranceTypeCd"  value="HEALTH"/>
+			</BusinessContext>
+			<BusinessContext refExpressions="PolicySet" name="AUTO" match="ALL">
+				<ContextProperty name="AUTO"  refExpression="insuranceTypeCd"  value="AUTO"/>
+			</BusinessContext> 
+			<BusinessContext refExpressions="PolicySet" name="LIFE" match="ALL">
+				<ContextProperty name="LIFE"  refExpression="lifeInsuranceTypeCd"  value="true"/>
+			</BusinessContext> 
+			
+			<BusinessContext refExpressions="PartySet" name="OTHERRELATION" match="ALL">
+                <ContextProperty name="OTHERRELATION"  refExpression="RelationCd"  value="OTHER"/>
+            </BusinessContext>
+            <BusinessContext refExpressions="QuotationSet" name="OTHERRELATION" match="ALL">
+				<ContextProperty name="OTHERRELATION"  refExpression="relationCd"  value="OTHER"/>
+			</BusinessContext>
+			<BusinessContext refExpressions="PolicySet" name="LINKTOEAPP" match="ALL">
+				<ContextProperty name="LINKTOEAPP"  refExpression="linkToEapp"  value="true"/>
+			</BusinessContext>
+			<BusinessContext refExpressions="TableTypeSet" name="DYNAMICTABLETYPE" match="ALL">
+				<ContextProperty name="DYNAMICTABLETYPE"  refExpression="fixedDynamicCondTypeCd"  value="DYNAMIC"/>
+			</BusinessContext>
+            
+		</Mapping>
+	</StateActionMapping>
+</StateActionMappings>

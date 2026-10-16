@@ -1,0 +1,52 @@
+<li class="ui-field-contain">
+    <%= renderObject(@quotationWithdrawal, @quotation) %>
+    
+    <div name='<%= getObjectMapping(@quotationWithdrawal) %>' >
+        <%= renderHiddenField('removed', @quotationWithdrawal.removed, 'removed', @quotationWithdrawal) %>
+        <div class='ui-grid-a'>
+            <div class="ui-block-a" style="width:64%;">
+                <div class="ui-grid-c">
+                    <div class="ui-block-a" name="<%= getObjectMapping(@quotationWithdrawal) %>[policyYearFrom]">
+                        <% if @facetData[:renderPolicyyearfrom] %> 
+                            <%= renderAmountField('policyYearFrom', @quotationWithdrawal.policyYearFrom, nil, @quotationWithdrawal, ' maxlength="3"') %>
+                        <% end %>
+                    </div>
+                    <div class="ui-block-b" name = "<%= getObjectMapping(@quotationWithdrawal) %>[ageFrom]"> 
+                        <% if @facetData[:renderAgefrom] %>
+                            <%= renderCountField('ageFrom', @quotationWithdrawal.ageFrom, nil, @quotationWithdrawal, ' maxlength="3" ') %>
+                        <% end %>
+                    </div>
+                    <div class="ui-block-c" name = "<%= getObjectMapping(@quotationWithdrawal) %>[policyYearTo]"> 
+                        <% if @facetData[:renderPolicyyearto] %>
+                            <%= renderAmountField('policyYearTo', @quotationWithdrawal.policyYearTo, nil, @quotationWithdrawal, ' maxlength="3" ') %>
+                        <% end %>
+                    </div>
+                    <div class="ui-block-d" name = "<%= getObjectMapping(@quotationWithdrawal) %>[ageTo]"> 
+                        <% if @facetData[:renderAgeto] %>
+                            <%= renderCountField('ageTo', @quotationWithdrawal.ageTo, nil, @quotationWithdrawal, 'maxlength="3"') %>
+                        <% end %>
+                    </div>
+                </div>
+            </div>
+            <div class="ui-block-b" style="width:36%;">
+                <div class="ui-grid-b">
+                    <div class="ui-block-a" name ="withdrawalAmount" style="width:45%;">
+                        <% if @facetData[:renderWithdrawalamount] %>
+                            <%= renderAmountField('withdrawalAmount', @quotationWithdrawal.withdrawalAmount, nil, @quotationWithdrawal, 'maxlength="20"') %>
+                            <%=attachMask("#{getObjectMapping(@quotationWithdrawal)}[withdrawalAmount]") %>
+                        <% end %>
+                    </div>
+                    <div class="ui-block-b" name = "frequencyVal" style="width:45%;"> 
+                        <% if @facetData[:renderFrequencyval] %>
+                            <%= renderCountField('frequencyVal', @quotationWithdrawal.frequencyVal, nil, @quotationWithdrawal, 'maxlength="3"') %>
+                        <% end %>
+                    </div>
+                    <div class="ui-block-c" style="width:10%;"> 
+                        <input id="<%= getObjectMapping(@quotationWithdrawal) %>" type="button" class="removeButton" data-inline="true" data-icon="delete" data-iconpos="notext" onclick="removeWithdraw('<%= getObjectMapping(@quotationWithdrawal) %>');"/>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</li>
+<%= render :partial => "addWithdrawJS" %>

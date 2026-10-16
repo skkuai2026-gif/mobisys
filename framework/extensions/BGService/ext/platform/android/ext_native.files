@@ -1,0 +1,7 @@
+ext/platform/android/generated/jni/BGService.cpp
+ext/platform/android/generated/jni/bgservice_ruby_wrap.cpp
+ext/platform/android/generated/jni/bgservice_js_wrap.cpp
+ext/platform/android/jni/BGService_impl.cpp
+ext/shared/generated/bgservice_api_init.cpp
+ext/shared/generated/bgservice_js_api.cpp
+ext/shared/generated/bgservice_ruby_api.c

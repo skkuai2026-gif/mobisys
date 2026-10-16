@@ -1,0 +1,405 @@
+<script type="text/javascript">
+var leadActivityCount = <%= @leadActivityCount %>;
+
+//Function to get birth date when age is entered
+function getDOB(age, fieldId) {
+ 	$.ajax({
+   		url: "/app/Lead/getBirthDt",
+   		data: {'age':age},
+     	async: false,
+        headers: {
+          'Transition-Enabled': false
+        },
+   		success: function(data) {
+     		$('input[name="'+ fieldId +'"]').val(data);
+   		}
+ 	});
+}
+
+
+//Function to get age when birth date is entered
+function getAge(birthDt, fieldId1, fieldId2, fieldId3) {
+ 	$.ajax({
+ 		url: "/app/Lead/getAge",
+     	data: {'birthDt': birthDt},
+     	async: false,
+        headers: {
+          'Transition-Enabled': false
+        },
+     	success: function(data) {
+           	ageParts = data.split("|");
+           	$('input[name="'+ fieldId1 +'"]').val(ageParts[0]);
+           	age = ageParts[0];
+          	if (age < 0) {
+          		$('<div>').simpledialog2({
+                    mode: 'button',
+                    style: "width: 629px",
+                    'headerClose': false,
+                    'buttonPrompt': '<%= getLabelValue("INVALID_DOB_DIALOG")%>',
+                    'buttons' : {
+                      	'<%= getLabelValue("OK")%>': {
+                        	click: function () {}
+                  		}
+            		}
+              	})
+              	$('input[name="'+ fieldId1 +'"]').val("");
+              	var birthDt = fieldId1.replace("age","birthDt");
+              	$('input[name="'+ birthDt +'"]').val("");
+            }
+           	try{
+             	$('input[name="'+ fieldId2 +'"]').val(ageParts[1]);
+             	$('input[name="'+ fieldId3 +'"]').val(ageParts[2]);
+           	} catch(e){}
+		}
+   	});
+ 	return age;
+}
+
+
+//Function to get city, state based on country, pincode
+function getPincodeCityStateCountryLookups(lookup, lead, value) {
+	var ajaxData = "";
+	var selectID = "";
+	var spanID = "";
+	switch (lookup) {
+		case "district":
+			ajaxData = "option=district&countryCd="+$('select[name="'+lead+'[country]"]').val()+"&pinCode="+$('input[name="'+lead+'[pincode]"]').val();
+			selectID = lead+"[state]";
+			spanID = "districtLookUpData";
+			break;
+		case "city":
+			ajaxData = "option=city&countryCd="+$('select[name="'+lead+'[country]"]').val()+"&pinCode="+$('input[name="'+lead+'[pincode]"]').val();
+			selectID = lead+"[city]";
+			spanID = "cityLookUpData";
+			break;
+	}
+
+	$.ajax({
+     	url: "/app/Lead/getPincodeCityStateCountryLookups",
+     	async: false,
+     	data: ajaxData,
+        headers: {
+          'Transition-Enabled': false
+        },
+     	success: function(data) {
+     		if (data != "") {
+	           	create = '<select id="'+selectID+'" name="'+selectID+'">';    
+	           	create += data;
+	           	create += '</select>';
+           	}
+           	else {
+           		create = '<input type="text" id="'+selectID+'" name="'+selectID+'" value="'+value+'">';
+           	}
+           	$('span[name="'+ spanID +'"]').html(create);
+           	$('span[name="'+ spanID +'"]').trigger('create');
+       	}
+  	});
+}
+
+
+//Function to get nature of duty based on industry
+function getIndustryNatureofdutyLookups(lookup, lead) {
+	ajaxData = "option=natureofduty&industryCd="+$('select[name="'+lead+'[industryCd]"]').val();
+	selectID = lead+"[natureofDutyId]";
+	spanID = "natureOfDutyLookup";
+
+	$.ajax({
+     	url: "/app/Lead/getIndustryNatureofdutyLookups",
+     	data: ajaxData,
+     	async: false,
+		headers: {
+        	'Transition-Enabled': false
+        },
+     	success: function(data) {
+           	create = '<select id="'+selectID+'" name="'+selectID+'">';    
+           	create += data;
+           	create += '</select>';
+           	$('span[name="'+ spanID +'"]').html(create);
+           	$('span[name="'+ spanID +'"]').trigger('create');
+       }
+  	});
+}
+
+
+//Function to validate email format
+function testEmail(value) {
+ 	returnValue = true;
+	if (value != "") {
+   		emailPattern=new RegExp("[A-Za-z0-9._-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,4}");
+		returnValue = emailPattern.test(value);  
+	}
+	return returnValue;
+}
+
+
+//Function to add new activity
+function addLeadActivity() {
+	$.ajax({
+		url: "/app/Lead/addLeadActivity",
+		async: false,
+		data: {
+			'leadObject': '<%= @lead.object.to_s %>', 
+			'leadActivityCount': leadActivityCount
+		},
+        headers: {
+          'Transition-Enabled': false
+        },
+		success: function(data) {
+			$('#leadActivityList').append(data);
+			$('#leadActivityList').trigger('create');
+			$("div."+leadActivityCount).collapsible("expand");
+			leadActivityCount += 1;
+		}
+	});
+}
+
+
+//Function to remove activity
+function removeLeadActivity(leadActivityObject, leadActivityCount){  
+	$('<div>').simpledialog2({
+		mode: 'button',
+		style: "width: 629px",
+		buttonPrompt: 'Are you sure you want to delete?',
+		buttons : {
+			'<%= getLabelValue("OK") %>': {
+				click: function () {
+					$.ajax({
+						url: "/app/Lead/removeLeadActivity",
+						async: false,
+						data: {
+							'leadActivityObject': leadActivityObject
+						},
+				        headers: {
+				          'Transition-Enabled': false
+				        },
+						success: function(data) {
+							$('#leadActivity'+leadActivityCount).remove();
+							$('#leadActivityList').trigger('create');
+						}
+					});
+				}
+			},
+			'<%= getLabelValue("CANCEL") %>': {
+				click: function () {},
+				icon: "delete",
+				theme: "c"
+			}
+		}
+	});
+}
+
+
+//Function to switch between lead & lead activity tab
+function changeLeadTab(tabName){
+	$("#leadInfoContainer").hide();
+	$("#activityInfoContainer").hide();
+	$("#"+tabName).show();
+	$("#lead-activity-bar li#leadInfoLi>a").removeClass("selectedTab");
+	$("#lead-activity-bar li#activityInfoLi>a").removeClass("selectedTab");
+	str = "#lead-activity-bar li#" + tabName.substring(0,tabName.indexOf("Container")) + "Li>a";
+	$(str).addClass("selectedTab");
+}
+
+//Function to get address
+function updateLocation(lat, lng) {
+  $.ajax({
+    url: "/app/Lead/getAddress",
+    async: false,
+    data: {
+      latitude: lat,
+      longitude: lng
+    },
+    headers: {
+      'Transition-Enabled': false
+    },
+    success: function(data) {
+      if (data != "") {
+           result = $.parseJSON(data);
+          $('input[name="<%=getObjectMapping(@lead)%>[address1]"]').val(result.address1);
+          $('input[name="<%=getObjectMapping(@lead)%>[address2]"]').val(result.address2);
+          $('input[name="<%=getObjectMapping(@lead)%>[address3]"]').val(result.address3);
+          $('input[name="<%=getObjectMapping(@lead)%>[address4]"]').val(result.address4);
+          $('[id="<%=getObjectMapping(@lead)%>[country]"]').val(result.country);
+          $('[id="<%=getObjectMapping(@lead)%>[country]"]').selectmenu("refresh");
+          $('input[name="<%=getObjectMapping(@lead)%>[pincode]"]').val(result.pincode);
+
+          getPincodeCityStateCountryLookups("district", "<%=getObjectMapping(@lead)%>", result.state);
+		  getPincodeCityStateCountryLookups("city", "<%=getObjectMapping(@lead)%>", result.city);
+      }
+    }
+
+  });
+}
+
+function locationServiceAlert(){
+	alert("Please enable location service and try again.");
+}
+
+
+$(document).ready(function(){
+	<% if @leadActivityFocus %>
+		changeLeadTab('activityInfoContainer');
+		$("input[value='<%= @leadActivityFocus %>']").parents("div.ui-collapsible").collapsible("expand");
+	<% else %>
+		changeLeadTab('leadInfoContainer');
+	<% end %>
+
+	<% if $total_error['Lead'] != nil && !$total_error['Lead'].empty? %>
+		showDialog("", "<%= getLabelValue('ERROR')%>", 'error', 0, 'capture');
+		$('span[id="errordiv"]').show();
+	<% elsif $total_error['Lead'] %>
+		showDialog("", "<%= getLabelValue('SUCCESS')%>", 'success', 0, 'capture');
+	<% end %>
+
+	<% if @lead.statusCd == "CLOSED" %>
+		$('input').each(function(){
+			setReadOnly($(this), true);
+		});
+		$('input[type="radio"]').checkboxradio('disable');
+		$('select').selectmenu('disable');
+		$('.datepickerimg').hide();
+	<% end %>
+
+	$('.scrollTopButton').click(function() {
+		$("html, body").animate({ scrollTop: 0 }, "slow");
+    });
+
+    $('.expandButton').hide();
+
+    $('.collapseButton').click(function() {
+    	$(this).parents(".legend").siblings(".panelContent").hide();
+    	$(this).hide();
+    	$(this).siblings('.expandButton').show();
+    });
+
+    $('.expandButton').click(function() {
+    	$(this).parents(".legend").siblings(".panelContent").show();
+    	$(this).hide();
+    	$(this).siblings('.collapseButton').show();
+    });
+
+
+    $('select[name="<%=getObjectMapping(@lead)%>[country]"]').change(function(){
+		getPincodeCityStateCountryLookups("district", "<%=getObjectMapping(@lead)%>", "");
+		getPincodeCityStateCountryLookups("city", "<%=getObjectMapping(@lead)%>", "");
+	});
+
+	$('input[name="<%=getObjectMapping(@lead)%>[pincode]"]').change(function(){
+		getPincodeCityStateCountryLookups("district", "<%=getObjectMapping(@lead)%>", "");
+		getPincodeCityStateCountryLookups("city", "<%=getObjectMapping(@lead)%>", "");
+	});
+
+	$('select[name="<%=getObjectMapping(@lead)%>[industryCd]"]').change(function(){
+		getIndustryNatureofdutyLookups("natureofduty", "<%=getObjectMapping(@lead)%>");
+	});
+
+
+	$('select[name="<%=getObjectMapping(@lead)%>[title]"]').on('change', function(){
+		if (this.value == 'MR'){
+			$('input[id="<%=getObjectMapping(@lead)%>_male"]').prop('checked',true).checkboxradio("refresh");
+			$('input[id="<%=getObjectMapping(@lead)%>_female"]').prop('checked',false).checkboxradio("refresh");
+		}
+		else if (this.value == 'MRS'|| this.value == 'MS' ){
+			$('input[id="<%=getObjectMapping(@lead)%>_male"]').prop('checked',false).checkboxradio("refresh");
+			$('input[id="<%=getObjectMapping(@lead)%>_female"]').prop('checked',true).checkboxradio("refresh");
+		}
+	});
+
+	$("input[name='<%= getObjectMapping(@lead)%>[dob]']").change( function (){
+		var ageFieldName = this.name.replace("dob","age");       
+		age = getAge($('input[name="'+this.name+'"]').val(), ageFieldName, '', '');
+	});
+
+
+	$('input[name="<%=getObjectMapping(@lead)%>[age]"]').change( function(){
+        if (isNaN(this.value) || this.value < 0) {
+			$(this).val('');
+        }
+        else {
+			getDOB(this.value, '<%= getObjectMapping(@lead)%>[dob]');
+		}
+	});
+
+
+	$('input[name="<%=getObjectMapping(@lead)%>[emailAddress]"]').change( function(){
+		if(!testEmail(this.value)) {
+			showDialog("", "<%= getLabelValue('VALID_EMAIL') %>", 'warning', 0, 'capture');
+			$(this).val('');
+		} 
+	});
+
+
+	if ($("select[name='<%=getObjectMapping(@lead)%>[leadSource]']").val()=="OTHERS"){
+  		$("input[name='<%=getObjectMapping(@lead)%>[leadSourceOther]']").parents('div[class="half"]').show();
+  	}
+  	else{
+  		$("input[name='<%=getObjectMapping(@lead)%>[leadSourceOther]']").parents('div[class="half"]').hide();
+  	}
+
+  	$("select[name='<%=getObjectMapping(@lead)%>[leadSource]']").change(function(){
+		if ($(this).val()=="OTHERS"){
+	  		$("input[name='<%=getObjectMapping(@lead)%>[leadSourceOther]']").parents('div[class="half"]').show();
+	  	}
+	  	else{
+	  		$("input[name='<%=getObjectMapping(@lead)%>[leadSourceOther]']").parents('div[class="half"]').hide();
+	  	}  		
+  	});
+
+
+	$("#addActivity").click(function(){
+		addLeadActivity();
+	});
+
+	$('#error_dialog').click(function(){
+		if (typeof $.mobile.sdCurrentDialog === 'undefined') {
+			$("<div>").simpledialog2({
+				mode : 'blank',
+				blankContent : $("#totalErrorDiv").html() + "<a rel='close' data-role='button' href='#'>Close</a>"
+			});
+		}
+	});
+
+	$("a[name='close']").click( function() {
+		$('<div>').simpledialog2({
+			mode: 'button',
+			style: "width: 629px",
+			buttonPrompt: 'Are you sure you want to close lead?',
+			buttons : {
+				'<%= getLabelValue("OK") %>': {
+					click: function () {
+						document.leadForm.action = "executeSubmit?action=closeLead";
+						document.leadForm.submit();
+					}
+				},
+				'<%= getLabelValue("CANCEL") %>': {
+					click: function () {},
+					icon: "delete",
+					theme: "c"
+				}
+			}
+		});
+	});
+
+	$("a[name='save']").click( function() {
+		document.leadForm.submit();
+	});
+
+	$("a[name='addfna']").click( function() {
+		document.leadForm.action = "executeSubmit?action=addFNA";
+		document.leadForm.submit();
+	});
+
+	$("a[name='addgraphicalfna']").click( function() {
+		document.leadForm.action = "executeSubmit?action=addFNA&subaction=graphicalFNA";
+		document.leadForm.submit();
+	});
+
+	$("#getAddress").click(function(){
+     $.ajax({
+            url: "/app/Lead/getPosition"
+      })
+  	});
+
+
+});
+</script>

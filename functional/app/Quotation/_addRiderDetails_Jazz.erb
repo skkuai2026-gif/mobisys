@@ -1,0 +1,36 @@
+<div class='add-section riderData'>
+	<% gridID = "grid_#{@riderObjects}_riderDetails" %>
+	<%= modelTagStart(gridID, @rider, @quotation, @riderObjects) %>
+		<% riderPackage = 'com.c2lbiz.symbiosys.insurance.businesscommon.dataobjects.policy.PolicyRiderDO' %>
+		<% if @riderAutoPopulationReqFlag != "YES" %>
+			<i class='close-add-section icon-close' onClick='javascript:catchevent(this);' id='<%=gridID%>_removed'></i>
+		<% else %>
+			<%#= if @riderDisableField[rider.object] == 'YES'%>
+				<%= prdFieldDataTag("#{riderPackage}","selected",'','isObjectSelected') %>
+			<%#= end %>
+		<% end %>
+		<%= prdFieldDataTag("#{riderPackage}","productSeq,productPlanOptionCd") %>
+		<%= prdFieldDataTag("#{riderPackage}","partyRoleCd,insuredPartyRefGuid",'#none,SUPPLEMENTARYINSUREDREQUIRED') %>
+		<%= prdFieldDataTag("#{riderPackage}","productTerm,premiumPayingTerm") %>
+		<%= prdFieldDataTag("#{riderPackage}","baseSumAssured,modalPremium") %>
+		
+		<% @riderProductExtras, @quotationProduct = MobiSys::QuotationBO.computeProductExtra(@quotation, @rider) %>
+		<%= render :partial => "QuoteRiderExtra_Jazz" , :locals => { :@quotationProduct => @quotationProduct , :@riderProductExtras => @riderProductExtras, :@riderObjects => @riderObjects, :rider => rider, :@riderAutoPopulationReqFlag => @riderAutoPopulationReqFlag} %>
+
+		<div style="display:none;">
+			<%= inputTag("productFamilyCd") %>
+			<%= inputTag("productId") %>
+			<%= inputTag("productTypeCd") %>
+			<%= inputTag("productVersion") %>
+			<%= inputTag("compAnnualPremium") %>
+			<%= inputTag("compHalfYlyPremium") %>
+			<%= inputTag("compQtlyPremium") %>
+			<%= inputTag("compMonthlyPremium") %>
+			<%= inputTag("annualizedPremium") %>
+			<input type="hidden" name="<%= gridID %>_premiumSAFl" id="<%= gridID %>_premiumSAFl" value='<%= @premiumSAFlriders[@rider.productSeq.to_s] %>'/>
+			<input type="hidden" name="<%= gridID %>_readOnlyFields" id="<%= gridID %>_readOnlyFields" value='<%= @newRiderFields[@rider.productSeq.to_i] %>'/>
+			<input type="hidden" name="riderAutoPopulationReqFlag" id="riderAutoPopulationReqFlag" value='<%= @riderAutoPopulationReqFlag %>'/>
+		</div>
+	<% modelTagEnd %>
+</div>
+<%= MobiSys::BrowserHelper.attachMaskAll %>

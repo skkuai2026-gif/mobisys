@@ -1,0 +1,9 @@
+ext/platform/android/generated/src/com/rho/bmp/BmpBase.java
+ext/platform/android/generated/src/com/rho/bmp/BmpFactorySingleton.java
+ext/platform/android/generated/src/com/rho/bmp/BmpSingletonBase.java
+ext/platform/android/generated/src/com/rho/bmp/IBmp.java
+ext/platform/android/generated/src/com/rho/bmp/IBmpFactory.java
+ext/platform/android/generated/src/com/rho/bmp/IBmpSingleton.java
+ext/platform/android/src/com/rho/bmp/Bmp.java
+ext/platform/android/src/com/rho/bmp/BmpFactory.java
+ext/platform/android/src/com/rho/bmp/BmpSingleton.java

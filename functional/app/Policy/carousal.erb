@@ -1,0 +1,69 @@
+<div data-role="page">
+<script type="text/javascript" src="/public/js/dojo-release-1.9.0/dojox/mobile/deviceTheme.js"
+        data-dojo-config="mblThemeFiles: ['base','Carousel','PageIndicator']"></script>
+<script>
+require([
+    "dojox/mobile",
+    "dojox/mobile/parser",
+    "dojox/mobile/Carousel"
+]);
+</script>
+
+<form method="POST" action="<%= url_for :action => :execute %>" name="policyForm" onsubmit = "return checkBasicDetails();">
+
+    <div data-role="header" data-position="inline">
+      <h1><%= getLabelValue('CAPTUREEAPP') %></h1>    
+      <a href="/app/Menu/eapp" class="ui-btn-left" data-direction="reverse">
+        <%= getLabelValue('BACK')   %>
+      </a>
+      <div class="ui-btn-right">
+        <a href="javascript: submitForm();" name="save" data-role="button" style="min-width:100px;">
+          <%= getLabelValue('SAVEVALIDATE')%>
+        </a>
+        <a href="javascript: showDialog('', '<%= getLabelValue(@msg)%>', 'success', 0, 'capture');" name="exceptions" data-role="button" style="min-width:100px;">
+          Exceptions
+        </a>
+        
+      </div>
+    </div>
+
+    <div data-role="content" id="capture" style="-webkit-transform: none;">    
+
+        <div id="carousel1" data-dojo-type="dojox/mobile/Carousel"
+                    data-dojo-props='height:"150px", navButton:true, numVisible:2, title:"Category"'>
+            <!-- View #1 -->
+            <div data-dojo-type="dojox/mobile/SwapView">
+                <div data-dojo-type="dojox/mobile/CarouselItem"
+                    data-dojo-props='src:"images/dish1.jpg", value:"dish", headerText:"dish"'>
+                data 1    
+                </div>
+                <div data-dojo-type="dojox/mobile/CarouselItem"
+                    data-dojo-props='src:"images/glass1.jpg", value:"glass", headerText:"glass"'>
+                    data 2
+                </div>
+            </div>
+            <!-- View #2 -->
+            <div data-dojo-type="dojox/mobile/SwapView">
+                <div data-dojo-type="dojox/mobile/CarouselItem"
+                    data-dojo-props='src:"images/stone1.jpg", value:"stone", headerText:"stone"'> data 3</div>
+                <div data-dojo-type="dojox/mobile/CarouselItem"
+                    data-dojo-props='src:"images/shell1.jpg", value:"shell", headerText:"shell"'> data 4</div>
+            </div>
+        </div>
+        
+    </div>
+
+</form>
+
+<script type="text/javascript">
+
+      $(document).focus(function() {
+        setTimeout("onFocus()", 100);
+      });
+        
+      function onFocus(){    
+      }
+
+</script>
+
+</div>

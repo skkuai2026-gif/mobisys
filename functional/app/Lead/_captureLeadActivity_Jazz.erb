@@ -1,0 +1,16 @@
+<%= fieldDataEntryGridTagStart('leadActivity',"","",nil,nil,nil,'delete',"",nil,true,true,false,true,false) %>
+	<%= panelTagStart(false) %>
+		<% @leadActivity.each_with_index do |activity, count| %>
+			<%= subPanelTagStart("LEADACTIVITY #{count.to_i+ 1}",false) %>
+				<div class='add-section'>
+		    		<% gridID = "grid_#{count}_leadActivity" %>
+		    		<%= modelTagStart(gridID, activity, @lead,count) %>
+		    			<i class='close-add-section icon-close' onClick='javascript:catchevent(this);' id='<%=gridID%>_removed'></i>
+		    			<%= layoutFieldTag("type,description,activityDt,closureDate") %>
+				    <% modelTagEnd %>
+				</div>
+			<%= subPanelTagEnd %>
+		<% end %>
+	<%= panelTagEnd %>	
+<%= fieldDataEntryGridTagEnd('leadActivity', @leadActivity, 'ADDLEADACTIVITY',true,true) %>
+<input type="hidden" name="leadActivityCount" id="leadActivityCount" value='<%= @leadActivityCount %>'/>

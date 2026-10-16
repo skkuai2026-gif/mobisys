@@ -1,0 +1,116 @@
+<%#Added by Niharika on 3-05-2017 for dynamic page for child Education section in Life Protection Page%>
+<%= renderObject(@fnaPropose) %>
+<% i = 0 %>
+<% @fnaEducationNeed.each do |fnaEducationNeed| %>
+  <% if i < @noOfChild %>
+    <%= renderObject(fnaEducationNeed, @fnaRequest) %>
+    <%= renderHiddenField('guid', fnaEducationNeed.guid, 'guid', fnaEducationNeed) %>
+    <%= renderHiddenField('object', fnaEducationNeed.object, 'object', fnaEducationNeed) %>
+
+
+    <div data-role="dualfieldcontain" class="ui-dual-field-contain ui-body ui-br">
+        <div class="half">
+            <div class="group">
+             <%= renderInputField('childName', fnaEducationNeed.childName,'childName', fnaEducationNeed, ' maxlength="150" pattern="/([^\s])" class="material-input "') %>
+               <%= renderLabel('childName', 'CHILDNAME', 'mandatory material-label', fnaEducationNeed) %>   
+            </div>
+        </div>
+        <div class="half">
+            <div class="group">
+            <%= renderLabel('countryOfStudyCd', 'COUNTRY_STUDY', 'mandatory fieldLabel ui-input-text', fnaEducationNeed) %>
+             <%= getLookup('COUNTRYOFSTUDY', 'countryOfStudyCd', fnaEducationNeed.countryOfStudyCd, fnaEducationNeed, 'pattern="/([^\s])" class="material-select" ') %>         
+            </div>
+        </div>
+    </div>
+    <div data-role="dualfieldcontain" class="ui-dual-field-contain ui-body ui-br">
+        <div class="half">
+          <%= renderLabel('age', 'AGE_CHILD', 'mandatory fieldLabel ui-input-text', fnaEducationNeed) %>
+             <%= getLookup('FNACHILDAGE', 'age', fnaEducationNeed.age, fnaEducationNeed, 'pattern="/([^\s])" class="material-select" ') %>
+           
+        </div>
+        <div class="half">
+            <div class="group">
+              <%= renderNumericField('savingPeriod', fnaEducationNeed.savingPeriod ,'savingPeriod', fnaEducationNeed, ' maxlength="2" pattern="/([^\s])"  onkeypress="return numbersonly(event)" class="material-input "') %>
+              <%= renderLabel('savingPeriod', 'SAVINGS_PERIOD', 'mandatory material-label', fnaEducationNeed) %>
+              <%= attachMask("#{getObjectMapping(fnaEducationNeed)}[savingPeriod]") %>
+          </div>
+        </div>
+    </div>
+    <div data-role="dualfieldcontain" class="ui-dual-field-contain ui-body ui-br">
+        <div class="third with-spacer">
+            <div class="group">
+             <%= renderNumericField('educationNeedFVAmt', fnaEducationNeed.educationNeedFVAmt,'educationNeedFVAmt', fnaEducationNeed, ' maxlength="10" pattern="/([^\s])" onkeypress="return numbersonly(event)" readonly="true" style="background-color: #c8c8c8 !important;margin-top:7px !important;" class="material-input "') %>
+              <%= renderLabel('educationNeedFVAmt', 'EFV', 'mandatory material-label', fnaEducationNeed) %> 
+              <%= attachMask("#{getObjectMapping(fnaEducationNeed)}[educationNeedFVAmt]") %>
+               
+            </div>
+        </div>
+        <div class="operation-label"> - </div>
+        <div class="third with-spacer">
+            <div class="group">
+            <%= renderNumericField('educationFundFVAmt', fnaEducationNeed.educationFundFVAmt,'educationFundFVAmt', fnaEducationNeed, ' maxlength="10" pattern="/([^\s])" onkeypress="return numbersonly(event)" class="material-input "') %>
+              <%= renderLabel('educationFundFVAmt', 'RES_EDU_FUND', 'mandatory material-label', fnaEducationNeed) %> 
+               <%= attachMask("#{getObjectMapping(fnaEducationNeed)}[educationFundFVAmt]") %>
+                
+            </div>
+        </div>
+        <div class="operation-label"> = </div>
+        <div class="third with-spacer">
+            <div class="group">
+            
+            <%= renderNumericField("SHORTFALL_CURR_LIFEPROTECTION_#{i}", $shortfallIndividualChildEducation != [] ? $shortfallIndividualChildEducation[i].to_i : 0  ,'SHORTFALL_CURR_LIFEPROTECTION_#{i}',nil, ' maxlength="10" pattern="/([^\s])" onkeypress="return numbersonly(event)" class="material-input" readonly="true" style="background-color: #c8c8c8 !important;margin-top:7px !important;"') %>
+              <%= renderLabel('SHORTFALL_CURR_LIFEPROTECTION_#{i}', 'SHORTFALL_CURR_LIFEPROTECTION', 'mandatory material-label', nil) %> 
+               
+            </div>
+        </div>
+    </div>
+    <div data-role="dualfieldcontain" class="ui-dual-field-contain ui-body ui-br">
+        <div class="third">
+            <div class="group">
+             <%= renderNumericField('monthlySavingsReqdAmt', fnaEducationNeed.monthlySavingsReqdAmt,'monthlySavingsReqdAmt', fnaEducationNeed, ' maxlength="10" pattern="/([^\s])" onkeypress="return numbersonly(event)" class="material-input " readonly="true" style="background-color: #c8c8c8 !important;margin-top:7px !important;"') %>
+              <%= renderLabel('monthlySavingsReqdAmt', 'MONTHLY_SAVINGS_REQD', 'mandatory material-label', fnaEducationNeed) %>
+              <%= attachMask("#{getObjectMapping(fnaEducationNeed)}[monthlySavingsReqdAmt]") %>
+ 
+            </div>
+        </div>
+        <div class="third">
+            <div class="group">
+            <%= renderNumericField('lumsumReqdAmt', fnaEducationNeed.lumsumReqdAmt,'lumsumReqdAmt', fnaEducationNeed, ' maxlength="10" pattern="/([^\s])" onkeypress="return numbersonly(event)" class="material-input " readonly="true" style="background-color: #c8c8c8 !important;margin-top:7px !important;"') %>
+              <%= renderLabel('lumsumReqdAmt', 'LUMPSUM_INV_REQD', 'mandatory material-label', fnaEducationNeed) %>
+              <%= attachMask("#{getObjectMapping(fnaEducationNeed)}[lumsumReqdAmt]") %>
+
+            </div>
+        </div>
+    </div>
+    <br>
+          <hr class="style2">
+        <br>
+        <style type="text/css">
+          hr.style2 {
+             border-top: 3px double #8c8b8b;
+           }
+        </style>
+    
+    <script>
+    // function setTab() {
+    //     alert("hi");
+    //     $('label[for="monthlySavingsReqdAmt"]').css("top", "-10px");
+    //     $('label[for="educationNeedFVAmt"]').css("top", "-10px");
+    //     $('label[for="SHORTFALL_CURR_LIFEPROTECTION_<%= i %>"]').css("top", "-10px");
+    //     $('label[for="lumsumReqdAmt"]').css("top", "-10px");
+        
+    //   }
+
+      $('input[name="<%=getObjectMapping(fnaEducationNeed)%>[educationFundFVAmt]"]').blur(function(){
+       var educationNeedFVAmt = $('input[name="<%=getObjectMapping(fnaEducationNeed)%>[educationNeedFVAmt]"]').val();
+       var educationFundFVAmt = $('input[name="<%=getObjectMapping(fnaEducationNeed)%>[educationFundFVAmt]"]').val();
+       var shortfallIndividualChildEducation = parseInt(educationNeedFVAmt) - parseInt(educationFundFVAmt) ;
+       $('input[name="SHORTFALL_CURR_LIFEPROTECTION_<%= i %>"]').val(shortfallIndividualChildEducation);
+      });
+     
+    </script>
+    
+    <% i = i+1 %>
+   <%end%>
+<%end%>
+

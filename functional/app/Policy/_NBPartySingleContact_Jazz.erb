@@ -1,0 +1,32 @@
+<style type="text/css">
+.contact-no .row-details .col-right div.ui-input-text:nth-last-child(2) input{
+	width: 36% !important;
+}
+
+.contact-no .row-details .col-right div.ui-input-text:last-child input{
+	border: 0 !important;
+}
+</style>
+<div style="display: none;">
+    <%= inputTag("contactTypeCd") %>
+</div>
+<div class="project-data contact-no">
+    <div class="row-details">
+        <p class="col-left">
+            <%= getLabelValue(contactLabel) %>
+        </p>
+        <% if contactLabel != 'contactMobile' %>
+			<p class="col-right">
+				<%= inputTag("countryCd") if $companyFieldMetaDataCache.include?((partyContactPckg + ".countryCd").to_sym) %>
+				<%= inputTag("stdCode") if $companyFieldMetaDataCache.include?((partyContactPckg + ".stdCode").to_sym) %>
+				<%= inputTag("contactNum") if $companyFieldMetaDataCache.include?((partyContactPckg + ".contactNum").to_sym) %>
+				<%= inputTag("extensionNum") if $companyFieldMetaDataCache.include?((partyContactPckg + ".extensionNum").to_sym) %>
+			</p>
+		<% else %>
+			<p class="col-right">
+				<%= inputTag("countryCd") if $companyFieldMetaDataCache.include?((partyContactPckg + ".countryCd").to_sym) %>
+				<%= inputTag("contactNum") if $companyFieldMetaDataCache.include?((partyContactPckg + ".contactNum").to_sym) %>
+			</p>
+		<% end%>
+	</div>
+</div>

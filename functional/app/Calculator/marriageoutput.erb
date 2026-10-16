@@ -1,0 +1,53 @@
+<div data-role="page" data-url="<%= Rho::RhoConfig.start_path %>/">
+
+    <div data-role="header" data-position="inline">
+      <h1><%= getLabelValue('MARRIAGECALC') %></h1>    
+      <a href="/app/Calculator/marriage" class="ui-btn-left" data-direction="reverse">
+        <%= getLabelValue('BACK')   %>
+      </a>
+    </div>
+
+    <div data-role="content" id="capture" style="-webkit-transform: none;">
+        <%= renderObject(@calculator) %>
+        <table class="searchtable" width=80% align="center">
+                   <tr class="searchtableheader"> 
+                     <td > Needs </td> 
+                     <td > Values </td> 
+                   </tr>
+                   
+                   <tr class="search1">
+                     <td class="tabletext">
+                            The annual investment required(Rs.)
+                     </td>
+                     <td width=40% align=right class="tablenum">
+                         <span   id="outPut09"> <%=renderNumber(@calculator.output09) %>&nbsp;</span><br/>
+                     </td>
+                   </tr>
+                   
+                   <tr class="search2">
+                     <td class="tabletext">
+                           Future cost of Marriage
+                     </td>
+                     <td width=40% align=right class="tablenum">
+                         <span   id="outPut10"><%= renderNumber(@calculator.output10)%>&nbsp;</span><br/>
+                     </td>
+                   </tr>
+                   
+       
+                 </table>
+    </div>
+    
+  </form>
+  <script type="text/javascript">
+        
+        $(document).focus(function() {
+          setTimeout("onFocus()", 100);
+        });
+        
+        function onFocus(){        
+        }
+        
+  
+  </script>  
+
+</div>

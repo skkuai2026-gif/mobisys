@@ -1,0 +1,132 @@
+<style type="text/css">
+#content {
+	background-color: #eeeeee;
+	padding: 0;
+}
+nav {
+    width:20%;
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    right: 0;
+}
+nav ul {
+	color: red;
+    list-style: outside none none;
+    padding-left: 1em;
+}
+#content section {
+    width:80%;
+    background-color: #b1cc59;
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    text-align: center;
+    border-right: 3px solid grey;
+}
+form {
+	top: 30%;
+    left: 0;
+    padding: 1em;
+    position: absolute;
+    right: 0;
+}
+#bg-image {
+	max-width: 80%;
+}
+.footer {
+    font-size: small;
+    margin: 1em;
+    text-align: left;
+}
+.header {
+	font-size: 16px;
+    font-weight: bold;
+}
+</style>
+<div data-role="page">
+	<div data-role="content" id="content">
+		<section>
+			<p class="header"><%= getLabelValue('LOGINFOOTERHEADING') %></p>
+			<div>
+				<img alt="New Business system" src="/public/images/login-bg.png" id="bg-image"/>
+			</div>
+			<p class="footer">
+				<span style="float: left;"><%= getLabelValue('LOGINFOOTERDATA') %></span>
+				<span style="float: right;"><%= getLabelValue('PROGRAMVER') %> <%= getLabelValue(Rho::RhoConfig.app_version) %></span>
+			</p>
+		</section>
+		
+		<nav>
+			<ul>
+			    <%
+				if $errors
+					$errors.each_value do |error|
+						%>
+						<li><%=error%></li>
+						<%
+					end
+				end
+				%>
+			</ul>
+			<%= renderObject(@agentreg) %>  
+			<form name = "loginform" method="POST" action="<%= url_for :action => :loginwait %>" onsubmit="return encryptPass();">
+				<div style="text-align:center;">
+					<img src="/public/images/loginlogo.png"/>
+				</div>
+
+				<label for="userId"><%= getLabelValue('USERNAME') %></label>
+				<%= renderInputField('userId', '', 'Username', @agentreg) %>
+
+				<label for="regPass"><%= getLabelValue('PASSWORD') %></label>
+				<%= renderPasswordField('regPass', '','Password', @agentreg) %>
+
+				<a href='#' name="login" data-role="button" data-theme="a" onclick="javascript: login();"><%=getLabelValue('SIGNIN')%></a>
+			</form>
+		</nav>
+	</div>
+</div>
+
+
+<script type="text/javascript">
+function login(){
+	var returnValue = true;
+	username = $("input[name='AgentReg[userId]']").val();
+	password = $("input[name='AgentReg[regPass]']").val();
+
+	if(username == "" || password == ""){            
+		showDialog("", "<%= getLabelValue('USERNAMEPASSWORDMANDATORY')%>", 'error', 0, 'loginPage');
+		returnValue = false;  
+	}
+
+	if(returnValue){
+		$.ajax({
+        	url: "/app/AgentReg/encryptPass",
+        	success: function(data){
+				if (data != ""){
+					temp = JSON.parse(data);
+					encryptionExponent = temp.RSA_KEY_encryptionExponent;
+					modulus = temp.RSA_KEY_modulus;
+					var encryptedPassword = encryptValueCustom(password,encryptionExponent,modulus);
+					$("input[name='AgentReg[regPass]']").val(encryptedPassword);            
+            	}
+          	},
+          	error: function(jhqr, errorType, exception){
+            	alert("error: "+exception);
+          	},
+          	complete: function(jqXHR, status){
+            	document.loginform.submit();
+            	$("a[name='login']").attr('onclick','return false;'); 
+          	}
+        });               
+	}
+}
+
+$(document).ready(function(){
+	$("input[name='AgentReg[regPass]']").off('keypress');
+});
+
+<% if Rho::RhoConfig.exists?('upgrade_prompt') and Rho::RhoConfig.upgrade_prompt=='YES' && System::get_property('platform').downcase.include?("windows") %>
+	<%= $js %>
+<% end %>
+</script>

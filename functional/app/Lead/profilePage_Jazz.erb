@@ -1,0 +1,318 @@
+<%= pageTagStart('Profile','Symbiosys - Profile') %>
+<%= headerTag("My Profile","","", "/app/Lead/search") %>
+<div data-role="main" class="ui-content" id="snapshot-wrapper">
+	<div class="snapshot-profile">
+	<%= menuTag('LEADS',true) %>
+		<div class="section-left">
+			<div class="avatar">
+			<% if @lead.genderCd.to_s == "MALE" %>
+				<img src="/public/jazz/images/avatar.png">
+			<% else %>
+				<img src="/public/jazz/images/avatar-woman.png">
+			<% end %>
+			</div>
+			<div class="avatar-name">
+				<h3><%= @lead.firstname.to_s + " " + @lead.lastname.to_s %></h3>
+				<%= @lead.mobileNumber.to_s %> &nbsp;|&nbsp; <%= @lead.emailAddress %>
+			</div>
+		</div>
+		<div class="section-right">
+			<div class="notification">
+				<i class="icon-notification"></i>
+				<span>1</span>
+			</div>
+		</div>
+	</div>
+    <div class="main-content-wrapper">
+        <div class="main-content-wrapper-left">
+			
+        	<div class="project-data">
+				<h3>Personal Information</h3>
+				
+				
+				<div class="row-details">
+					<p class="col-left">DOB</p>
+					<p class="col-right">
+						<input name="" type="text" data-role="datebox" placeholder="MM/DD/YYYY" data-options='{"mode":"slidebox"}' value="<%= @lead.dob %>"/>
+					</p>
+				</div>
+				
+				<div class="row-details">
+					<p class="col-left">Marital Status</p>
+					<p class="col-right">
+						<input class="input-controll" type="text" placeholder="Enter a value" value="<%= @lead.maritalStatus %>">
+					</p>
+				</div>
+				<div class="row-details">
+					<p class="col-left">Occupation</p>
+					<p class="col-right">
+						<input class="input-controll" type="text" placeholder="Enter a value" value="<%= @lead.occupationCd %>">
+					</p>
+				</div>
+				<div class="row-details">
+					<p class="col-left">Income</p>
+					<p class="col-right">
+						<input class="input-controll" type="text" placeholder="Enter a value" value="<%= @lead.incomeGroup %>">
+					</p>
+				</div>
+			</div>
+			
+			<div class="project-data">
+				<h3>Family Information</h3>
+				<div class="row-details">
+					<p class="col-left">Spouse Name</p>
+					<p class="col-right">
+						<input class="input-controll" type="text" placeholder="Enter a value">
+					</p>
+				</div>
+				<div class="row-details">
+					<p class="col-left">Age</p>
+					<p class="col-right">
+						<input class="input-controll" type="text" placeholder="Enter a value">
+					</p>
+				</div>
+				<div class="row-details">
+					<p class="col-left">Occupation</p>
+					<p class="col-right">
+						<input class="input-controll" type="text" placeholder="Enter a value">
+					</p>
+				</div>
+				<div class="row-details">
+					<p class="col-left">Kids</p>
+					<p class="col-right">
+						<input class="input-controll" type="text" placeholder="Enter a value">
+					</p>
+				</div>
+			</div>
+		</div>
+		
+        <div class="main-content-wrapper-right">
+          <div class="collapse-panel" data-role="collapsible-set" data-iconpos="right" data-corners="false" data-theme="c">
+            <div data-role="collapsible" data-collapsed="false">
+              <h3><span class="pull-left">Knowledge House</span> <span class="pull-right num">10</span></h3>
+				<div class="table-section">
+					<table data-role="table" class="ui-responsive">
+						<thead>
+							<tr>
+							  <th>Proposer No.</th>
+							  <th>Proposer Name</th>
+							  <th>Status</th>
+							</tr>
+						</thead>
+						<tbody>
+							<tr>
+							  <td>0071290</td>
+							  <td>Danna Mcgrady</td>
+							  <td>Accepted</td>
+							</tr>
+							<tr>
+							  <td>0071290</td>
+							  <td>Danna Mcgrady</td>
+							  <td>Accepted</td>
+							</tr>
+							<tr>
+							  <td>0071290</td>
+							  <td>Danna Mcgrady</td>
+							  <td>Accepted</td>
+							</tr>
+							<tr>
+							  <td>&nbsp;</td>
+							  <td>&nbsp;</td>
+							  <td><a href="#">More ></a></td>
+							</tr>
+						</tbody>
+					</table>
+				</div>
+            </div>
+			
+			  
+			<div data-role="collapsible" data-collapsed="true">
+            <h3><span class="pull-left">POLICIES</span> <span class="pull-right num">10</span></h3>
+				<div class="table-section">
+					<table data-role="table" class="ui-responsive">
+						<thead>
+							<tr>
+							  <th>Proposer No.</th>
+							  <th>Proposer Name</th>
+							  <th>Status</th>
+							</tr>
+						</thead>
+						<tbody>
+							<tr>
+							  <td>0071290</td>
+							  <td>Danna Mcgrady</td>
+							  <td>Accepted</td>
+							</tr>
+							<tr>
+							  <td>0071290</td>
+							  <td>Danna Mcgrady</td>
+							  <td>Accepted</td>
+							</tr>
+							<tr>
+							  <td>0071290</td>
+							  <td>Danna Mcgrady</td>
+							  <td>Accepted</td>
+							</tr>
+							<tr>
+							  <td>&nbsp;</td>
+							  <td>&nbsp;</td>
+							  <td><a href="#">More ></a></td>
+							</tr>
+						</tbody>
+					</table>
+				</div>
+            </div>
+			  
+			<div data-role="collapsible" data-collapsed="true">
+              <h3><span class="pull-left">CLAIM</span> <span class="pull-right num">10</span></h3>
+				<div class="table-section">
+					<table data-role="table" class="ui-responsive">
+						<thead>
+							<tr>
+							  <th>Proposer No.</th>
+							  <th>Proposer Name</th>
+							  <th>Status</th>
+							</tr>
+						</thead>
+						<tbody>
+							<tr>
+							  <td>0071290</td>
+							  <td>Danna Mcgrady</td>
+							  <td>Accepted</td>
+							</tr>
+							<tr>
+							  <td>0071290</td>
+							  <td>Danna Mcgrady</td>
+							  <td>Accepted</td>
+							</tr>
+							<tr>
+							  <td>0071290</td>
+							  <td>Danna Mcgrady</td>
+							  <td>Accepted</td>
+							</tr>
+							<tr>
+							  <td>&nbsp;</td>
+							  <td>&nbsp;</td>
+							  <td><a href="#">More ></a></td>
+							</tr>
+						</tbody>
+					</table>
+				</div>
+            </div>
+			  
+			<div data-role="collapsible" data-collapsed="true">
+              <h3><span class="pull-left">Endorsements</span> <span class="pull-right num">10</span></h3>
+				<div class="table-section">
+					<table data-role="table" class="ui-responsive">
+						<thead>
+							<tr>
+							  <th>Proposer No.</th>
+							  <th>Proposer Name</th>
+							  <th>Status</th>
+							</tr>
+						</thead>
+						<tbody>
+							<tr>
+							  <td>0071290</td>
+							  <td>Danna Mcgrady</td>
+							  <td>Accepted</td>
+							</tr>
+							<tr>
+							  <td>0071290</td>
+							  <td>Danna Mcgrady</td>
+							  <td>Accepted</td>
+							</tr>
+							<tr>
+							  <td>0071290</td>
+							  <td>Danna Mcgrady</td>
+							  <td>Accepted</td>
+							</tr>
+							<tr>
+							  <td>&nbsp;</td>
+							  <td>&nbsp;</td>
+							  <td><a href="#">More ></a></td>
+							</tr>
+						</tbody>
+					</table>
+				</div>
+            </div>
+			
+			<div data-role="collapsible" data-collapsed="true">
+              <h3><span class="pull-left">Meeting History</span> <span class="pull-right num">10</span></h3>
+				<div class="table-section">
+					<table data-role="table" class="ui-responsive">
+						<thead>
+							<tr>
+							  <th>Proposer No.</th>
+							  <th>Proposer Name</th>
+							  <th>Status</th>
+							</tr>
+						</thead>
+						<tbody>
+							<tr>
+							  <td>0071290</td>
+							  <td>Danna Mcgrady</td>
+							  <td>Accepted</td>
+							</tr>
+							<tr>
+							  <td>0071290</td>
+							  <td>Danna Mcgrady</td>
+							  <td>Accepted</td>
+							</tr>
+							<tr>
+							  <td>0071290</td>
+							  <td>Danna Mcgrady</td>
+							  <td>Accepted</td>
+							</tr>
+							<tr>
+							  <td>&nbsp;</td>
+							  <td>&nbsp;</td>
+							  <td><a href="#">More ></a></td>
+							</tr>
+						</tbody>
+					</table>
+				</div>
+            </div>
+			  
+			<div data-role="collapsible" data-collapsed="true">
+              <h3><span class="pull-left">Premium Calendar</span> <span class="pull-right num">10</span></h3>
+				<div class="table-section">
+					<table data-role="table" class="ui-responsive">
+						<thead>
+							<tr>
+							  <th>Proposer No.</th>
+							  <th>Proposer Name</th>
+							  <th>Status</th>
+							</tr>
+						</thead>
+						<tbody>
+							<tr>
+							  <td>0071290</td>
+							  <td>Danna Mcgrady</td>
+							  <td>Accepted</td>
+							</tr>
+							<tr>
+							  <td>0071290</td>
+							  <td>Danna Mcgrady</td>
+							  <td>Accepted</td>
+							</tr>
+							<tr>
+							  <td>0071290</td>
+							  <td>Danna Mcgrady</td>
+							  <td>Accepted</td>
+							</tr>
+							<tr>
+							  <td>&nbsp;</td>
+							  <td>&nbsp;</td>
+							  <td><a href="#">More ></a></td>
+							</tr>
+						</tbody>
+					</table>
+				</div>
+            </div>
+			  
+          </div>
+		</div>
+    </div>
+</div>
+<%= pageTagEnd %>

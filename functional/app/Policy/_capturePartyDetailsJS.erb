@@ -1,0 +1,499 @@
+<script type="text/javascript">
+function getSupplementaryIds(policy, policyPartyRole) {
+	var ajaxData = "policyObject="+$('input[name="'+policy+'[object]"]').val();
+	var selectID = policyPartyRole+"[refGuid]";
+	var spanID = policyPartyRole + "[refGuidLookup]";
+
+	$.ajax({
+     	url: "/app/Policy/getSupplementaryIds",
+     	data: ajaxData,
+     	async: false,
+		headers: {
+        	'Transition-Enabled': false
+        },
+     	success: function(data) {
+           	create = '<select id="'+selectID+'" name="'+selectID+'">';    
+           	create += data;
+           	create += '</select>';
+           	$('span[name="'+ spanID +'"]').html(create);
+           	$('span[name="'+ spanID +'"]').trigger('create');
+       }
+  	});
+
+}
+
+
+function checkForMinor() {
+	var minorFlag = false;
+	<% if @facetData[:majorAge].to_s != "" %>
+		$("div[name=beneficiaries]").each(function(){
+			var parentId = "#" + $(this).attr("id");
+
+			if($(parentId + " input[name*=removed]").val() == "") {
+				var age = $(parentId + " input[name*=age]").val();
+
+				if (parseInt(age) < parseInt("<%= @facetData[:majorAge] %>") && age != "") {
+					minorFlag = true;
+					return false;				
+				}
+			}
+			else if ($(parentId + ' select[name*="[partySameAsCd]"]').val() != "NEW" && $(parentId + ' select[name*="[partySameAsCd]"]').val() != "") {
+				var age = $(parentId + " input[name*=age]").val();
+
+				if (parseInt(age) < parseInt("<%= @facetData[:majorAge] %>") && age != "") {
+					minorFlag = true;
+					return false;				
+				}	
+			}
+		});
+	<% end %>
+
+	if(minorFlag) {
+		$('#appointeeContainer input[name$="[removed]"]').val("");
+		$("#appointeeContainerLi").show();		
+	}
+	else {
+		$('#appointeeContainer input[name$="[removed]"]').val("YES");
+		$("#appointeeContainerLi").hide();		
+	}	
+}
+
+
+function getPartyAge(policyObject, roleCd, party) {
+	$.ajax({
+     	url: "/app/Policy/getPartyAge",
+     	data: "policyObject="+policyObject+"&roleCd="+roleCd,
+     	async: false,
+		headers: {
+        	'Transition-Enabled': false
+        },
+     	success: function(data) {
+     		$('input[id="'+party+'[age]"]').val(data);
+			checkForMinor();
+     	}
+ 	});
+}
+
+
+//Function to hide/show & clear beneficiary fields based on partySameAsCd value
+function hideBeneficiaryDetails(object, hide, onLoad){
+	if (!onLoad) {
+		$('input[name="'+object+'[firstName1]"]').val('');
+		$('input[name="'+object+'[middleName1]"]').val('');
+		$('input[name="'+object+'[lastName1]"]').val('');
+		$('input[name="'+object+'[extensionName1]"]').val('');
+		$('input[name="'+object+'[firstName2]"]').val('');
+		$('input[name="'+object+'[middleName2]"]').val('');
+		$('input[name="'+object+'[lastName2]"]').val('');
+		$('input[name="'+object+'[extensionName2]"]').val('');
+		$('input[name="'+object+'[birthDt]"]').val('');
+		$('input[name="'+object+'[age]"]').val('');
+		$('input[name="'+object+'[placeOfBirth]"]').val('');
+		$('input[name="'+object+'[motherMaidenFirstname]"]').val('');
+		$('input[name="'+object+'[motherMaidenLastname]"]').val('');
+		$('input[name="'+object+'[fatherFirstName1]"]').val('');
+		$('input[name="'+object+'[fatherMiddleName1]"]').val('');
+		$('input[name="'+object+'[fatherLastName1]"]').val('');
+		$('input[name="'+object+'[otherCitizenship]"]').val('');
+		$('select[name*="'+object+'"]').val('').change();
+		$("input[type='radio']").attr("checked",false).checkboxradio("refresh");
+
+		//clear address panel fields
+		$('input[name*="[addressLine1Lang1]"]').val('');
+		$('input[name*="[addressLine1Lang2]"]').val('');
+		$('input[name*="[addressLine2Lang1]"]').val('');
+		$('input[name*="[addressLine2Lang2]"]').val('');
+		$('input[name*="[addressLine3Lang1]"]').val('');
+		$('input[name*="[addressLine3Lang2]"]').val('');
+		$('input[name*="[addressLine4Lang1]"]').val('');
+		$('input[name*="[addressLine4Lang2]"]').val('');
+		$('input[name*="[pinCode]"]').val('');
+		$('input[name*="[districtCd]"]').val('');
+		$('input[name*="[cityCd]"]').val('');
+		$('input[name*="[removed]"]').val('');
+
+		//clear contact details
+		$('input[name*="[countryCd]"]').val('');
+		$('input[name*="[stdCode]"]').val('');
+		$('input[name*="[contactNum]"]').val('');
+		$('input[name*="[extensionNum]"]').val('');
+		$('input[name*="[emailAddress]"]').val('');
+
+	}
+	if (hide) {
+		$('label[for="'+object+'[language]"]').parents('div[data-role="dualfieldcontain"]').hide();
+		$('select[name="'+object+'[titleCd]"]').parents('div[data-role="dualfieldcontain"]').hide();
+		$('input[name="'+object+'[firstName1]"]').parents('div[data-role="dualfieldcontain"]').hide();
+		$('input[name="'+object+'[middleName1]"]').parents('div[data-role="dualfieldcontain"]').hide();
+		$('input[name="'+object+'[lastName1]"]').parents('div[data-role="dualfieldcontain"]').hide();
+		$('input[name="'+object+'[extensionName1]"]').parents('div[data-role="dualfieldcontain"]').hide();
+		$('input[name="'+object+'[firstName2]"]').parents('div[data-role="dualfieldcontain"]').hide();
+		$('input[name="'+object+'[middleName2]"]').parents('div[data-role="dualfieldcontain"]').hide();
+		$('input[name="'+object+'[lastName2]"]').parents('div[data-role="dualfieldcontain"]').hide();
+		$('input[name="'+object+'[extensionName2]"]').parents('div[data-role="dualfieldcontain"]').hide();
+		$('input[name="'+object+'[birthDt]"]').parents('div[data-role="dualfieldcontain"]').hide();
+		$('input[name="'+object+'[age]"]').parents('div[data-role="dualfieldcontain"]').hide();
+		$('input[name="'+object+'[placeOfBirth]"]').parents('div[data-role="dualfieldcontain"]').hide();
+		$('input[name="'+object+'[motherMaidenFirstname]"]').parents('div[data-role="dualfieldcontain"]').hide();
+		$('input[name="'+object+'[motherMaidenLastname]"]').parents('div[data-role="dualfieldcontain"]').hide();
+		$('input[name="'+object+'[fatherFirstName1]"]').parents('div[data-role="dualfieldcontain"]').hide();
+		$('input[name="'+object+'[fatherMiddleName1]"]').parents('div[data-role="dualfieldcontain"]').hide();
+		$('input[name="'+object+'[fatherLastName1]"]').parents('div[data-role="dualfieldcontain"]').hide();
+		$('input[name="'+object+'[otherCitizenship]"]').parents('div[data-role="dualfieldcontain"]').hide();
+		$('select[name*="'+object+'"]').parents('div[data-role="dualfieldcontain"]').hide();
+		$('input[name*="'+object+'"][type="radio"]').parents('div[data-role="dualfieldcontain"]').hide();
+		$('div[id="'+object+'[partyDetails]"] label[for="nationalityDetails"]').parents('div.legend').hide();
+		$('input[name="'+object+'[removed]"]').val("YES");
+
+		$('div[id="'+object+'[partyAddress]"]').hide();
+		$('div[id="'+object+'[partyAddress]"] input[name*="[removed]"]').val("YES");
+		$('div[id="'+object+'[partyContact]"]').hide();
+	}
+	else {
+		$('label[for="'+object+'[language]"]').parents('div[data-role="dualfieldcontain"]').show();
+		$('select[name="'+object+'[titleCd]"]').parents('div[data-role="dualfieldcontain"]').show();
+		$('input[name="'+object+'[firstName1]"]').parents('div[data-role="dualfieldcontain"]').show();
+		$('input[name="'+object+'[middleName1]"]').parents('div[data-role="dualfieldcontain"]').show();
+		$('input[name="'+object+'[lastName1]"]').parents('div[data-role="dualfieldcontain"]').show();
+		$('input[name="'+object+'[extensionName1]"]').parents('div[data-role="dualfieldcontain"]').show();
+		$('input[name="'+object+'[firstName2]"]').parents('div[data-role="dualfieldcontain"]').show();
+		$('input[name="'+object+'[middleName2]"]').parents('div[data-role="dualfieldcontain"]').show();
+		$('input[name="'+object+'[lastName2]"]').parents('div[data-role="dualfieldcontain"]').show();
+		$('input[name="'+object+'[extensionName2]"]').parents('div[data-role="dualfieldcontain"]').show();
+		$('input[name="'+object+'[birthDt]"]').parents('div[data-role="dualfieldcontain"]').show();
+		$('input[name="'+object+'[age]"]').parents('div[data-role="dualfieldcontain"]').show();
+		$('input[name="'+object+'[placeOfBirth]"]').parents('div[data-role="dualfieldcontain"]').show();
+		$('input[name="'+object+'[motherMaidenFirstname]"]').parents('div[data-role="dualfieldcontain"]').show();
+		$('input[name="'+object+'[motherMaidenLastname]"]').parents('div[data-role="dualfieldcontain"]').show();
+		$('input[name="'+object+'[fatherFirstName1]"]').parents('div[data-role="dualfieldcontain"]').show();
+		$('input[name="'+object+'[fatherMiddleName1]"]').parents('div[data-role="dualfieldcontain"]').show();
+		$('input[name="'+object+'[fatherLastName1]"]').parents('div[data-role="dualfieldcontain"]').show();
+		$('input[name="'+object+'[otherCitizenship]"]').parents('div[data-role="dualfieldcontain"]').show();
+		$('select[name*="'+object+'"]').parents('div[data-role="dualfieldcontain"]').show();
+		$('input[name*="'+object+'"][type="radio"]').parents('div[data-role="dualfieldcontain"]').show();
+		$('div[id="'+object+'[partyDetails]"] label[for="nationalityDetails"]').parents('div.legend').show();
+		$('input[name="'+object+'[removed]"]').val("");
+
+		$('div[id="'+object+'[partyAddress]"]').show();
+		$('div[id="'+object+'[partyAddress]"] input[name*="[removed]"]').val("");
+		$('div[id="'+object+'[partyContact]"]').show();
+	}
+}
+
+
+$(document).ready(function(){
+	setReadOnly($('input[name="<%=getObjectMapping(@party)%>[customerId]"]'), true);
+	
+	var newPartySameAsSelect = "";
+	var selectedOption = $('select[name="<%=getObjectMapping(@policyPartyRole)%>[partySameAsCd]"]').val();
+	$('select[name="<%=getObjectMapping(@policyPartyRole)%>[partySameAsCd]"] option').each(function(){
+		switch ($(this).val()) {
+			case "PROPOSER":
+				<% if @proposerExists %> 
+				newPartySameAsSelect += '<option value="' + $(this).val() + '">' + $(this).html() + '</option>';
+				<% end %>
+				break;
+			case "PRIMARY":
+				<% if @insuredExists %>
+				newPartySameAsSelect += '<option value="' + $(this).val() + '">' + $(this).html() + '</option>';
+				<% end %>
+				break;
+			case "JOINT":
+				<% if @jointExists %>
+				newPartySameAsSelect += '<option value="' + $(this).val() + '">' + $(this).html() + '</option>';
+				<% end %>
+				break;
+			case "SUPPLEMENTARY":
+				<% if @supplementaryExists %>
+				newPartySameAsSelect += '<option value="' + $(this).val() + '">' + $(this).html() + '</option>';
+				<% end %>
+				break;
+			default:
+				newPartySameAsSelect += '<option value="' + $(this).val() + '">' + $(this).html() + '</option>';
+		}
+	});
+	$('select[name="<%=getObjectMapping(@policyPartyRole)%>[partySameAsCd]"]').html(newPartySameAsSelect);
+   	$('select[name="<%=getObjectMapping(@policyPartyRole)%>[partySameAsCd]"]').trigger('create');
+   	$('select[name="<%=getObjectMapping(@policyPartyRole)%>[partySameAsCd]"]').val(selectedOption);
+
+	<% if @beneficiary && !@appointee %>
+		<% if @facetData[:renderPartytypecd] %>
+			var partyTypeCd = $('select[name="<%=getObjectMapping(@party)%>[partyTypeCd]"]').val();
+		<% else %>
+			var partyTypeCd = $('input[name="<%=getObjectMapping(@party)%>[partyTypeCd]"]').val();
+		<% end %>
+	var partySameAsCd = $('select[name="<%=getObjectMapping(@policyPartyRole)%>[partySameAsCd]"]').val();
+
+	if (partySameAsCd == "OTHER" || partySameAsCd == "") {
+		hideBeneficiaryDetails("<%=getObjectMapping(@party)%>", false, true);
+		$('span[name="<%= getObjectMapping(@policyPartyRole)%>[refGuidLookup]"]').parent().hide();
+		$('input[name="<%= getObjectMapping(@policyPartyRole)%>[refGuid]"]').removeAttr('disabled');
+		$('span[name="<%= getObjectMapping(@policyPartyRole)%>[refGuidLookup]"] select').attr('disabled','disabled');
+	}
+	else if (partySameAsCd == "SUPPLEMENTARY") {
+		hideBeneficiaryDetails("<%=getObjectMapping(@party)%>", true, true);
+		$('span[name="<%= getObjectMapping(@policyPartyRole)%>[refGuidLookup]"]').parent().show();
+		$('input[name="<%= getObjectMapping(@policyPartyRole)%>[refGuid]"]').attr('disabled','disabled');
+		$('span[name="<%= getObjectMapping(@policyPartyRole)%>[refGuidLookup]"] select').removeAttr('disabled');
+		getPartyAge($("input[name='<%=getObjectMapping(@policy)%>[object]']").val(), partySameAsCd, "<%=getObjectMapping(@party)%>");
+	}
+	else {
+		hideBeneficiaryDetails("<%=getObjectMapping(@party)%>", true, true);
+		$('span[name="<%= getObjectMapping(@policyPartyRole)%>[refGuidLookup]"]').parent().hide();
+		$('input[name="<%= getObjectMapping(@policyPartyRole)%>[refGuid]"]').attr('disabled','disabled');
+		$('span[name="<%= getObjectMapping(@policyPartyRole)%>[refGuidLookup]"] select').removeAttr('disabled');
+		getPartyAge($("input[name='<%=getObjectMapping(@policy)%>[object]']").val(), partySameAsCd, "<%=getObjectMapping(@party)%>");
+	}
+
+	$('select[name="<%=getObjectMapping(@policyPartyRole)%>[partySameAsCd]"]').change(function(){
+		if ($(this).val() == "OTHER" || $(this).val() == "") {
+			hideBeneficiaryDetails("<%=getObjectMapping(@party)%>", false, false);
+			$('span[name="<%= getObjectMapping(@policyPartyRole)%>[refGuidLookup]"]').parent().hide();
+			$('input[name="<%= getObjectMapping(@policyPartyRole)%>[refGuid]"]').removeAttr('disabled');
+			$('span[name="<%= getObjectMapping(@policyPartyRole)%>[refGuidLookup]"] select').attr('disabled','disabled');
+			$('input[name="<%= getObjectMapping(@party)%>[age]"]').val('');
+			checkForMinor();
+		}
+		else if ($(this).val() == "SUPPLEMENTARY") {
+			hideBeneficiaryDetails("<%=getObjectMapping(@party)%>", true, false);
+			$('span[name="<%= getObjectMapping(@policyPartyRole)%>[refGuidLookup]"]').parent().show();
+			getSupplementaryIds("<%=getObjectMapping(@policy)%>", "<%=getObjectMapping(@policyPartyRole)%>");
+			$('input[name="<%= getObjectMapping(@policyPartyRole)%>[refGuid]"]').attr('disabled','disabled');
+			$('span[name="<%= getObjectMapping(@policyPartyRole)%>[refGuidLookup]"] select').removeAttr('disabled');
+			getPartyAge($("input[name='<%=getObjectMapping(@policy)%>[object]']").val(), $(this).val(), "<%=getObjectMapping(@party)%>");
+		}
+		else {
+			hideBeneficiaryDetails("<%=getObjectMapping(@party)%>", true, false);
+			$('span[name="<%= getObjectMapping(@policyPartyRole)%>[refGuidLookup]"]').parent().hide();
+			$('input[name="<%= getObjectMapping(@policyPartyRole)%>[refGuid]"]').attr('disabled','disabled');
+			$('span[name="<%= getObjectMapping(@policyPartyRole)%>[refGuidLookup]"] select').removeAttr('disabled');
+			getPartyAge($("input[name='<%=getObjectMapping(@policy)%>[object]']").val(), $(this).val(), "<%=getObjectMapping(@party)%>");
+		}
+	});
+	<% else %>
+	partyTypeCd = $('select[name="<%=getObjectMapping(@party)%>[partyTypeCd]"]').val();
+	<% end %>
+	
+	//Code to hide/show & clear Individual/ Corporate fields based on partyTypeCd value
+	if (partyTypeCd == 'INDIVIDUAL'){
+		$("div[id='<%= getObjectMapping(@party)%>[individual-details]']").show();
+		$("div[id='<%= getObjectMapping(@party)%>[corporate-details]']").hide();
+		$("div[id='<%= getObjectMapping(@party)%>[home-permanent-business-bar]']").show();
+		$("div[id='<%= getObjectMapping(@party)%>[homeAddressContainer]']").show();
+		$("div[id='<%= getObjectMapping(@party)%>[officeAddressContainer]']").hide();
+		$("input[id='<%= getObjectMapping(@businessAddress)%>[removed]']").val('YES');
+		$("div[id='<%= getObjectMapping(@party)%>[permanentAddressContainer]']").hide();
+		$("div[id='<%= getObjectMapping(@party)%>[copy-from-select1]']").show();
+		$("div[id='<%= getObjectMapping(@party)%>[copy-from-select2]']").show();
+		$("div[id='<%= getObjectMapping(@party)%>[copy-from-select3]']").show();
+		$("div[id='<%= getObjectMapping(@party)%>[partyEmployment]']").show();
+		
+	    $("div[name='partyIdentity']").show();
+        $("div[id='<%= getObjectMapping(@partyIdentity1)%>[removed]']").val('');
+        $("div[id='<%= getObjectMapping(@partyIdentity2)%>[removed]']").val('');
+        $("input[name='<%=getObjectMapping(@partyContactHome)%>[countryCd]']").parents('div[class="half"]').show();
+        $("input[name='<%=getObjectMapping(@partyContactHome)%>[removed]']").val('');
+    
+	}
+	else if (partyTypeCd == 'ORGANIZATION'){
+		$("div[id='<%= getObjectMapping(@party)%>[individual-details]']").hide();
+		$("div[id='<%= getObjectMapping(@party)%>[corporate-details]']").show();
+		$("div[id='<%= getObjectMapping(@party)%>[home-permanent-business-bar]']").hide();
+		$("div[id='<%= getObjectMapping(@party)%>[homeAddressContainer]']").hide();
+		$("div[id='<%= getObjectMapping(@party)%>[officeAddressContainer]']").show();
+		$("input[id='<%= getObjectMapping(@businessAddress)%>[removed]']").val('');
+		$("div[id='<%= getObjectMapping(@party)%>[permanentAddressContainer]']").hide();
+		$("div[id='<%= getObjectMapping(@party)%>[copy-from-select1]']").hide();
+		$("div[id='<%= getObjectMapping(@party)%>[copy-from-select2]']").hide();
+		$("div[id='<%= getObjectMapping(@party)%>[copy-from-select3]']").hide();
+		$("div[id='<%= getObjectMapping(@party)%>[partyEmployment]']").hide();
+		
+		$("div[name='partyIdentity']").hide();
+        $("div[id='<%= getObjectMapping(@partyIdentity1)%>[removed]']").val('YES');
+        $("div[id='<%= getObjectMapping(@partyIdentity2)%>[removed]']").val('YES');
+        $("input[name='<%=getObjectMapping(@partyContactHome)%>[countryCd]']").parents('div[class="half"]').hide();
+        $("input[name='<%=getObjectMapping(@partyContactHome)%>[removed]']").val('YES');
+		
+	}
+
+	$('select[name="<%=getObjectMapping(@party)%>[partyTypeCd]"]').change(function(){
+		if (this.value == 'INDIVIDUAL'){
+			$("div[id='<%= getObjectMapping(@party)%>[individual-details]']").show();
+			$("div[id='<%= getObjectMapping(@party)%>[corporate-details]']").hide();
+			
+			//Blank out all the Organization fields
+			$('input[name="<%=getObjectMapping(@party)%>[corporateName1]"]').val('');
+			$('input[name="<%=getObjectMapping(@party)%>[corporateName2]"]').val('');
+
+			$("div[id='<%= getObjectMapping(@party)%>[home-permanent-business-bar]']").show();
+			$("div[id='<%= getObjectMapping(@party)%>[homeAddressContainer]']").show();
+			$("div[id='<%= getObjectMapping(@party)%>[officeAddressContainer]']").hide();
+			$("input[id='<%= getObjectMapping(@businessAddress)%>[removed]']").val('YES');
+			$("div[id='<%= getObjectMapping(@party)%>[permanentAddressContainer]']").hide();
+			$("div[id='<%= getObjectMapping(@party)%>[copy-from-select1]']").show();
+			$("div[id='<%= getObjectMapping(@party)%>[copy-from-select2]']").show();
+			$("div[id='<%= getObjectMapping(@party)%>[copy-from-select3]']").show();
+			$("div[id='<%= getObjectMapping(@party)%>[partyEmployment]']").show();
+			
+			$("div[name='partyIdentity']").show();
+			$("div[id='<%= getObjectMapping(@partyIdentity1)%>[removed]']").val('');
+			$("div[id='<%= getObjectMapping(@partyIdentity2)%>[removed]']").val('');
+			$("input[name='<%=getObjectMapping(@partyContactHome)%>[countryCd]']").parents('div[class="half"]').show();
+			$("input[name='<%=getObjectMapping(@partyContactHome)%>[removed]']").val('');
+			
+		}
+		else if (this.value == 'ORGANIZATION'){
+			$("div[id='<%= getObjectMapping(@party)%>[individual-details]']").hide();
+			$("div[id='<%= getObjectMapping(@party)%>[corporate-details]']").show();
+			
+			//Blank out all the Individual fields
+			$("div[id='<%= getObjectMapping(@party)%>[individual-details]'] input").val('');
+			$("div[id='<%= getObjectMapping(@party)%>[individual-details]'] select").val('').change();
+			$("input[type='radio']").attr("checked",false).checkboxradio("refresh");
+			
+			$("#div[id='<%= getObjectMapping(@party)%>[partyEmployment]'] input").val('');
+			$("#div[id='<%= getObjectMapping(@party)%>[partyEmployment]'] select").val('').change();
+			
+			$("#div[id='<%= getObjectMapping(@party)%>[partyAddress]'] input").val('');
+			$("#div[id='<%= getObjectMapping(@party)%>[partyAddress]'] select").val('').change();
+			
+			//Hide the contact details section and address details bar(home-permanent-business) if user selects Organisation from Type drop down
+			$("div[id='<%= getObjectMapping(@party)%>[home-permanent-business-bar]']").hide();
+			$("div[id='<%= getObjectMapping(@party)%>[homeAddressContainer]']").hide();
+			$("div[id='<%= getObjectMapping(@party)%>[officeAddressContainer]']").show();
+			$("input[id='<%= getObjectMapping(@businessAddress)%>[removed]']").val('');
+			$("div[id='<%= getObjectMapping(@party)%>[permanentAddressContainer]']").hide();
+			$("div[id='<%= getObjectMapping(@party)%>[copy-from-select1]']").hide();
+			$("div[id='<%= getObjectMapping(@party)%>[copy-from-select2]']").hide();
+			$("div[id='<%= getObjectMapping(@party)%>[copy-from-select3]']").hide();
+			$("div[id='<%= getObjectMapping(@party)%>[partyEmployment]']").hide();
+			
+			$("div[name='partyIdentity']").hide();
+			$("div[id='<%= getObjectMapping(@partyIdentity1)%>[removed]']").val('YES');
+			$("div[id='<%= getObjectMapping(@partyIdentity2)%>[removed]']").val('YES');
+			$("input[name='<%=getObjectMapping(@partyContactHome)%>[countryCd]']").parents('div[class="half"]').hide();
+			$("input[name='<%=getObjectMapping(@partyContactHome)%>[removed]']").val('YES');
+		}
+	}); 
+
+	setReadOnly($('input[name="<%=getObjectMapping(@party)%>[age]"]'), true);
+
+	<%= setupFilterUsingFieldTargetValueMap('TitleGender', false, @party) %>
+	<%= setupFilterUsingFieldTargetValueMap('CoverageCountryCity', true, @party) %>
+    <%= setupFilterUsingFieldTargetValueMap('RelationGender', true, @party) %>
+    <%= setupFilterUsingFieldTargetValueMap('CITIZENSHIPRACE', true, @party) %>
+
+	$("input[name='<%= getObjectMapping(@party)%>[birthDt]']").change( function (){
+		var ageFieldName = this.name.replace("birthDt","age");       
+		age = getAge($('input[name="'+this.name+'"]').val(), ageFieldName, '', '');  
+
+		<% if @beneficiary %>
+		checkForMinor();
+		<% end %>
+	});
+
+
+	$('input[name="<%=getObjectMapping(@party)%>[age]"]').change( function(){
+        if (isNaN(this.value) || this.value < 0 || this.value == "") {
+			$(this).val('');
+			$('input[name="<%=getObjectMapping(@party)%>[birthDt]"]').val('');
+        }
+        else {
+			getDOB(this.value, '<%= getObjectMapping(@party)%>[birthDt]');
+			<% if @beneficiary %>
+			checkForMinor();
+			<% end %>
+		}
+	});
+
+
+	$('input[name*="[percentage]"]').change( function(){
+		if (isNaN(this.value)) {
+	    	showDialog("", "VALID_SPLIT", 'warning', 0, 'capture');
+	    	this.value = this.value.replace(/[^0-9]/g, '');
+	  	}
+	}); 
+
+
+	if ($("select[name='<%=getObjectMapping(@party)%>[citizenshipCd]']").val()=="OTHERS"){
+  		$("input[name='<%=getObjectMapping(@party)%>[otherCitizenship]']").parents('div[class="half"]').show();
+  	}
+  	else{
+  		$("input[name='<%=getObjectMapping(@party)%>[otherCitizenship]']").parents('div[class="half"]').hide();
+  	}
+
+  	$("select[name='<%=getObjectMapping(@party)%>[citizenshipCd]']").change(function(){
+		if ($(this).val()=="OTHERS"){
+	  		$("input[name='<%=getObjectMapping(@party)%>[otherCitizenship]']").parents('div[class="half"]').show();
+	  	}
+	  	else{
+	  		$("input[name='<%=getObjectMapping(@party)%>[otherCitizenship]']").parents('div[class="half"]').hide();
+	  	}  		
+  	});
+     
+     
+	// making auto populated fields readonly
+	if ('<%= @policy.quotationRefGuid %>' != '' && '<%= @party.roleCd %>' != "NOMINEE" && '<%= @party.roleCd %>' != "APPOINTEE" && '<%= @party.roleCd %>' != "PAYER"){
+		$('select[name="<%=getObjectMapping(@party)%>[partyTypeCd]"]').attr('disabled', true);
+		$('select[name="<%=getObjectMapping(@party)%>[partyTypeCd]"]').trigger("create");
+		
+		$('select[name="<%=getObjectMapping(@party)%>[titleCd]"]').attr('disabled', true);
+		$('select[name="<%=getObjectMapping(@party)%>[titleCd]"]').trigger("create");
+		
+		setReadOnly($('input[name="<%=getObjectMapping(@party)%>[firstName1]"]'), true);
+		setReadOnly($('input[name="<%=getObjectMapping(@party)%>[middleName1]"]'), true);
+		setReadOnly($('input[name="<%=getObjectMapping(@party)%>[lastName1]"]'), true);
+		setReadOnly($('input[name="<%=getObjectMapping(@party)%>[extensionName1]"]'), true);
+		setReadOnly($('input[name="<%=getObjectMapping(@party)%>[firstName2]"]'), true);
+		setReadOnly($('input[name="<%=getObjectMapping(@party)%>[middleName2]"]'), true);
+		setReadOnly($('input[name="<%=getObjectMapping(@party)%>[lastName2]"]'), true);
+		setReadOnly($('input[name="<%=getObjectMapping(@party)%>[extensionName2]"]'), true);
+		
+		$('input[name="<%=getObjectMapping(@party)%>[genderCd]"]').attr('disabled', true);
+		$('input[name="<%=getObjectMapping(@party)%>[genderCd]"]').trigger("create");
+		
+		$('select[name="<%=getObjectMapping(@party)%>[relationCd]"]').attr('disabled', true);
+		$('select[name="<%=getObjectMapping(@party)%>[relationCd]"]').trigger("create");
+		
+		$('input[name="<%=getObjectMapping(@party)%>[smoker]"]').attr('disabled', true);
+		$('input[name="<%=getObjectMapping(@party)%>[smoker]"]').trigger("create");
+		
+		$('input[name="<%=getObjectMapping(@party)%>[nsap]"]').attr('disabled', true);
+		$('input[name="<%=getObjectMapping(@party)%>[nsap]"]').trigger("create");
+		
+		$('select[name="<%=getObjectMapping(@party)%>[coverageCountryCd]"]').attr('disabled', true);
+		$('select[name="<%=getObjectMapping(@party)%>[coverageCountryCd]"]').trigger("create");
+		
+		$('select[name="<%=getObjectMapping(@party)%>[coverageCityCd]"]').attr('disabled', true);
+		$('select[name="<%=getObjectMapping(@party)%>[coverageCityCd]"]').trigger("create");
+
+		$('input[name="<%=getObjectMapping(@party)%>[maritalStatusCd]"]').attr('disabled', true);
+		$('input[name="<%=getObjectMapping(@party)%>[maritalStatusCd]"]').trigger("create");
+		
+		setReadOnly($('input[name="<%=getObjectMapping(@party)%>[birthDt]"]'), true);
+		setReadOnly($('input[name="<%=getObjectMapping(@party)%>[age]"]'), true);
+		setReadOnly($('input[name="<%=getObjectMapping(@party)%>[corporateName1]"]'), true);
+	}
+
+	
+	//Mark fields mandatory based on Validation Metadata
+	<% 
+	if @mandatoryFields
+		if @mandatoryFields[@party]
+			@mandatoryFields[@party].each do |field| 
+	%>
+			$("label[for='<%=getObjectMapping(@party)%>[<%= field %>]']").append('<label for=" *" class="mandatory1">&nbsp;*</label>');
+	<% 
+			end
+		end
+		if @mandatoryFields[@policyPartyRole]
+			@mandatoryFields[@policyPartyRole].each do |field| 
+	%>
+			$("label[for='<%=getObjectMapping(@policyPartyRole)%>[<%= field %>]']").append('<label for=" *" class="mandatory1">&nbsp;*</label>');
+	<% 
+			end
+		end 
+	end
+	%>
+});
+</script>

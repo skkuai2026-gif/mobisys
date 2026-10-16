@@ -1,0 +1,14 @@
+<%= pageTagStart('dashboard','Symbiosys') %>
+    <!--HEADER-->
+    <%= headerTag(getLabelValue('themeSetting'), "","", '/app/Menu/landingPage') %>
+    <div data-role="main" class="ui-content">
+    	<div class="main-content-wrapper main-content-full">
+    		<div style="width:232px; height: 70px; margin:10% auto 0; padding: 10px; background-color: #b2b2b2;">
+				<% @colorHash.each do |color,colorCode| %>
+					<% styleClass = colorCode != '' ? "style='background:#{colorCode} !important; text-align:center; color: white !important; margin:0; border:1px solid black !important; width:70px !important; ' rel='external'" : "rel='external' style='background:#{colorCode} !important; width:70px !important; text-align:center; color: white !important; margin:0; !important; border:1px solid black !important;'" %>
+					<%= buttonTag('anchor', "colorSettings#{color}", getLabelValue(color), "/app/Menu/changeColor?color=#{color}", "#{styleClass}") %>
+				<% end %>
+			</div>
+		</div>
+	</div>
+<%= pageTagEnd %>

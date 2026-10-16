@@ -1,0 +1,7 @@
+ext/platform/android/generated/jni/Apptracking.cpp
+ext/platform/android/generated/jni/apptracking_ruby_wrap.cpp
+ext/platform/android/generated/jni/apptracking_js_wrap.cpp
+ext/platform/android/jni/Apptracking_impl.cpp
+ext/shared/generated/apptracking_api_init.cpp
+ext/shared/generated/apptracking_js_api.cpp
+ext/shared/generated/apptracking_ruby_api.c

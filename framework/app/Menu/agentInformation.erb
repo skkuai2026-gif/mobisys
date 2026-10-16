@@ -1,0 +1,20 @@
+<div data-role="page" data-url="<%= Rho::RhoConfig.start_path %>/">
+
+  <div data-role="header" data-position="inline">
+    <h1>Agent Information</h1>
+    <a href="<%= url_for :action => :landingPage %>" class="ui-btn-left" data-direction="reverse">
+      <%= getLabelValue('BACK')   %>
+    </a>
+  </div>
+
+  <div data-role="content">
+    <ul data-role="listview">
+      <li><a href="">Company profile</a></li>
+      <li><a href="">Convention / Contest announcement</a></li>
+      <li><a href="">Commission rate / VC</a></li>
+      <li><a href="">Company announcement</a></li>
+      <li><a href="">Branch information</a></li>
+    </ul>
+  </div>
+
+</div>

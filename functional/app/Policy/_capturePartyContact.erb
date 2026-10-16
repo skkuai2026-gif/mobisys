@@ -1,0 +1,94 @@
+<div id="<%= getObjectMapping(@party)%>[partyContact]">
+	<div class="illustrationdisplay">
+		<div class="legend">
+            <label class="strongLabel">
+                <%= getLabelValue('CONTACTDETAILS') %>
+                <a href="#" class="scrollTopButton ui-icon-carat-u ui-btn-icon-notext ui-alt-icon ui-btn-inline"/>
+                <a href="#" class="expandButton ui-icon-plus ui-btn-icon-notext ui-alt-icon ui-btn-inline"/>
+                <a href="#" class="collapseButton ui-icon-minus ui-btn-icon-notext ui-alt-icon ui-btn-inline"/>
+            </label>
+        </div>
+
+        <div class="panelContent">
+            <% if @facetData[:renderHomeContactPanel] || @facetData[:renderOfficeContactPanel] %>
+        		<div data-role="dualfieldcontain">
+                    <% if @facetData[:renderHomeContactPanel] %>
+                        <%= renderHiddenField('contactTypeCd', @partyContactHome.contactTypeCd, 'Contact Type', @partyContactHome) %>
+                        <% if @facetData[:renderContactCountryCd] || @facetData[:renderStdCode] || @facetData[:renderContactNum] || @facetData[:renderExtensionNum] %>
+                	      	<div class="half">
+                	        	<%= renderLabel('contactNum','contactResi', nil, @partyContactHome)%>
+                                <% if @facetData[:renderContactCountryCd] %>
+                                  <%= renderTelephoneField('countryCd', @partyContactHome.countryCd,"Residence Country Code", @partyContactHome, 'style="width: 9%;" maxlength="4" class="home" placeholder="'+getLabelValue('countryCd')+'"')%>
+                                <% end %>
+                                <% if @facetData[:renderStdCode] %>
+                	        	  <%= renderTelephoneField('stdCode', @partyContactHome.stdCode, 'Residence State Code', @partyContactHome, 'style="width: 9%;" maxlength="3" class="home" placeholder="'+getLabelValue('stdCode')+'"') %>
+                                <% end %>
+                                <% if @facetData[:renderContactNum] %>
+                	        	  <%= renderTelephoneField('contactNum', @partyContactHome.contactNum, 'Residence Phone No', @partyContactHome, 'style="width: 20%;" maxlength="11" class="home" placeholder="'+getLabelValue('contactNum')+'"') %>
+                                <% end %>
+                                <% if @facetData[:renderExtensionNum] %>
+                                  <%= renderTelephoneField('extensionNum', @partyContactHome.extensionNum, 'Residence Ext No', @partyContactHome, 'style="width: 7%;" maxlength="11" class="home" placeholder="'+getLabelValue('extensionNum')+'"') %>
+                                <% end %>
+                	      	</div>
+                        <% end %>
+                    <% end %>
+                    <% if @facetData[:renderOfficeContactPanel] %>
+                        <%= renderHiddenField('contactTypeCd', @partyContactOffice.contactTypeCd, 'Contact Type', @partyContactOffice) %>
+                        <% if @facetData[:renderContactCountryCd] || @facetData[:renderStdCode] || @facetData[:renderContactNum] || @facetData[:renderExtensionNum] %>
+                      		<div class="half">
+                        		<%= renderLabel('contactNum','contactOffice', nil, @partyContactOffice)%>
+                                <% if @facetData[:renderContactCountryCd] %>
+                                  <%= renderTelephoneField('countryCd', @partyContactOffice.countryCd,"Office Country Code", @partyContactOffice, 'style="width: 9%;" maxlength="4" class="office" placeholder="'+getLabelValue('countryCd')+'"')%>
+                                <% end %>
+                                <% if @facetData[:renderStdCode] %>
+                        		  <%= renderTelephoneField('stdCode', @partyContactOffice.stdCode, 'Office State Code', @partyContactOffice, 'style="width: 9%;" maxlength="3" class="office" placeholder="'+getLabelValue('stdCode')+'"') %>
+                                <% end %>
+                                <% if @facetData[:renderContactNum] %>
+                        		  <%= renderTelephoneField('contactNum', @partyContactOffice.contactNum, 'Office Phone No', @partyContactOffice, 'style="width: 20%;" maxlength="11" class="office" placeholder="'+getLabelValue('contactNum')+'"') %>
+                                <% end %>
+                               <% if @facetData[:renderExtensionNum] %>
+                                  <%= renderTelephoneField('extensionNum', @partyContactOffice.extensionNum, 'Office Ext No', @partyContactOffice, 'style="width: 7%;" maxlength="11" class="home" placeholder="'+getLabelValue('extensionNum')+'"') %>
+                                <% end %>
+                      		</div>
+                        <% end %>
+                    <% end %>       
+            	</div>
+            <% end %>
+
+            <% if @facetData[:renderMobileContactPanel] || @facetData[:renderEmailPanel] %>
+            	<div data-role="dualfieldcontain">
+                    <% if @facetData[:renderMobileContactPanel] %>
+                        <%= renderHiddenField('contactTypeCd', @partyContactMobile.contactTypeCd, 'Contact Type', @partyContactMobile) %>
+                        <% if @facetData[:renderContactCountryCd] || @facetData[:renderStdCode] || @facetData[:renderContactNum] || @facetData[:renderExtensionNum] %>
+                     		<div class="half">
+                        		<%= renderLabel('contactNum','contactMobile',nil,@partyContactMobile)%>
+                                <% if @facetData[:renderContactCountryCd] %>
+                                  <%= renderTelephoneField('countryCd',@partyContactMobile.countryCd,"Mobile Country Code", @partyContactMobile, 'style="width: 9%;" maxlength="4" class="mobile" placeholder="'+getLabelValue('countryCd')+'"')%>
+                                <% end %>
+                                <% if @facetData[:renderStdCode] %>
+                        		  <%= renderTelephoneField('stdCode', @partyContactMobile.stdCode, 'Mobile State Code', @partyContactMobile, 'style="width: 9%;" maxlength="3" class="mobile" placeholder="'+getLabelValue('stdCode')+'"') %>
+                                <% end %>
+                                <% if @facetData[:renderContactNum] %>
+                        		  <%= renderTelephoneField('contactNum', @partyContactMobile.contactNum, 'Mobile Phone No', @partyContactMobile, 'style="width: 20%;" maxlength="11" class="mobile" placeholder="'+getLabelValue('contactNum')+'"') %>
+                                <% end %>
+                                <% if @facetData[:renderExtensionNum] %>
+                                  <%= renderTelephoneField('extensionNum', @partyContactMobile.extensionNum, 'Mobile Ext No', @partyContactMobile, 'style="width: 7%;" maxlength="11" class="home" placeholder="'+getLabelValue('extensionNum')+'"') %>
+                                <% end %>
+                			</div>
+                        <% end %>
+                    <% end %>
+                    <% if @facetData[:renderEmailPanel] %>
+                        <%= renderHiddenField('emailTypeCd', @partyEmail.emailTypeCd, 'Email Type', @partyEmail) %>
+                        <% if @facetData[:renderEmailaddress] %>
+                 		<div class="half">
+                    		<%= renderLabel('emailAddress', 'emailID', nil, @partyEmail) %>
+                    		<%= renderEmailField('emailAddress', @partyEmail.emailAddress, 'Email address', @partyEmail,'maxlength="50"') %>
+                 		</div>
+                        <% end %>
+                    <% end %>
+          		</div>
+            <% end %>
+        </div>
+	</div>
+</div>
+<%= render :partial => "capturePartyContactJS" %>

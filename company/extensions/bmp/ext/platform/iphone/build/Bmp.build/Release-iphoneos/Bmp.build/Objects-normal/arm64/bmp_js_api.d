@@ -1,0 +1,24 @@
+dependencies: \
+  /Users/c2lbiz/Documents/SunlifePH/SIO_Build/BOT/BotTestSample/extensions/bmp/ext/platform/iphone/Bmp_Prefix.pch \
+  /Users/c2lbiz/Documents/SunlifePH/SIO_Build/BOT/BotTestSample/extensions/bmp/ext/shared/generated/bmp_js_api.cpp \
+  /Users/c2lbiz/.rvm/gems/ruby-2.3.0/gems/rhodes-6.1/platform/shared/api_generator/js_helpers.h \
+  /Users/c2lbiz/.rvm/gems/ruby-2.3.0/gems/rhodes-6.1/platform/shared/json/JSONIterator.h \
+  /Users/c2lbiz/.rvm/gems/ruby-2.3.0/gems/rhodes-6.1/platform/shared/common/RhoStd.h \
+  /Users/c2lbiz/.rvm/gems/ruby-2.3.0/gems/rhodes-6.1/platform/shared/common/RhoPort.h \
+  /Users/c2lbiz/.rvm/gems/ruby-2.3.0/gems/rhodes-6.1/platform/shared/common/RhoDefs.h \
+  /Users/c2lbiz/.rvm/gems/ruby-2.3.0/gems/rhodes-6.1/platform/shared/common/app_build_capabilities.h \
+  /Users/c2lbiz/.rvm/gems/ruby-2.3.0/gems/rhodes-6.1/platform/shared/common/app_build_configs.h \
+  /Users/c2lbiz/.rvm/gems/ruby-2.3.0/gems/rhodes-6.1/platform/shared/common/stat.h \
+  /Users/c2lbiz/.rvm/gems/ruby-2.3.0/gems/rhodes-6.1/platform/shared/api_generator/Api.h \
+  /Users/c2lbiz/.rvm/gems/ruby-2.3.0/gems/rhodes-6.1/platform/shared/logging/RhoLog.h \
+  /Users/c2lbiz/.rvm/gems/ruby-2.3.0/gems/rhodes-6.1/platform/shared/logging/RhoLogConf.h \
+  /Users/c2lbiz/.rvm/gems/ruby-2.3.0/gems/rhodes-6.1/platform/shared/common/RhoMutexLock.h \
+  /Users/c2lbiz/.rvm/gems/ruby-2.3.0/gems/rhodes-6.1/platform/shared/common/RhoTime.h \
+  /Users/c2lbiz/.rvm/gems/ruby-2.3.0/gems/rhodes-6.1/platform/shared/common/RhoThread.h \
+  /Users/c2lbiz/.rvm/gems/ruby-2.3.0/gems/rhodes-6.1/platform/shared/common/IRhoThreadImpl.h \
+  /Users/c2lbiz/.rvm/gems/ruby-2.3.0/gems/rhodes-6.1/platform/shared/common/AutoPointer.h \
+  /Users/c2lbiz/.rvm/gems/ruby-2.3.0/gems/rhodes-6.1/platform/shared/common/RhoSystem.h \
+  /Users/c2lbiz/.rvm/gems/ruby-2.3.0/gems/rhodes-6.1/platform/shared/common/RhoConf.h \
+  /Users/c2lbiz/.rvm/gems/ruby-2.3.0/gems/rhodes-6.1/platform/shared/common/StringConverter.h \
+  /Users/c2lbiz/.rvm/gems/ruby-2.3.0/gems/rhodes-6.1/platform/shared/logging/RhoLogCat.h \
+  /Users/c2lbiz/.rvm/gems/ruby-2.3.0/gems/rhodes-6.1/platform/shared/common/RhoFatalError.h

@@ -1,0 +1,42 @@
+{
+  "buildCommand" : {
+    "command" : "build",
+    "skipDependencies" : false,
+    "style" : "buildAndRun"
+  },
+  "configuredTargets" : [
+    {
+      "guid" : "57e369530612a65914c64ff189ff5254a24d7ccdf6ad51ca2a43bb7e5c103fd8"
+    }
+  ],
+  "containerPath" : "/Users/macbook/Documents/SUNLifePH/Nov_Release_MTP/mobisys/mobisys/extensions/pdfgen/ext/platform/iphone/Pdfgen.xcodeproj",
+  "continueBuildingAfterErrors" : false,
+  "enableIndexBuildArena" : false,
+  "hideShellScriptEnvironment" : false,
+  "parameters" : {
+    "action" : "build",
+    "configurationName" : "Release",
+    "overrides" : {
+      "commandLine" : {
+        "table" : {
+          "ARCHS" : "arm64",
+          "OTHER_CFLAGS" : "-fembed-bitcode",
+          "SDKROOT" : "iphoneos16.4",
+          "TOOLCHAINS" : "com.apple.dt.toolchain.XcodeDefault"
+        }
+      },
+      "synthesized" : {
+        "table" : {
+          "ACTION" : "build",
+          "ENABLE_PREVIEWS" : "NO"
+        }
+      },
+      "toolchainOverride" : "com.apple.dt.toolchain.XcodeDefault"
+    }
+  },
+  "showNonLoggedProgress" : true,
+  "useDryRun" : false,
+  "useImplicitDependencies" : false,
+  "useLegacyBuildLocations" : false,
+  "useParallelTargets" : false
+}

@@ -1,0 +1,59 @@
+<div data-role="page" data-add-back-btn="false">
+
+  <div data-role="header" data-position="inline">
+    <h1><%= @level4.levelCd %></h1>
+    <a href="<%= url_for :action => :index %>" class="ui-btn-left" data-icon="arrow-l" data-direction="reverse">
+      Back
+    </a>
+    <a href="<%= url_for :action => :edit, :id => @level4.object %>" class="ui-btn-right" data-icon="star">
+      Edit
+    </a>
+  </div>
+
+  <div data-role="content">
+    <ul data-role="listview">
+      
+          <li>
+            <div class="itemLabel">LevelCd</div>
+            <div class="itemValue"><%= @level4.levelCd %></div>
+          </li>
+      
+          <li>
+            <div class="itemLabel">Name</div>
+            <div class="itemValue"><%= @level4.name %></div>
+          </li>
+      
+          <li>
+            <div class="itemLabel">Icon</div>
+            <div class="itemValue"><%= @level4.icon %></div>
+          </li>
+      
+          <li>
+            <div class="itemLabel">TextH</div>
+            <div class="itemValue"><%= @level4.text_h %></div>
+          </li>
+      
+          <li>
+            <div class="itemLabel">TextF</div>
+            <div class="itemValue"><%= @level4.text_f %></div>
+          </li>
+      
+          <li>
+            <div class="itemLabel">Layout</div>
+            <div class="itemValue"><%= @level4.layout %></div>
+          </li>
+      
+          <li>
+            <div class="itemLabel">SortOrder</div>
+            <div class="itemValue"><%= @level4.sortOrder %></div>
+          </li>
+      
+          <li>
+            <div class="itemLabel">Collateral view</div>
+            <div class="itemValue"><%= @level4.collateralView %></div>
+          </li>
+          
+    </ul>
+  </div>
+
+</div>

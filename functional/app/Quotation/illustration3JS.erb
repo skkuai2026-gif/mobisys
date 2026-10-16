@@ -1,0 +1,49 @@
+<script>
+
+    function acceptIllustration(){
+        $.ajax({
+            url: "/app/Quotation/acceptIllustration",
+            data: {'quotationObject': '<%= @quotation.object %>'},
+            success: function(data) {
+            },
+            async: true                    
+        });          
+    }
+
+    function accepted(uri){
+        $.ajax({
+            url: "/app/Quotation/accepted",
+            data: {'uri':uri, 'quotation': '<%= @quotation.object %>'},
+            success: function(data) {
+            },
+            async: true                    
+        });          
+
+    }
+
+    $(document).ready(function(){
+        $('.scrollTopButton').click(function() {
+            $("html, body").animate({ scrollTop: 0 }, "slow");
+        });
+
+        $('.expandButton').hide();
+
+        $('.collapseButton').click(function() {
+            $(this).parents(".legend").siblings(".panelContent").hide();
+            $(this).hide();
+            $(this).siblings('.expandButton').show();
+        });
+
+        $('.expandButton').click(function() {
+            $(this).parents(".legend").siblings(".panelContent").show();
+            $(this).hide();
+            $(this).siblings('.collapseButton').show();
+        });
+
+        $("a[name='alertIllustration']").click( function() {
+            showDialog("", "Please accept illustration", 'warning', 0, 'capture');
+        })
+
+    });
+
+</script>

@@ -1,0 +1,158 @@
+<%= headerTag(getLabelValue('paymentGateway'), '', "","#{url_for :action => :showProposal, :id=> @policy.object}") %>
+<div data-role="main" class="ui-content">
+    <div class="main-content-wrapper main-content-full touch">
+    	<div class="project-content-bg">
+    		<div class="div-with-border no-padding-bottom preferences-content">
+				<br>
+				<div class='project-data'>
+					<div class="row-details">
+						<p class="col-left">
+							Card Holder Name
+						</p>
+						<p class='col-right'>
+							<% 
+								payerParty = @policy.getPayerParty("INITIAL")
+								payerName = payerParty.firstName1 + " " + payerParty.lastName1 if payerParty
+								
+							%>
+							<input class="input-controll" type="text" value="<%= payerName %>">
+						</p>
+					</div>
+				</div>
+				<div class='project-data'>
+					<div class="row-details">
+						<p class="col-left">
+							Card Number
+						</p>
+						<input class="input-controll" type="tel" id="cardNumber" maxlength="19" placeholder="xxxx-xxxx-xxx-xxx" onkeypress="cardFormat(event, this);">
+					</div>
+				</div>
+				<div class='project-data'>
+					<div class="row-details">
+						<p class="col-left">
+							Expiry Date
+						</p>
+						<p class="col-right">
+							<div class="exp-details-left">
+								<select id="filter-menu" class="filterable-select" data-native-menu="false">
+									<option value="Select Month">Select Month</option>
+									<option value="January">January</option>
+									<option value="February">February</option>
+									<option value="March">March</option>
+									<option value="April">April</option>
+									<option value="May">May</option>
+									<option value="June">June</option>
+									<option value="July">July</option>
+									<option value="August">August</option>
+									<option value="September">September</option>
+									<option value="October">October</option>
+									<option value="November">November</option>
+									<option value="December">December</option>
+								</select>
+							</div>
+							<div class="exp-details-right">
+								<select id="filter-menu1" class="filterable-select" data-native-menu="false">
+									<option value="Select Year">Select Year</option>
+									<option value="2017">2017</option>
+									<option value="2018">2018</option>
+									<option value="2019">2019</option>
+									<option value="2020">2020</option>
+									<option value="2021">2021</option>
+									<option value="2022">2022</option>
+								</select>
+							</div>
+						</p>
+					</div>
+				</div>
+				<div class='project-data'>
+
+					<div class="row-details">
+						<p class="col-left">
+							CVV/CVC
+						</p>
+						<input class="input-controll" type="text" maxlength="3" onkeypress="restrictChars(event);">
+					</div>
+				</div>
+    		</div>
+    	</div>	
+    	<input type="hidden" id="policy_object" value='<%= @policy.object %>'/>
+    </div>
+    <div class="footer-bg">
+        <a href="#" rel="external" onclick="javascript:submitPaymentGateway();"><%= getLabelValue("SUBMIT") %></a>
+    </div>
+</div>
+
+<script type="text/javascript">
+	function restrictChars(e){
+		if (!(e.metaKey || e.which <= 0 || e.which == 8 || /[0-9]/.test(String.fromCharCode(e.which)))) {
+	        e.preventDefault();
+	    }
+	}
+	function cardFormat(e, obj){
+		if (!(e.metaKey || e.which <= 0 || e.which == 8 || /[0-9]/.test(String.fromCharCode(e.which)))) {
+	        e.preventDefault();
+	    }
+	    else {
+	    	cardlength = obj.value.length;
+		    if ((cardlength+1)%5==0 && cardlength<18) {
+		    	obj.value = obj.value+"-";
+		    }
+	    }
+	}
+
+	function submitPaymentGateway() {
+		if($("#cardNumber").val() == "1111-2222-3333-4444"){
+			$(".summary-btn-bg a").attr("href", '<%= url_for :action => :submitPaymentGateway %>?policy_object='+$("#policy_object").val()+'&cardNumber='+$("#cardNumber").val());
+			$("#paymentReceipt").popup('open');
+		}
+		else {
+			raiseAlert("<%= getLabelValue('PAYMENTFAILED') %>");
+		}
+	}
+</script>
+<div data-role='popup' id='paymentReceipt' data-theme='a' class='ui-corner-all popup-wrapper error-popup' data-dismissible="false">
+	<table class="ui-responsive table-stroke">
+		<tbody>
+			<tr>
+				<td>
+					<img src="/public/images/OPENILLUSTRATIONPDF/slocpi_logo.jpg">
+				</td>
+				<td id="header">
+					Payment Receipt
+				</td>
+				<td></td>
+			</tr>
+			<tr>
+				<td class="label">Payer:</td>
+				<td id="payerName"><%= payerName %></td>
+				<td></td>
+			</tr>
+			<tr>
+				<td class="label">Amount Paid:</td>
+				<%
+					inward = @policy.getInward(@policy.proposalNum, "APPLICATION_SUSPENSE")
+					inwardDetail = inward.InwardDetailsList[0] if inward
+					amount = inwardDetail.inwardAmount if inwardDetail
+				%>
+				<td><%= amount %></td>
+				<td></td>
+			</tr>
+			<tr>
+				<td class="label">Payment Towards:</td>
+				<td>Proposal no. <%= @policy.proposalNum %></td>
+				<td></td>
+			</tr>
+			<tr>
+				<td class="label">Recieved By:</td>
+				<td>C2L BIZ Insurance Company Ltd.</td>
+				<td></td>
+			</tr>
+			<tr>
+				<td colspan="3" id="footnote">Note: This is a computer generated receipt and hence does not require signature. Final copy will be sent along with the policy pack.</td>
+			</tr>
+		</tbody>
+	</table>
+	<div class="summary-btn-bg" style="position: absolute;">
+		<a rel='external' href='' data-role='button' data-theme='a' ><%= getLabelValue('OK') %></a>
+	</div>
+</div>

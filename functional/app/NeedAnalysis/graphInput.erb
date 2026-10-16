@@ -1,0 +1,263 @@
+<div data-role="page" data-url="<%= Rho::RhoConfig.start_path %>/">
+  <form method="POST" action="<%= url_for :action => :calculate %>" name="needAnalysisForm">
+      <div data-role="header" data-position="inline">
+        <h1><%= getLabelValue('NEEDANALYSISQ') %></h1>    
+        <a href="/app/Menu/leads" class="ui-btn-left" data-direction="reverse">
+          <%= getLabelValue('BACK')   %>
+        </a>
+      </div>
+  
+      <div data-role="content" id="capture" style="-webkit-transform: none;">
+          <%= renderObject(@needAnalysis) %>
+          <div name = "testGraph">
+          </div>
+          
+
+          <div id = "displayEvents">
+            <table class="searchtable" width="100%">
+              <tr class="searchtableheader" >
+                 <td width="20%">
+                    <%= renderLabel('selectEvent', 'SELECTEVENT') %>
+                 </td>
+                 <td width="20%">
+                    <%= renderLabel('age', 'AGE') %>
+                 </td>
+                 <td width="20%">
+                    <%= renderLabel('amount', 'AMOUNT') %>
+                 </td>
+                 <td width="20%">
+                    <%= renderLabel('delete', 'DELETE') %>
+                 </td>
+                 <td width="20%">
+                 </td>   
+              </tr>
+            </table>
+            
+          </div>
+          
+          <fieldset class="ui-grid-b">
+            <div class="ui-block-a-equi"> </div>
+            <div class="ui-block-b-equi"> <a href="javascript:submitData();" data-role="button" data-theme="a" id="sync"> <%= getLabelValue('SUBMIT')%> </a> </div>
+            <div class="ui-block-c-equi"> </div>
+          </fieldset>
+          
+      </div>
+  </form>
+  <script>
+    
+    var eventCounter = 80;
+    
+    var maxAmount = <%= $rhoconfig[:need_Analysis_Max_Amount] %>
+
+    var amountPerUnit = maxAmount/350;
+    var yAxisDivision = maxAmount/10;
+    var yAxisLabels = new Array();
+    for (var i = 0; i < 10; i++)
+    {
+      yAxisLabels[i] = yAxisDivision * (i + 1);
+    }
+    
+    function drawGraph(data)
+    {
+      var c=document.getElementById("canvas_1");
+      var ctx=c.getContext("2d");
+      ctx.clearRect(0, 0, c.width, c.height);
+      var sg = new RGraph.Scatter('canvas_1', data);
+          sg.Set('chart.background.color','white');
+          sg.Set('chart.background.bars.color1','white');
+          sg.Set('chart.background.bars.color2', 'white');
+          sg.Set('chart.background.grid.hlines', true);
+          sg.Set('chart.background.grid.autofit', true);
+          sg.Set('chart.background.grid.hlines.count', 10);
+          sg.Set('chart.background.grid.vlines', true);
+          sg.Set('chart.background.grid.vlines.count', 10);
+          sg.Set('chart.yaxis.labels.count', 11);
+          sg.Set('chart.margin.left', 70);
+          sg.Set('chart.yaxis.tickmarks.count', 10);
+          sg.Set('chart.xaxis.tickmarks.count', 10);
+          sg.Set('chart.xaxis.scale', true);
+          sg.Set('chart.xaxis.scale.formatter', myFormatter);
+          sg.Set('chart.yaxis.labels.specific', [yAxisLabels[9].toString(), yAxisLabels[8].toString(), yAxisLabels[7].toString(), yAxisLabels[6].toString(), yAxisLabels[5].toString(), yAxisLabels[4].toString(), yAxisLabels[3].toString(), yAxisLabels[2].toString(), yAxisLabels[1].toString(), yAxisLabels[0].toString(), '0']);  
+          //sg.Set('chart.labels', ['10', '20', '30', '40', '50', '60', '70', '80', '90', '100']);
+          var xMax = ($(document).width() * 0.9) - 10 
+          sg.Set('chart.xaxis.scale.max', xMax);
+          sg.Set('chart.xaxis.scale.min', 85);
+          sg.Set('chart.xaxis.scale.min', 0);
+          sg.Set('chart.yaxis.scale.max',350);
+          var bubbleArray = new Array();
+          for(var i = 0; i < data.length; i++)
+            {
+              bubbleArray[i] = 10;
+            }
+          sg.Draw();  
+          //var bubble = new RGraph.Scatter.Bubble(sg, 0,   // Minimum
+          //                                           50, // Maximum
+          //                                           50,  // Max width
+          //                                           bubbleArray // Bubble data
+          //                                           );
+          for (var j = 0; j < sg.coords[0].length; ++j) 
+          {
+              var x = sg.coords[0][j][0] - 5;
+              var y = sg.coords[0][j][1] - 5;
+              var img = new RGraph.Drawing.Image('canvas_1', x, y, data[j][2] == "orange" ? '/public/images/orange.png' : (data[j][2] == "blue" ? '/public/images/blue.png' : (data[j][2] == "green" ? '/public/images/green.png' : (data[j][2] == "red" ? '/public/images/red.png' : '/public/images/black.png'))));
+              img.Draw();
+          }
+          //bubble.Draw();
+    }
+    
+    function myFormatter(obj, num)
+    {
+      var unitsPerAge = ($(document).width() * 0.9) - 95;
+      unitsPerAge = unitsPerAge/100;
+      var age = (num - 85)/unitsPerAge
+      age = Math.round(age);
+      return age; // An example of formatting
+    }
+
+    
+    $(document).focus(function initialise()
+    {
+      $('div[name="testGraph"]').html("<canvas id='canvas_1' name='canvas_1' width='"+ $(document).width() * 0.9 +"px' height='400px'>[No canvas support]</canvas>");
+      $('div[name="testGraph"]').trigger('create');
+      var data = 0
+      drawGraph(data);
+      rePlotEventList()
+      var canvas = document.getElementById("canvas_1");
+      canvas.addEventListener("mousedown", domousedown, false);
+      setTimeout("draw(0)", 100);
+    });
+    
+    dataToBeDisplayed = new Array();
+  
+    function domousedown(event)
+    {    
+      data = new Array();
+      var xPosition = event.pageX;
+      data[0] = xPosition;
+      var c=document.getElementById("canvas_1");
+      var ctx=c.getContext("2d");
+      var yPosition = 437 - event.pageY
+      data[1] = yPosition;
+      var unitsPerAge = ($(document).width() * 0.9) - 95;
+      unitsPerAge = unitsPerAge/100;
+      var age = (xPosition - 85)/unitsPerAge
+      age = Math.round(age);
+      var amount = yPosition * amountPerUnit;
+      data[2] = 'black';
+      data[3] = "Age : "+age+" Amount : "+amount+"";
+      var needAnalysisObject = <%= @needAnalysis.object %>
+      needAnalysisObject = needAnalysisObject + ""
+      if (needAnalysisObject.indexOf(".") == -1)
+      {
+      needAnalysisObject = needAnalysisObject + ".0"
+      }
+      $.ajax({
+                      url: "/app/NeedAnalysis/createEvent",
+                      data: {'age': age, 'amount': amount, 'needAnalysisObject': needAnalysisObject, 'counter': eventCounter},
+                      success: function(data) {  
+                          eventCounter = eventCounter + 1;                                          
+                          create = data;
+                          $("#displayEvents").append(create);
+                          $("#displayEvents").trigger('create');
+                      }
+                   })
+      draw(data);  
+    }
+    
+
+    function draw(data)
+    {
+      
+      if(data != "0")
+      {
+        dataToBeDisplayed.push(data);
+      } 
+
+      var c=document.getElementById("canvas_1");
+      var ctx=c.getContext("2d");
+      ctx.clearRect(0, 0, c.width, c.height);
+      drawGraph(dataToBeDisplayed); 
+    }
+    
+    function deleteEvent(eventId)
+    {
+      eventId = eventId + ""
+      if (eventId.indexOf(".") == -1)
+      {
+        eventId = eventId + ".0"
+      }
+      $('div[id="'+eventId+'"]').remove();
+      rePlotEventList();
+      var c=document.getElementById("canvas_1");
+      var ctx=c.getContext("2d");
+      ctx.clearRect(0, 0, c.width, c.height);
+      drawGraph(dataToBeDisplayed);
+    }
+    
+    function rePlotEventList()
+    {
+      dataToBeDisplayed = new Array();
+      var eventCount = 80;
+            var eventType = "";
+            $(".ui-grid-d").each(function(){
+              data = new Array();
+             if ($(this).children(".ui-block-b").children("[name]").length > 0) 
+             {  
+               var unitsPerAge = ($(document).width() * 0.9) - 95;
+               unitsPerAge = unitsPerAge/100;
+               data[0] = $(this).children(".ui-block-b").children("[name]").val();
+               data[0] = (data[0] * unitsPerAge) + 85;  
+               data[0] = Math.round(data[0]);     
+               data[1] = $(this).children(".ui-block-c").children("[name]").val();
+               data[1] = data[1]/amountPerUnit;
+               data[1] = Math.round(data[1]);
+               dataToBeDisplayed.push(data);
+               eventType = $(this).children(".ui-block-a").children(".ui-select").children("[data-theme]").children("[name]").val();
+               if(eventType == "BUYHOUSE") 
+                 {
+                   data[2] = 'orange';
+                   $(this).children(".ui-block-e").empty();
+                   $(this).children(".ui-block-e").html("<img src='/public/images/orange1.png' align='middle'>");
+                 }
+               else if(eventType == "CHILDEDUCATION")
+                 {
+                   data[2] = 'blue';
+                   $(this).children(".ui-block-e").empty();
+                   $(this).children(".ui-block-e").html("<img src='/public/images/blue1.png' align='middle'>");
+                 }
+               else if(eventType == "CHILDMARRIAGE")
+                 {
+                   data[2] = 'green';
+                   $(this).children(".ui-block-e").empty();
+                   $(this).children(".ui-block-e").html("<img src='/public/images/green1.png' align='middle'>");
+                 }
+               else if(eventType == "RETIREMENT")
+                 {
+                   data[2] = 'red';
+                   $(this).children(".ui-block-e").empty();
+                   $(this).children(".ui-block-e").html("<img src='/public/images/red1.png' align='middle'>");
+                 }
+               else
+                 {
+                   data[2] = 'black';
+                   $(this).children(".ui-block-e").empty();
+                   $(this).children(".ui-block-e").html("<img src='/public/images/black1.png' align='middle'>");
+                 }
+               var age = $(this).children(".ui-block-b").children('input[name="NeedAnalysis[Event]['+ eventCount +'][age]"]').val();
+               var amount = $(this).children(".ui-block-c").children('input[name="NeedAnalysis[Event]['+ eventCount +'][amount]"]').val();
+               data[3] = "Age : "+age+" Amount : "+amount+"";  
+               eventCount = eventCount + 1;
+             }
+             });
+             drawGraph(dataToBeDisplayed);
+    }
+    
+    function submitData()
+    {
+      document.needAnalysisForm.submit();  
+    }
+    
+    
+  </script> 
+  
+</div>

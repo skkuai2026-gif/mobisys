@@ -1,0 +1,138 @@
+<div data-role="page">
+	<link rel="stylesheet" href="/public/css/c2l_dashboard.css">
+	<style type="text/css">
+	td span {
+		position: absolute;
+	}
+	.contactLink {
+		padding-right: 60px;
+	}
+	.border {
+		border-left: 1.5px solid black !important;
+    	padding-left: 5px;
+	}
+	</style>
+
+
+	<div data-role="header" id="header" data-position="inline">
+		<a href="<%= url_for :controller => :Menu, :action => :fna %>" rel="external" data-direction="reverse" data-role="none">
+			<img src="/public/images/SalesIllustration/icon_BackArrow-Red.png">
+		</a>
+		<h1><%= getLabelValue('SEARCHRPQ') %></h1>
+	</div>
+
+ 	<div data-role="content" id="content">
+ 		<form method="POST" action="<%= url_for :controller => :LeadRPQ, :action => :searchRPQ %>" name="leadRPQSearchForm" id="leadRPQSearchForm" data-ajax="false">
+ 			<table data-role="table" class="ui-responsive table-stroke">
+                <thead>
+                    <tr>
+                        <th data-priority="1" style="width:20%"><%= getLabelValue('name')%></th>
+                        <th data-priority="2" style="width:20%"><%= getLabelValue('contactMobile')%></th>
+                        <th data-priority="3" style="width:20%"><%= getLabelValue('emailID')%></th>
+                        <th data-priority="4" style="width:20%"><%= getLabelValue('signatureDt')%></th>
+                        <th data-priority="5" style="width:20%"><%= getLabelValue('expiryDt')%></th>
+                    </tr>
+                </thead>
+                <tbody>
+                	<tr>
+                        <td data-priority="1">
+                            <input name="name" id="name" value="<%= @params['name'] %>" type="search" placeholder="<%= getLabelValue('name')%>">
+                        </td>
+                        <td data-priority="2">
+                            <input name="mobileNumber" id="mobileNumber" value="<%= @params['mobileNumber'] %>" type="search" placeholder="<%= getLabelValue('contactMobile')%>">
+                        </td>
+                        <td data-priority="3">
+                            <input name="emailAddress" id="emailAddress" value="<%= @params['emailAddress'] %>" type="search" placeholder="<%= getLabelValue('emailID')%>">
+                        </td>
+                        <td data-priority="4">
+                            <input name="signatureDt" id="signatureDt" value="<%= @params['signatureDt'] %>" type="search" placeholder="<%= getLabelValue('signatureDt')%>" readonly="true">
+                        </td>
+                        <td data-priority="5">
+                            <input name="expiryDt" id="expiryDt" value="<%= @params['expiryDt'] %>" type="search" placeholder="<%= getLabelValue('expiryDt')%>" readonly="true">
+                        </td>
+                    </tr>
+                	<% if @searchResult.length < 1 && !@params.empty? %>
+                        <tr><td colspan="4" style="text-align:center;">No Records</td></tr>
+                    <% else 
+                        @searchResult.each do |leadRPQ| %>
+	                        <tr>
+	                            <td>
+	                                <a href="<%= url_for :action => :showRPQ, :id => leadRPQ[:object] %>" rel="external"><%= leadRPQ[:name] %></a>
+	                            </td>
+	                            <td>	
+                                	<a href="<%= url_for :action => :showRPQ, :id => leadRPQ[:object] %>" rel="external"><%= leadRPQ[:mobileNumber] %></a>
+	                            </td>
+	                            <td>
+	                                <a href="<%= url_for :action => :showRPQ, :id => leadRPQ[:object] %>" rel="external"><%= leadRPQ[:emailAddress] %></a>
+	                            </td>
+	                            <td>
+	                                <a href="<%= url_for :action => :showRPQ, :id => leadRPQ[:object] %>" rel="external"><%= leadRPQ[:signatureDt] %></a>
+	                            </td>
+	                            <td>
+	                                <a href="<%= url_for :action => :showRPQ, :id => leadRPQ[:object] %>" rel="external"><%= leadRPQ[:expiryDt] %></a>
+	                            </td>
+	                        </tr>
+
+	                        <tr>
+								<td>
+									<% if leadRPQ[:extendFl]  %>
+                                    	<a href="<%= url_for :action => :extendExpiryDt, :id => leadRPQ[:object] %>" rel="external"><%= getLabelValue('EXTEND') %></a>
+                                    <% elsif leadRPQ[:statusCd] == "" && @settingsHash["CAPILLUS"].visible == "YES" %>
+                                    	<a href="<%= url_for :controller => :Quotation, :action => :productPage %>?rpqid=<%= leadRPQ[:object] %>" rel="external">
+											<img src="/public/images/SalesIllustration/capture.png">
+											<span><%= getLabelValue('CAPTUREILLUSTRATION')%></span>
+										</a>
+                                  	<% end %>
+								</td>
+								<td>
+									<% if leadRPQ[:mobileNumber] != "-" && @settingsHash["CALL"].visible == "YES"%>
+	                            		<a href="tel:<%= leadRPQ[:mobileNumber] %>" class="contactLink">
+	                            			<img src="/public/images/SalesIllustration/call.png">
+	                            			<span><%= getLabelValue('CALL') %></span>
+	                            		</a>
+									<% end %>
+									<% if leadRPQ[:mobileNumber] != "-" && @settingsHash["SMS"].visible == "YES"%>
+	                            		<a href="sms:<%= leadRPQ[:mobileNumber] %>" class="contactLink">
+	                            			<img src="/public/images/SalesIllustration/sms.png" class="border">
+	                            			<span><%= getLabelValue('SMS') %></span>
+	                            		</a>
+									<% end %>
+									<% if leadRPQ[:emailAddress] != "-" && @settingsHash["EMAIL"].visible == "YES" %>
+	                            		<a href="mailto:<%= leadRPQ[:emailAddress] %>" class="contactLink">
+	                            			<img src="/public/images/SalesIllustration/email.png" class="border">
+	                            			<span><%= getLabelValue('Email') %></span>
+	                            		</a>
+									<% end %>
+								</td>
+								<td></td>
+								<td></td>
+							</tr>
+                    <%  end
+                    end %>
+                </tbody>
+            </table>
+        </form>
+	</div>
+</div>
+<script type="text/javascript">
+$(document).ready(function(){
+    $('input').keypress(function (e) {
+        if (e.which == 13) {
+            $('#leadRPQSearchForm').submit();
+            return false;
+        }
+    });
+
+    $('input').change(function(){
+        $('#leadRPQSearchForm').submit();
+    });
+
+    $('#signatureDt').click(function(){
+        captureDate('Enter date', 'signatureDt');
+    });
+
+    $('#expiryDt').click(function(){
+        captureDate('Enter date', 'expiryDt');
+    });
+});
+</script>

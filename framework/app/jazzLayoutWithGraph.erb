@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+    
+	<title>Symbiosys</title>
+	<!--CSS SECTION-->
+	<link rel="stylesheet" type="text/css" href="/public/jazz/css/jquery.mobile-1.4.5.min.css">
+	<link rel="stylesheet" type="text/css" href="/public/jazz/libraries/datepicker/jquery-ui.css">
+    <link rel="stylesheet" type="text/css" href="/public/jazz/libraries/datetimepicker/DateTimePicker.min.css">
+    <% if $blueTheme %>
+        <link rel="stylesheet" type="text/css" href="/public/jazz/css/main_blue.css" /> 
+        <link rel="stylesheet" type="text/css" href="/public/css/main_blue_company.css"/>
+    <% else %>
+        <link rel="stylesheet" type="text/css" href="/public/jazz/css/main.css" /> 
+        <link rel="stylesheet" type="text/css" href="/public/css/main_company.css" /> 
+    <% end %>
+	
+
+	<!--JS SECTION-->
+	<script src="/public/jquery/jquery-1.11.3.min.js"></script>
+	<script src="/public/jazz/js/jquery-ui.min.js"></script>
+	<script src="/public/jazz/js/jquery.mobile-1.4.5.min.js"></script>
+
+    <!-- R-Graph -->
+    <script type="text/javascript" src="/public/js/RGraph/RGraph.bar.js" ></script>
+    <script type="text/javascript" src="/public/js/RGraph/RGraph.line.js" ></script>
+    <script type="text/javascript" src="/public/js/RGraph/RGraph.common.core.js" ></script>
+    <script type="text/javascript" src="/public/js/RGraph/RGraph.pie.js" ></script>
+    <script type="text/javascript" src="/public/js/RGraph/RGraph.common.key.js" ></script>
+    <!-- end R-Graph -->
+    
+	<!-- ADDITIONAL LIBRARIES START -->
+    <% if System::get_property('platform').downcase.include?("windows") %>
+      	<link type="text/css" rel="stylesheet" href="/public/css/alertify.core.css" />
+      
+      	<script type="text/javascript" charset="utf-8" src="/public/js/alertify.min.js"></script>
+      	<script type="text/javascript" charset="utf-8">
+            function showDialog(title,message,type,autohide, mainPageId) {
+                alertify.set({
+                    labels : {ok:"<%= getLabelValue("OK") %>",cancel:"<%= getLabelValue("CANCEL")%>"},
+                    delay : 5000,
+                    buttonReverse : false,
+                    buttonFocus   : "ok"
+                });
+                alertify.alert(message);
+                returnValue = false;
+            }
+            function showConfirm(title,message,OK,CANCEL,url) {
+                alertify.set({
+                    labels : {ok:OK,cancel:CANCEL},
+                    delay : 5000,
+                    buttonReverse : false,
+                    buttonFocus   : "ok"
+                });
+                alertify.confirm(message, function (e) {
+                    if (e) {
+                        $.get("/app/Menu/on_dismiss_popup1?button_id=ok&url="+url);
+                    } else {
+                        $.get("/app/Menu/on_dismiss_popup1?button_id=cancel&url="+url);
+                    }
+                });
+                returnValue = false;
+            }
+            function applicationTimeOut(message) {
+            	alertify.set({
+            		labels : {ok:'OK'},
+            		delay : 5000,
+            		buttonReverse : false,
+            		buttonFocus   : "ok"
+            	});
+            	alertify.alert(message, function() {
+            		$.get("/app/AgentReg/dismissSessionPopup?button_title=OK");
+            	});
+            	returnValue = false;
+            }
+            function applicationRestart() {
+            	alertify.set({
+            		labels : {ok:'OK',cancel:'CANCEL'},
+            		buttonReverse : false,
+            		buttonFocus   : "ok"
+            	});
+
+            	alertify.alert("The application needs to restart in order to complete the setup process. Please start the application manually.", function() {
+            		$.get("/app/AgentReg/exitCallback");
+            	});
+            	returnValue = false;
+            }
+      	</script>
+    <% end %>
+</head>
+
+<body class="page-color-bg">
+    <div id='shadow' class="displayNone">
+        <%if $blueTheme %> 
+            <img src="/public/jazz/css/images/loader_blue.gif" class="loader" alt="Loader">
+        <% else %>
+            <img src="/public/jazz/css/images/loader.gif" class="loader" alt="Loader">
+        <% end %>
+    </div>
+    <input type="hidden" name="application_view_mode" id="application_view_mode" value='<%= $rhoconfig[:application_view_mode] %>'/>
+    <script type="text/javascript">
+        var application_view_mode = $("#application_view_mode").val();
+    </script>
+	<%= @content %>
+    <% 
+        if ::Application.getValue('DEFAULTLOCALE')
+            @locale = ::Application.getValue('DEFAULTLOCALE').value
+        else
+            @locale = 'en'
+        end
+    %>
+    <input type="hidden" name="locale" id="locale" value='<%= @locale %>'/>
+    <script src="/public/jazz/libraries/jSignature.min.js"></script>
+    <script src="/public/jazz/libraries/datetimepicker/DateTimePicker.min.js"></script>
+	<script src="/public/jazz/js/custom.js"></script>
+	<script src="/public/js/CommonScript_jazz.js"></script>
+	<% if File.exist?("#{Rho::Application.userFolder}EntityType.js") %>
+		<%if Rho::System.isRhoSimulator || System::get_property('platform').downcase.include?("windows") %>
+			<script src="/EntityType.js"></script>
+		<% else %>
+			<script src='<%="#{Rho::Application.userFolder}EntityType.js"%>'></script>
+		<% end %>
+	<% else %>
+		<script src="/public/js/EntityType.js"></script>
+	<% end %>
+	<script src="/public/js/date.js"></script>
+	<script src="/public/js/jquery.serialize-hash.js"></script>
+    <script type="text/javascript" src="/public/js/format.min.js"></script>
+    <script src="/public/js/custom_company.js"></script>
+    <script type="text/javascript">
+        function loading(showOrHide) {
+            setTimeout(function(){
+                $.mobile.loading(showOrHide);
+            }, 1); 
+            if((!$('#shadow').hasClass('loader-wrapper')) && (showOrHide == 'show')){
+                $('#shadow').addClass('loader-wrapper');
+                $('#shadow').removeClass('displayNone');
+            }
+            if(($('#shadow').hasClass('loader-wrapper')) && (showOrHide == 'hide')){
+                $('#shadow').removeClass('loader-wrapper');
+                $('#shadow').addClass('displayNone');
+
+            }
+        }
+    </script>
+    <div id="dtBox"></div>
+</body>
+</html>

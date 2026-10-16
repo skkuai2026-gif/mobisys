@@ -1,0 +1,22 @@
+<% riderPackage = 'com.c2lbiz.symbiosys.insurance.businesscommon.dataobjects.policy.PolicyRiderDO' %>
+<% if @quotation.insuranceTypeCd == 'TRAVEL'%>
+	<input type="hidden" name="totalPremium" class="currentTotalPremium" value='<%=@totalPremium%>' >
+	<%= fieldDataEntryGridTagStart('riderDetails', riderPackage, 'selected,productLongName,productPlanOptionCd,baseSumAssured,modalPremium', riders, @quotation, riderLabelObject,'',riderObjects,'isObjectSelected',false,false,false,false,false, riderHeader,'','5,30,16,15,15,7,7,5','',true,false,false,'insuredPartyRefGuid,productSeq,partyRoleCd,productFamilyCd,productId,productTypeCd,productVersion,compAnnualPremium,compHalfYlyPremium,compQtlyPremium,compMonthlyPremium,annualizedPremium,builtInRiderFl,premiumSAFl,readOnlyFields,riderDisableField,sortOrder,insuredNames,impactedFields,parentproductSeq,productTerm,premiumPayingTerm,applicablePlanOptions',true) %>
+<% else %>
+	<%= fieldDataEntryGridTagStart('riderDetails', riderPackage, 'selected,productLongName,productPlanOptionCd,baseSumAssured,modalPremium,productTerm,premiumPayingTerm,baseAnnualPremium', riders, @quotation, riderLabelObject,'',riderObjects,'isObjectSelected',false,false,false,false,false, riderHeader,'','5,30,16,15,15,7,7,5','',true,false,false,'insuredPartyRefGuid,productSeq,partyRoleCd,productFamilyCd,productId,productTypeCd,productVersion,compAnnualPremium,compHalfYlyPremium,compQtlyPremium,compMonthlyPremium,annualizedPremium,builtInRiderFl,premiumSAFl,readOnlyFields,riderDisableField,sortOrder,insuredNames,impactedFields,parentproductSeq,applicablePlanOptions,combinedEntryAge',true) %>
+<% end %>
+
+<%= fieldDataEntryGridTagEnd('riderDetails', riders, '',false,false,false) %>
+<% riders.each do |rider| %>
+	<% riderProductExtras = @riderLoadingHash[rider.object] %>
+	<% if riderProductExtras && !riderProductExtras.empty? %>
+		<div id="riderLoadingDiv-<%=rider.guid%>" style="display: none;" data-options = '{"mode":"blank", "blankContent":true, "blankContentAdopt":true, "headerClose":false}'>
+			<div class="headingPopup"><%= "#{riderHeader} - #{getLabelValue(rider.productLongName)}"%></div>
+			<div class="popup-close-cust">
+				<a href="#" rel='close' class="icon-close"></a>
+			</div>
+			<%= render :partial => "QuoteAutoRiderExtra_Jazz" , :locals => {:riderProductExtras => riderProductExtras, :rider => rider, :riderExtraLabelObject => riderExtraLabelObject} %>
+		</div>
+	<% end %>
+<% end %>
+

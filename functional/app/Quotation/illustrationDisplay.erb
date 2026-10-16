@@ -1,0 +1,196 @@
+<!-- benefit table -->  
+  
+<div data-role="page" id="benefittable">
+
+  <div data-role="header" data-position="inline">
+      <h1><%= getLabelValue('BENEFITSTABLE')   %></h1>
+      <a href="<%= url_for :action => :illustration, :id=>@quotation.object%>" class="ui-btn-left" data-direction="reverse">
+         <%= getLabelValue('BACK')   %>
+      </a>
+  </div>
+   
+  <div data-role="content">
+
+    <!-- illustration tables -->
+    <script>
+    var colRateValues = new Array();
+    <% @illustrationRates.each_with_index do |illustrationRate, index| %>
+      colRateValues[<%= index %>] = <%= illustrationRate.grossRate.to_s %>;
+    <% end %>      
+    </script>
+    <% 
+      @tables.each_with_index do |table, index|
+        if table != nil      
+          %>
+          
+          
+          <% if table["header"] != nil %>
+            <%= renderLegend('legendtable'+index.to_s, @header[table["header"][0].computedElementName]["value"] ) %>
+          <% end %>
+          
+          <div data-role="table" class="illustrationdisplay" name = "legendtable<%= index.to_s %>">
+            <% if table["header"] != nil %>
+              <!-- print header notes -->
+              <% table["header"].each_with_index do |headerNote, noteIndex| %>
+                <% if headerNote != nil && noteIndex > 0 %>
+                  <p><%= getLabelValue(@header[headerNote.computedElementName]["value"]) %></li>
+                <% end %>
+              <% end %>
+              <!-- end print header notes -->
+            <% end %>
+              
+            <!-- print table -->
+            
+            <table class="illustrationtable" width="100%" id = "table<%= index.to_s %>">
+              <tr class="illustrationtableheader" >
+                 <% table["table"].each do |illustrationFacet| %>
+                    <td> <%= getLabelValue(illustrationFacet.elementLabel) %></td>
+                 <% end %>
+              </tr>
+            
+              <%  
+                @benefitTable.each_with_index do |benefitRow, index| 
+                
+                  if benefitRow != nil
+                    if benefitRow["currMonth"]["value"] == @frequencyMultiplier &&
+                       (
+                         ( @years.include? (benefitRow["currPolicyYear"]["value"].to_s) ) ||
+                         ( @ages.include? (benefitRow["currAttainedAge"]["value"].to_s) ) 
+                       )
+                      %>
+                        <tr class="illustrationtablerow">
+                      
+                          <% table["table"].each do |illustrationFacet| %>
+                            <% if illustrationFacet.computationFreqCd == "EVERYCYCLEPERRATE" %>
+                              <td class="tablenum"> <%= renderNumber(benefitRow["illustrationRate_"+illustrationFacet.expression.to_s][illustrationFacet.computedElementName]["value"]) %> </td>
+                            <% else %>
+                              <td class="tablenum"> <%= renderNumber(benefitRow[illustrationFacet.computedElementName]["value"]) %> </td>
+                            <% end %>                            
+                          <% end %>
+                          
+                        </tr>
+                      <%
+                    end
+                  end
+                end 
+              %>           
+            </table>
+                
+            <script>
+            //add the header row for sales illustration now for displaying the assumed sales illustration rates.
+            if(<%=@noOfColsForRates%> > 0)
+              {
+                var si_Table = document.getElementById('table<%= index.to_s %>');
+                var headerRow = si_Table.insertRow(0);
+                headerRow.className = "illustrationtableheader";
+                var initialCell = headerRow.insertCell(0);
+                initialCell.colSpan  = <%=@colspanForInitialCols%>;
+            
+                for(var i=0 ; i < <%=@noOfColsForRates%> ; i++)
+                {
+                    var rateCell = headerRow.insertCell(i+1);
+                    rateCell.colSpan  = <%=@colspanForPerRateCols%>;
+                    rateCell.innerHTML = 'Assumed ROI of '+ colRateValues[i] +' p.a.';
+                }
+                
+                if( <%=@colspanForPostCols%> > 0)
+                {
+                  var postCell = headerRow.insertCell(<%=@noOfColsForRates%> +1);
+                  postCell.colSpan  = <%=@colspanForPostCols%>;
+                }
+              }
+
+            </script>
+            <!-- end print table -->
+            
+            <% if table["header"] != nil %>
+              <!-- print footer notes -->
+              <% table["footer"].each_with_index do |footerNote, noteIndex| %>
+                <% if footerNote != nil %>
+                  <p><%= getLabelValue(@header[footerNote.computedElementName]["value"]) %></li>
+                <% end %>
+              <% end %>
+              <!-- end print footer notes -->
+            <% end %>
+          </div>
+          
+          <%
+        end
+      end 
+    %>
+      
+    <!-- end illustration tables -->
+      
+    <fieldset class="ui-grid-b">
+      <div class="ui-block-a-equi"></div>
+      <div class="ui-block-b-equi">
+        <% if @quotation.signature == nil %>
+          <a href="<%= url_for :action => :acceptIllustration, :id=>@quotation.object %>" name="sign" data-role="button" data-theme="a">
+            <%= getLabelValue('ACCEPTILLUSTRATION')%>
+          </a>
+        <% end %>
+          <a href="<%= url_for :action => :email, :id=>@quotation.object %>" name="email" data-role="button" data-theme="a">
+            <%= getLabelValue('PRINTEMAIL')%>
+          </a>
+      </div>
+      <div class="ui-block-c-equi"></div>
+    </fieldset>
+    <center><%=getLabelValue("LEGALDISCLAIMER")%></center>
+      
+  </div>
+  
+  <script>
+  
+    $('img[name*="collapse"]').click( function(){
+      divName = this.name.replace("collapse_","");
+      val = $('input[name="state_'+divName+'"]').val();
+      // # replace image
+      if(val == "+")
+      {
+        $('input[name="state_'+divName+'"]').val('-');
+        $('img[name="collapse_'+divName+'"]').attr("src","/public/images/SalesIllustration/less.jpg");
+        $('div[name="'+divName+'"]').show();          
+      }
+      else // # val == "-"
+      {
+        $('input[name="state_'+divName+'"]').val('+');
+        $('img[name="collapse_'+divName+'"]').attr("src","/public/images/SalesIllustration/more.jpg");
+        $('div[name="'+divName+'"]').hide();
+      }
+          
+          
+    });
+    
+      function acceptIllustration(){
+        $.ajax({
+                  url: "/app/Quotation/acceptIllustration",
+                  data: {},
+                  success: function(data) {
+                  },
+                  async: true                    
+               });          
+   
+      }
+
+      function accepted(uri){
+        $.ajax({
+                  url: "/app/Quotation/accepted",
+                  data: {'uri':uri, 'quotation': '<%=@quotation.object%>'},
+                  success: function(data) {
+                  },
+                  async: true                    
+               });          
+       
+      }
+
+      $(document).focus(function() {
+        setTimeout("onFocus()", 100);
+      });
+      
+      function onFocus(){
+          
+      }
+
+  </script>
+</div>
+<!-- end of benefit table -->

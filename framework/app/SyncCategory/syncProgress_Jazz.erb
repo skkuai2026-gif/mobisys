@@ -1,0 +1,101 @@
+<style type="text/css">
+.icon-check, .icon-progress {
+    height: 20px; 
+    width: 20px; 
+    float: right;
+    /*padding-top: 2px;*/
+}
+</style>
+<%= pageTagStart("syncprogress","Symbiosys") %>
+    <%= headerTag(getLabelValue('SYNC'), "") %>
+	<div data-role="main" class="ui-content">
+        <div class="main-content-wrapper main-content-full">
+			<div class="sync-list">
+				<div data-role="tabs">
+	       			<div id="tabledivParent" class="main-content-wrapper-full">
+						<div id="tablediv">
+							<div class="sync-list-right">
+								<h5><%= getLabelValue('STARTINGSYNC')%></h5> 
+								<div class="sync-loading">
+									<div class="sync-loader-handle" style="width: 1%"></div>
+								</div>
+							</div>
+					    </div>
+					</div>
+					<img style="display:none;" src="/public/images/icon_progress_Jazz.gif"> <img style="display:none;" src="/public/images/icon_check_Jazz.png">
+					
+	      			<div  class="main-content-wrapper-left" style="display: none;">
+	      				<div  id = "syncEntityMainDiv">
+							<h5 id = "Synchronizing" ><%= getLabelValue('Synchronizing') %></h5>
+						</div>
+	      				<div id="syncEntitiesDiv">
+	      					<ol class="ui-listview" id="syncEntitiesList" data-role="listview">
+	          				<% $syncEntities.each do |syncEntity| %>
+          						<% next if syncEntity.entityName.to_s == "UserActivity" || syncEntity.entityName.to_s == "SyncActivity" || syncEntity.entityName.to_s == "UserLoginHistory" || (syncEntity.entityType.to_s == "MASTER" && $rhoconfig[:create_db_seed] != "YES") %>
+	          					<li id="<%= syncEntity.entityName.downcase %>"><%= getLabelValue(syncEntity.entityName) %><span><img src=""></span></li>
+	          				<% end %>
+	        				</ol>
+	      				</div>
+	      			</div>
+	      		</div>
+      		</div>
+  		</div>
+	</div>
+<%= pageTagEnd %>
+<script type="text/javascript">
+	function dosomething(html){
+		$('#tablediv').html(html);
+		return false;
+	}
+
+	function update_progress(percent,processed,total,entityName,recordsProcessed,recordsReceived){
+		var span ="";
+		if(recordsReceived ==0){
+			span = "<div class='sync-list-right'><h5><%= getLabelValue('STARTINGSYNC')%></h5><div class='sync-loading'><div class='sync-loader-handle' style='width: 1%'></div></div></div>";
+		}
+		else{
+			$("#tabledivParent").removeClass("main-content-wrapper-full");
+			$("#tabledivParent").addClass("main-content-wrapper-right");
+			$(".main-content-wrapper-left").show();
+			span = "<div class='sync-list-right'><h5><%= getLabelValue('PROCESSING')%> "+recordsProcessed+"/"+recordsReceived+" Records"+"</h5><div class='sync-loading'><div class='sync-loader-handle' style='width: "+parseInt(percent)+"%'></div></div></div>";
+		}
+
+		$('#tablediv').html(span);
+
+		if(entityName != "" && recordsProcessed==0){	
+			$( "#"+ entityName.toLowerCase() + " span img").addClass("icon-progress").attr("src","/public/images/icon_progress_Jazz.gif");
+			var syncEntity = $("#syncEntitiesDiv");
+			var scrollTo = $("#"+ entityName.toLowerCase());
+			if(syncEntity.length && scrollTo.length){
+				syncEntity.animate({
+	    			scrollTop: scrollTo.offset().top - syncEntity.offset().top + syncEntity.scrollTop()
+				});
+			}
+
+			$("ol#syncEntitiesList").children('li').each(function(){
+				if ($(this).attr("id")!=entityName.toLowerCase() && $(this).find("span img").hasClass("icon-progress")) {
+					$(this).find("span img").removeClass("icon-progress").addClass("icon-check").attr("src","/public/images/icon_check_Jazz.png");
+				}
+			});
+		}
+		return false;
+	}
+
+	function downloadFile(){
+		var span = "<div class='sync-list-right'><h5><%= getLabelValue('DOWNLOADINGMASTERFILE')%></h5><div class='sync-loading'><div class='sync-loader-handle' style='width: 100%'></div></div></div>";
+		$('#tablediv').html(span);
+		return false;
+	}
+
+	function collateralFileDownload(percent,processed,total,entityName,recordsProcessed,recordsReceived){
+		if(recordsReceived ==0){
+			span = "<div class='sync-list-right'><h5><%= getLabelValue('DOWNLOADINGCOLLATERALFILES')%></h5><div class='sync-loading'><div class='sync-loader-handle' style='width: 1%'></div></div></div>";
+		}
+		else{
+			span = "<div class='sync-list-right'><h5><%= getLabelValue('DOWNLOADINGCOLLATERALFILES')%> "+recordsProcessed+"/"+recordsReceived+" Records"+"</h5><div class='sync-loading'><div class='sync-loader-handle' style='width: "+parseInt(percent)+"%'></div></div></div>";
+		}
+
+		$('#tablediv').html(span);
+		return false;
+	}
+</script>

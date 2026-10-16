@@ -1,0 +1,22 @@
+<script type="text/javascript">
+function submitForm(){
+	$('span[id="errordiv"]').hide();
+	$.ajax({                                    
+		url: "/app/Policy/submitAgentQuestionDetails",
+		method: 'POST',
+		data: $('#agentQuestionForm').serialize(),
+		async: false,
+		headers: {
+			'Transition-Enabled': false
+		},
+		success: function(data) {
+			$("a#submit").hide();
+		}
+	});
+}
+
+
+$(document).ready(function() {
+	$('.sigPad').signaturePad({drawOnly:true});
+});
+</script>

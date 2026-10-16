@@ -1,0 +1,107 @@
+<% if @riderProductExtras.size > 0 %>
+	<div class="legend">
+        <label class="strongLabel">
+            <%= getLabelValue('LOADINGDETAILS') %>
+        </label>
+    </div>
+<% end %>
+
+	<% @riderProductExtras.each_with_index do |riderExtra, index| %>
+		<%= renderObject(riderExtra, @quotationProduct)%>
+		<% if @facetData[:renderProcessingTypeCd] %>
+			<%= renderHiddenField('processingTypeCd', riderExtra.processingTypeCd, nil, riderExtra) %>
+		<% end %>	
+		<% if @facetData[:renderLoadingTypeCd] %>
+			<%= renderHiddenField('loadingTypeCd', riderExtra.loadingTypeCd, nil, riderExtra) %>
+		<% end %>	
+		<% if @facetData[:renderExtraTypeCd] %>
+			<%= renderHiddenField('extraTypeCd', riderExtra.extraTypeCd, nil, riderExtra) %>
+		<% end %>	
+		<%= renderHiddenField('removed', riderExtra.removed, nil, riderExtra) %>
+		<div class="ui-grid-a">
+		<% if index == 0 %>
+			<div class="ui-block-a">
+				<div class="ui-grid-b">
+			    <div class="ui-block-a"> 
+			    </div>
+			    <% if @facetData[:renderdecisionCd] %>
+				    <div class="ui-block-b"> 
+				    	<%= renderLabel('decisionCd', 'decision', nil, riderExtra) %>
+				    </div>
+				<% end %>
+				<% if @facetData[:renderextraFlatAmt] %>
+				    <div class="ui-block-c"> 
+				      	<%= renderLabel('extraFlatAmt', 'flatExtra', nil, riderExtra) %>
+				    </div>
+				<% end %>
+				</div>
+			</div>
+			<div class="ui-block-b">
+				<div class="ui-grid-b">
+				<% if @facetData[:renderextraFlatDuration] %>
+				    <div class="ui-block-a">
+				    	<%= renderLabel('extraFlatDuration', 'extraFlatDuration', nil, riderExtra) %>
+				    </div>
+				<% end %>
+				<% if @facetData[:renderextraPercent] %>
+				   	<div class="ui-block-b"> 
+				      	<%= renderLabel('extraPercent', 'extraPercent', nil, riderExtra) %>
+				    </div>
+				<% end %>
+				<% if @facetData[:renderextraPercDuration] %>
+				    <div class="ui-block-c">
+				    	<%= renderLabel('extraPercDuration', 'extraPercDuration', nil, riderExtra) %>
+				    </div>
+				<% end %>
+				</div>
+			</div>
+		<% end %>
+		</div>
+		<div class="ui-grid-a">
+			<div class="ui-block-a"> 
+		  		<div class="ui-grid-b">
+				    <div class="ui-block-a"> 
+				     	<% lookUpObj = Lookupvalue.find( :first, :conditions => {{ :name => 'key'} => 'PRODUCTEXTRATYPE', {:name => 'cd'} => riderExtra.extraTypeCd.to_s}, :op => 'AND') %>
+		          		<% (lookUpObj != nil) ? (loadingDesc = lookUpObj.desc) : (loadingDesc = riderExtra.extraTypeCd.to_s) %>
+				    	<%= renderLabel('extraTypeCd', loadingDesc, nil, riderExtra) %>
+				    </div>
+				    <% if @facetData[:renderdecisionCd] %>
+					    <div class="ui-block-b"> 
+					    	<%= renderAmountField('decisionCd', riderExtra.decisionCd, nil, riderExtra, ' maxlength="10" ') %>
+					    </div>
+					<% end %>
+					<% if @facetData[:renderextraFlatAmt] %>
+					    <div class="ui-block-c"> 
+					    	<%= renderAmountField('extraFlatAmt', riderExtra.extraFlatAmt, nil, riderExtra, ' maxlength="10" ') %>
+					    	<%= attachMask("#{getObjectMapping(riderExtra)}[extraFlatAmt]") %>
+					    </div>
+					<% end %>
+				</div>
+			</div>
+			<div class="ui-block-b">
+				<div class="ui-grid-b">
+					<% if @facetData[:renderextraFlatDuration] %>
+					    <div class="ui-block-a">
+					    	<%= renderCountField('extraFlatDuration', riderExtra.extraFlatDuration, nil, riderExtra, ' maxlength="10"') %>
+					    	<%= attachMask("#{getObjectMapping(riderExtra)}[extraFlatDuration]") %>
+					    </div>
+					<% end %>
+					<% if @facetData[:renderextraPercent] %>
+					   	<div class="ui-block-b"> 
+					    	<%= renderAmountField('extraPercent', riderExtra.extraPercent, nil, riderExtra) %>
+					    	<%= attachMask("#{getObjectMapping(riderExtra)}[extraPercent]") %>
+					    </div>
+					<% end %>
+					<% if @facetData[:renderextraPercDuration] %>
+					    <div class="ui-block-c">
+					    	<%= renderCountField('extraPercDuration', riderExtra.extraPercDuration, nil, riderExtra) %>
+					    	<%= attachMask("#{getObjectMapping(riderExtra)}[extraPercDuration]") %>
+					    </div>
+					<% end %>
+		  		</div>
+		  	</div>
+		</div>
+
+	<% end %>
+
+<%= render :partial => "captureRiderExtraDetailsJS" %>

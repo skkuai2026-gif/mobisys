@@ -1,0 +1,15 @@
+<%= prdFieldDataTag("#{@quotationPckg}.PolicyDO",'agentId,channel,subChannel,parentAgency,productId') %>
+<%= layoutFieldTag('quotationRefNum,quotationDt') %>
+<%= prdFieldDataTag("#{@quotationPckg}.PolicyDO",'quotAddtnlField1,quotAddtnlField2,quotAddtnlField3,quotAddtnlField4') %>
+<div style="display: none;">
+	<%= inputTag("currentPartyRole") %>
+</div>
+
+<%= modelTagStart("basePlan", @baseProduct, @quotation) %>
+	<div style="display: none;">
+		<%= inputTag("productTypeCd") %>
+		<%= inputTag("productVersion") %>
+		<%= inputTag("productSeq") %>
+		<%= prdFieldDataTag("#{@quotationPckg}.PolicyProductDO",'productFamilyCd,productId,productPlanOptionCd') %>
+	</div>
+<% modelTagEnd %>

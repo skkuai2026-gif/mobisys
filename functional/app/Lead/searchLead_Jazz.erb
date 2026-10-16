@@ -1,0 +1,11 @@
+<%= pageTagStart('Leads','Symbiosys - Sales Illustration') %>
+    <%= headerTag("Leads","search") %>
+    <%= formTagStart("Search","/app/Lead/search") %>
+        <div data-role="main" class="ui-content">
+            <%= menuTag('LEADS',true) %>
+			<%= listSearchTag("LeadSearch","","SearchLeadDO", true, true,"","","","/app/Lead/newLead",'','',"","",true,"") %>
+        </div>
+    <%= formTagEnd %>
+<%= pageTagEnd %>
+
+<script type="text/javascript" charset="utf-8" src="/app/Lead/searchLead_Jazz.js"></script>

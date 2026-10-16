@@ -1,0 +1,126 @@
+<script type ="text/javascript">
+var initialPlanForm = "";
+
+function defaultPPTerm(){
+	var premiumPayingTerm = '<%= $premiumPayingTerm %>';
+    var paymentTypeCd = $('select[name="<%=getObjectMapping(@policyProduct)%>[paymentTypeCd]"]').val();
+    var baseProductTerm = $('select[name="<%=getObjectMapping(@policyProduct)%>[productTerm]"]').val();
+
+    if(paymentTypeCd == 'SINGLE') {
+        $('select[name="<%=getObjectMapping(@policyProduct)%>[paymentFrequencyCd]"]').val("SINGLE").selectmenu("refresh");
+        if($('select[name="<%=getObjectMapping(@policyProduct)%>[premiumPayingTerm]"] option[value="1"]').length == 0) {
+            $('select[name="<%=getObjectMapping(@policyProduct)%>[premiumPayingTerm]"]').append('<option val="1">1</option>');
+        }
+        $('select[name="<%=getObjectMapping(@policyProduct)%>[premiumPayingTerm]"]').val("1").selectmenu("refresh");
+
+        $('select[name="<%=getObjectMapping(@policyProduct)%>[paymentFrequencyCd]"]').selectmenu('disable');
+
+        $('select[name="<%=getObjectMapping(@policyProduct)%>[premiumPayingTerm]"]').selectmenu('disable');
+    }
+    else if((paymentTypeCd == 'REGULAR') && (premiumPayingTerm == 'true')) {
+        $('select[name="<%=getObjectMapping(@policyProduct)%>[premiumPayingTerm]"]').val(baseProductTerm);
+		$('select[name="<%=getObjectMapping(@policyProduct)%>[premiumPayingTerm]"]').selectmenu('disable');
+    }
+    else {
+        $('select[name="<%=getObjectMapping(@policyProduct)%>[paymentFrequencyCd]"]').selectmenu('enable');
+        $('select[name="<%=getObjectMapping(@policyProduct)%>[premiumPayingTerm]"]').selectmenu('enable');
+    }
+}
+
+function submitForm() {
+	if(initialPlanForm != $('#planForm').serialize()) {
+		if ('<%= @policy.quotationRefGuid %>' != ''){
+			setReadOnly($('input[name="<%=getObjectMapping(@policyProduct)%>[maxTargetPremium]"]'), false);
+			setReadOnly($('input[name="<%=getObjectMapping(@policyProduct)%>[minTargetPremium]"]'), false);
+			setReadOnly($('input[name="<%=getObjectMapping(@policyProduct)%>[recommendedPremium]"]'), false);
+			setReadOnly($('input[name="<%=getObjectMapping(@policyProduct)%>[unapliedPremium]"]'), false);
+			setReadOnly($('input[name="<%=getObjectMapping(@policyProduct)%>[modalPremium]"]'), false);
+
+			$('select[name="<%=getObjectMapping(@policyProduct)%>[currencyCd]"]').attr('disabled', false);
+			$('select[name="<%=getObjectMapping(@policyProduct)%>[currencyCd]"]').trigger("create");
+
+			$('select[name="<%=getObjectMapping(@policyProduct)%>[paymentTypeCd]"]').attr('disabled', false);
+			$('select[name="<%=getObjectMapping(@policyProduct)%>[paymentTypeCd]"]').trigger("create");
+
+			$('select[name="<%=getObjectMapping(@policyProduct)%>[paymentFrequencyCd]"]').attr('disabled', false);
+			$('select[name="<%=getObjectMapping(@policyProduct)%>[paymentFrequencyCd]"]').trigger("create");
+
+			$('select[name="<%=getObjectMapping(@policyProduct)%>[productTerm]"]').attr('disabled', false);
+			$('select[name="<%=getObjectMapping(@policyProduct)%>[productTerm]"]').trigger("create");
+
+			$('select[name="<%=getObjectMapping(@policyProduct)%>[premiumPayingTerm]"]').attr('disabled', false);
+			$('select[name="<%=getObjectMapping(@policyProduct)%>[premiumPayingTerm]"]').trigger("create");
+
+			setReadOnly($('input[name="<%=getObjectMapping(@policyProduct)%>[baseSumAssured]"]'), false);
+			setReadOnly($('input[name="<%=getObjectMapping(@policyProduct)%>[baseAnnualPremium]"]'), false);
+			setReadOnly($('input[name="<%=getObjectMapping(@policyProduct)%>[modalPremium]"]'), false);    
+			setReadOnly($('input[name="<%=getObjectMapping(@regularTopUp)%>[topUpAmount]"]'), false);
+			setReadOnly($('input[name="<%=getObjectMapping(@policyProduct)%>[capturedPremiumAmt]"]'), false);
+
+			$('select[name="<%=getObjectMapping(@policyProduct)%>[portfolioModelCd]"]').attr('disabled', false);
+			$('select[name="<%=getObjectMapping(@policyProduct)%>[portfolioModelCd]"]').trigger("create");
+		}
+
+		$('span[id="errordiv"]').hide();
+		$.ajax({                                    
+			url: "/app/Policy/submitPlanDetails",
+			method: 'POST',
+			async: false,
+			data: $('#planForm').serialize(),
+	        headers: {
+	          'Transition-Enabled': false
+	        },
+			success: function(data) {
+				$("a#submit").hide();
+			}
+		});
+	}
+}
+
+
+$(document).ready(function(){
+	initialPlanForm = $('#planForm').serialize();
+
+	// making auto populated fields readonly
+	setReadOnly($('input[name="<%=getObjectMapping(@policyProduct)%>[maxTargetPremium]"]'), true);
+	setReadOnly($('input[name="<%=getObjectMapping(@policyProduct)%>[minTargetPremium]"]'), true);
+	setReadOnly($('input[name="<%=getObjectMapping(@policyProduct)%>[recommendedPremium]"]'), true);
+	setReadOnly($('input[name="<%=getObjectMapping(@policyProduct)%>[unapliedPremium]"]'), true);
+	setReadOnly($('input[name="<%=getObjectMapping(@policyProduct)%>[modalPremium]"]'), true);
+
+    if($('select[name="<%=getObjectMapping(@policyProduct)%>[paymentTypeCd]"]').val() == 'SINGLE') {
+        $('select[name="<%=getObjectMapping(@policyProduct)%>[paymentFrequencyCd]"]').attr('disabled', true).trigger("create");
+        $('select[name="<%=getObjectMapping(@policyProduct)%>[premiumPayingTerm]"]').attr('disabled', true).trigger("create");
+    }
+
+	$('select[name="<%=getObjectMapping(@policyProduct)%>[paymentTypeCd]"]').change(function(){
+		defaultPPTerm();
+	});
+
+	if ('<%= @policy.quotationRefGuid %>' != '') {
+		$('select[name="<%=getObjectMapping(@policyProduct)%>[productTerm]"]').attr('disabled', true);
+		$('select[name="<%=getObjectMapping(@policyProduct)%>[productTerm]"]').trigger("create");
+
+		$('select[name="<%=getObjectMapping(@policyProduct)%>[premiumPayingTerm]"]').attr('disabled', true);
+		$('select[name="<%=getObjectMapping(@policyProduct)%>[premiumPayingTerm]"]').trigger("create");
+
+		$('select[name="<%=getObjectMapping(@policyProduct)%>[currencyCd]"]').attr('disabled', true);
+		$('select[name="<%=getObjectMapping(@policyProduct)%>[currencyCd]"]').trigger("create");
+
+		$('select[name="<%=getObjectMapping(@policyProduct)%>[paymentTypeCd]"]').attr('disabled', true);
+		$('select[name="<%=getObjectMapping(@policyProduct)%>[paymentTypeCd]"]').trigger("create");
+
+		$('select[name="<%=getObjectMapping(@policyProduct)%>[paymentFrequencyCd]"]').attr('disabled', true);
+		$('select[name="<%=getObjectMapping(@policyProduct)%>[paymentFrequencyCd]"]').trigger("create");
+
+		setReadOnly($('input[name="<%=getObjectMapping(@policyProduct)%>[baseSumAssured]"]'), true);
+		setReadOnly($('input[name="<%=getObjectMapping(@policyProduct)%>[baseAnnualPremium]"]'), true);
+		setReadOnly($('input[name="<%=getObjectMapping(@policyProduct)%>[modalPremium]"]'), true);    
+		setReadOnly($('input[name="<%=getObjectMapping(@regularTopUp)%>[topUpAmount]"]'), true);
+		setReadOnly($('input[name="<%=getObjectMapping(@policyProduct)%>[capturedPremiumAmt]"]'), true);
+
+		$('select[name="<%=getObjectMapping(@policyProduct)%>[portfolioModelCd]"]').attr('disabled', true);
+		$('select[name="<%=getObjectMapping(@policyProduct)%>[portfolioModelCd]"]').trigger("create");
+	}
+});
+</script>

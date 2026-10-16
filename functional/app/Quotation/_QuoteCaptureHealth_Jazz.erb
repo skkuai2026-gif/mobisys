@@ -1,0 +1,139 @@
+<% if @tabToBeLoaded == "tab_selProduct" %>
+	<%= tabTagStart("tab_selProduct") %>
+		<%= render(:file => 'CommonModules/ProductSelection_Jazz.erb')%>
+		
+		<% if @baseProduct %>
+			<%= modelTagStart("basePlan", @baseProduct, @quotation) %>
+			<div style="display: none;">
+				<%= inputTag("productTypeCd") %>
+				<%= inputTag("productFamilyCd") %>
+				<%= inputTag("productVersion") %>
+				<%= inputTag("productSeq") %>
+				<%= inputTag("productId") %>
+				<%= inputTag("productPlanOptionCd") %>
+			</div>
+			<% modelTagEnd %>
+		<% end %>
+		<div style="display: none;">
+			<%= inputTag("quotationRefNum") %>
+		</div>
+	<%= tabTagEnd %>
+<% end %>
+
+<% if @tabToBeLoaded == "tab_basic" %>
+	<%
+	$prdSelectionFacet ||= $rhoconfig[:prdSelection]
+    if MobiSys::ProductUtil.getCompanyFacetValue($prdSelectionFacet).to_s != "" && $rhoconfig[:tab_based_product_selection]
+        $ignore_product = true
+    end
+	%>
+	<%= tabTagStart("tab_basic") %>
+		<%= render :partial => "QuoteBasic_Jazz" %>
+
+		<%= render :partial => "QuoteProposer_Jazz" %>
+		
+		<%= render :partial => "QuotePrimaryInsured_Jazz" %>
+		
+		<%= render :partial => "QuoteJointInsured_Jazz" %>
+	<%= tabTagEnd %>
+	<% $ignore_product = nil %>
+	<% if @quotation.fnaId.to_s != "" && @quotation.quotationRefNum.to_s == "" %>
+		<% if @quotation.QuotationProductList.size > 0 && @quotation.QuotationProductList.to_s != "" %>
+			<% @quotation.QuotationProductList.each do |quotationProduct| %>
+				<% if quotationProduct.productTypeCd.to_s != "PLAN" %>
+					<% modelTagStart("rider",quotationProduct,@quotation) %>
+						<div style="display: none;" id="<%= quotationProduct.guid %>">
+							<%= inputTag("productTypeCd") %>
+							<%= inputTag("productFamilyCd") %>
+							<%= inputTag("productVersion") %>
+							<%= inputTag("productSeq") %>
+							<%= inputTag("productId") %>
+							<%= inputTag("productPlanOptionCd") %>
+							<%= inputTag("partyRoleCd") %>
+							<%= inputTag("builtInRiderFl") %>
+							<%= inputTag("selected") %>
+						</div>
+					<% modelTagEnd %>
+				<% end %>	
+			<% end %>
+		<% end %>
+	<% end %>
+	<% if @partyGuidMapping %>
+		<input type="hidden" name="partyGuidMapping" id="partyGuidMapping" value='<%= @partyGuidMapping %>'/> 
+	<% end %>
+<% end %>
+
+<% if @tabToBeLoaded == "tab_supplementary" %>
+	<%= tabTagStart("tab_supplementary") %>
+		<%= render :partial => "QuoteSupplementary_Jazz" %>
+	<%= tabTagEnd %>
+<% end %>
+
+<% if @tabToBeLoaded == "tab_plan" %>
+	<%= tabTagStart("tab_plan") %>
+		<%= render :partial => "QuoteBasePlanBasic_Jazz" %>
+		
+		<%= render :partial => "QuoteAdditionalCapture_Jazz" %>
+	<%= tabTagEnd %>
+<% end %>
+
+<% if @tabToBeLoaded == "tab_rider" %>
+	<%= tabTagStart("tab_rider") %>
+		<%= render :partial => "QuoteRider_Jazz" %>
+	<%= tabTagEnd %>
+<% end %>
+
+<% if @quotation.fnaId.to_s == "" %>
+    <div id="linkToFNAPopup" style="display: none;">
+        <div class="heading"><%= getLabelValue('link to FNA') %></div>
+        <div class="popup-close-cust">
+            <a href="#" rel='close' onclick=" $('#fnaId').val(''); window.location.reload();" class="icon-close"></a>
+        </div>
+        <table data-role="table" class="ui-responsive table-stroke">
+            <thead>
+                <tr>
+                    <th data-priority="1"  width="21%" ><%= getLabelValue('FNA_REF_NUMBER')%></th>
+                    <th data-priority="2"  width="13%" ><%= getLabelValue('NAME')%></th>
+                    <th data-priority="3"  width="19%" ><%= getLabelValue('PRODUCT')%></th>
+                    <th data-priority="4"  width="12%" ><%= getLabelValue('FNA_STATUS')%></th>
+                    <th data-priority="5"  width="10%" ><%= getLabelValue('Select')%></th>
+                </tr>
+            </thead>
+            <tbody>
+            <% if @fnaRequestListFiltered != nil %>
+                <% @fnaRequestListFiltered.each do |fnaRequest|%>
+                <% fnaParty = fnaRequest.getParty("PROPOSER")%>
+                    <tr>
+                        <td>
+                            <%= fnaRequest.fnaNum %>
+                        </td>
+                        <td>    
+                            <%= fnaParty.firstName1 + " " + fnaParty.lastName1 %>
+                        </td>
+                        <td>
+                            <%= fnaRequest.addtnField3Str %>
+                        </td>
+                        <td>
+                           <%= fnaRequest.statusCd %>
+                        </td>
+                        <td>
+                            <%= renderRadioButton('fnaId', @quotation.fnaId, fnaRequest.fnaNum, fnaRequest.fnaNum + "|" + fnaRequest.witnessId , @quotation, 'onclick="selectFNA(this)"') %>
+                            <%= renderLabel(fnaRequest.fnaNum, '','fnaRequestListRadioButton', nil) %>
+                        </td>
+                    </tr>
+                <% end %>
+             <% end %>
+            </tbody>
+        </table>
+        <div class="ui-dual-field-contain ui-body ui-br" align="center">
+            <div class="half">
+                <a class="button_UI_1 ui-link ui-btn selected"  onclick="linkFNA()" data-url="healthNeeds">
+                    <%= getLabelValue('SAVE') %>
+                </a>
+            </div>
+        </div>
+    </div>
+    <div style="display: none;">
+    	<input type="hidden" id="quotationrefnumber" value='<%= @quotation.quotationRefNum  %>'/>
+    </div>
+<% end %>

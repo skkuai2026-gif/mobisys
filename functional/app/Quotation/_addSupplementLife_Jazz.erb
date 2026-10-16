@@ -1,0 +1,59 @@
+<% if $currentProduct.getFacetValue('FAMILYINSUREDDETAILS').to_s == 'YES' %>
+    <% panelHeader = "#{getLabelValue('FAMILYINSUREDDETAILS')}" %>
+<% else %>
+    <% panelHeader = "#{getLabelValue('supplementary')}" %>
+<% end %>
+<% partyPckg = 'PolicySupplementaryLifeDO' %>
+<%= subPanelTagStart("#{panelHeader} #{@displayCount.to_i}", true) %>
+    <div class='add-section'>
+        <% gridID = "grid_#{@supplementCurrentLifeCount}_supplementaryQuotationParty" %>
+        <%= modelTagStart(gridID, @quotationParty, @quotation,@supplementCurrentLifeCount) %>
+            <i class='close-add-section icon-close' onClick='javascript:catchevent(this);' id='<%=gridID%>_removed'></i>
+            <%= prdFieldDataTag("#{partyPckg}","title,otherTitle",'','titleCd') %>
+            <%= subPanelTagStart("language1","false","",false) if @renderMultiLanguagePanel %>
+                <%= prdFieldDataTag("#{partyPckg}","firstname,middlename,lastname,extensionName",'#none,MIDDLENAMEREQUIRED,#none,#none','firstName1,middleName1,lastName1,extensionName1') %>
+            <% if @renderMultiLanguagePanel %>
+                <div class="labelHeader breakLine"></div>
+            <%= subPanelTagEnd %>
+            <% end %>
+
+            <%= subPanelTagStart("language2","false","MULTILINGUALPARTYNAME",false) %>
+                <%= prdFieldDataTag("#{partyPckg}","firstname2,middlename2,lastname2,extensionName2",'#none,MIDDLENAMEREQUIRED,#none,#none','firstName2,middleName2,lastName2,extensionName2') %>
+                <div class="labelHeader breakLine"></div>
+            <%= subPanelTagEnd %>
+            
+            <%= prdFieldDataTag("#{partyPckg}","dob,age" , '' , 'birthDt,age') %>
+
+            <%= prdFieldDataTag("#{partyPckg}","genderCd,relationCd,otherRelation" , '' , '') %>
+
+            <%= prdFieldDataTag("#{partyPckg}","industryCd,natureOfDuty,occupationCd" , 'SUPPLYOCCUPATION' , 'industryCd,natureOfDuty,occupationClass') %>
+
+            <%= prdFieldDataTag("#{partyPckg}","smoker,nsap" , 'SUPPLYSMOKER,SUPPLYNSAP' , '') %>
+
+            <%= prdFieldDataTag("#{partyPckg}","coverageCountryCd,coverageCityCd" , 'SUPPLYCOVERAGELOCATION' , '') %>
+
+            <%= prdFieldDataTag("#{partyPckg}","contactNum,emailAddress" , '' , '') %>
+            
+            <div style="display: none;">
+                <%= inputTag("roleCd") %>
+                    
+                <% unless MobiSys::BrowserHelper.renderPanel?("SUPPLYSMOKER", $currentProduct) %>
+                    <%= inputTag("smoker") %>
+                <% end %>
+            </div>
+        <% modelTagEnd %>
+        <% if @supplementaryProductFacet %>
+            <% quotationProductPckg = "#{partyPckg}" %>
+            <%= modelTagStart(gridID, @baseProduct, @quotation, @supQuotationProductCurrentCount) %>
+                <%= prdFieldDataTag("#{quotationProductPckg}","baseAnnualPremium,baseSumAssured,modalPremium,productPlanOptionCd") %>
+                <%= render :partial => "QuotePlanExtra_Jazz" %>
+                <%= inputTag("productTypeCd",nil,nil,nil,nil,nil,'HIDDEN') %>
+                <%= inputTag("partyRoleCd",nil,nil,nil,nil,nil,'HIDDEN') %>
+                <%= inputTag("insuredPartyRefGuid",nil,nil,nil,nil,nil,'HIDDEN') %>
+            <% modelTagEnd %>
+        <% end %>
+        <%= setupFilterUsingFieldTargetValueMap('TitleGenderSI', false, gridID) %>
+        <%= setupFilterUsingFieldTargetValueMap('CoverageCountryCity', true, gridID) %>
+        <%= setupFilterUsingFieldTargetValueMap('RelationGender', true, gridID) %>
+    </div>
+<%= subPanelTagEnd %>

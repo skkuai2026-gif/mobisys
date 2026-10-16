@@ -1,0 +1,158 @@
+<!-- landing page code start -->
+<%= pageTagStart('dashboard','Symbiosys') %>
+    <!--HEADER-->
+    <%= headerTag("DASHBOARD", "home","","","","", true) %>
+    <!--/HEADER-->
+    <!--MAIN CONTENT-->
+    <div data-role="main" class="ui-content">
+        <%= menuTag("ALERTS") %>       
+        <div class="main-content-wrapper" id="search-wrapper">
+            <div style="display:none;">
+                <div class="main-content-wrapper-left">
+                    <!-- Date Range -->
+                    <div class="date-ranger">
+                        <h4><%=getLabelValue('MONTHRANGE')%></h4>
+                        <div data-role="rangeslider" id="slider">
+                            <input type="range" name="slider-1" data-highlight="true" min="0" max="11" value="3" onchange="rangeChange()">
+                            <input type="range" name="slider-2" data-highlight="true" min="0" max="11" value="8" onchange="rangeChange()">
+                        </div>
+                        <div>
+                        <p class="pull-left"><%= getLabelValue('Jan')%></p>
+                        <p class="pull-right"><%= getLabelValue('Dec')%></p>
+                        </div>
+                    </div>
+                    <!-- charts-->
+                    <div class="chart">
+                        <div data-role="tabs" id="tabs">
+                            <div data-role="navbar">
+                                <ul class="tab-name">
+                                    <li><a href="#chart1" class="ui-btn-active" data-ajax="false" onclick="tabChange('cvs1')"><%= getLabelValue('Activity')%> <br><%= getLabelValue('Summary') %> </a></li>
+                                    <li><a href="#chart2" data-ajax="false" onclick="tabChange('cvs2')"><%= getLabelValue('PRODUCT')%><br><%= getLabelValue('WiseSI')%></a></li>
+                                    <li><a href="#chart3" data-ajax="false" onclick="tabChange('cvs3')"><%= getLabelValue('PRODUCT')%><br><%= getLabelValue('WiseEApp')%></a></li>
+                                </ul>
+                            </div>
+                            <div id="chart1" class="ui-body-d ui-content">
+                                <!-- <div id="chart_div" class="chart-style" style="width: 100%; height: auto;"></div> -->
+                                <canvas id="cvs1" name='cvs1' width="350" height="260" style="margin-left:2%;"></canvas>
+                                <!-- charts js-->
+                                <!-- <ul class="chart-text">
+                                    <li>
+                                        <p class="circle"><span>1</span></p>
+                                        <p class="">Lorem Ipsum is simply dummy text</p>
+                                    </li>
+                                </ul> -->
+                            </div>
+                            <div id="chart2">
+                                <canvas id="cvs2" name='cvs2' width="350" height="260" style="margin-left:2%;"></canvas>
+                                <!-- <ul class="chart-text">
+                                    <li>
+                                        <p class="circle"><span>1</span></p>
+                                        <p class="">Lorem Ipsum is simply dummy text Lorem Ipsum is simply dummy text Lorem Ipsum is simply dummy text</p>
+                                    </li>
+                                </ul> -->
+                            </div>
+                            <div id="chart3">
+                                <canvas id="cvs3" name='cvs3' width="350" height="260" style="margin-left:2%;"></canvas>
+                                <!-- <ul class="chart-text">
+                                    <li>
+                                        <p class="circle"><span>1</span></p>
+                                        <p class="">Lorem Ipsum is simply dummy text Lorem Ipsum is simply dummy text Lorem Ipsum is simply dummy text</p>
+                                    </li>
+                                </ul> -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- <div class="main-content-wrapper-right" id="search-wrapper"> -->
+                <%= formTagStart("landingAlertSubmit","/app/Menu/landingAlertSubmit") %>
+                    <%= listSearchTag('',"ALERT","SearchProspectDO",true,false,"","","","","","","","",false,"col-20",'vertical') %>
+                    <%#= searchTag(@columnList,"SearchProspectDO",@trackLeads,true,false,"","","","",@moreOptions,@moreOptionsURLS,true,@tabIds ,@jsFunctions,"","",false,"col-20",@openUrlLink,false,'vertical',@linkIndex) %>
+                    <%# <%= searchTag(@columnList,"SearchProspectDO",@trackLeads,true,false,"","","","",@moreOptions,@moreOptionsURLS,true,"pendingQuoteWithAgeChange,PendingEappWithAgeChange,inactivityAlerts,quotationExpiryAlerts,PaymentCollectedPendingSub,leadsSummary,leadsDtl,leadProgression","javascript:setAlertStageAndSubmit('quoteAgeChange'),javascript:setAlertStageAndSubmit('policyAgeChange'),javascript:setAlertStageAndSubmit('inactivityAlert'),javascript:setAlertStageAndSubmit('quotExpiryAlert'),javascript:setAlertStageAndSubmit('paymentPendingSubmit'),javascript:setAlertStageAndSubmit('leadsSummary'),javascript:setAlertStageAndSubmit('leadsDtl'),javascript:setAlertStageAndSubmit('leadProgression')","","",false,"col-20",@openUrlLink,false,'vertical',@linkIndex) %> 
+                    <!-- <input type="hidden" name="leadStage" id="leadStage" value='<%#= @leadStage %>'/> -->
+                    <!-- <input type="hidden" name="tabSearchMap" id="tabSearchMap" value='<%#= @tabSearchMap.to_json %>'/> -->
+                <%= formTagEnd %>
+            <!-- </div> */ -->
+        </div>
+        <!--/MAIN CONTENT-->
+    </div>
+<%= pageTagEnd %>
+<!-- landing page code end -->
+
+<!-- chat box code start -->
+<style>
+
+@media (max-width: 1100px) {
+    
+}
+
+.chat img {
+    width: auto;
+}
+
+.chat-title, .message-box {
+    border-radius: 20px;
+}
+
+
+</style>
+
+
+<%if $blueTheme == true %>
+<style>
+
+.col-20 {
+  width: 20%;
+  float: left;
+}
+
+.col-20.tab-cust {
+    border: 1px solid rgba(0, 0, 0, 0.4);
+    text-align: center;
+    margin-bottom: 15px;
+    background: #4f73cf;
+    font-size: 12px;
+    padding: 10px;
+    cursor: pointer;
+    color: #ffffff;
+}
+
+
+table{border: 1px solid #dddddd !important;}
+
+.col-20.tab-cust.active {
+    background: #233c7e;
+    color: #ffffff;
+}
+
+#dashboard .main-content-wrapper .search-top-bg #search {
+  background-color: #fff;
+  color: #ffffff;
+}
+#dashboard .main-content-wrapper .search-top-bg .search-btn-bg a {
+  background: #4f73cf;
+  border: 1px solid rgba(0, 0, 0, 0.4);
+  color: #ffffff;
+  text-shadow: none !important;
+}
+
+
+
+</style>
+
+<%else%>
+<style>
+
+</style>
+<%end%>
+
+<script type="text/javascript" charset="utf-8" src="/app/Menu/landingPageAlert_Jazz.js"></script>
+
+<%if $reloadPage != nil && $reloadPage == true
+    $reloadPage = nil
+    puts "inside reloadpage"
+%>
+    <script type="text/javascript">
+        location.reload();
+    </script>
+<%end%>

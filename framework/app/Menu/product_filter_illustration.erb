@@ -1,0 +1,48 @@
+<div data-role="page" data-url="<%= Rho::RhoConfig.start_path %>/">
+  <div data-role="header" data-position="inline">
+    <h1><%= renderLabel('productFilterOptions','PRODUCT FILTER OPTIONS') %></h1>
+      <div class="headerButtons" name = "headerButtons">     
+        <a href="#" id = "back" name="back" onclick="location.href='/app/Menu/landingPage';" data-direction="reverse">
+          <img src="/public/images/SalesIllustration/icon_BackArrow-Red.png">
+        </a>
+      </div>  
+  </div>
+
+  <div class="illustrationdisplay">
+    <form method="POST" action="<%= url_for :action => :filter_product_illustration %>" >
+      <div data-role="fieldcontain" >
+        <%= renderLabel('AGE', 'age', nil, nil) %>
+        <%= renderInputField('age', nil, 'age', nil, "maxlength='25'") %>
+      </div>
+        
+      <div data-role="fieldcontain">
+        <%= renderLabel('GENDER', 'Gender', 'mandatory', nil) %>
+        <%= getLookup('GENDER','gender', 'MALE') %>
+      </div>
+
+      <div data-role="fieldcontain">
+        <%= renderLabel('SMOKER', 'smoker', 'mandatory', nil) %>
+        <%= getLookup('BOOLEAN','smoker','NO') %>
+      </div>
+
+      <div data-role="fieldcontain" style="width:10%; padding-left:23%">
+        <input data-role="button" type="submit" value="GO"/>
+      </div>
+    </form>
+  </div>
+</div>
+
+<script>
+  $('input[name=age]').keyup(function(){
+    if (jQuery(this).val().match(/[a-zA-Z]/g)) {
+      showDialog("", "<%= getLabelValue('ONLYNUMERICALLOWED')%>", 'error', 0, 'filterPage');
+      var value = jQuery(this).val();
+      value = value.replace(/[^0-9]+/g, '');
+      jQuery(this).val(value);
+    }
+    if(jQuery(this).val().length > 2){
+      showDialog("", "<%= getLabelValue('AGEOUTOFRANGE')%>", 'error', 0, 'filterPage');
+      jQuery(this).val("");
+    }
+  });
+</script>

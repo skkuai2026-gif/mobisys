@@ -1,0 +1,14 @@
+ext/platform/android/generated/src/com/rho/bgservice/BGServiceBase.java
+ext/platform/android/generated/src/com/rho/bgservice/BGServiceFactorySingleton.java
+ext/platform/android/generated/src/com/rho/bgservice/BGServiceSingletonBase.java
+ext/platform/android/generated/src/com/rho/bgservice/IBGService.java
+ext/platform/android/generated/src/com/rho/bgservice/IBGServiceFactory.java
+ext/platform/android/generated/src/com/rho/bgservice/IBGServiceSingleton.java
+ext/platform/android/src/com/rho/bgservice/BGService.java
+ext/platform/android/src/com/rho/bgservice/BGServiceFactory.java
+ext/platform/android/src/com/rho/bgservice/BGServiceSingleton.java
+
+
+ext/platform/android/src/com/rho/bgservice/BackgroundService.java
+ext/platform/android/src/com/rho/bgservice/BackgroundServiceRestarterBroadcastReceiver.java
+ext/platform/android/src/com/rho/bgservice/BGServiceRhoListener.java

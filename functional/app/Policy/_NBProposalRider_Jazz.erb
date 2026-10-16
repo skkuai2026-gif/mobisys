@@ -1,0 +1,53 @@
+<% riderPackage = 'com.c2lbiz.symbiosys.insurance.businesscommon.dataobjects.policy.PolicyRiderDO' %>
+<% if @riderAutoPopulationReqFlag == "YES" %>
+	<% $displayRidersHM.each_with_index do |(key,riderDetails), riderCount| %>
+		<% unless key.include?'|' %>
+			<% headerFieldName = @displayRiderLifeHeader[key] %>
+			<%= panelTagStart('false') %>
+				<%= subPanelTagStart(headerFieldName, true, '',true, "onClick=javascript:populateRider('#{key}')")%>
+					<div name="riderAutoPopulation" id="riderAutoPopulationDiv<%=key%>">
+
+					</div>
+					<input type="hidden" id="riderInitialCount<%=key%>" name="riderInitialCount<%=key%>" value='<%= @riderObjects %>'/>
+				<%= subPanelTagEnd %>
+			<%= panelTagEnd %>
+			<!--incrementing rider count with fixed value 100 for each grid-->
+			<% @riderObjects = @riderObjects + 100 %>
+		<% end %>
+		<% if riderCount == $displayRidersHM.size-1 %>
+			<input type="hidden" id="riderLastCount" name="riderLastCount" value='<%= @riderObjects.to_i-100 %>'/>
+		<% end %>
+	<% end %>
+	<%= inputTag("unselectedRiders",nil,nil,nil,nil,nil,'HIDDEN') %>
+<% else %>
+	<%= fieldDataEntryGridTagStart('riderDetails', riderPackage, nil, nil, nil,nil,'delete','100',nil,true,true,true,false,true,'riderDetails','','','',true) %>
+		<% @newriders.each_with_index do |rider,riderCount| %>
+			<% index = @riderObjects + riderCount %>
+			<div class='add-section riderData'>
+				<% gridID = "grid_#{index}_riderDetails" %>
+				<%= modelTagStart(gridID, rider, @policy,index) %>
+					<i class='close-add-section icon-close' onClick='javascript:catchevent(this);' id='<%=gridID%>_removed'></i>
+					<%= prdFieldDataTag("#{riderPackage}","productSeq,productPlanOptionCd") %>
+					<% gridID_ppi = "grid_#{index}_riderDetails_policyProductInsured" %>
+					<%= modelTagStart(gridID_ppi, rider.PolicyProductInsuredList[0], rider,index) %>
+						<%= prdFieldDataTag("#{riderPackage}","roleCd,insuredPartyRefGuid,policyProductSeq",'#none,SUPPLEMENTARYINSUREDREQUIRED') %>
+					<% modelTagEnd %>
+					<%= prdFieldDataTag("#{riderPackage}","productTerm,premiumPayingTerm") %>
+					<%= prdFieldDataTag("#{riderPackage}","baseSumAssured,modalPremium") %>
+					
+
+					<div style="display: none;">
+						<%= inputTag("productFamilyCd") %>
+						<%= inputTag("productId") %>
+						<%= inputTag("productTypeCd") %>
+						<%= inputTag("productVersion") %>
+						<input type="hidden" name="<%= gridID %>_premiumSAFl" id="<%= gridID %>_premiumSAFl" value='<%= @premiumSAFlriders[rider.productSeq.to_s] %>'/>
+						<input type="hidden" name="<%= gridID %>_readOnlyFields" id="<%= gridID %>_readOnlyFields" value='<%= @newRiderFields[rider.productSeq.to_i] %>'/>
+					</div>
+				<% modelTagEnd %>    
+			</div>
+		<% end %>
+		<input type="hidden" id="riderCount" value='<%= @newriders.size %>'/>
+	<%= fieldDataEntryGridTagEnd('riderDetails', @newriders, 'ADDRIDER',true,true,true) %>
+<% end %>
+<input type="hidden" id="riderAutoPopulationReqFlag" value='<%= @riderAutoPopulationReqFlag %>'/>

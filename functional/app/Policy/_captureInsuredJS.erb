@@ -1,0 +1,133 @@
+<script type="text/javascript">
+var initialPrimaryInsuredForm = "";
+
+
+function submitForm(){
+	//Used to trim all the input fields before save
+	$(':input').each(function(){
+		$(this).val($.trim($(this).val()))
+	});
+	
+	if(initialPrimaryInsuredForm != $('#insuredForm').serialize()){
+		if ('<%= @policy.quotationRefGuid %>' != ''){
+			$('select[name="<%=getObjectMapping(@party)%>[partyTypeCd]"]').attr('disabled', false);
+			$('select[name="<%=getObjectMapping(@party)%>[partyTypeCd]"]').trigger("create");
+			
+			$('select[name="<%=getObjectMapping(@party)%>[titleCd]"]').attr('disabled', false);
+			$('select[name="<%=getObjectMapping(@party)%>[titleCd]"]').trigger("create");
+			
+			setReadOnly($('input[name="<%=getObjectMapping(@party)%>[firstName1]"]'), false);
+			setReadOnly($('input[name="<%=getObjectMapping(@party)%>[middleName1]"]'), false);
+			setReadOnly($('input[name="<%=getObjectMapping(@party)%>[lastName1]"]'), false);
+			setReadOnly($('input[name="<%=getObjectMapping(@party)%>[extensionName1]"]'), false);
+			setReadOnly($('input[name="<%=getObjectMapping(@party)%>[firstName2]"]'), false);
+			setReadOnly($('input[name="<%=getObjectMapping(@party)%>[middleName2]"]'), false);
+			setReadOnly($('input[name="<%=getObjectMapping(@party)%>[lastName2]"]'), false);
+			setReadOnly($('input[name="<%=getObjectMapping(@party)%>[extensionName2]"]'), false);
+			
+			$('input[name="<%=getObjectMapping(@party)%>[genderCd]"]').attr('disabled', false);
+			$('input[name="<%=getObjectMapping(@party)%>[genderCd]"]').trigger("create");
+			
+			$('select[name="<%=getObjectMapping(@party)%>[relationCd]"]').attr('disabled', false);
+			$('select[name="<%=getObjectMapping(@party)%>[relationCd]"]').trigger("create");
+			
+			$('input[name="<%=getObjectMapping(@party)%>[smoker]"]').attr('disabled', false);
+			$('input[name="<%=getObjectMapping(@party)%>[smoker]"]').trigger("create");
+			
+			$('input[name="<%=getObjectMapping(@party)%>[nsap]"]').attr('disabled', false);
+			$('input[name="<%=getObjectMapping(@party)%>[nsap]"]').trigger("create");
+			
+			$('select[name="<%=getObjectMapping(@party)%>[coverageCountryCd]"]').attr('disabled', false);
+			$('select[name="<%=getObjectMapping(@party)%>[coverageCountryCd]"]').trigger("create");
+			
+			$('select[name="<%=getObjectMapping(@party)%>[coverageCityCd]"]').attr('disabled', false);
+			$('select[name="<%=getObjectMapping(@party)%>[coverageCityCd]"]').trigger("create");
+
+			$('input[name="<%=getObjectMapping(@party)%>[maritalStatusCd]"]').attr('disabled', false);
+			$('input[name="<%=getObjectMapping(@party)%>[maritalStatusCd]"]').trigger("create");
+			
+			setReadOnly($('input[name="<%=getObjectMapping(@party)%>[birthDt]"]'), false);
+			setReadOnly($('input[name="<%=getObjectMapping(@party)%>[age]"]'), false);
+			setReadOnly($('input[name="<%=getObjectMapping(@party)%>[corporateName1]"]'), false);
+
+			$('select[name="<%=getObjectMapping(@partyEmployment)%>[industryCd]"]').attr('disabled', false);
+			$('select[name="<%=getObjectMapping(@partyEmployment)%>[industryCd]"]').trigger("create");
+			
+			$('select[name="<%=getObjectMapping(@partyEmployment)%>[natureOfDuty]"]').attr('disabled', false);
+			$('select[name="<%=getObjectMapping(@partyEmployment)%>[natureOfDuty]"]').trigger("create");
+			
+			$('select[name="<%=getObjectMapping(@partyEmployment)%>[occupationClass]"]').attr('disabled', false);
+			$('select[name="<%=getObjectMapping(@partyEmployment)%>[occupationClass]"]').trigger("create");
+
+			setReadOnly($('input[name="<%=getObjectMapping(@homeAddress)%>[addressLine1Lang1]"]'), false);
+			setReadOnly($('input[name="<%=getObjectMapping(@homeAddress)%>[addressLine2Lang1]"]'), false);
+			setReadOnly($('input[name="<%=getObjectMapping(@homeAddress)%>[addressLine3Lang1]"]'), false);
+			setReadOnly($('input[name="<%=getObjectMapping(@homeAddress)%>[addressLine4Lang1]"]'), false);
+			setReadOnly($('input[name="<%=getObjectMapping(@homeAddress)%>[pinCode]"]'), false);
+			
+			$('select[name="<%=getObjectMapping(@homeAddress)%>[countryCd]"]').attr('disabled', false);
+			$('select[name="<%=getObjectMapping(@homeAddress)%>[countryCd]"]').trigger("create");
+			
+			$('select[name="<%=getObjectMapping(@homeAddress)%>[districtCd]"]').attr('disabled', false);
+			$('select[name="<%=getObjectMapping(@homeAddress)%>[districtCd]"]').trigger("create");
+			
+			$('select[name="<%=getObjectMapping(@homeAddress)%>[cityCd]"]').attr('disabled', false);
+			$('select[name="<%=getObjectMapping(@homeAddress)%>[cityCd]"]').trigger("create");
+
+			setReadOnly($('input[name="<%=getObjectMapping(@partyContactMobile)%>[countryCd]"]'), false);
+			setReadOnly($('input[name="<%=getObjectMapping(@partyContactMobile)%>[stdCode]"]'), false);
+			setReadOnly($('input[name="<%=getObjectMapping(@partyContactMobile)%>[contactNum]"]'), false);
+
+			setReadOnly($('input[name="<%=getObjectMapping(@partyEmail)%>[emailAddress]"]'), false);
+		}
+
+		$('span[id="errordiv"]').hide();
+		$.ajax({                                    
+			url: "/app/Policy/submitInsuredDetails",
+			method: 'POST',
+			async: false,
+			data: $('#insuredForm').serialize(),
+	        headers: {
+	          'Transition-Enabled': false
+	        },
+			success: function(data) {
+				$("a#submit").hide();
+			}
+		});
+	}
+}
+
+
+$(document).ready(function(){
+	initialPrimaryInsuredForm = $('#insuredForm').serialize();
+
+	if ('<%= @policy.quotationRefGuid %>' != ''){
+		$("input[name='<%=getObjectMapping(@policyPartyRole)%>[partySameAsCd]']").attr("disabled", true).trigger("create");
+	}
+
+	if($("input[name='<%=getObjectMapping(@policyPartyRole)%>[partySameAsCd]']:checked").val() == "PROPOSER") {
+		$('input[name="<%=getObjectMapping(@party)%>[removed]"]').val('YES');
+		$("#insuredcontent").hide();
+	}
+	else {
+		$('input[name="<%=getObjectMapping(@party)%>[removed]"]').val('');
+		$("#insuredcontent").show();
+	}
+
+	$("input[name='<%=getObjectMapping(@policyPartyRole)%>[partySameAsCd]']").change(function(){
+		//Blank out all the Individual fields
+		$("#insuredcontent input[type='text']").val('')
+		$("#insuredcontent select").val('').change();
+		$("#insuredcontent input[type='radio']").attr("checked",false).checkboxradio("refresh");
+
+		if($(this).val() == "PROPOSER") {
+			$('input[name="<%=getObjectMapping(@party)%>[removed]"]').val('YES');
+			$("#insuredcontent").hide();
+		}
+		else {
+			$('input[name="<%=getObjectMapping(@party)%>[removed]"]').val('');
+			$("#insuredcontent").show();
+		}
+	});
+});
+</script>

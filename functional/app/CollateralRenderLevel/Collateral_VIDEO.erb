@@ -1,0 +1,66 @@
+<div id="listDiv">
+    <%if @parentColRenderLevelDO !=nil%>
+        <div class="leftnavigation">
+            <div class="level1header">
+                <label class="level1label0"><%=@parentColRenderLevelDO.header1%></label>
+                <br>
+                <label class="level1label1"><%=@parentColRenderLevelDO.header2 %></label>
+            </div>
+            <div class="sec-nav">
+                <% @parentColRenderLevelChildDOList.each do|parentColRenderLevelDO| %>
+                	<% if @setLevelCd == parentColRenderLevelDO.levelCd %>
+	                    <% if parentColRenderLevelDO.header1.size < 30 %>
+	                       <li class="sec-nav-li-selected">
+	                           <%= parentColRenderLevelDO.header1%>
+	                       </li>
+	                   <%else%>
+	                       <li class="sec-nav-li-selected-small">
+	                           <%= parentColRenderLevelDO.header1%>
+	                       </li>
+	                   <%end%>
+	               <%else%>
+	                   <a href="javascript:doOnLevelClick('<%=parentColRenderLevelDO.levelCd%>','listDiv');">
+   					    <% if (parentColRenderLevelDO.header1.size < 30) %>           
+	                       <li class="sec-nav-li">
+	                           <%= parentColRenderLevelDO.header1 %>
+	                       </li>
+	                   <%else%>          
+	                       <li class="sec-nav-li-small">
+	                           <%= parentColRenderLevelDO.header1 %>
+	                       </li>
+	                   <%end%>
+	                   </a>
+	               <%end%>
+	           <%end%>
+	       </div>
+	   </div>
+    <%end%>
+    <div id="contentpane_<%=@collateralRenderLevelDO.guid%>" class="rightcontentpane">
+      <!-- Selected Level 2 object data -->
+        <script> 
+    		doOnLevelClick('<%=@collateralRenderLevelChildDOList[0].levelCd%>','videoDiv');
+    	</script>
+    	<div id="videoDiv"></div>
+    	<!-- List of Level 2 objects -->  
+    	<div id="level2list" class="bottomlayoutlevel2menudiv">
+            <table class="bottomlayoutlevel2menutable">
+                <tr>
+                    <% @collateralRenderLevelChildDOList.each do |collateralRenderLevelChildDO| %>
+                        <td>            
+                            <% if @setLevelCd == collateralRenderLevelChildDO.levelCd %>
+                                <a href="javascript:doOnLevelClick('<%=collateralRenderLevelChildDO.levelCd%>','videoDiv');">
+                                <div id=<%=collateralRenderLevelChildDO.levelCd%> class="bottomactivemenu">
+                            <%else%>
+                                <a href="javascript:doOnLevelClick('<%=collateralRenderLevelChildDO.levelCd%>','videoDiv');">
+                                <div id=<%=collateralRenderLevelChildDO.levelCd%> class="bottominactivemenu">
+                            <%end%>
+                            <%=collateralRenderLevelChildDO.header1%>
+                            </div>
+                            </a>
+                        </td>              
+                    <%end%>        
+                </tr>
+            </table>
+        </div>
+    </div>
+</div>

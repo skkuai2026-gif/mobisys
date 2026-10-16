@@ -1,0 +1,34 @@
+<div data-role="page"  >
+    
+      <div data-role="content" class="ui-content_editnew" >
+        <ul>
+           <li>
+             <br/><strong><%= getLabelValue('DISCLAIMER') %></strong><br/><br/>
+           </li>
+        </ul>
+        <div style="overflow-y:scroll; height:200px; width:90%; margin:5%">
+           <%= getLabelValue('TANDC') %>
+        </div>
+        <div style="margin-top:-2%; margin-left:5%">  
+        <span>
+          <ul  class="illustrationButtons" align="center">
+            <li>
+              <a href="<%= url_for :action=>:disclaimerSubmit,:id=>'agree'%>" data-role="button" data-theme="a" >
+                <%= getLabelValue('AGREE')%>
+              </a>
+             
+            </li>
+            <li>
+              <a href="<%= url_for :action=>:disclaimerSubmit,:id=>'donotagree'%>" data-role="button" data-theme="a" >
+                <%= getLabelValue('DONOTAGREE')%>
+              </a>
+            </li>
+          </ul>
+        </span>
+        </div>
+      </div>
+    
+</div>
+
+
+ 

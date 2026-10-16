@@ -1,0 +1,9 @@
+<%= subPanelTagStart("LEADACTIVITY #{@leadActivityCount.to_i}", true) %>
+	<div class='add-section'>
+	    <% gridID = "grid_#{@leadActivityCount}_leadActivity" %>
+	    <%= modelTagStart(gridID, @leadActivity, @lead,@leadActivityCount) %>
+	        <i class='close-add-section icon-close' onClick='javascript:catchevent(this);' id='<%=gridID%>_removed'></i>
+	        <%= layoutFieldTag("type,description,activityDt,closureDate") %>
+	    <% modelTagEnd %>
+	</div>
+<%= subPanelTagEnd %>

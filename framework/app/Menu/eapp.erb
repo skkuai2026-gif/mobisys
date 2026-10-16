@@ -1,0 +1,63 @@
+<div data-role="page">
+	<link rel="stylesheet" href="/public/css/c2l_dashboard.css">
+	<div data-role="header" id="header" data-position="inline">
+		<a href="/app/Menu/landingPage" rel="external" data-direction="reverse" data-role="none">
+			<img src="/public/images/SalesIllustration/icon_BackArrow-Red.png">
+		</a>
+		<h1><%= getLabelValue('EAPP') %></h1>
+	</div>
+
+	<div data-role="content" id="content">
+		<div class="ui-grid-a" id="main-options">
+			<div class="ui-block-a">
+				<%
+                if $rhoconfig[:product_filter_page] == "YES"
+				%>
+					<a href="/app/Menu/product_filter" rel="external">
+						<img src="/public/images/Eapp/capture-eapp.png">
+						<div class="imgCaption"><%= getLabelValue('AddProposal') %></div>
+					</a>
+				<% else %>
+					<a href="/app/Policy/addProposal" rel="external">
+						<img src="/public/images/Eapp/capture-eapp.png">
+						<div class="imgCaption"><%= getLabelValue('AddProposal') %></div>
+					</a>
+				<% end %>
+			</div>
+			<div class="ui-block-b">
+				<a href="/app/Policy/searchProposal" rel="external">
+					<img src = "/public/images/Eapp/search-eapp.png">
+					<div class="imgCaption"><%= getLabelValue('SearchProposal') %></div>
+				</a>
+			</div>
+		</div>
+
+		<div class="ui-grid-a">
+			<div class="ui-block-a">
+        		<div class="illustrationdisplay">
+          			<table class="searchtable" width="100%">
+            			<tr class="searchtableheader"><td><%= getLabelValue('Interactive Chart') %></td></tr>
+            			<tr class="search1">
+            				<td class="tabletext">
+            					<img src="/public/images/eapp-graph1.png">
+            				</td>
+            			</tr>	
+           			</table>
+           		</div>
+		    </div>	
+
+			<div class="ui-block-b">
+        		<div class="illustrationdisplay">
+          			<table class="searchtable" width="100%">
+            			<tr class="searchtableheader"><td><%= getLabelValue('Lead Management') %></td></tr>
+            			<tr class="search1">
+            				<td class="tabletext">
+            					<img src="/public/images/eapp-graph2.png">
+            				</td>
+            			</tr>	
+           			</table>
+           		</div>
+		    </div>
+		</div>
+	</div>
+</div>

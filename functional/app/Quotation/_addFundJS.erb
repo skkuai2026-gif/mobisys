@@ -1,0 +1,31 @@
+<script type="text/javascript">
+$(document).ready(function(){
+	<% if @facetData[:renderTopupallocationperc] %>
+		$('input[name="<%=getObjectMapping(@quotationProductInvestmentFund)%>[topupAllocationPerc]"]').change(function(){
+			updateFundTotal();
+		});
+	<% end %>
+	<% if @facetData[:renderAllocationperc] %>
+		$('input[name="<%=getObjectMapping(@quotationProductInvestmentFund)%>[allocationPerc]"]').change(function(){
+	        if($('input[name="<%=getObjectMapping(@quotationProductInvestmentFund)%>[topUpAllocSameAsPremAllocFl]"]').prop("checked")) {
+	          $('input[name="<%=getObjectMapping(@quotationProductInvestmentFund)%>[topupAllocationPerc]"]').val($(this).val());
+	        }
+			updateFundTotal();
+		});
+	<% end %>
+
+	 //Mark fields mandatory based on Validation Metadata
+    <% 
+    if @mandatoryFields
+        if @mandatoryFields[@quotationProductInvestmentFund]
+            @mandatoryFields[@quotationProductInvestmentFund].each do |field| 
+    %>
+            $("label[for='<%=getObjectMapping(@quotationProductInvestmentFund)%>[<%= field %>]']").append('<label for=" *" class="mandatory1">&nbsp;*</label>');
+    <% 
+            end
+        end
+      
+    end
+    %>
+});
+</script>

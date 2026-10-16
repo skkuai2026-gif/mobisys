@@ -1,0 +1,38 @@
+<%= pageTagStart("","Symbiosys") %>
+	<%= headerTag(getLabelValue('PARTIAL_SYNC'), "","", @backLink) %>
+	<div data-role="main" class="ui-content">
+    	<div class="main-content-wrapper main-content-full">
+    		<%= formTagStart("syncPreferencesForm","#{url_for :action => :partialSynchronize}") %>
+    			<div class="project-content-bg">
+		    		<div class="div-with-border no-padding-bottom preferences-content">
+		    		    <ul data-role="listview">
+		    			<%
+						@syncEntities.each do|syncEntity|
+		    			%>
+		    				<li style="font-size: 16px;"><%=syncEntity.entityName%> 
+		    					<label for='<%=syncEntity.entityName%>'>
+		    							<input type='checkbox' id='<%=syncEntity.entityName%>' name='partialSyncCheck[]' value='<%=syncEntity.entityName%>'>
+		    						</label>
+		    					</li>
+		    			<%end%>
+		    			</ul>
+
+	    			</div>
+	    		</div>
+		 	<%= formTagEnd %>
+		</div>
+	 	<div class="footer-bg">
+			<a href='#' name='sync' data-transition='slide'><%= getLabelValue('PARTIAL_SYNC') %></a>
+		</div>
+    </div>
+
+
+<%= pageTagEnd %>
+
+<script>
+	$(document).ready(function(){
+		$("a[name='sync']").click( function() {
+				document.syncPreferencesForm.submit();       
+		});
+	});
+</script>

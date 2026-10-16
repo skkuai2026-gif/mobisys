@@ -1,0 +1,69 @@
+<script type="text/javascript">
+function getPincodeCityStateCountryLookups(lookup, addressObj) {
+	var ajaxData = "";
+	var selectID = "";
+	var spanID = "";
+	var addressType = $('input[name="'+addressObj+'[addressTypeCd]"]').val();
+	switch (lookup) {
+		case "district":
+			ajaxData = "option=district&countryCd="+$('select[name="'+addressObj+'[countryCd]"]').val()+"&pinCode="+$('input[name="'+addressObj+'[pinCode]"]').val();
+			selectID = addressObj+"[districtCd]";
+			spanID = "districtLookUpData"+ addressType;
+			break;
+		case "city":
+			ajaxData = "option=city&countryCd="+$('select[name="'+addressObj+'[countryCd]"]').val()+"&pinCode="+$('input[name="'+addressObj+'[pinCode]"]').val();
+			selectID = addressObj+"[cityCd]";
+			spanID = "cityLookUpData"+ addressType;
+			break;
+	}
+
+	$.ajax({
+     	url: "/app/Policy/getPincodeCityStateCountryLookups",
+     	async: false,
+     	data: ajaxData,
+        headers: {
+          'Transition-Enabled': false
+        },
+     	success: function(data) {
+     		if (data != "") {
+	           	create = '<select id="'+selectID+'" name="'+selectID+'">';    
+	           	create += data;
+	           	create += '</select>';
+           	}
+           	else {
+           		create = '<input type="text" id="'+selectID+'" name="'+selectID+'">';
+           	}
+           	$('span[name="'+ spanID +'"]').html(create);
+           	$('span[name="'+ spanID +'"]').trigger('create');
+       	}
+  	});
+}
+
+
+$(document).ready(function(){
+	getPincodeCityStateCountryLookups("district", "<%=getObjectMapping(addressObj)%>");
+	getPincodeCityStateCountryLookups("city", "<%=getObjectMapping(addressObj)%>");
+	
+	$('select[name="<%=getObjectMapping(addressObj)%>[countryCd]"]').change(function(){
+		getPincodeCityStateCountryLookups("district", "<%=getObjectMapping(addressObj)%>");
+		getPincodeCityStateCountryLookups("city", "<%=getObjectMapping(addressObj)%>");
+	});
+
+	$('input[name="<%=getObjectMapping(addressObj)%>[pinCode]"]').change(function(){
+		getPincodeCityStateCountryLookups("district", "<%=getObjectMapping(addressObj)%>");
+		getPincodeCityStateCountryLookups("city", "<%=getObjectMapping(addressObj)%>");
+	});
+
+
+	//Mark fields mandatory based on Validation Metadata
+	<% 
+	if @mandatoryFields != nil && @mandatoryFields[addressObj] != nil
+		@mandatoryFields[addressObj].each do |field| 
+	%>
+			$("label[for='<%=getObjectMapping(addressObj)%>[<%= field %>]']").append('<label for=" *" class="mandatory1">&nbsp;*</label>');
+	<% 
+		end 
+	end 
+	%>
+});
+</script>     

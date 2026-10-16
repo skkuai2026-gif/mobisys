@@ -1,0 +1,21 @@
+<%= pageTagStart("","Symbiosys") %>
+    <%= headerTag('LANGUAGESETTINGS', '', "","/app/Menu/landingPage") %>
+    <div data-role="main" class="ui-content">
+        <div class="main-content-wrapper main-content-full">
+            <div class="project-content-bg">
+                <div class="div-with-border no-padding-bottom preferences-content">
+                    <%= panelTagStart %>
+                        <div class="content-fullform">  
+                            <% @locales.each do |locale| %>
+                                <div class="ui-block-a-equi">
+                                    <a href="/app/LabelValue/changeLanguage?language=<%=locale.cd.to_s.downcase%>" data-role="button" data-theme="a" rel="external"><%= getLabelValue(locale.desc.to_s) %></a>
+                                </div>
+                            <% end %>
+                        </div>
+                    <%= panelTagEnd %>
+                </div>
+            </div>
+        </div>
+    </div>
+<%= pageTagEnd %>
+

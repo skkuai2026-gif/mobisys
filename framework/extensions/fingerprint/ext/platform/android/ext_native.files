@@ -1,0 +1,7 @@
+ext/platform/android/generated/jni/Fingerprint.cpp
+ext/platform/android/generated/jni/fingerprint_ruby_wrap.cpp
+ext/platform/android/generated/jni/fingerprint_js_wrap.cpp
+ext/platform/android/jni/Fingerprint_impl.cpp
+ext/shared/generated/fingerprint_api_init.cpp
+ext/shared/generated/fingerprint_js_api.cpp
+ext/shared/generated/fingerprint_ruby_api.c

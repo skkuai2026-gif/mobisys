@@ -1,0 +1,34 @@
+<%= panelTagStart(false) %>
+	<%= subPanelTagStart("TOPUPINFORMATION","true","INITIALINVESTMENTREQUIRED,REGULARTOPUPSREQUIRED",true) %>
+		<div id="topup">
+			<%= prdFieldDataTag("#{@policyPckg}.PolicyDO","topupOptionCd","TOPUPTYPESELECTIONREQUIRED") %>
+		</div>
+		<div id="initialTopup">
+			<%= panelTagStart(false) %>
+				<%= subPanelTagStart("initailTopUpDetails","false","INITIALINVESTMENTREQUIRED",false) %>
+					<%= prdFieldDataTag("#{@policyPckg}.PolicyDO","initialTopupFl") %>
+					<%= modelTagStart("initialInvesttopup", @initialTopup, @policy, 50) %>
+						<%= prdFieldDataTag("#{@policyPckg}.PolicyTopUpDO","topUpAmount","","initialInvestmentAmt") %>
+						<div style="display: none;">
+							<%= inputTag("topUpTypeCd") %>
+						</div>
+					<% modelTagEnd %>
+				<%= subPanelTagEnd %>
+			<%= panelTagEnd %>
+		</div>
+		<div id="regularTopup">
+			<%= panelTagStart(false) %>
+				<%= subPanelTagStart("regularTopUpDetails","false","REGULARTOPUPSREQUIRED",false) %>
+					<%= prdFieldDataTag("#{@policyPckg}.PolicyDO","regularTopupFl") %>
+					<%= modelTagStart("regulartopup", @regularTopUp, @policy, 51) %>
+						<%= prdFieldDataTag("#{@policyPckg}.PolicyTopUpDO","topUpPeriod","","regularTopUpPeriod") %>
+						<%= prdFieldDataTag("#{@policyPckg}.PolicyTopUpDO","topUpAmount,topupFrequencyVal","","regularPolicyTopupAmt,regularTopupFrequencyVal") %>
+						<div style="display: none;">
+							<%= inputTag("topUpTypeCd") %>
+						</div>
+					<% modelTagEnd %>
+				<%= subPanelTagEnd %>
+			<%= panelTagEnd %>
+		</div>
+	<%= subPanelTagEnd %>
+<%= panelTagEnd %>

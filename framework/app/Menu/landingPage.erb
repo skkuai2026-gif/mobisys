@@ -1,0 +1,271 @@
+<div data-role="page">
+	<link rel="stylesheet" href="/public/css/c2l_dashboard.css">
+	<div data-role="header" id="header">
+		<img src="/public/images/logo2.png"/>
+	</div>
+
+	<div data-role="content" id="content">
+		<div class="ui-grid-e ui-responsive" id="main-options">		    
+		    <% if @manuList.include? 'COLLATERAL' %> 
+			    <div class="ui-block-a">
+					<div>
+						<a href="/app/Level0/entrypoint" rel="external">
+							<img src="/public/images/SalesIllustration/Collateral.png" height="90px">
+						</a>
+					</div>
+					<div>
+						<a href="/app/Level0/entrypoint" rel="external"><%= getLabelValue('COLLATERAL') %></a> 
+						<i class="fa fa-link"></i>
+					</div>
+			    </div>
+		    <% end %>
+
+			<% if @manuList.include? 'LEADS' %>
+			    <div class="ui-block-b">
+			    	<div>
+						<a href="/app/Menu/leads" rel="external">
+							<img src="/public/images/SalesIllustration/leadsPCG.png" height="90px">
+						</a>
+					</div>
+					<div>
+						<a href="/app/Menu/leads" rel="external"><%= getLabelValue('LEADS') %></a> 
+						<i class="fa fa-link"></i>
+					</div>
+			    </div>
+		    <% end %>
+
+		    <% if @manuList.include? 'FNA' %>
+		    	<div class="ui-block-c">
+			    	<div>
+						<a href="/app/Menu/fna" rel="external">
+							<img src="/public/images/SalesIllustration/needs-analysis.png" height="90px">
+						</a>
+					</div>
+					<div>
+						<a href="/app/Menu/fna" rel="external"><%= getLabelValue('FNA & RPQ') %></a> 
+						<i class="fa fa-link"></i>
+					</div>
+			    </div>
+          	<% end %>
+          
+		    <% if @manuList.include? 'SALESILLUSTRATION' %>
+			    <div class="ui-block-d">
+			    	<div>
+						<a href="/app/Menu/salesIllustration" rel="external">
+							<img src="/public/images/SalesIllustration/Sales-IllustrationsPCG.png" height="90px">
+						</a>
+					</div>
+					<div>
+						<a href="/app/Menu/salesIllustration" rel="external"><%= getLabelValue('SALESILLUSTRATION') %></a>
+					</div>
+			    </div>
+		    <% end %>
+
+		    <% if @manuList.include? 'EAPP' %>
+			    <div class="ui-block-e">
+			    	<div>
+						<a href="/app/Menu/eapp" rel="external">
+							<img src="/public/images/SalesIllustration/E-ApplicationPCG.png" height="90px">
+						</a>
+					</div>
+					<div>
+						<a href="/app/Menu/eapp" rel="external"><%= getLabelValue('EAPP') %></a>
+					</div>
+			    </div>
+		    <% end %>
+
+		    <% if @manuList.include? 'RECEIPTING' %>
+			    <div class="ui-block-f">
+					<div>
+						<a href="/app/Menu/receipting" rel="external">
+							<img src="/public/images/SalesIllustration/receipt-icon.png" height="90px">
+						</a>
+					</div>
+					<div>
+						<a href="/app/Menu/receipting" rel="external"><%= getLabelValue('RECEIPTING') %></a>
+					</div>
+			    </div>
+		    <% end %>
+		</div>
+
+		<div class="ui-grid-a ui-responsive">
+			<div class="ui-block-a">
+        		<div class="illustrationdisplay">
+          			<table class="searchtable" width="100%">
+            			<tr class="searchtableheader"><td><%= getLabelValue('EAPP') %></td></tr>
+            			<tr class="search1">
+            				<td class="tabletext">
+            					<img src="/public/images/eapp-graph1.png" style="width:100%"/>
+            				</td>
+            			</tr>	
+           			</table>
+           		</div>
+		    </div>	
+
+			<div class="ui-block-b">
+        		<div class="illustrationdisplay">
+          			<table class="searchtable" width="100%">
+            			<tr class="searchtableheader"><td><%= getLabelValue('SALESILLUSTRATION') %></td></tr>
+            			<tr class="search1">
+            				<td class="tabletext">
+            					<img src="/public/images/sales-graph2.png" style="width:100%"/>
+            				</td>
+            			</tr>	
+           			</table>
+           		</div>
+		    </div>
+		</div>
+
+		<div class="ui-grid-a ui-responsive">
+		    <div class="ui-block-a">
+		    	<!-- Lead dash board -->
+              	<% if @leadsDashboard != nil && @leadsDashboard.size > 0 %>
+            		<div class="illustrationdisplay">
+              			<table class="searchtable" width="100%">
+                			<tr class="searchtableheader" >
+                  			<%
+                  			leadHeader = @leadsDashboard[0]
+                  			leadHeader.each do |key, value|
+              				%>
+                        		<td> <%= getLabelValue(key) %> </td>
+                  			<% end %>
+                 			</tr>
+                			<%
+                			@leadsDashboard.each_with_index do |lead, index|
+                      			if lead != nil
+                          			if (index%2 == 0)
+                          	%>
+                          				<tr class="search1">
+                          			<% else %>
+                             			<tr class="search2">
+                          			<% 
+                      				end
+                  					lead.each do |key, value|
+              						%>
+                                		<td class="tabletext">  <%= getLabelValue(value) %> </td>
+                          			<%  end  %>      
+                             		</tr>
+                     		<%
+                      			end
+                    		end
+                			%>
+               			</table>
+               		</div>
+           		<% end %>
+		    </div>	
+
+	    	<div class="ui-block-b">
+	    		<!-- Quotation dash board -->
+				<% if @quotationsDashboard != nil && @quotationsDashboard.size > 0 %>
+					<div class="illustrationdisplay">
+						<table class="searchtable" width="100%">
+							<tr class="searchtableheader" >
+							<% 
+							quotationHeader = @quotationsDashboard[0]
+							quotationHeader.each do |key, value|
+							%>
+								<td> <%= getLabelValue(key) %> </td>
+							<% end %>
+							</tr>
+							<%
+							@quotationsDashboard.each_with_index do |quotation, index|
+								if quotation != nil
+									if (index%2 == 0)
+	                      	%>
+	                      				<tr class="search1">
+	                  				<% else %>
+	                  					<tr class="search2">
+	              			<% 
+	              					end
+	              					quotation.each do |key, value|
+	  						%>
+	                                	<td class="tabletext">  <%= getLabelValue(value) %> </td>
+	                      			<% end %>      
+	                            	</tr>
+	                        <%
+	                      		end
+	                    	end
+	                		%>
+	               		</table>
+	               	</div>
+          		<% end %>
+    		</div>
+    	</div>
+
+    	<div class="ui-grid-a ui-responsive">
+	    	<div class="ui-block-a">
+	    		<!-- product dash board -->
+          		<% if @productsDashboard != nil && @productsDashboard.size > 0 %>
+          			<div class="illustrationdisplay">
+          				<table class="searchtable" width="100%">
+          					<tr class="searchtableheader">
+          						<% 
+          						header = @productsDashboard[0]
+                       			header.each do |key, value|
+                   				%>
+                         			<td> <%= getLabelValue(key) %> </td>
+                    			<% end %>
+                  			</tr>
+                  			<%
+                  			@productsDashboard.each_with_index do |dataobject, index|
+                        		if dataobject != nil
+                            		if (index%2 == 0)
+                            %>
+                               			<tr class="search1">
+                            		<% else %>
+                               			<tr class="search2">
+                            		<%
+                            		end
+                            		dataobject.each do |key, value|
+                        			%>
+                                 		<td class="tabletext">  <%= getLabelValue(value) %> </td>
+                            		<% end %>      
+                               		</tr>
+                          	<%
+                        		end
+                      		end
+                  			%>
+                 		</table>
+              		</div> 
+            	<% end %>
+    		</div>
+
+    		<div class="ui-block-b">
+    			<!-- birthday dash board -->
+          		<% unless @birthdayDashboard.empty? %>
+             		<div class="illustrationdisplay">
+              			<table class="searchtable" width="100%">
+                			<tr class="searchtableheader" >
+                   			<%
+                   			quotationHeader = @birthdayDashboard[0]
+                 			quotationHeader.each do |key, value|
+                     		%>
+                     			<td> <%= getLabelValue(key) %> </td> 
+                 			<% end %>
+                 			</tr>
+                			<%
+                			@birthdayDashboard.each_with_index do |lead, index|
+                      			if lead != nil
+                          			if (index%2 == 0)
+                          	%>
+                             			<tr class="search1">
+                          			<% else %>
+                           				<tr class="search2">
+                          			<%
+                          			end                      
+                          			lead.each do |key, value|
+                      				%>
+                            			<td class="tabletext">  <%= getLabelValue(value) %> </td>
+                          			<% end %>      
+                             		</tr>
+                        	<%
+                  				end
+                    		end
+                			%>
+               			</table>
+            		</div>
+          		<% end %>
+		    </div>	
+    	</div>	
+    </div>
+</div>

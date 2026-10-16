@@ -1,0 +1,121 @@
+<div name = "quotationProductExtraDiv">
+	<div class="illustrationdisplay" name="loadingDetails"> 
+		<div class="legend">
+	        <label class="strongLabel">
+	            <%= getLabelValue('LOADINGDETAILS') %>
+	            <a href="#" class="scrollTopButton ui-icon-carat-u ui-btn-icon-notext ui-alt-icon ui-btn-inline"></a>
+	            <a href="#" class="expandButton ui-icon-plus ui-btn-icon-notext ui-alt-icon ui-btn-inline"/></a>
+	            <a href="#" class="collapseButton ui-icon-minus ui-btn-icon-notext ui-alt-icon ui-btn-inline"/></a>
+	        </label>
+	    </div>
+		<div class="panelContent">
+			<div class="ui-grid-a">
+				<div class="ui-block-a">
+					<div class="ui-grid-b">
+					    <div class="ui-block-a"> 
+					    </div>
+					    <% if @facetData[:renderdecisionCd] %>
+						    <div class="ui-block-b"> 
+						    	<%= renderLabel('decisionCd', 'decision', nil) %>
+						    </div>
+						<% end %>
+						<% if @facetData[:renderextraFlatAmt] %>
+						    <div class="ui-block-c"> 
+						      	<%= renderLabel('extraFlatAmt', 'flatExtra', nil) %>
+						    </div>
+						<% end %>
+					</div>
+				</div>
+				<div class="ui-block-b">
+					<div class="ui-grid-b">
+						<% if @facetData[:renderextraFlatDuration] %>
+						    <div class="ui-block-a">
+						    	<%= renderLabel('extraFlatDuration', 'extraFlatDuration', nil) %>
+						    </div>
+						<% end %>
+						<% if @facetData[:renderextraPercent] %>
+						   	<div class="ui-block-b"> 
+						      	<%= renderLabel('extraPercent', 'extraPercent', nil) %>
+						    </div>
+						<% end %>
+						<% if @facetData[:renderextraPercDuration] %>
+						    <div class="ui-block-c">
+						    	<%= renderLabel('extraPercDuration', 'extraPercDuration', nil) %>
+						    </div>
+						<% end %>
+					</div>
+				</div>
+			</div>
+		
+		<% @quotationProductExtras.each_with_index do |quotationProdExtra, index | %>
+			<%= renderObject(quotationProdExtra, @baseProduct) %>
+			
+
+			<div name = '<%= "#{quotationProdExtra.extraTypeCd}" %>'>
+				<% if @facetData[:renderProcessingTypeCd] %>
+					<%= renderHiddenField('processingTypeCd', quotationProdExtra.processingTypeCd, nil, quotationProdExtra) %>
+				<% end %>
+				<% if @facetData[:renderLoadingTypeCd] %>
+					<%= renderHiddenField('loadingTypeCd', quotationProdExtra.loadingTypeCd, nil, quotationProdExtra) %>
+				<% end %>
+				<% if @facetData[:renderExtraTypeCd] %>
+					<%= renderHiddenField('extraTypeCd', quotationProdExtra.extraTypeCd, nil, quotationProdExtra) %>
+				<% end %>
+				<%= renderHiddenField('removed', quotationProdExtra.removed, nil, quotationProdExtra) %>
+				<div class="ui-grid-a">
+					<div class="ui-block-a"> 
+						<div class="ui-grid-b">
+							<div class="ui-block-a">
+							  	<%= renderLabel('extraTypeCd', quotationProdExtra.extraTypeCd, nil, quotationProdExtra) %>
+							</div>
+							<% if @facetData[:renderdecisionCd] %>
+								<div class="ui-block-b"> 
+									<%= renderAmountField('decisionCd', quotationProdExtra.decisionCd, nil, quotationProdExtra, ' maxlength="10" ') %>
+								</div>
+							<% end %>
+							<% if @facetData[:renderextraFlatAmt] %>
+								<div class="ui-block-c"> 
+								  	<%= renderAmountField('extraFlatAmt', quotationProdExtra.extraFlatAmt, nil, quotationProdExtra, ' maxlength="10" ') %>
+								  	<%= attachMask("#{getObjectMapping(quotationProdExtra)}[extraFlatAmt]") %>
+								</div>
+							<% end %>
+						</div>
+					</div>
+					<div class="ui-block-b">
+						<div class="ui-grid-b">
+						<% if @facetData[:renderextraFlatDuration] %>
+							<div class="ui-block-a">
+						  		<%= renderCountField('extraFlatDuration', quotationProdExtra.extraFlatDuration, nil, quotationProdExtra, ' maxlength="10"') %>
+						  		<%= attachMask("#{getObjectMapping(quotationProdExtra)}[extraFlatDuration]") %>
+							</div>
+						<% end %>
+						<% if @facetData[:renderextraPercent] %>
+							<div class="ui-block-b"> 
+								<%= renderAmountField('extraPercent', quotationProdExtra.extraPercent, nil, quotationProdExtra) %>
+								<%= attachMask("#{getObjectMapping(quotationProdExtra)}[extraPercent]") %>
+							</div>
+						<% end %>
+						<% if @facetData[:renderextraPercDuration] %>
+							<div class="ui-block-c">
+								<%= renderCountField('extraPercDuration', quotationProdExtra.extraPercDuration, nil, quotationProdExtra) %>
+								<%= attachMask("#{getObjectMapping(quotationProdExtra)}[extraPercDuration]") %>
+							</div>
+						<% end %>
+						</div>
+					</div>
+				</div>
+			</div>
+
+		<% end %>		
+		<%
+		if $rhoconfig[:refresh_loading_section] == "YES"
+		%>
+				<a href="#" name="save" data-role="button" style="width:8%;">
+				  <%= getLabelValue('Refresh')%>
+				</a>
+		<% end %>
+		</div>
+	</div>
+</div>
+
+<%= render :partial => "captureExtraPlanInformationJS" %>

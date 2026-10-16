@@ -1,0 +1,8 @@
+<div class="ui-grid-d" id = "<%= @event.object %>"  style="background-color:white;">  
+  <%=renderObject(@event, @needAnalysis)%>     
+  <div class="ui-block-a" align="center"> <%= getLookup('LIFEEVENTS', 'eventType', @event.eventType, @event, nil, " onchange=\"rePlotEventList();\"")   %> </div>
+  <div class="ui-block-b" align="center"> <%= renderCountField('age', @event.age, 'Age', @event,  " onchange=\"rePlotEventList();\"")  %> </div>
+  <div class="ui-block-c" align="center"> <%= renderAmountField('amount', @event.amount, 'Amount', @event,  " onchange=\"rePlotEventList();\"") %></div>
+  <div class="ui-block-d" align="center"> <a href="javascript:deleteEvent(<%= @event.object %>);" name="deleteButton" data-role="button" style="max-width:100px;"><%= getLabelValue('DELETE')%></a></div>
+  <div class="ui-block-e" align="center"> <img src='/public/images/black1.png' align='middle'> </div>
+</div>

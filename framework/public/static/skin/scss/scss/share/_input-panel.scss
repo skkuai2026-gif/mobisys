@@ -1,0 +1,182 @@
+#input-panel {
+        z-index: 1;
+        left: 390px;
+        right: 0px; 
+        background: none;
+        overflow: hidden;
+        
+        .section {
+        	width: 100%;
+        }
+        
+        .get_ready_to_live {
+        	img {
+        		display: block;
+        		margin: auto;
+				margin-top: 10%;
+        	}
+        }
+
+		.welcome_arrow {
+			img {
+        		     display: block;
+        	       }
+		}
+        
+        .related-fail {
+                opacity: 0;
+        }
+        .related-pass {
+                opacity: 1;
+        }
+        
+        .question_knob{ 
+            position: relative;
+            width:400px;
+            margin:auto;
+            @include transform(scale3d(0.7,0.7,1));
+            @include transform-origin(200,200);
+            @include transition-property(transform);
+            @include transition-duration(0.8s);
+            
+                &.active {
+                       @include transform(scale3d(1,1,1));
+                       @include transition-property(transform);
+                       @include transition-duration(0.8s);
+                        
+                        canvas{
+                                opacity: 1;
+                                @include transform(scale3d(1,1,1));
+                                @include transition-property(transform opacity);
+                                @include transition-duration(0.8s);
+                        }
+                }
+        	.w-bg{
+                    position: absolute;
+                    background:#FFF;
+                    border-radius: 50%;
+                    width:250px;
+                    height:250px;
+                    margin-left:76px;
+                    margin-top:76px;
+                    box-shadow: 0px 0px 15px #999;
+                }
+                .t-bg {
+                    position: absolute;
+                    background:rgba(255,255,255,0.85);
+                    border-radius: 50%;
+                    width:$field-size;
+                    height:$field-size;
+                }
+                .title{
+                    z-index: 1;
+                    width:200px;
+                    height:190px;
+                    position:absolute;
+                    left:225px;
+                    top:120px;
+                    margin-left:-125px;
+                    margin-top:-50px;
+                    color:#FF4000;
+                    text-align: center;
+                    padding-top:60px;
+                    font-size: 20px;
+                }
+                canvas{
+                    opacity: 0;
+                    @include transform(scale3d(0.8,0.8,1));
+                }
+                input.knob {
+                        top: 10px;
+                }
+		.value {
+			width: 250px;
+			position: absolute;
+			margin-top: 180px;
+			margin-left: 75px;
+			font-style: normal;
+			font-size: 40px;
+			line-height: normal;
+			text-align: center;
+			color: #ff9933;
+		}
+        
+        }
+        
+        .pie-input {
+                position: absolute;
+                opacity: 0;
+                visibility:hidden;
+                @include transform(scale3d(0.8, 0.8, 1));
+                @include transition-property(transform);
+                @include transition-duration(0.8s);
+                
+                &.active {
+                        visibility:visible;
+                        opacity: 1;
+                        @include transform(scale3d(1, 1, 1));
+                        @include transition-property(opacity transform);
+                        @include transition-duration(0.8s);
+                }
+                .outline {
+                        pointer-events: none;
+                        fill:$gray-line-color;
+                        
+                }
+                .label {
+                        pointer-events: none;
+                        fill:$gray-text-color;
+                }
+                .background {
+                        fill:#ddd;
+                        opacity:0;
+                }
+                .slice.active {
+                        .outline {
+                                fill:$secondary-color;
+                        }
+                        .label {
+                                fill:$secondary-color;
+                        }
+                        .background {
+                                opacity:1;
+                        }
+                }
+				
+        }
+        
+        .next-button {
+			position: relative;
+			background-color: #f68c1f;
+			color: #fff;
+			font-size: 50px;
+			padding: 3 12;
+			width: 35px;
+			margin-left: auto;
+			margin-right: auto;
+			opacity: 0;
+			&.active {
+				opacity: 1;
+			}
+        }
+		
+		.intro{
+		        background-color: #f68b1f;
+		        background-color: rgba(246,139,31,0.9);
+		        color: #fff;
+		        padding: 30px;
+		        text-align: center;
+		        h4{
+		            font-size: 20px;    
+		            line-height: 25px;
+		            margin-bottom: 10px;
+					margin-top: 10px;
+		        }
+		        p{
+		                font-size: 15px;
+		                line-height: 20px;
+		                font-weight: lighter;
+		        }
+		}
+}
+

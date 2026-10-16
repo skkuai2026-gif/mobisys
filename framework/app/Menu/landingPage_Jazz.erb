@@ -1,0 +1,90 @@
+<!-- landing page code start -->
+<%= pageTagStart('dashboard','Symbiosys') %>
+    <!--HEADER-->
+    <%= headerTag("DASHBOARD", "home") %>
+    <!--/HEADER-->
+    <!--MAIN CONTENT-->
+    <div data-role="main" class="ui-content">
+        <%= menuTag %>       
+        <div class="main-content-wrapper">
+            <div class="main-content-wrapper-left">
+                <!-- Date Range -->
+                <div class="date-ranger">
+                    <h4><%=getLabelValue('MONTHRANGE')%></h4>
+                    <div data-role="rangeslider" id="slider">
+                        <input type="range" name="slider-1" data-highlight="true" min="0" max="11" value="3" onchange="rangeChange()">
+                        <input type="range" name="slider-2" data-highlight="true" min="0" max="11" value="8" onchange="rangeChange()">
+                    </div>
+                    <div>
+                    <p class="pull-left"><%= getLabelValue('Jan')%></p>
+                    <p class="pull-right"><%= getLabelValue('Dec')%></p>
+                    </div>
+                </div>
+                <!-- charts-->
+                <div class="chart">
+                    <div data-role="tabs" id="tabs">
+                        <div data-role="navbar">
+                            <ul class="tab-name">
+                                <li><a href="#chart1" class="ui-btn-active" data-ajax="false" onclick="tabChange('cvs1')"><%= getLabelValue('Activity')%> <br><%= getLabelValue('Summary') %> </a></li>
+                                <li><a href="#chart2" data-ajax="false" onclick="tabChange('cvs2')"><%= getLabelValue('PRODUCT')%><br><%= getLabelValue('WiseSI')%></a></li>
+                                <li><a href="#chart3" data-ajax="false" onclick="tabChange('cvs3')"><%= getLabelValue('PRODUCT')%><br><%= getLabelValue('WiseEApp')%></a></li>
+                            </ul>
+                        </div>
+                        <div id="chart1" class="ui-body-d ui-content">
+                            <!-- <div id="chart_div" class="chart-style" style="width: 100%; height: auto;"></div> -->
+                            <canvas id="cvs1" name='cvs1' width="350" height="260" style="margin-left:2%;"></canvas>
+                            <!-- charts js-->
+                            <!-- <ul class="chart-text">
+                                <li>
+                                    <p class="circle"><span>1</span></p>
+                                    <p class="">Lorem Ipsum is simply dummy text</p>
+                                </li>
+                            </ul> -->
+                        </div>
+                        <div id="chart2">
+                            <canvas id="cvs2" name='cvs2' width="350" height="260" style="margin-left:2%;"></canvas>
+                            <!-- <ul class="chart-text">
+                                <li>
+                                    <p class="circle"><span>1</span></p>
+                                    <p class="">Lorem Ipsum is simply dummy text Lorem Ipsum is simply dummy text Lorem Ipsum is simply dummy text</p>
+                                </li>
+                            </ul> -->
+                        </div>
+                        <div id="chart3">
+                            <canvas id="cvs3" name='cvs3' width="350" height="260" style="margin-left:2%;"></canvas>
+                            <!-- <ul class="chart-text">
+                                <li>
+                                    <p class="circle"><span>1</span></p>
+                                    <p class="">Lorem Ipsum is simply dummy text Lorem Ipsum is simply dummy text Lorem Ipsum is simply dummy text</p>
+                                </li>
+                            </ul> -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="main-content-wrapper-right" id="search-wrapper">
+                <%= formTagStart("landingSubmit","/app/Menu/landingSubmit") %>
+                    <%= searchTag("proposerName,productId,fnaId,quotationRefNum,proposalNum,statusCd","SearchTrackLeadDO",@trackLeads,true,false,"View Lead,View FNA,View Quotation,View Proposal,Add Proposal","icon-change-status,icon-change-status,icon-change-status,icon-change-status,icon-change-status","/app/Menu/{#object}/showLead,/app/Menu/{#object}/showFNA,/app/Menu/{#object}/showQuotation,/app/Menu/{#object}/showProposal,/app/Menu/{#object}/addProposal","",@moreOptions,@moreOptionsURLS,true,"NEWLEAD,LEADATFNASTAGE,LEADATSISTAGE,LEADATEAPPSTAGE,LEADSEARCH","javascript:setStageAndSubmit('newlead'),javascript:setStageAndSubmit('fna'),javascript:setStageAndSubmit('si'),javascript:setStageAndSubmit('eapp'),javascript:setStageAndSubmit('searchLead')","","",false,"col-20") %>
+                    <input type="hidden" name="leadStage" id="leadStage" value='<%= @leadStage %>'/>
+                <%= formTagEnd %>
+            </div>
+        </div>
+        <!--/MAIN CONTENT-->
+    </div>
+<%= pageTagEnd %>
+<!-- landing page code end -->
+
+<!-- chat box code start -->
+<% if System::get_property('has_network') && $login %>
+    <style type="text/css">
+    .chat img {
+        width: auto;
+    }
+
+    .chat-title, .message-box {
+        border-radius: 20px;
+    }
+    </style>
+    <%= render(:file => '../public/jazz/libraries/firebase-ai-groupchat/chat.erb')%>
+<% end %>
+<script type="text/javascript" charset="utf-8" src="/app/Menu/landingPage_Jazz.js"></script>

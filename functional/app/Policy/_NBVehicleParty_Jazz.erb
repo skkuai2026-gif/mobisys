@@ -1,0 +1,65 @@
+<style type="text/css">
+.contact-no .row-details .col-right div.ui-input-text:nth-last-child(2) input{
+	width: 36% !important;
+}
+
+.contact-no .row-details .col-right div.ui-input-text:last-child input{
+	border: 0 !important;
+}
+</style>
+
+<%= modelTagStart(tagName, party, @policy) %>
+	<%= prdFieldDataTag("#{partyPckg}",'roleCd') %>
+	
+	<div id='<%= tagName %>_individualDetail'>
+		<%= prdFieldDataTag("#{partyPckg}","firstName1,lastName1,birthDt,age,genderCd") %>
+	</div>
+	<% if partyAddressPanel %>
+		<div id="<%=tagName%>_partyAddress">
+			<% partyAddressPckg = 'PartyAddressDO' %>
+			<% if partyHomeAddressPanel %>
+				<div id="<%=tagName%>_homeAddressContainer">
+					<%#= prdFieldDataTag("#{partyPckg}",'copyFromAddr1') %>
+					<div id="<%=tagName%>_home-address-details">
+						<%= modelTagStart(resTagId, homeAddressObject, party) %>
+							<%= prdFieldDataTag("#{partyAddressPckg}",'addressLine1Lang1,addressLine2Lang1,countryCd,pinCode,districtCd,stateCd,cityCd') %>
+							<div style="display: none;">
+	        					<%= inputTag("addressTypeCd") %>
+	    					</div>
+						<% modelTagEnd %>
+					</div>
+				</div>
+			<% end %>
+		</div>
+	<% end %>
+
+	<% partyEmailPckg = 'PartyEmailDO' %>
+	<%= modelTagStart(emailTagId, partyEmailObject, party) %>
+		<%= prdFieldDataTag("#{partyEmailPckg}",'emailAddress','','',2,false) %>
+	<% modelTagEnd %>
+
+	<%= modelTagStart(mobTagId, partyMobileObject, party) %>
+		<% partyContactPckg = "PartyContactDO" %>
+		<% if $companyFieldMetaDataCache.include?((partyPckg + ".mobileContactReqd").to_sym) && ($companyFieldMetaDataCache.include?((partyContactPckg + ".countryCd").to_sym) || $companyFieldMetaDataCache.include?((partyContactPckg + ".stdCode").to_sym) || $companyFieldMetaDataCache.include?((partyContactPckg + ".contactNum").to_sym) || $companyFieldMetaDataCache.include?((partyContactPckg + ".extensionNum").to_sym)) %>
+			
+			<div style="display: none;">
+			    <%= inputTag("contactTypeCd") %>
+			</div>
+			<div class="project-data contact-no">
+			    <div class="row-details">
+			        <p class="col-left">
+			            <%= getLabelValue('contactMobile') %>
+			        </p>
+					<p class="col-right">
+						<%= inputTag("countryCd") if $companyFieldMetaDataCache.include?((partyContactPckg + ".countryCd").to_sym) %>
+						<%= inputTag("stdCode") if $companyFieldMetaDataCache.include?((partyContactPckg + ".stdCode").to_sym) %>
+						<%= inputTag("contactNum") if $companyFieldMetaDataCache.include?((partyContactPckg + ".contactNum").to_sym) %>
+						<%= inputTag("extensionNum") if $companyFieldMetaDataCache.include?((partyContactPckg + ".extensionNum").to_sym) %>
+					</p>
+				</div>
+			</div>
+		<% end %>
+	<% modelTagEnd %>
+		
+<% modelTagEnd %>
+

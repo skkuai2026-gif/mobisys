@@ -1,0 +1,73 @@
+<!-- all rider fields will be rendered in hidden div with class rider-fields. On click of header, rider fields will be copied to popup container. On popup ok click, rider fields are replaced back in hidden div rider-fields -->
+
+<div class="project-content-bg">
+	<div class="project-content padding-top0">
+		<!--Rider Mobile-->
+		<div class="slider-wrapper-mobile display-none-desktop">
+			<!--Slider-->
+			<div class="slider slider-nav">
+				<% $displayRidersHM.each_with_index do |(key,riderDetails), riderCount| %>
+					<% unless key.include?'|' %>
+						<% headerFieldName = @displayRiderLifeHeader[key] %>
+						<div onClick="javascript:populateRider('<%= key %>')">
+							<div class="owner-name active"><p><%= headerFieldName.split('|')[0]%></p></div>
+							<div class="owner-full-name"><%= headerFieldName.split('|')[1] %></div>
+						</div>
+					<% end %>
+				<% end %>
+			</div>
+			<div class="slider slider-single">
+				<!--Slide-->
+				<% $displayRidersHM.each_with_index do |(key,riderDetails), riderCount| %>
+					<% unless key.include?'|' %>
+						<div name="riderAutoPopulation" id="riderAutoPopulationDiv<%=key%>">
+							
+						</div>
+						<input type="hidden" id="riderInitialCount<%=key%>" name="riderInitialCount<%=key%>" value='<%= @riderObjects %>'/>
+						<% @riderObjects = @riderObjects + 100 %>
+					<% end %>
+					<% if riderCount == $displayRidersHM.size-1 %>
+						<input type="hidden" id="riderLastCount" name="riderLastCount" value='<%= @riderObjects.to_i-100 %>'/>
+					<% end %>
+				<% end %>
+				<%= inputTag("unselectedRiders",nil,nil,nil,nil,nil,'HIDDEN') %>
+			</div>
+			<!--/Slider-->
+		</div>
+		<!--/Rider Mobile-->
+	</div>
+</div>
+
+<input type="hidden" id="riderAutoPopulationReqFlag" value='<%= @riderAutoPopulationReqFlag %>'/>
+
+<%= modelTagStart("basePlan", @baseProduct, @quotation) %>
+	<div style="display: none;">
+		<%= inputTag("productTypeCd") %>
+		<%= inputTag("productVersion") %>
+		<%= inputTag("productSeq") %>
+		<%= prdFieldDataTag("#{@quotationPckg}.PolicyProductDO",'productFamilyCd,productId,productPlanOptionCd') %>
+	</div>
+<% modelTagEnd %>
+
+<!-- Rider Benefits Details Full Popup -->
+<!-- <div data-role="popup" id="popup-benefits-details" data-theme="a" class="ui-corner-all popup-wrapper documents-upload-popup">
+	<div class="popup-close-cust">
+		<a href="#" data-rel="back" class="icon-close"></a>
+	</div>
+	<div class="popup-heading-bg"></div>
+	<div class="popup-benefits-content">
+		
+	</div>
+	<div class="popup-footer-bg">
+		<a href="#" onClick="javascript:popupFooterOkMobile(this);" data-transition="slide" class="ui-link" title="Save">
+			<i class="icon-ok"></i>
+			<span class="footer-link-text">Ok</span>
+		</a>
+		<a href="#" onClick="javascript:popupFooterClearMobile(this);" data-transition="slide" class="border-mobile0 ui-link" title="Discard">
+			<i class="icon-close02"></i>
+			<span class="footer-link-text">Clear</span>
+		</a>
+	</div>
+	
+</div> -->
+<!-- /Rider Benefits Details Full Popup -->

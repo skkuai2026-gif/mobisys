@@ -1,0 +1,37 @@
+<link rel="stylesheet" href="/public/css/jquery.signaturepad.css"/>
+<style type="text/css">
+.sigNav {
+	width: 751px;
+	display: block !important;
+}
+.sigNav li {
+	display: block !important;
+}
+</style>
+<script type="text/javascript" src="/public/js/jquery.signaturepad.js"></script>
+<form method="POST" action="<%= url_for :action => :submitAgentQuestionDetails %>" name="agentQuestionForm" id="agentQuestionForm">
+	<%= render(:partial => 'CommonModules/renderQuestionnaire') %>
+
+
+	<div class="illustrationdisplay">
+		<%= renderObject(@signatureContainer)%>
+		<%= renderObject(@agentDeclarationSignature, @signatureContainer) %>
+		
+		<%= renderHiddenField('entityGuid', @signatureContainer.entityGuid, 'entityGuid', @signatureContainer) %>
+		<%= renderHiddenField('entityTypeCd', @signatureContainer.entityTypeCd, 'entityTypeCd', @signatureContainer) %>
+		<%= renderHiddenField('signatureTypeCd', @agentDeclarationSignature.signatureTypeCd, 'signatureTypeCd', @agentDeclarationSignature) %>
+		<%= renderHiddenField('entityGuid', @agentDeclarationSignature.entityGuid, 'entityGuid', @agentDeclarationSignature) %>
+		<div class="legend"><%= renderLabel('signature','agentSignHeader','strongLabel') %></div> 
+		<fieldset data-role="controlgroup" >
+			<div class="ui-grid-c"> 
+				<div class="ui-block-a">
+					<%= renderSignatureInlineField('signature', @agentDeclarationSignature ,returnAppHeightWeight('screen_width', 0.55), returnAppHeightWeight('screen_height', 0.30)) %>
+				</div>
+				<div class="ui-block-b"></div>
+				<div class="ui-block-c"></div>
+				<div class="ui-block-d"></div>
+			</div>
+		</fieldset>
+	</div>	
+</form>
+<%= render(:partial=>'captureAgentQuestionnairesDetailsJS') %>

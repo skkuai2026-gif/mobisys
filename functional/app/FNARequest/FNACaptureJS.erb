@@ -1,0 +1,542 @@
+<script type="text/javascript">
+    //Array to store common request data to be sent on tab load
+  var requestData = {
+    'fnaRequestObj': '<%= @fnaRequest.object.to_s %>'
+  };
+
+  //Array object consisting of additional tab specific request data to be sent on tab load
+  var additionalData = {};
+
+  //Array to store tab order
+  var eappTabOrder = [];
+
+
+  //Function to load list of all errors for the selected tab as well as for all tabs
+  function getTabErrors() {
+    $(".errortab").each(function(){
+      $(this).removeClass("errortab");
+    });
+  
+    $.ajax({                                    
+      url: "/app/FNARequest/getTabErrors",
+      async: false,
+          headers: {
+            'Transition-Enabled': false
+          },
+      success: function(data) {
+        if (data!="null") {
+          var parsedJSON = JSON.parse(data);
+          var objectName = "";
+          var field = null;
+          var label = null;
+          var tabObject = null;
+          var errorsExist = false;
+            /*Refresh Contents of the error dialog start*/
+          var errorData = "<ul>";
+          $.each(eappTabOrder, function(index, tabID) {
+          if (parsedJSON[tabID] != null && parsedJSON[tabID] != undefined){
+            var tabObject = parsedJSON[tabID];
+            if (!$.isEmptyObject(tabObject)) {
+                              
+              $("#"+tabID).parents('li').addClass("errortab");
+              // errorData += "<li>" + $("#"+tabID).siblings("span").html().replace(/&nbsp;/g, '') + ":<ul>";
+              // #tabID removed by Tejashree for removing labels 07-09-2017
+              errorData += "<li>" + "<ul>";
+              $.each(tabObject, function(objectClass, errorObject) {
+                objectClass = objectClass.replace("DO", "");
+                $.each(errorObject, function(guid, fieldObject) {
+                    if (!jQuery.isEmptyObject(fieldObject)) {
+                      errorsExist = true;
+                      $.each(fieldObject, function(fieldName, errorMessage) {
+                        $.each(errorMessage, function(errIndex, message) {
+                          errorData += "<li>" + message + "</li>";
+                        });
+                      });
+                        /*Map labels of error fields to the error dialog start*/
+                        //Get object id based on guid and classname
+                        objectName = $("input[value='"+guid+"'][name*='[guid]'][name*='"+objectClass+"']").attr('name');
+                        if (objectName != undefined) {
+                          $.each(fieldObject, function(fieldName, errorMessage) {
+                            //Get field based on object id and fieldname
+                            field = $("[name='"+objectName.replace("guid", fieldName)+"']");
+                            if (field.length != 0) {
+                              //Add info icon and click event listeners to label
+                              if (objectClass == "ServiceQuestionResponse") {
+                                label = $("div[for='"+objectName.replace("guid", fieldName)+"'] div.ui-grid-a");
+                                if (label.length != 0) {
+                                  label.append("<a href='#' class='ui-btn error_icon ui-btn-icon-notext ui-corner-all ui-btn-inline ui-alt-icon' style='border-style:none;'></a>");
+                                }
+                                else {
+                                  label = $("div[for='"+objectName.replace("guid", fieldName)+"']");
+                                  label.append("<a href='#' class='ui-btn error_icon ui-btn-icon-notext ui-corner-all ui-btn-inline ui-alt-icon' style='border-style:none;'></a>");
+                                }
+                                label = label.find("a");
+                              }
+                              else {
+                                label = $("label[for='"+objectName.replace("guid", fieldName)+"']");
+                              }
+
+                              //Make a list of field errors
+                                              var fieldErrors = "";
+                                              $.each(errorMessage, function(errIndex, message) {
+                                                  fieldErrors += "<li>" + message + "</li>";
+                                              });
+
+                              label.click(function(){
+                                $("#singleErrorDiv").html("<ul>" + fieldErrors + "</ul>");
+                                if (typeof $.mobile.sdCurrentDialog === 'undefined') {
+                                  $("<div>").simpledialog2({
+                                    mode : 'blank',
+                                    blankContent : $("#singleErrorDiv").html() + "<a rel='close' data-role='button' href='#'>" + '<%= getLabelValue("MESSAGE_CLOSE") %>' + "</a>"
+                                  });
+                                }
+                              });
+                            }
+                          });
+                      }
+                      /*Map labels of error fields to the error dialog end*/
+                      }
+                  });
+                });
+                errorData += "</ul></li>";
+              }
+              delete parsedJSON[tabID];
+            }
+          });
+          
+          $.each(parsedJSON, function(tabID, tabObject) {
+            if (!$.isEmptyObject(tabObject)) {
+                            
+              // #tabID removed by Tejashree for removing labels 07-09-2017              
+            errorData += "<li>" + "<ul>";
+              $.each(tabObject, function(objectClass, errorObject) {
+                $("a[data-url='"+tabID+"']").addClass("errortab");            
+                objectClass = objectClass.replace("DO", "");
+                $.each(errorObject, function(guid, fieldObject) {
+                    if (!jQuery.isEmptyObject(fieldObject)) {
+                      errorsExist = true;
+                      $.each(fieldObject, function(fieldName, errorMessage) {
+                        $.each(errorMessage, function(errIndex, message) {
+                          errorData += "<li>" + message + "</li>";
+                        });
+                      });
+                    }
+                });
+              });
+              errorData += "</ul></li>";
+            }
+          });
+
+
+          
+          errorData += "</ul>";
+          $("#totalErrorDiv").html(errorData);
+          if (errorsExist) {
+            $('span[id="errordiv"]').show();
+          }
+          else{
+             $('span[id="errordiv"]').hide();
+          }
+
+            /*Refresh Contents of the error dialog end*/
+        }
+      }
+    });
+  }
+
+    // Over-written raise alert method of product to show dialog instead of alert
+    function raiseAlert(exceptionCd,placeHolderArr,locale){
+        var result = getLabel(exceptionCd,locale);
+        if (placeHolderArr!=null){
+            for (var i = 0; i < placeHolderArr.length; i++) {
+                result = result.replace("{"+(i+1)+"}",placeHolderArr[i]);
+            }
+        }
+
+        var dialogContent = '<span>'+result+'</span>';
+        $("#field-validation-div").html("").html(dialogContent).trigger('create');
+        if (typeof $.mobile.sdCurrentDialog === 'undefined') {
+            $("<div>").simpledialog2({
+                mode : 'blank',
+                blankContent : $("#field-validation-div").html() +"<a rel='close' data-role='button' href='#' style='margin-top: 2%;'>" + '<%= getLabelValue("MESSAGE_CLOSE") %>' + "</a>"
+            });
+        }        
+    }
+
+ // Tejashree:08-Aug-2017 for alert on back button
+  function hyperlink_alert(){
+     $.ajax({
+        url: "/app/Menu/hyperlinktofna",
+        async: false,
+        headers: {
+            'Transition-Enabled': false
+        },
+        success: function(data) {
+           
+               
+        }
+    });
+  }
+
+  function changeTab(clickObject) {
+
+    var dataURL = clickObject.attr("data-url");
+
+    tabExchange(dataURL);
+
+    var id = ""
+
+    if (clickObject.attr("id") == "previousTab" || clickObject.attr("id") == "nextTab"){
+        id = $('a[data-url = "' + dataURL + '" ]').prop("id");
+    }else{
+        id = clickObject.attr("id");
+    }
+
+    if (clickObject.data("addl-params-key")) {
+        requestData = $.extend(requestData, additionalData[clickObject.data("addl-params-key")]);
+    }
+    /*Load tab content start*/
+    $.ajax({ 
+        url: "/app/FNARequest/"+dataURL,
+        data: {'id':'<%= @fnaRequest.object.to_s %>'},
+        async: false,
+        headers: {
+            'Transition-Enabled': false
+        },
+        success: function(data) {
+    
+            $.mobile.loading('hide');
+            $('#'+id).addClass("active-btn");
+            $("#tabDetailsContainer").html(data);
+            $("#tabDetailsContainer").trigger('create');
+                      // hideLoadingMessage();
+            tabSetup();
+            $(document).ready(function(){
+             
+                $('.scrollTopButton').click(function() {
+                    $("html, body").animate({ scrollTop: 0 }, "slow");
+                });
+
+                $('.expandButton').hide();
+
+                $('.collapseButton').click(function() {
+                    $(this).parents(".legend").siblings(".panelContent").hide();
+                    $(this).hide();
+                    $(this).siblings('.expandButton').show();
+                });
+
+                $('.expandButton').click(function() {
+                    $(this).parents(".legend").siblings(".panelContent").show();
+                    $(this).hide();
+                    $(this).siblings('.collapseButton').show();
+                });
+
+                <% if @fnaRequest.policyNum.to_s != "" || @fnaRequest.statusCd.to_s == "FNASUBMIT" %>
+                setReadOnly($('input[type="text"]'), true);
+                setReadOnly($('input[type="tel"]'), true);
+                setReadOnly($('input[type="num"]'), true);
+                setReadOnly($('input[type="email"]'), true);
+                $('select').selectmenu('disable').trigger("refresh");
+                $('input[type="radio"]').checkboxradio('disable').trigger("refresh");
+                $('input[type="checkbox"]').checkboxradio('disable').trigger("refresh");
+                $('input[type="button"]').off('click');
+                $('input[type="button"]').button('disable').trigger("refresh");
+                $('a[href="#clear"]').hide();
+                <% end %>
+
+                if (dataURL == "getPolicyNo"){
+                $('.icon').show();
+                $('.checkv1').show();
+                $('.submit_button_for_submission').show();
+            }
+               
+            });
+            getTabErrors();
+        }
+    });
+    /*Load tab content end*/
+  }
+
+ // Added changeTab_New method to avoid the conflict 
+ function changeTab_New(clickObject) {
+
+    var dataURL = clickObject.attr("data-url");
+
+    tabExchange(dataURL);
+
+    var id = ""
+
+    if (clickObject.attr("id") == "previousTab" || clickObject.attr("id") == "nextTab"){
+        id = $('a[data-url = "' + dataURL + '" ]').attr('id');
+    }else{
+        id = clickObject.attr("id");
+    }
+      
+    
+    if (clickObject.data("addl-params-key")) {
+        requestData = $.extend(requestData, additionalData[clickObject.data("addl-params-key")]);
+    }
+    /*Load tab content start*/
+    $.ajax({ 
+        
+        url: "/app/FNARequest/"+dataURL,
+        data: {'id':'<%= @fnaRequest.object.to_s %>'},
+        // async: false,
+        headers: {
+            'Transition-Enabled': false
+        },
+        success: function(data) {
+             
+            $('#'+id).addClass("active-btn");
+            $("#tabDetailsContainer").html(data);
+            $("#tabDetailsContainer").trigger('create');
+            tabSetup();
+            $(document).ready(function(){
+                $('.scrollTopButton').click(function() {
+                    $("html, body").animate({ scrollTop: 0 }, "slow");
+                });
+
+                $('.expandButton').hide();
+
+                $('.collapseButton').click(function() {
+                    $(this).parents(".legend").siblings(".panelContent").hide();
+                    $(this).hide();
+                    $(this).siblings('.expandButton').show();
+                });
+
+                $('.expandButton').click(function() {
+                    $(this).parents(".legend").siblings(".panelContent").show();
+                    $(this).hide();
+                    $(this).siblings('.collapseButton').show();
+                });
+
+                <% if @fnaRequest.policyNum.to_s != "" || @fnaRequest.statusCd.to_s == "FNASUBMIT" %>
+                setReadOnly($('input[type="text"]'), true);
+                setReadOnly($('input[type="tel"]'), true);
+                setReadOnly($('input[type="num"]'), true);
+                setReadOnly($('input[type="email"]'), true);
+                $('select').selectmenu('disable').trigger("refresh");
+                $('input[type="radio"]').checkboxradio('disable').trigger("refresh");
+                $('input[type="checkbox"]').checkboxradio('disable').trigger("refresh");
+                $('input[type="button"]').off('click');
+                $('input[type="button"]').button('disable').trigger("refresh");
+                $('a[href="#clear"]').hide();
+                <% end %>
+               if (dataURL == "getPolicyNo"){
+                $('.icon').show();
+                $('.checkv1').show();
+                $('.submit_button_for_submission').show();
+          }
+            });
+            getTabErrors();
+        }
+    });
+    /*Load tab content end*/
+  }
+
+
+  function tabExchange(currentURL){
+
+    if (currentURL == 'getBasicDetails' ){
+      $('#previousTab').hide();
+      $('#nextTab').show();
+      $('#nextTab').attr("data-url","getNeeds");
+      $('.active-btn').removeClass("active-btn");
+      $('a[data-url="getBasicDetails"]').addClass("active-btn");
+      $('#submit_button_for_submission').hide();
+    }
+    
+    if (currentURL == 'getNeeds' ){
+      $('#nextTab').show();
+      $('#previousTab').show();
+      $('#previousTab').attr("data-url","getBasicDetails");
+      $('#nextTab').attr("data-url","getProductList").trigger("create");
+      $('.active-btn').removeClass("active-btn");
+      $('a[data-url="getNeeds"]').addClass("active-btn");
+      $('#submit_button_for_submission').hide();
+    }
+    
+    if (currentURL == 'getProductList' ){
+      $('#nextTab').show();
+      $('#previousTab').show();
+      $('#previousTab').attr("data-url","getNeeds");
+      $('#nextTab').attr("data-url","getProductSelection");
+      $('.active-btn').removeClass("active-btn");
+      $('a[data-url="getProductList"]').addClass("active-btn");
+      $('#submit_button_for_submission').hide();
+    }
+    
+    if (currentURL == 'getProductSelection' ){
+      $('#nextTab').show();
+      $('#previousTab').show();
+      $('#previousTab').attr("data-url","getProductList");
+      $('#nextTab').attr("data-url","getReasonsForRecommendation");
+      $('.active-btn').removeClass("active-btn");
+      $('a[data-url="getProductSelection"]').addClass("active-btn");  
+      $('#submit_button_for_submission').hide();
+    }
+    
+    if (currentURL == 'getReasonsForRecommendation' ){
+      $('#nextTab').show();
+      $('#previousTab').show();
+      $('#previousTab').attr("data-url","getProductSelection");
+      <% if @fnaRequest.addtnField1Str.to_s == "FNACOMPLETE" || @fnaRequest.addtnField1Str.to_s == "FNASIGNED" || @fnaRequest.addtnField1Str.to_s == "FNASUBMIT" %>
+      {
+      $('#nextTab').attr("data-url","getDeclaration");
+      $('.active-btn').removeClass("active-btn");
+      $('a[data-url="getReasonsForRecommendation"]').addClass("active-btn");
+      $('#submit_button_for_submission').hide();
+      }
+      <% else %>
+      {
+        $('#nextTab').removeAttr("data-url","getDeclaration");
+        $('#nextTab').attr("data-url","previewtab");
+        $('#nextTab').attr("name","preview");
+        $('.active-btn').removeClass("active-btn");
+        $('a[data-url="getReasonsForRecommendation"]').addClass("active-btn");
+        $('#submit_button_for_submission').hide();     
+      }
+      <% end %>
+      
+    }
+
+    if (currentURL == 'getDeclaration' ){
+      $('#nextTab').show();
+      $('#previousTab').show();
+      $('#previousTab').attr("data-url","getReasonsForRecommendation");
+      $('#nextTab').attr("data-url","getPolicyNo");
+      $('.active-btn').removeClass("active-btn");
+      $('a[data-url="getDeclaration"]').addClass("active-btn");
+      $('#submit_button_for_submission').hide();
+    }
+    
+    if (currentURL == 'getPolicyNo' ){
+      $('#submit_button_for_submission').show();
+      <%if @fnaRequest.addtnField1Str.to_s == "FNASUBMIT" || @fnaRequest.addtnField1Str.to_s == "SYNCDONE"%>
+      $('#submit_button_for_submission').hide();
+      <%end%>
+      $('#previousTab').attr("data-url","getDeclaration");
+      $('#previousTab').show();
+      $('#nextTab').hide();
+      $('#nextTab').attr("data-url","");
+      $('.active-btn').removeClass("active-btn");
+      $('a[data-url="getPolicyNo"]').addClass("active-btn"); 
+    }
+    
+  }
+
+  $(".scrollup").click(function(){
+      $("html, body").animate({ scrollTop: 0 }, 0);
+  });
+
+  $(document).ready(function() {
+
+      <%if @fnaRequest.statusCd.to_s != "FNAPENDING"%>
+      $('.icon').show();
+      $('.checkv1').show();
+    <%end%>
+
+    <%if@fnaRequest.statusCd.to_s == "FNASIGNED" %>
+      $('#submit_button_for_submission').show();
+    <%else%>
+      $('#submit_button_for_submission').hide();
+    <%end%>
+    
+
+      $("a[name='submit']").click(function(){
+      $('input[type="radio"]').removeAttr("disabled");
+      $('input[type="checkbox"]').removeAttr("disabled");
+      submitForm();
+      if ($("input[name='<%= getObjectMapping(@fnaRequest) %>[addtnField3Str]']").val() == "false" || 
+          $("input[name='<%= getObjectMapping(@fnaRequest) %>[addtnField3Str]']").val() == ""){
+              document.fnaForm.action = "executeSubmit";
+              document.fnaForm.submit();
+        }
+      else {
+              getTabErrors();
+            }
+
+    });
+
+      $("a[name='save']").click(function() {
+      $('input[type="radio"]').removeAttr("disabled");
+      $('input[type="checkbox"]').removeAttr("disabled");
+      $("#basicTabOnSave").val("true");
+      submitForm();
+      if ($("input[name='<%= getObjectMapping(@fnaRequest) %>[addtnField3Str]']").val() == "false" || 
+          $("input[name='<%= getObjectMapping(@fnaRequest) %>[addtnField3Str]']").val() == ""){
+            document.fnaForm.action = "executeSave";
+            document.fnaForm.submit();
+        }
+      else {
+              getTabErrors();
+            }
+    });
+
+      $("a[name='preview']").click(function() {
+       $('input[type="radio"]').removeAttr("disabled");
+      $('input[type="checkbox"]').removeAttr("disabled");
+      submitForm();
+      setTimeout(SubmitPreview, 1800);
+    });
+
+      function SubmitPreview()
+      {
+        document.fnaForm.action = "executePreview";
+        document.fnaForm.submit();
+      }
+
+      $(".eapp-navbar ul li a").each(function(){
+          eappTabOrder.push($(this).attr("id"));
+      });
+
+       <% if @set_req_tab %>
+      changeTab($("a[data-url='getDeclaration']"));
+     <% else %>  
+      changeTab($("a[data-url='getBasicDetails']"));
+     <% end %> 
+
+      $(".tabLinks").click(function(){
+        showLoadingMessage();
+          <% if @fnaRequest.statusCd.to_s != "FNASIGNED" %>
+              $('input[type="radio"]').removeAttr("disabled");
+              $('input[type="checkbox"]').removeAttr("disabled");
+              submitForm();
+          <%end%>
+              $(".tabLinks").removeClass('active-btn')
+              if ($("input[name='<%= getObjectMapping(@fnaRequest) %>[addtnField3Str]']").val() == "false" ||
+                  $("input[name='<%= getObjectMapping(@fnaRequest) %>[addtnField3Str]']").val() == "") {
+                    changeTab_New($(this))
+              }
+              else {
+                     getTabErrors();
+                  }
+      });
+  });
+
+    function continuePicsPage() {
+        $.ajax({
+            url: "/app/FNARequest/newFNA",
+            success: function(data) {
+            }
+        });
+    }
+
+    $('#error_dialog').click(function(){
+    if (typeof $.mobile.sdCurrentDialog === 'undefined') {
+      $("<div>").simpledialog2({
+        mode : 'blank',
+        blankContent : $("#totalErrorDiv").html() +"<a rel='close' data-role='button' href='#'>" + '<%= getLabelValue("MESSAGE_CLOSE") %>' + "</a>"
+      });
+    }
+  });
+
+  $(document).on("change",".multiple-select",function(){
+      values = [];
+      $(this).find("input[type='checkbox']:checked").each(function(i,v){
+          values.push(v.value);
+      });
+      $(this).find('[name*="fnaQuestionLookupDataCd"][type="hidden"]').val(values.join(','));
+  });
+
+</script>

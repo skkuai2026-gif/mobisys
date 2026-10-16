@@ -1,0 +1,35 @@
+<div data-role="page" data-add-back-btn="true">
+
+  <div data-role="header" data-position="inline">
+    <%= link_to "Back", :action => :index %>
+    <h1><%= @level2.levelCd %></h1>
+    <%= link_to "Edit", :action => :edit, :id => @level2.object %>
+  </div>
+
+  <div data-role="content">
+    <table>
+      
+      <tr>
+    	<td class="itemLabel">LevelCd</td>
+        <td class="itemValue"><%= @level2.levelCd%></td>
+      </tr>
+      
+      <tr>
+    	<td class="itemLabel">Icon</td>
+        <td class="itemValue"><%= @level2.icon%></td>
+      </tr>
+      
+      <tr>
+    	<td class="itemLabel">Header</td>
+        <td class="itemValue"><%= @level2.header%></td>
+      </tr>
+      
+      <tr>
+    	<td class="itemLabel">Text</td>
+        <td class="itemValue"><%= @level2.text%></td>
+      </tr>
+      
+    </table>
+  </div>
+
+</div>

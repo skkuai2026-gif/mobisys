@@ -1,0 +1,113 @@
+<script type ="text/javascript">
+var riderCount = parseInt(<%= @riderCount %>) + 1;
+
+
+//Method to add new riders
+function addRider() {
+	$.ajax({
+		url: "/app/Policy/addRider",
+		async: false,
+		data: {
+			'policyObject': '<%= @policy.object.to_s %>', 
+			'riderCount': riderCount,
+			'selectedProductId': '<%= @product.object.to_s %>'
+		},
+        headers: {
+          'Transition-Enabled': false
+        },
+		success: function(data) {
+			riderCount += 1;
+			$('#ridersList').append(data);
+			$('#ridersList').trigger('create');
+		}
+	});
+}
+
+
+//Method to remove rider
+function removeRider(riderObject, riderObjValue){  
+	$('<div>').simpledialog2({
+		mode: 'button',
+		style: "width: 629px",
+		buttonPrompt: 'Are you sure you want to delete?',
+		buttons : {
+			'<%= getLabelValue('OK')%>': {
+				click: function () {
+					$('div[name="'+riderObjValue+'"]').hide();
+					$('input[name="'+riderObject+'[removed]"]').val('YES');
+				}
+			},
+			'<%= getLabelValue('CANCEL')%>': {
+				click: function () {
+				},
+				icon: "delete",
+				theme: "c"
+			}
+		}
+	})
+}
+
+
+//Method to clear rider details upon party role selection
+function clearRiderDetails(object) {
+	$("input[name='"+object+"[productTerm]']").val('');
+	$("input[name='"+object+"[premiumPayingTerm]']").val('');
+	$("input[name='"+object+"[baseSumAssured]']").val('');
+	$("input[name='"+object+"[coi]']").val('');
+	$("input[name='"+object+"[baseAnnualPremium]']").val('');
+	$("input[name='"+object+"[modalPremium]']").val('');
+}
+
+function refreshPrePolulatedRider(){
+	$('select[name="<%=getObjectMapping(@policyProduct)%>[productFamilyCd]"]').selectmenu('enable');
+	$('select[name="<%=getObjectMapping(@policyProduct)%>[productPlanOptionCd]"]').selectmenu('enable');
+	$('select[name="<%=getObjectMapping(@policyProduct)%>[productId]"]').selectmenu('enable');
+
+	<% @newriders.each do |rider, count|%>
+	    <% if @riderDisableField[rider.object] == 'YES' %>
+	    	$('select[name="<%=getObjectMapping(rider)%>[productFamilyCd]"]').selectmenu('enable');
+			$('select[name="<%=getObjectMapping(rider)%>[productPlanOptionCd]"]').selectmenu('enable');
+			$('select[name="<%=getObjectMapping(rider)%>[productId]"]').selectmenu('enable');
+	            $('input[name="<%= getObjectMapping(rider)%>[selected]"]').checkboxradio().checkboxradio('enable');
+	    <% end %>
+    <% end %>
+	
+	$.ajax({
+		url: "/app/Policy/refreshPrePolulatedRider",
+		method: 'POST',
+		data: $('#planForm').serialize(),
+		async: false,
+		success: function(data){
+			$('div[name="riderDetailsDiv"]').html(data);
+			$('div[name="riderDetailsDiv"]').trigger('create');
+			<% if @riderAutoPopulationReqFlag == "YES" %>
+			showDialog("", "Rider details reset with applicable riders and their default values.", 'warning', 0, 'capture');
+			<% end %>
+
+			$('select[name="<%=getObjectMapping(@policyProduct)%>[productFamilyCd]"]').selectmenu('disable');
+			$('select[name="<%=getObjectMapping(@policyProduct)%>[productPlanOptionCd]"]').selectmenu('disable');
+			$('select[name="<%=getObjectMapping(@policyProduct)%>[productId]"]').selectmenu('disable');
+
+			$(document).ready(function(){
+				$('.scrollTopButton').click(function() {
+					$("html, body").animate({ scrollTop: 0 }, "slow");
+				});
+
+				$('.expandButton').hide();
+
+				$('.collapseButton').click(function() {
+					$(this).parents(".legend").siblings(".panelContent").hide();
+					$(this).hide();
+					$(this).siblings('.expandButton').show();
+				});
+
+				$('.expandButton').click(function() {
+					$(this).parents(".legend").siblings(".panelContent").show();
+					$(this).hide();
+					$(this).siblings('.collapseButton').show();
+				});
+			});
+		}
+	});
+}
+</script>        

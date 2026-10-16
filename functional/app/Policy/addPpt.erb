@@ -1,0 +1,17 @@
+<%
+require 'CommonModules/mobisysbrowserhelper'
+@pptArray.each do|ppt|
+%>
+  <option value="<%= ppt.cd %>"
+  <% 
+           if @pptValue == ppt.cd 
+             %>
+             selected
+             <%
+           end
+         %>
+  >
+    <%= getLabelValue(ppt.desc) %>
+  </option>
+<% end %>
+

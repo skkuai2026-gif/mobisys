@@ -1,0 +1,186 @@
+#data-panel, #result-panel {
+	
+	.fix-postion{
+		width: 300px;
+		right: 30px;
+		bottom: 0px;
+		background-color:#FFF;
+	}
+	&.welcome {
+	        left:90px;
+	        background-position-x: -60px;
+	        
+	        nav.data-panel-menu{
+	                display:none;
+	        }
+	        ul {
+				margin-right: 20px;
+				
+	        }
+	        li.welcome>a {
+	                display:none;
+	        }
+			.fix-postion {
+				display:none;
+			}
+	}
+	nav.data-panel-menu{
+        	
+		$iconHeight:55;
+        	a{
+            	        height: #{$iconHeight}px;
+			background-image:url($image-path+"share/icon-datapanel.png");                	
+        	}
+        	@for $i from 0 through $totalIcon {
+                	.menu#{$i} {
+                		a{
+                                        background-position: 0px -#{$i*$iconHeight}px;
+                                }
+                                a.filled{
+                                        background-position: -120px -#{$i*$iconHeight}px;
+                                }
+                                a:hover,a.active{
+                                        background-position: -60px -#{$i*$iconHeight}px;
+                                }
+                	}
+                }
+                li {
+                        margin-top: -5px;
+                }
+                
+                .education {
+                        display: none; // wait data panel control it show / hide
+                }
+	}
+	
+	section{ 
+	        overflow: hidden;
+	        height: 100%;
+        	float: left;
+        	margin-left: 25px;
+        	padding-right: 15px;
+        	width: 290px;
+        	ul{
+                        &.inactive {
+                                display:none;
+                        }
+
+        	        .header{
+                	        color: #85909a;
+                	        font-size: 20px;
+                	        text-transform: uppercase;
+                	        padding-top: 28px;
+                            padding-bottom: 28px;
+                	        a {
+                       	        margin-right: 10px;
+                       	        margin-top: 3px;
+                       	        display: block;
+                	        }
+							.sub-header {
+								text-transform: capitalize;
+								font-size: 18px;
+							}
+        	        }
+        	        .footer{
+        	              height:50px; 
+        	              border: none;
+        	        }
+                	li{
+                	        
+                	        font-size: 15px;
+                	        line-height: 21px;
+                	        padding-top: 15px;
+                	        padding-bottom: 15px;
+                	        margin-right: 15px;
+                	        border-bottom: 1px solid #e6e6e6;
+                	       
+                	        position: relative;
+                	        a{
+                        	        margin-right: 25px;
+                        	        display: block;
+                	        }
+                                .data{
+                                	font-size: 20px;
+                                	display: block;
+                                	color: #fe8916;
+                                	height: 20px; 
+                        	}
+                        	.arrow {
+                        	         display: none;
+                                	 width: 13px;
+                                	 height: 23px;
+                                	 background-image:url($image-path+"share/arrow-datapanel.png");
+                                         background-repeat: no-repeat;
+                                         position: absolute;
+                                         right: -10px;
+                                         top:40%;
+                        	 }
+                        	&.active {
+                        	       .arrow {
+                        	               display: block;
+                        	       } 
+                        	}
+                        	&.indent {
+					width: 234px;
+                        	        padding-left: 20px;
+                                    margin-left: 20px;
+                                    margin-right: 0px;
+                                    border-left: 1px solid #e6e6e6;
+                        	}
+							&.non_data {
+								display:none;
+							}
+                        	ul{
+                        	        
+                                	border-top: 1px solid #e6e6e6;
+                                	margin-bottom: -16px;
+                                	li{
+                                        	 padding-left: 20px;
+                                        	 margin-left: 20px;
+                                        	 margin-right: 0px;
+                                        	 border-left: 1px solid #e6e6e6;
+                                	}
+                        	}	
+                        	
+                        	.fa-info-circle {
+                        	        position: absolute;
+                        	        right: 10px;
+                        	        color: $primary-color;
+                        	}
+                	}
+        	}
+	}
+	
+	.button,a.button{
+		width: 45px;
+	        cursor: pointer;
+	        color: #666;
+	        border: 1px solid #E0E0E0;
+	        padding: 4px 9px;
+	        display: block;
+	        text-align: center; 
+	        -webkit-border-radius: 0px;
+	        -moz-border-radius: 0px;
+	        border-radius: 0px;
+	        -webkit-box-shadow: #666 0px 0px 0px;
+	        -moz-box-shadow: #666 0px 0px 0px;
+	        box-shadow: #666 0px 0px 0px;
+	        background: #FFFFFF;
+	        background: -webkit-gradient(linear, 0 0, 0 bottom, from(#FFFFFF), to(#E0E0E0));
+	        background: -webkit-linear-gradient(#FFFFFF, #E0E0E0);
+	        background: -moz-linear-gradient(#FFFFFF, #E0E0E0);
+	        background: -ms-linear-gradient(#FFFFFF, #E0E0E0);
+	        background: -o-linear-gradient(#FFFFFF, #E0E0E0);
+	        background: linear-gradient(#FFFFFF, #E0E0E0);
+	        margin: 10 8 10 0;
+	        font-size: 11px;
+	        line-height: 20px;
+	        &:hover{
+	                border: 1px solid #fe8916;
+	                color: #fe8916;
+	        }
+	        &.result {
+	                display: none;
+	        }
+	}
+}

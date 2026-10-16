@@ -1,0 +1,11 @@
+<div id = '<%= @tagName %>_employmentDetailContainer'>
+	<% partyEmploymentPckg = "PartyEmploymentDO" %>
+	<%= subPanelTagStart("employmentHeader",false) %>
+	  <%= modelTagStart(tagId, partyEmployment, party) %>
+	    <%= prdFieldDataTag("#{partyEmploymentPckg}",'occupationTypeCd') %>
+	    <div id = '<%= @tagName %>_employmentDetail'>
+	    	<%= prdFieldDataTag("#{partyEmploymentPckg}",'employerName,pepCd,annualIncome,industryCd,natureOfDuty,occupationClass') %>
+	    </div>
+	  <% modelTagEnd %>
+	<%= subPanelTagEnd() %>
+</div>

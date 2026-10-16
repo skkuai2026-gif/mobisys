@@ -1,0 +1,19 @@
+<%= panelTagStart(false) %>
+	<%= subPanelTagStart("withdrawalDetails","true","WITHDRAWALSREQUIRED") %>
+		<%= modelTagStart("quotation", @quotation) %>
+			<%= prdFieldDataTag("com.c2lbiz.symbiosys.insurance.businesscommon.dataobjects.policy.PolicyDO",'withdrawalFl','WITHDRAWALSREQUIRED') %>
+			<span name="withdrawalFields">
+				<%= prdFieldDataTag("com.c2lbiz.symbiosys.insurance.businesscommon.dataobjects.policy.PolicyDO",'solverTypeCd,withdrawalRateTypeCd,payingYears') %>
+			</span>
+			<input type="hidden" name="renderWithdrawalratetypecd" id="renderWithdrawalratetypecd" value='<%= @renderWithdrawalratetypecd %>'/>
+		<% modelTagEnd %>
+		<%= fieldDataEntryGridTagStart('quotationWithdrawal', 'com.c2lbiz.symbiosys.insurance.businesscommon.dataobjects.policy.PolicyWithdrawalDO', 'policyYearFrom,ageFrom,policyYearTo,ageTo,dateFrom,dateTo,withdrawalAmount,frequencyVal', @withdraws, @quotation,@withdrawalLabelObject, 'delete', @withdrawalCount + 1, "", false, false, false, false, false, "","","","WITHDRAWALSREQUIRED")%>
+		<%= fieldDataEntryGridTagEnd('quotationWithdrawal', @withdraws, 'ADDWITHDRAWAL',true,false,false) %>
+		<input type="hidden" name="quotationWithdrawalCount" id="quotationWithdrawalCount" value='<%= @withdrawalCount + @withdraws.size %>'/>
+		<%= modelTagStart("primaryQuotationParty", @insured, @quotation) %>
+			<div style="display: none;">
+				<%= inputTag("age") %>
+			</div>
+		<% modelTagEnd %>
+	<%= subPanelTagEnd %>
+<%= panelTagEnd %>

@@ -1,0 +1,52 @@
+<link rel="stylesheet" type="text/css" href="/public/css/style.css" /> 
+<%= pageTagStart('collateralPage','Symbiosys - Sales Illustration') %>
+    <%= headerTag("COLLATERAL", "home") %>
+    <div data-role="main" class="ui-content">
+        <%= menuTag('COLLATERAL',true) %>       
+        <div class="main-content-wrapper" style="background-color: white;">
+            <ul id="css3menu1" class="topmenu" style="width:100%;">
+                <%last = @collateralRenderLevelChildDOList.length-1 %>
+                <%@collateralRenderLevelChildDOList.each_with_index do |collateralRenderLevelChildDO,index| %>
+                    <%if index == last%>
+                        <%menuString = "lastmenu"%>
+                    <%else%>
+                        <%menuString = "topmenu"%> 
+                    <%end%>
+                    <li class="<%=menuString%>" style="width:16%;">
+                        <a href="javascript:doOnLevelClick('<%=collateralRenderLevelChildDO.levelCd%>','rootDiv');"> 
+                            <%if @setLevelCd == collateralRenderLevelChildDO.levelCd%>
+                                <label id=<%=collateralRenderLevelChildDO.levelCd%> class="level0label0selected"><%= collateralRenderLevelChildDO.header1 %></label>
+                            <%else%>
+                                <label id=<%=collateralRenderLevelChildDO.levelCd%> class="level0label0"><%= collateralRenderLevelChildDO.header1 %></label>
+                            <%end%>
+                            <br>
+                            <label class="level0label1"><%= collateralRenderLevelChildDO.header2 %></label>
+                        </a>
+                    </li>
+                <%end%>         
+            </ul>
+            <div id="rootDiv"></div> 
+        </div>
+    </div>
+<%= pageTagEnd %>
+
+<script type="text/javascript">
+    $(document).ready(function(){
+    });
+    function doOnLevelClick(levelCd, containerId) {
+       // console.log("root called for ", levelCd , containerId);
+        $.ajax({
+         url: "/app/CollateralRenderLevel/fetch",
+            data:  {'levelCd': levelCd, 'ajaxCall': true}, 
+            async: false,
+        headers: {
+            'Transition-Enabled': false
+        },
+        success: function(data){
+            // console.log(data);
+          $("#"+containerId).html(data);
+            }  
+        })
+    }
+</script> 
+

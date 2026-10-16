@@ -1,0 +1,52 @@
+<%
+require 'CommonModules/mobisysbrowserhelper'
+
+case @option
+
+when "natureofduty" %>
+<option selected value="">Select</option>
+<%	@natureOfDutyLookups.each do |nature| %>
+  	<option value="<%= nature.cd %>"><%= getLabelValue(nature.desc) %></option>
+<% 
+	end
+
+when "occupationclass" %>
+<option selected value="">Select</option>
+<%	@occupationClassLookups.each do |occ| %>
+  	<option value="<%= occ.cd %>"><%= getLabelValue(occ.desc) %></option>
+<% 
+	end
+
+when "branch" %>
+<option selected value="">Select</option>
+<%	@branchLookup.each do |branch| %>
+  	<option value="<%= branch.cd %>"><%= getLabelValue(branch.desc) %></option>
+<% 
+	end
+
+when "supplementaryID" %>
+<option selected value="">Select</option>
+<%	@supplementaryIdLookup.each do |suppl| %>
+  	<option value="<%= suppl.cd %>"><%= suppl.desc %></option>
+<% 
+	end
+
+when "district"
+	if !@districtLookUps.empty?
+		@districtLookUps.each do |district|
+%>
+  		<option value="<%= district.cd %>"><%= getLabelValue(district.desc) %></option>
+<% 
+		end
+	end 
+	
+when "city"
+	if !@cityLookUps.empty?
+		@cityLookUps.each do |city|
+%>
+  		<option value="<%= city.cd %>"><%= getLabelValue(city.desc) %></option>
+<% 
+		end
+	end
+end 
+%>

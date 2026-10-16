@@ -1,0 +1,92 @@
+<div data-role="page">
+	<link rel="stylesheet" href="/public/css/c2l_dashboard.css">
+	<style type="text/css">
+		label {
+			padding: 0em !important;
+			font-size: 16px !important;
+		}
+	</style>
+	<div data-role="header" id="header" data-position="inline">
+		<a href="/app/Menu/landingPage" rel="external" data-direction="reverse" data-role="none">
+			<img src="/public/images/SalesIllustration/icon_BackArrow-Red.png">
+		</a>
+		<h1><%= getLabelValue('ABOUT') %></h1>
+	</div>
+
+	<div data-role="content" id="content">
+		<div class="illustrationdisplay">
+			<form>
+				<div class="ui-field-contain">
+					<label for="textinput-disabled"><%= getLabelValue('PROGRAMVERSION') %>:</label>
+					<input type="text" disabled="disabled" placeholder="<%= getLabelValue('PROGRAMVERSION') %>" value="<%= @programVersion %>">
+				</div>
+
+				<div class="ui-field-contain">
+					<label for="textinput-disabled"><%= getLabelValue('DEVICEID') %>:</label>
+					<input type="text" disabled="disabled" placeholder="<%= getLabelValue('DEVICEID') %>" value="<%= @deviceId %>">
+				</div>
+				
+				<div class="ui-field-contain">
+					<label for="textinput-disabled"><%= getLabelValue('OFFLINEMASTERDB') %>:</label>
+					<input type="text" disabled="disabled" placeholder="<%= getLabelValue('OFFLINEMASTERDB') %>" value="<%= @offlineMasterDBVersion %>">
+				</div>
+				
+				<div class="ui-field-contain">
+					<label for="textinput-disabled"><%= getLabelValue('PROGRAMRELDATE') %>:</label>
+					<input type="text" disabled="disabled" placeholder="<%= getLabelValue('PROGRAMRELDATE') %>" value="<%= @programReleaseDate %>">
+				</div>
+				
+				<div class="ui-field-contain">
+					<label for="textinput-disabled"><%= getLabelValue('LASTSYNC') %>:</label>
+					<input type="text" disabled="disabled" placeholder="<%= getLabelValue('LASTSYNC') %>" value="<%= @lastPrimaryDataSync %>">
+				</div>
+				
+				<div class="ui-field-contain">
+					<label for="textinput-disabled"><%= getLabelValue('LASTSYNCUSER') %>:</label>
+					<input type="text" disabled="disabled" placeholder="<%= getLabelValue('LASTSYNCUSER') %>" value="<%= @lastApplicationDataSync %>">
+				</div>
+				
+				<div class="ui-field-contain">
+					<label for="textinput-disabled"><%= getLabelValue('LASTCOLLATERALSYNCDATE') %>:</label>
+					<input type="text" disabled="disabled" placeholder="<%= getLabelValue('LASTCOLLATERALSYNCDATE') %>" value="<%= @lastCollateralSyncDate %>">
+				</div>
+				
+				<div class="ui-field-contain">
+					<label for="textinput-disabled"><%= getLabelValue('ABLETOUSEUNTIL') %>:</label>
+					<input type="text" disabled="disabled" placeholder="<%= getLabelValue('ABLETOUSEUNTIL') %>" value="<%= @useUpto %>">
+				</div>
+				
+				<div class="ui-field-contain">
+					<label for="textinput-disabled"><%= getLabelValue('AGENTID') %>:</label>
+					<input type="text" disabled="disabled" placeholder="<%= getLabelValue('AGENTID') %>" value="<%= @agentId %>">
+				</div>
+				
+				<div class="ui-field-contain">
+					<label for="textinput-disabled"><%= getLabelValue('CHANNEL') %>:</label>
+					<input type="text" disabled="disabled" placeholder="<%= getLabelValue('CHANNEL') %>" value="<%= @channel %>">
+				</div>
+				
+				<div class="ui-field-contain">
+					<label for="textinput-disabled"><%= getLabelValue('LICENSETYPE') %>:</label>
+					<input type="text" disabled="disabled" placeholder="<%= getLabelValue('LICENSETYPE') %>" value="<%= @licenseType %>">
+				</div>
+				
+				<div class="ui-field-contain">
+					<label for="textinput-disabled"><%= getLabelValue('agentName') %>:</label>
+					<input type="text" disabled="disabled" placeholder="<%= getLabelValue('AGENTNAME1') %>" value="<%= @agentName1 %>">
+				</div>
+				
+				<div class="ui-field-contain">
+					<label for="textinput-disabled"><%= getLabelValue('LOCATION') %>:</label>
+					<input type="text" disabled="disabled" placeholder="<%= getLabelValue('LOCATION') %>" value="<%= @location %>">
+				</div>
+			</form>
+		</div>
+
+		<script type="text/javascript">
+			$("input").each( function(){
+				setReadOnly($(this), true);
+			});
+		</script>
+	</div>
+</div>

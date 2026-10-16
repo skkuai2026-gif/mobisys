@@ -1,0 +1,245 @@
+<div data-role="page">
+    <link rel="stylesheet" href="/public/css/Eapp/c2l_EAPP.css">
+    <style type="text/css">
+      .legend {
+      width: 100%;
+    }
+    .illustrationdisplay {
+      padding: 1% 1% 1% 1%;
+      width: 100%;
+    }
+    .button_UI {
+      /*below values are different from what is used at other place */
+        background-color:#efbc33!important;
+        border-radius: 7px !important;
+        border-style: none;
+        color: #003946 !important;
+        display: inline-block;
+        font-size: 11px !important;
+        max-width: 100px;
+        margin: 0;
+        text-shadow: none !important;
+        font-weight: 700;
+        text-align: center;
+        line-height: 1.3;
+        padding: .8em 1.5em !important;
+    }
+    </style>
+    
+    <div data-role="header" id="header" data-position="inline">
+        <div data-role="header" id="header" data-position="inline" role="banner" class="ui-header ui-bar-inherit" style="   height: 74px;">
+        <!-- Tejashree:08-Aug-2017 for timer and logo adjustment -->
+        <% if @fnaRequest.statusCd == "FNAPENDING" %>
+           <div>
+           <table width="100%">
+                <tr>
+                    <td align="left" style="width:30%;padding-left:10px;">
+                        <div id ="back_Button" style="display: none;">
+                            <a href="<%= url_for :action => :showpreview, :id => @fnaRequest.object, :query => {:set_get_req_tab=>"TRUE"} %>" rel="external" data-direction="reverse" data-role="none" class="ui-btn-left">
+                                <img src="/public/images/FNA/icon_BackArrow-Red.png" style="width:30px;height:30px;padding-top: 5px;"> 
+                            </a>
+                            <span style="padding-left:60px;font-size:14px;float:left;padding-top: 13px;">
+                                <%= getLabelValue('INSTRUCTION_TEXT_PREVIEW_1') %>
+                            </span>
+                        </div>
+                    </td>
+                    <td align="center" style="width:35%">
+                        <img src="/public/images/FNA/logo-sun-life-one-line.png" alt="Sun Life Financial" style="padding-top: 20px;width: 40%;">
+                    </td>
+                    <td align="right" style="width:35%;padding-right:10px;padding-top: 13px;">
+                       <span id ="timer_Fna" style="padding-right:25px;float:right;"></span> 
+                    </td>
+                </tr>
+           </table>
+           </div>  
+           <% else %> 
+            <a href="<%= url_for :action => :showpreview, :id => @fnaRequest.object, :query => {:set_get_req_tab=>"TRUE"} %>" rel="external" data-direction="reverse" data-role="none" class="ui-btn-left">
+                <img src="/public/images/FNA/icon_BackArrow-Red.png" style="width:30px;height:30px;"> 
+            </a>
+            <span style="padding-left:60px;padding-top:25px;font-size:14px;float:left;">
+            <%= getLabelValue('INSTRUCTION_TEXT_PREVIEW_1') %>
+            </span>
+            <img src="/public/images/FNA/logo-sun-life-one-line.png" alt="Sun Life Financial" style="padding-top: 4px;padding-right:200px;">
+            
+           <% end %>
+        </div>
+    </div>
+  <div data-role="content">
+
+  <%
+  counter = 1
+  limit = 1000
+  $fnaIO.htmlContent.each_pair do |pageNumber, page|
+    if counter <= limit 
+  %>
+    <!--page <%=counter%> start-->
+    <div class="legend">
+          <label class="strongLabel">
+        <% if page["name"].to_s != "" %>
+          <%= getLabelValue("#{page["name"]}") %>
+        <% else %>
+          <%= LabelValue.getLabel("Page", "en") + " #{pageNumber}" %>
+        <% end %>
+              <a href="#" class="scrollTopButton ui-icon-carat-u ui-btn-icon-notext ui-alt-icon ui-btn-inline"></a>
+              <a href="#" class="expandButton ui-icon-plus ui-btn-icon-notext ui-alt-icon ui-btn-inline" name="<%="#{pageNumber}"%>"/></a>
+              <a href="#" class="collapseButton ui-icon-minus ui-btn-icon-notext ui-alt-icon ui-btn-inline" name="<%="#{pageNumber}"%>"/></a>
+          </label>
+      </div>
+    <div class="panelContent" name="<%="#{pageNumber}"%>">
+      <div class="illustrationdisplay" name="<%="#{pageNumber}"%>">
+        <%= page["content"] %>
+      </div>
+    </div>
+    <!--page <%=counter%> end-->
+  <% 
+    end
+    counter += 1
+  end
+  %>
+
+ <table width="100%">
+        <% if @fnaRequest.statusCd == "FNAPENDING" %>
+            <tr>
+               <div id="instruction_text" class="" data-role="dualfieldcontain" align="" style="display: none;">
+                    <div class="">
+                        <div class="group" style="font-size: 14px;">
+                            <%= getLabelValue('INSTRUCTION_TEXT_PREVIEW') %>
+                        </div>
+                    </div>     
+                </div>
+            </tr>
+            <tr>
+                <td align="left" style="width:35%;">
+                    <div id ="close_Buttton" class="button_UI scrollup tabLinks ui-link ui-btn selected"   style="display: none;width:100px">
+                        <a href="<%= url_for :action => :show, :id => @fnaRequest.object %>"  rel="external" data-direction="reverse" data-role="none" class="" style="color:#003946 !important;" ><%= getLabelValue('MESSAGE_CLOSE') %>
+                        </a>
+                    </div>       
+                </td>
+                <td align="center" style="width:35%">    
+                </td>
+                <td align="right" style="width:30%;">
+                    <div id ="signature_Buttton" class="button_UI scrollup tabLinks ui-link ui-btn selected"   style="display: none;width:100px">
+                        <a href="<%= url_for :action => :showpreview, :id => @fnaRequest.object, :query => {:set_get_req_tab=>"TRUE"} %>"  rel="external" data-direction="reverse" data-role="none" class="" style="color:#003946 !important;" ><%= getLabelValue('ESIGNATURE') %>
+                        </a>
+                    </div>
+                </td>
+            </tr>
+        <% else %>
+            <tr>
+               <div class="" data-role="dualfieldcontain" align="">
+                    <div class="">
+                        <div class="group" style="font-size: 14px;">
+                            <%= getLabelValue('INSTRUCTION_TEXT_PREVIEW') %>
+                        </div>
+                    </div>     
+                </div>
+            </tr>
+            <tr>
+                <td align="left" style="width:35%;">
+                    <div class="button_UI scrollup tabLinks ui-link ui-btn selected"   style="width:100px">
+                        <a href="<%= url_for :action => :show, :id => @fnaRequest.object %>"  rel="external" data-direction="reverse" data-role="none" class="" style="color:#003946 !important;" ><%= getLabelValue('MESSAGE_CLOSE') %>
+                        </a>
+                    </div>   
+                </td> 
+                <td align="center" style="width:35%"> 
+                </td>
+                <td align="right" style="width:30%;">
+                    <div class="button_UI scrollup tabLinks ui-link ui-btn selected"   style="width:100px">
+                        <a href="<%= url_for :action => :showpreview, :id => @fnaRequest.object, :query => {:set_get_req_tab=>"TRUE"} %>"  rel="external" data-direction="reverse" data-role="none" class="" style="color:#003946 !important;" ><%= getLabelValue('ESIGNATURE') %>
+                        </a>
+                    </div>
+                </td>
+                
+            </tr>
+        <% end %>
+    </table>
+
+
+    <style >
+    .button_UI {
+            background-color:#efbc33!important;
+            border-radius: 7px;
+            border-style: none;
+            color: #003946 !important;
+            display: inline-block;
+            font-size: 14px !important;
+            max-width: 200px;
+            margin: 0;
+            text-shadow: none !important;
+            font-weight: 700;
+            text-align: center;
+            line-height: 1.3;
+            /*padding: .8em 1.5em !important;*/
+            width: 100px;
+        }
+        </style>
+
+
+  <script type="text/javascript">
+    $(document).ready(function(){
+      $('.scrollTopButton').click(function() {
+        $("html, body").animate({ scrollTop: 0 }, "slow");
+      });
+
+      $('.expandButton').hide();
+
+      $('.collapseButton').click(function() {
+        $(".panelContent[name='"+$(this).attr('name')+"']").hide();
+        $(this).hide();
+        $(this).siblings('.expandButton').show();
+      });
+
+      $('.expandButton').click(function() {
+        $(".panelContent[name='"+$(this).attr('name')+"']").show();
+        $(this).hide();
+        $(this).siblings('.collapseButton').show();
+      });
+
+   // Tejashree:08-Aug-2017 for timer and logo adjustment
+    var id;
+    var counter = "<%= @set_timer %>";
+    id = setInterval(function() {
+        counter--;
+        if(counter < 0) {
+            //newElement.parentNode.replaceChild(downloadButton, newElement);
+        $(document.getElementById('back_Button')).show();
+        $(document.getElementById('close_Buttton')).show();
+        $(document.getElementById('signature_Buttton')).show();
+        $(document.getElementById('instruction_text')).show();
+            clearInterval(id);
+        } else {
+            document.getElementById('timer_Fna').innerHTML = counter.toString();
+                       if(counter == 0)
+              document.getElementById('timer_Fna').innerHTML = "";
+        }
+    }, 1000);
+
+    });
+    $(document).unbind('keydown').bind('keydown', function (event) {
+            var doPrevent = false;
+            if (event.keyCode === 8) {
+                var d = event.srcElement || event.target;
+                if ((d.tagName.toUpperCase() === 'INPUT' && (
+                         d.type.toUpperCase() === 'TEXT' ||
+                         d.type.toUpperCase() === 'PASSWORD' || 
+                         d.type.toUpperCase() === 'FILE' || 
+                         d.type.toUpperCase() === 'SEARCH' || 
+                         d.type.toUpperCase() === 'EMAIL' || 
+                         d.type.toUpperCase() === 'NUMBER' || 
+                         d.type.toUpperCase() === 'DATE' )
+                     ) || 
+                     d.tagName.toUpperCase() === 'TEXTAREA') {
+                    doPrevent = d.readOnly || d.disabled;
+                }
+                else {
+                    doPrevent = true;
+                }
+            }
+
+            if (doPrevent) {
+                event.preventDefault();
+            }
+        });
+  </script>
+  </div>  
+</div>

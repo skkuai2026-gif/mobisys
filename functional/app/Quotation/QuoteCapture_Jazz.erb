@@ -1,0 +1,49 @@
+<%= pageTagStart('add-sales-illustration','Symbiosys - Sales Illustration') %>
+	<%
+	additionalOptionsFl = false
+	if ($currentProduct && @baseProduct && $rhoconfig[:tab_based_product_selection]) || !$rhoconfig[:tab_based_product_selection]
+		additionalOptionsFl = true
+	end
+	%>
+	<%  modelFileName = (@quotation.quotationRefNum.to_s != "" ? "#{@quotation.quotationRefNum}_Quotation_Logs" : "" ) %>
+	<%= headerTag("SalesIllustration","add",@quotation.quotationRefNum,"/app/Quotation/search?insuranceTypeCd=#{@quotation.insuranceTypeCd}","#{@quickLinkLabels}","#{@quickLinkActions}",modelFileName) %>
+	<%= formTagStart("sales_illustration_form","/app/Quotation/execute",@quotation.object) %>
+		<%= tabbarTagStart(@tabName, @tabLabel,@tabIcons,true) %>
+			<%= modelTagStart("quotation", @quotation) %>
+				<% @quotationPckg = 'com.c2lbiz.symbiosys.insurance.businesscommon.dataobjects.policy' %>
+				<% if @quotation.insuranceTypeCd.to_s == 'AUTO' %>
+					<%= render :partial => "QuoteCaptureAuto_Jazz" %>
+		        <% elsif @quotation.insuranceTypeCd.to_s == 'TRAVEL' %>
+					<%= render :partial => "QuoteCaptureTravel_Jazz" %>
+		        <% elsif @quotation.insuranceTypeCd.to_s == 'HEALTH' %>
+					<%= render :partial => "QuoteCaptureHealth_Jazz" %>
+		        <% else %>
+					<%= render :partial => "QuoteCaptureLife_Jazz" %>
+		        <% end %>
+		
+				<div style="display: none;">
+					<%= inputTag("visitedTabs") %>
+					<%= inputTag("quoteStatusCd") %>
+					<%= inputTag("rpqId") %>
+					<%= inputTag("leadId") %>
+					<%= inputTag("fnaId") %>
+					<%= inputTag("insuranceTypeCd") %>
+				</div>
+			<% modelTagEnd %>
+		<%= tabbarTagEnd(true) %>
+		<input type="hidden" name="mode" id="mode" value='<%= @mode %>'/>
+		<input type="hidden" name="sourceQuotationId" id="sourceQuotationId" value='<%= @sourceQuotationId %>'/>
+		<input type="hidden" id="additionalOptionsFl" value='<%= additionalOptionsFl %>'/>
+	<%= formTagEnd %>
+<%= pageTagEnd %>
+<%#= render :partial => "QuoteCapture_JazzJS" %>
+<%#if @quotation.insuranceTypeCd.to_s == 'AUTO' %>
+	<%#= render :partial => "QuoteCaptureAuto_JazzJS" %>
+<%#elsif @quotation.insuranceTypeCd.to_s == 'TRAVEL' %>
+	<%#= render :partial => "QuoteCaptureTravel_JazzJS" %>
+<%#elsif @quotation.insuranceTypeCd.to_s == 'HEALTH' %>
+	<%#= render :partial => "QuoteCaptureHealth_JazzJS" %>
+<%#else %>
+	<%#= render :partial => "QuoteCaptureLife_JazzJS" %>
+<%#end %>
+<script type="text/javascript" charset="utf-8" src="/app/Quotation/QuoteCapture_Jazz.js"></script>

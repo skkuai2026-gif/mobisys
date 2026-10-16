@@ -1,0 +1,90 @@
+<div data-role="page" data-url="<%= Rho::RhoConfig.start_path %>/">
+
+    <div data-role="header" data-position="inline">
+      <h1><%= getLabelValue('HUMANLIFEVALUECALC') %></h1>    
+      <a href="/app/Calculator/humanlife" class="ui-btn-left" data-direction="reverse">
+        <%= getLabelValue('BACK')   %>
+      </a>
+    </div>
+
+    <div data-role="content" id="capture" style="-webkit-transform: none;">
+        <%= renderObject(@calculator) %>
+        <table class="searchtable" width=80% align="center">
+                   <tr class="searchtableheader"> 
+                     <td > Needs </td> 
+                     <td > Values </td> 
+                   </tr>
+                   
+                   <tr class="search1">
+                     <td class="tabletext">
+                           Income needed by your dependants (Rs.)
+                     </td>
+                     <td width=40% align=right class="tablenum">
+                         <span   id="incomeNeedsVal"> <%=renderNumber(@calculator.output03) %>&nbsp;</span><br/>
+                     </td>
+                   </tr>
+                   
+                   <tr class="search2">
+                     <td class="tabletext">
+                           Outstanding loans to be repayed (Rs.)
+                     </td>
+                     <td width=40% align=right class="tablenum">
+                         <span   id="outstandingLoansOPVal"><%= renderNumber(@calculator.output04) %>&nbsp;</span><br/>
+                     </td>
+                   </tr>
+                   
+                   <tr class="search1">
+                     <td class="tabletext">
+                           Total insurance needs (Rs.)
+                     </td>
+                     <td width=40% align=right class="tablenum">
+                         <span   id="insuranceNeedsVal"><%=renderNumber(@calculator.output05)%>&nbsp;</span><br/>
+                     </td>
+                   </tr>
+                   
+                   <tr class="search2">
+                     <td class="tabletext">
+                           Present value of all your investments (Rs.)
+                     </td>
+                     <td width=40% align=right class="tablenum">
+                         <span   id="availableInvestmentsOPVal"><%= renderNumber(@calculator.output06)%>&nbsp;</span><br/>
+                     </td>
+                   </tr>
+                   
+                   <tr class="search1">
+                     <td class="tabletext">
+                           Amount of insurance you already have (Rs.)
+                     </td>
+                     <td width=40% align=right class="tablenum">
+                         <span   id="presentInsuranceOPVal"><%= renderNumber(@calculator.output07) %>&nbsp;</span><br/>
+                     </td>
+                   </tr>
+                   
+                   <tr class="search2">
+                     <td class="tabletext">
+                           <B>Additional amount of life insurance you need to buy (Rs.)</b>
+                     </td>
+                     <td width=40% align=right class="tablenum">
+                           <b>
+                         <span   id="additionalInsuranceVal"><%= renderNumber(@calculator.output08) %>&nbsp;</span><br/>
+                           </b>
+                     </td>
+                   </tr>
+       
+                 </table>
+    </div>
+    
+  </form>
+  <script type="text/javascript">
+        
+        $(document).focus(function() {
+          setTimeout("onFocus()", 100);
+        });
+        
+        function onFocus(){        
+        }
+        
+  
+  </script>  
+
+</div>

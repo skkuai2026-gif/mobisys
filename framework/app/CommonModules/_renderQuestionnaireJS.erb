@@ -1,0 +1,239 @@
+<script type="text/javascript">
+//Function to hide/show as well as clear fields based on reflexive mapping
+$.fn.reflexiveParentChildDisplayMapping = function(parentObj) {
+	parentObj = $(parentObj);
+	var parent = parentObj.data("questioncd");
+	var reflexiveValue = parentObj.val();
+	if (parentObj.attr("type") == "radio") {
+		var reflexiveValue = $("input[name='"+parentObj.attr("name")+"']:checked").val();
+	}
+	else{
+		var reflexiveValue = parentObj.val();
+	}
+	var nonMatchingReflexiveSelStr = "[data-parent='"+parent+"'][data-reflexivevalue!='"+reflexiveValue+"']";
+	var matchingReflexiveSelStr = "[data-parent='"+parent+"'][data-reflexivevalue='"+reflexiveValue+"']";
+	
+	//Clear/reset fields
+	$(nonMatchingReflexiveSelStr+"input[type='text']").each(function(){
+		if($(this).val() != "") {
+			$(this).val("").change();		
+		}
+	});
+	$(nonMatchingReflexiveSelStr+"input[type='number']").each(function(){
+		if($(this).val() != "") {
+			$(this).val("").change();		
+		}
+	});
+	$(nonMatchingReflexiveSelStr+"input[type='tel']").each(function(){
+		if($(this).val() != "") {
+			$(this).val("").change();		
+		}
+	});
+    $(nonMatchingReflexiveSelStr+"textarea").each(function(){
+		if($(this).val() != "") {
+			$(this).val("").change();		
+		}
+	});
+	$(nonMatchingReflexiveSelStr+"input[type='radio']").each(function(){
+		if($(this).is(":checked")) {
+			$(this).prop("checked", false).checkboxradio("refresh");
+			$(this).reflexiveParentChildDisplayMapping(this);
+		}
+	})
+	$(nonMatchingReflexiveSelStr+"input[type='checkbox']").prop("checked", false).checkboxradio("refresh").change();
+	$(nonMatchingReflexiveSelStr+"select").each(function(){
+		if($(this).val() != "") {
+			$(this).val("").change();		
+		}
+	});
+	$(nonMatchingReflexiveSelStr+"input[name*='removed']").val("YES").change();
+	$(matchingReflexiveSelStr+"input[name*='removed']").val("").change();
+
+	//Hide questions or the entire block if the target question is the last visible question in the div
+	$(nonMatchingReflexiveSelStr).parents("div.ui-grid-a").hide();
+	$(nonMatchingReflexiveSelStr).each(function(){
+        var parents = $(this).parents("div.ui-grid-a");
+		if (parents.siblings("div.ui-grid-a.questionGrid[style!='display: none;']").length <= 0) {
+            var questionSetBlock = parents.closest("div.questionSetBlock");
+            questionSetBlock.hide();
+			if ($(this).parents("div.questionSetBlock").find(".deleteButton").length > 0) {
+				var hideDiv = $(this).parents(".questionSetBlock:first");
+				if (!(typeof hideDiv.data("rowguid") === typeof undefined) && hideDiv.attr("data-rowguid") != "0") {
+					hideDiv.hide();
+					hideDiv.attr("data-removed", "true");
+					hideDiv.find("input[name*='removed']").val("YES");
+				}
+			}
+            questionSetBlock.siblings("div.addMoreButtonBlock[for='"+questionSetBlock.attr("for")+"']").hide();
+		}
+	});
+
+	//Show questions or the entire block if the entire block is hidden
+	$(matchingReflexiveSelStr).parents("div.ui-grid-a").show();
+	$(matchingReflexiveSelStr).each(function(){
+		var closestDiv = $(this).parents("div.ui-grid-a").closest("div.questionSetBlock");
+		if (closestDiv.attr("data-removed") == "false" || typeof closestDiv.data("removed") === typeof undefined) {
+			closestDiv.show();
+		}
+        closestDiv.siblings("div.addMoreButtonBlock[for='"+closestDiv.attr("for")+"']").show();
+	});
+}
+
+
+//Function to clone a block of grid questions with updated object mapping
+function cloneGridQuestions(originalDiv, gridQuestionCount) {
+	var newDiv = originalDiv.clone();
+	var newRowGuid = parseInt(newDiv.data("rowguid")) + 1;
+
+	//Update rowGuid
+	newDiv.find("[name*='[rowGuid]']").val(newRowGuid);
+	newDiv.attr("data-rowguid", newRowGuid);
+	oldNewNameMapping = {};
+	//Update ServiceQuestionResponse object index in id, name & value attributes
+	newDiv.find("[name^='QuestionContainer[ServiceQuestionResponse]['],[value^='QuestionContainer[ServiceQuestionResponse]['],[id^='QuestionContainer[ServiceQuestionResponse]['],[for^='QuestionContainer[ServiceQuestionResponse][']").each(function(){
+		if (typeof $(this).attr("name") !== typeof undefined && $(this).attr("name") !== false) {
+			var oldName = $(this).attr("name");
+			var index1 = oldName.indexOf("QuestionContainer[ServiceQuestionResponse][") + "QuestionContainer[ServiceQuestionResponse][".length;
+			var oldCount = oldName.substr(index1, oldName.substr(index1).indexOf("]"))
+			var newCount = parseInt(oldCount) + parseInt(gridQuestionCount);
+			var oldNamePrefix = "QuestionContainer[ServiceQuestionResponse]["+oldCount+"]";
+			var newNamePrefix = "QuestionContainer[ServiceQuestionResponse]["+newCount+"]";
+			$(this).attr("name", oldName.replace(oldNamePrefix, newNamePrefix));
+			oldNewNameMapping[oldNamePrefix] = newNamePrefix;
+		}
+
+		if (typeof $(this).attr("id") !== typeof undefined && $(this).attr("id") !== false) {
+			var oldName = $(this).attr("id");
+			var index1 = oldName.indexOf("QuestionContainer[ServiceQuestionResponse][") + "QuestionContainer[ServiceQuestionResponse][".length;
+			var oldCount = oldName.substr(index1, oldName.substr(index1).indexOf("]"))
+			var newCount = parseInt(oldCount) + parseInt(gridQuestionCount);
+			var oldNamePrefix = "QuestionContainer[ServiceQuestionResponse]["+oldCount+"]";
+			var newNamePrefix = "QuestionContainer[ServiceQuestionResponse]["+newCount+"]";
+			$(this).attr("id", $(this).attr("id").replace(oldNamePrefix, newNamePrefix));
+			oldNewNameMapping[oldNamePrefix] = newNamePrefix;
+		}
+
+		if (typeof $(this).val() !== typeof undefined && $(this).val() !== false) {
+			var oldName = $(this).val();
+			var index1 = oldName.indexOf("QuestionContainer[ServiceQuestionResponse][") + "QuestionContainer[ServiceQuestionResponse][".length;
+			var oldCount = oldName.substr(index1, oldName.substr(index1).indexOf("]"))
+			var newCount = parseInt(oldCount) + parseInt(gridQuestionCount);
+			var oldNamePrefix = "QuestionContainer[ServiceQuestionResponse]["+oldCount+"]";
+			var newNamePrefix = "QuestionContainer[ServiceQuestionResponse]["+newCount+"]";
+			$(this).val($(this).val().replace(oldNamePrefix, newNamePrefix));
+			oldNewNameMapping[oldNamePrefix] = newNamePrefix;
+		}
+
+		if (typeof $(this).attr("for") !== typeof undefined && $(this).attr("for") !== false) {
+			var oldName = $(this).attr("for");
+			var index1 = oldName.indexOf("QuestionContainer[ServiceQuestionResponse][") + "QuestionContainer[ServiceQuestionResponse][".length;
+			var oldCount = oldName.substr(index1, oldName.substr(index1).indexOf("]"))
+			var newCount = parseInt(oldCount) + parseInt(gridQuestionCount);
+			var oldNamePrefix = "QuestionContainer[ServiceQuestionResponse]["+oldCount+"]";
+			var newNamePrefix = "QuestionContainer[ServiceQuestionResponse]["+newCount+"]";
+			$(this).attr("for", $(this).attr("for").replace(oldNamePrefix, newNamePrefix));
+			oldNewNameMapping[oldNamePrefix] = newNamePrefix;
+		}
+	});
+	// manipulating the script tags of all controls
+	newDiv.find('script').each(function() {
+		for (var key in oldNewNameMapping) {
+		  if (oldNewNameMapping.hasOwnProperty(key)) {
+			scriptText = $(this).text();
+            scriptText = scriptText.replace(key,oldNewNameMapping[key]);
+        	eval($(this).text(scriptText));
+		  }
+		}
+	})
+
+	//Update ServiceQuestionResponse object & guid values in id, name & value attributes
+	newObjVal = parseFloat(new Date().getTime().toString() + (newDiv.find("[name*='[object]']")[0].value%100).toPrecision(4));
+	newDiv.find("[name*='[object]']").each(function(){
+		oldObjVal = $(this).val();
+		newObjVal = newObjVal + 1;
+		var newGuid = newObjVal.toString().replace(".", "_");
+		var name = $(this).attr("name").substring(0, $(this).attr("name").lastIndexOf("["));
+
+		$(this).val(newObjVal);
+		newDiv.find("[name='"+name+"[guid]']").val(newGuid);
+		newDiv.find("[name='"+oldObjVal+"']").attr("name", newObjVal);
+	});
+
+	//Add block delete button if not present while cloning div
+	if (newDiv.find(".deleteButtonBlock").length <= 0) {
+		var deleteButton = "<div class='ui-grid-d deleteButtonBlock'><div class='ui-block-a'></div><div class='ui-block-b'></div><div class='ui-block-c'></div><div class='ui-block-d'></div><div class='ui-block-e'>"
+		deleteButton += "<div class='ui-btn ui-input-btn ui-corner-all ui-shadow ui-btn-inline ui-icon-delete ui-btn-icon-notext'>"
+		deleteButton += "<input type='button' data-inline='true' data-icon='delete' data-iconpos='notext' class='deleteButton'>";
+		deleteButton += "</div>";
+		deleteButton += "</div></div>"
+		newDiv.prepend(deleteButton);
+	}
+
+	//Clear/reset fields
+	newDiv.find("input[type='text']").val("").change();
+	newDiv.find("input[type='number']").val("").change();
+	newDiv.find("input[type='tel']").val("").change();
+    newDiv.find("textarea").val("").change();
+
+	newDiv.find('.ui-select, .ui-radio, .ui-controlgroup-controls, .ui-input-btn').each(function() {
+		$(this).find('select').val("");
+		$(this).after($(this).find('select'));
+
+		$(this).after($(this).find('label'));
+		$(this).find('input[type="radio"]').removeProp("checked");
+		$(this).after($(this).find('input[type="radio"]'));
+		$(this).find('input[type="checkbox"]').removeProp("checked");
+		$(this).after($(this).find('input[type="checkbox"]'));
+
+		$(this).after($(this).find('input'));
+
+		$(this).remove();
+	});
+
+	originalDiv.after(newDiv);
+	originalDiv.parent().trigger('create');
+	newDiv.find('script').each(function(){
+      eval($(this).text());
+    })
+	attachFieldEvents();
+}
+
+
+//Common function to attach all field level events
+function attachFieldEvents(){
+	$(".deleteButton").click(function(){
+		var hideDiv = $(this).parents(".questionSetBlock:first");
+		hideDiv.hide();
+		hideDiv.attr("data-removed", "true");
+		hideDiv.find("input[name*='removed']").val("YES");
+	});
+
+	$(".dateField").parents(".ui-input-text").css("width","100px");
+	$(".dateField").addClass("ui-input-text");
+
+	$(".amountField,.countField").each(function(){
+		$(this).keypress(function(e){
+			var regex = new RegExp("^[0-9]+$");
+			var str = String.fromCharCode(!e.charCode ? e.which : e.charCode);
+			if (regex.test(str) && !e.shiftKey && !e.ctrlKey && !e.altKey) {
+		    	return true;
+			}
+
+			e.preventDefault();
+			return false;
+		});
+	});
+}
+
+$(document).ready(function(){
+	$(".addMoreButton").click(function(){
+		cloneGridQuestions($(this).parents("div.ui-grid-b").prevAll("div[data-removed='false']:first"), $(this).data("gridquestioncount"));
+	});
+	attachFieldEvents();
+    $("div.ui-grid-a[style='display:none;']").each(function(){
+        if($(this).siblings("div.ui-grid-a.questionGrid[style!='display: none;']").length <= 0) {
+            $(this).closest("div.questionSetBlock").hide();
+        }
+    })
+});
+</script>

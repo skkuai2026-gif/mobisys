@@ -1,0 +1,228 @@
+<div name = "riderinformationdiv">
+  <%= renderLegend('riderInformation','RIDERINFORMATION') %>
+  <div name="riderInformation">
+
+    <div class="illustrationdisplay">          
+      <fieldset data-role="controlgroup">
+        <div class="ui-grid-c">            
+          <div class="ui-block-ab">
+             <%= getLabelValue('TOTALRIDERPREMIUM')   %>            
+          </div>
+          <div class="ui-block-c"> 
+            &nbsp; 
+          </div>
+          <div class="ui-block-d"> 
+            <%= renderAmountField('totalRiderPremium',nil,'Total Rider Premium') %> 
+          </div>
+        </div>
+      </fieldset>
+    </div>
+
+    <div class="illustrationdisplay">       
+
+      <fieldset class="ui-grid-f">
+        <strong>
+        <div class="ui-block-a"> </div>
+        <div class="ui-block-b"> <center> <%= renderLabel('planOption','productPlanOptionCd','riderHeader') %> </center> </div>
+        <div class="ui-block-c"><div name="extraFieldsHeader1"> <%=renderLabel('term','productTerm','riderHeader')%> </div></div>
+        <div class="ui-block-d"><div name="extraFieldsHeader3"><%=renderLabel('partyRoleCd','partyRoleCd','riderHeader')%> </div></div>
+        <div class="ui-block-e"><div name="extraFieldsHeader2"><%=renderLabel('premiumPayingTerm','premiumPayingTerm','riderHeader')%> </div></div>
+        <div class="ui-block-f"> <%= renderLabel('sumAssured','sumAssured','riderHeader') %> </div>
+        <div class="ui-block-g"><div name="riderPremium"> <%= renderLabel('Premium','RIDERMODALPREMIUM','riderHeader') %> </div></div>
+        
+        </strong>
+      </fieldset>
+
+      <% @sortedProductFamilies.each do |productFamily|          
+        
+        quotationProductList = @riderFamilies[productFamily.productFamilyId]
+        
+        if quotationProductList != nil
+      %>
+        <div name="productFamily_<%=productFamily.productFamilyId%>">
+          <fieldset class="ui-grid-c">
+            <strong>
+            <div class="ui-block-a"> <%= getLabelValue(productFamily.productFamilyId+"RIDERS") %> </div>
+            <div class="ui-block-b">  </div>
+            <div class="ui-block-c">  </div>
+            <div class="ui-block-d">  </div>
+            </strong>
+          </fieldset>
+
+          <% quotationProductList.each do |quotationProduct| %>
+              <fieldset class="ui-grid-f" name="rider_<%=quotationProduct.productId%>">
+                
+                <%= renderObject(quotationProduct, @quotation) %>
+                <%= renderHiddenField('productId',quotationProduct.productId,'Product Id', quotationProduct) %>
+                <%= renderHiddenField('productTypeCd',quotationProduct.productTypeCd,'productTypeCd', quotationProduct) %>
+                <%= renderHiddenField('premiumSAFl',@premiumDetailsHM[quotationProduct.productId].premiumSAFl,'Premium SA Fl', quotationProduct) %>
+                <%= renderHiddenField('productFamilyCd',quotationProduct.productFamilyCd,'productFamilyCd', quotationProduct) %>
+          
+                <div class="ui-block-a">
+                  <%= renderCheckBox('selected', quotationProduct.selected, 'Selected', quotationProduct) %>
+                  <% if quotationProduct.productId == "PB" %>
+                    <%= renderHiddenField('selected', quotationProduct.selected, 'Selected', quotationProduct) %>
+                  <%end%>
+                  <%= renderLabel('selected','&nbsp;', nil, quotationProduct) %>
+                  <div class="collateraldiv">
+                    <ul data-role="listview" >
+                      <li class="collateral">
+                        <a href="#" name="<%=quotationProduct.productId%>_COLLATERAL">
+                          <script>
+                            $('a[name="<%=quotationProduct.productId%>_COLLATERAL"]').click(function () {  
+                              $.get("/app/Collateral/showProductCollateral?product=<%=quotationProduct.productId%>",function(data) {});
+                            }); 
+                          </script>                      
+                          <%= renderLabel('productId',quotationProduct.productId, nil, quotationProduct) %>                      
+                        </a>
+                        
+                      </li>
+                    </ul>
+                  </div>                   
+                </div>
+
+                <div class="ui-block-b" id="<%=quotationProduct.productId%>">
+                  <% if quotationProduct.productId == "TR" %>
+                    <%= getLookup('DYNAMICLOOKUP', 'planCode', quotationProduct.planCode, quotationProduct, @paPlanLookups, ' onchange="calculatePremium(\"'+getObjectMapping(quotationProduct)+'[baseSumAssured]\");"') %>
+                  <% else %>
+                    <% if @premiumDetailsHM[quotationProduct.productId] != nil && @premiumDetailsHM[quotationProduct.productId].premiumSAFl == "COVERAGE" %>
+                      <%= getLookup('DYNAMICLOOKUP', 'productPlanOptionCd', quotationProduct.productPlanOptionCd, quotationProduct, @paPlanLookups, ' onchange="calculatePremium(\"'+getObjectMapping(quotationProduct)+'[baseSumAssured]\");"') %>
+                    <% else %>
+                      <% if quotationProduct.productId == "PB" %>
+                        <%= renderHiddenField('planCode','PBA','plan Code', quotationProduct) %>
+                      <% else %>
+                        <%= renderHiddenField('planCode',quotationProduct.planCode,'planCode', quotationProduct) %>
+                      <% end %>
+                    <% end %>                  
+                  <% end %>
+                </div>
+
+                <div class="ui-block-c">
+                  <div name="extraFields1">
+                    <%= renderCountField('productTerm', quotationProduct.productTerm,'Product Term', quotationProduct)%>
+                  </div>
+                </div>
+                <div class="ui-block-d">
+                  <div name="extraFields2">
+                    <%= renderInputField('partyRoleCd', quotationProduct.partyRoleCd,'partyRoleCd', quotationProduct)%>
+                  </div>
+                </div>
+                <div class="ui-block-e"><div name="extraFields3"><%= renderCountField('premiumPayingTerm', quotationProduct.premiumPayingTerm,'premiumPayingTerm', quotationProduct)%></div></div>
+                <div class="ui-block-f">
+                  <% if quotationProduct.productId == "PB" %>
+                      <%= renderHiddenField('baseSumAssured',quotationProduct.baseSumAssured,'Sum Assured', quotationProduct) %>
+                  <% else %> 
+                    <% if @premiumDetailsHM[quotationProduct.productId] != nil && @premiumDetailsHM[quotationProduct.productId].premiumSAFl == "SA" %>
+                      <%= renderAmountField('baseSumAssured', quotationProduct.baseSumAssured, 'Sum Assured', quotationProduct) %>
+                    <% end %>
+                  <% end %>
+                </div>
+
+                <div class="ui-block-g">  
+                  <%= renderHiddenField('baseAnnualPremium', quotationProduct.baseAnnualPremium, 'Premium', quotationProduct) %>
+                  <div name="riderPremium"><%= renderAmountField('modalPremium', quotationProduct.modalPremium, 'Modal Premium', quotationProduct) %></div>
+                </div> 
+
+
+                <script>
+                  try{
+                    objectMapping[objectCount] = "<%=getObjectMapping(quotationProduct)%>";
+                    objectCount++;
+                  } catch(e){alert(e);}
+                  
+                  <% if quotationProduct.productId == "PB" %>
+                    $('input[name="<%=getObjectMapping(quotationProduct)%>[selected]"]').attr('disabled', 'disabled');
+                    $('input[name="<%=getObjectMapping(quotationProduct)%>[baseSumAssured]"]').val(
+                      $('input[name="<%=getObjectMapping(@baseProduct)%>[baseAnnualPremium]"]').val()  
+                    );
+                    $('input[name="<%=getObjectMapping(quotationProduct)%>[baseSumAssured]"]').blur();
+                  <% end %>
+                  $('input[name="<%=getObjectMapping(quotationProduct)%>[selected]"]').change( function(){
+                    if(this.value == "on"){
+                      setReadOnly($('input[name="<%=getObjectMapping(quotationProduct)%>[baseSumAssured]"]'), false); 
+                      $('select[name="<%=getObjectMapping(quotationProduct)%>[productPlanOptionCd]"]').selectmenu('enable');
+                      updateRiderPlans( '<%=getObjectMapping(quotationProduct)%>', 
+                                        'productPlanOptionCd',
+                                        $('input[name="<%=getObjectMapping(quotationProduct)%>[productId]"]').val(),
+                                        true);
+                      $('select[name="<%=getObjectMapping(quotationProduct)%>[planCode]"]').selectmenu('enable');
+                      
+                      if($('input[name="<%=getObjectMapping(quotationProduct)%>[productId]"]').val()=="AI")
+                      {
+                        // enableDependantRider("RCCAI");
+                      }
+                      else if($('input[name="<%=getObjectMapping(quotationProduct)%>[productId]"]').val()=="ADD")
+                      {
+                        if($('input[name="<%=getObjectMapping(@quotation)%>[age]"]').val() >= 20){
+                          // enableDependantRider("RCCADD");
+                        }
+                      }
+                      else if($('input[name="<%=getObjectMapping(quotationProduct)%>[productId]"]').val()=="PPO")
+                      {
+                        if($('input[name="<%=getObjectMapping(@quotation)%>[age]"]').val() >=3){
+                          enableDependantRider("OPD");
+                        }
+                      }
+                      else if($('input[name="<%=getObjectMapping(quotationProduct)%>[productId]"]').val()=="RCCAI")
+                      {
+                        $('input[name="<%=getObjectMapping(quotationProduct)%>[baseSumAssured]"]').val(fetchDependantSAPR("AI", 5000000));
+                        $('input[name="<%=getObjectMapping(quotationProduct)%>[baseSumAssured]"]').blur();
+                      }
+                      else if($('input[name="<%=getObjectMapping(quotationProduct)%>[productId]"]').val()=="RCCADD")
+                      {
+                        $('input[name="<%=getObjectMapping(quotationProduct)%>[baseSumAssured]"]').val(fetchDependantSAPR("ADD", 5000000));
+                        $('input[name="<%=getObjectMapping(quotationProduct)%>[baseSumAssured]"]').blur();
+                      }
+                    }
+                    else // # if selected = off
+                    {                    
+                      setReadOnly($('input[name="<%=getObjectMapping(quotationProduct)%>[baseSumAssured]"]'), true);
+                      $('input[name="<%=getObjectMapping(quotationProduct)%>[baseSumAssured]"]').val('');                      
+                      $('input[name="<%=getObjectMapping(quotationProduct)%>[modalPremium]"]').val("");
+                      $('input[name="<%=getObjectMapping(quotationProduct)%>[baseAnnualPremium]"]').val("");
+                      $('select[name="<%=getObjectMapping(quotationProduct)%>[planCode]"]').selectmenu('disable');
+                      $('select[name="<%=getObjectMapping(quotationProduct)%>[planCode]"]').val("");                      
+                      $('select[name="<%=getObjectMapping(quotationProduct)%>[productPlanOptionCd]"]').selectmenu('disable');
+                      $('select[name="<%=getObjectMapping(quotationProduct)%>[productPlanOptionCd]"]').val("");
+                      
+
+                      if($('input[name="<%=getObjectMapping(quotationProduct)%>[productId]"]').val()=="AI")
+                      {
+                        //disableDependantRider("RCCAI");
+                      }
+                      else if($('input[name="<%=getObjectMapping(quotationProduct)%>[productId]"]').val()=="ADD")
+                      {                        
+                        //disableDependantRider("RCCADD");                       
+                      }
+                      else if($('input[name="<%=getObjectMapping(quotationProduct)%>[productId]"]').val()=="PPO")
+                      {
+                        disableDependantRider("OPD");
+                      }
+                      
+                      modalPremiumsList[$('input[name="<%=getObjectMapping(quotationProduct)%>[productId]"]').val()]="";
+                      
+                      updateModalPremiums();
+                      
+                    }
+
+                  });
+
+                </script>
+
+
+
+
+
+                            
+              </fieldset>
+            <%end%>
+            <div data-role="fieldcontain">
+              <hr class="horizontalline"/>
+            </div>
+          </div>
+      <%end%>
+    <%end%>
+    </div> 
+  </div>
+</div>
+

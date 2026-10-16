@@ -1,0 +1,206 @@
+<script type="text/javascript">
+
+    var initialFnaProductSelection = "";
+
+    function tabSetup(){
+        <% if @fnaRequest.statusCd.to_s == "FNASIGNED" || @fnaRequest.statusCd.to_s == "FNASUBMIT" || @fnaRequest.statusCd.to_s == "SYNCDONE" %>
+            setReadOnly($('input[type="text"]'), true);
+            setReadOnly($('input[type="tel"]'), true);
+            setReadOnly($('input[type="num"]'), true);
+            setReadOnly($('input[type="email"]'), true);
+            $('select').selectmenu('disable').trigger("refresh");
+            $('input[type="radio"]').checkboxradio('disable').trigger("refresh");
+            $('input[type="checkbox"]').checkboxradio('disable').trigger("refresh");
+            $('input[type="button"]').off('click');
+            $('input[type="button"]').button('disable').trigger("refresh");
+            $('a[href="#clear"]').hide();
+            $('label[for="<%=getObjectMapping(@fnaRequest)%>[totSumAssured]"]').css("top", "-10px");
+            $('label[for="<%=getObjectMapping(@fnaRequest)%>[addtnField6D]"]').css("top", "-10px");
+            $('label[for="<%=getObjectMapping(@fnaRequest)%>[addtnField7D]"]').css("top", "-10px");
+        <% end %>
+        $("input.PLAN").each(function(i, j){
+            var productSeq = $(j).parent().parent().attr("id");
+            if($(j).is(':checked')){
+                $("span[id= '"+productSeq+"'][data-producttypecd= 'RIDER']").children().find("input").checkboxradio('enable').trigger("refresh");
+                $(j).parents('tr').find("span[data-producttypecd= 'buttonLink']").show();
+                $(j).parents('tr').find("span[data-producttypecd= 'linkSI']").show();
+                $(j).parents('tr').find('a#show_SI').hide();
+            }
+            else{
+                $("span[id= '"+productSeq+"'][data-producttypecd= 'RIDER']").children().find("input").checkboxradio('disable').trigger("refresh");
+                $(j).parents('tr').find("span[data-producttypecd= 'buttonLink']").hide();
+                $(j).parents('tr').find("span[data-producttypecd= 'linkSI']").hide();
+                $(j).parents('tr').find('a#show_SI').hide();
+            }
+        });
+    };
+
+    function linkToSI(objectId) {
+        submitForm();
+        $.ajax({
+            url: "/app/FNARequest/LinkToSI",
+            data: {
+                'id': '<%= @fnaRequest.object.to_s %>',
+                'productSeq': objectId
+            },
+            async: false,
+            headers: {
+                'Transition-Enabled': false
+            },
+            success: function(data) {
+
+            }
+        });
+    }
+
+    function fetchUnlinkedQuotations(fnaProductGuid, objectId) {
+        $.ajax({
+            url: '/app/FNARequest/getUnlinkedQuotations',
+            data: {
+                fnaProductGuid: fnaProductGuid,
+                objectId: objectId
+            },
+            async: false,
+            headers: {
+                'Transition-Enabled': false
+            },
+            success: function(response) {
+                if (response != "") {
+                    $("div[data-role='page']").css('overflow', 'hidden');
+                    $(this).simpledialog2({
+                        mode: 'blank',
+                        blankContent: response
+                    });
+                    $('.ui-simpledialog-container').css('max-height', '70vh');
+                }
+            }
+        });
+    }
+
+    function linkQuotation() {
+        var selected_option = $("input[type='radio'][id^='quotation_']:checked");
+        var productSeq = selected_option.parents('table').data('product');
+        if (selected_option != undefined) {
+            $("span[id= '" + productSeq + "']").find("input[type='hidden']").val(selected_option.val());
+            $("span[id= '" + productSeq + "']").parents('tr').find("span[data-producttypecd= 'buttonLink']").hide();
+            $("span[id= '" + productSeq + "']").parents('tr').find("span[data-producttypecd= 'linkSI']").hide();
+            $("span[id= '" + productSeq + "']").parents('tr').find('a#show_SI').html(selected_option.val()).show();
+            $("span[id= '" + productSeq + "']").parents('tr').find('a#show_SI').attr('href', '/app/Quotation/show?quotationId=' + selected_option.val());
+            $.mobile.sdCurrentDialog.close();
+            submitForm();
+        }
+    }
+
+    $("input.PLAN").on("click", function() {
+        var productSeq = $(this).parent().parent().attr("id");
+        if ($(this).is(':checked')) {
+            $("span[id= '" + productSeq + "'][data-producttypecd= 'RIDER']").children().find("input").checkboxradio('enable').trigger("refresh");
+            $(this).parents('tr').find("span[data-producttypecd= 'buttonLink']").show();
+            $(this).parents('tr').find("span[data-producttypecd= 'linkSI']").show();
+            $(this).parents('tr').find('a#show_SI').hide();
+        } else {
+            $("span[id= '" + productSeq + "'][data-producttypecd= 'RIDER']").children().find("input").checkboxradio('disable').attr('checked', false).trigger("refresh");
+            $("span[id= '" + productSeq + "'][data-producttypecd= 'RIDER']").children().find("input").attr("checked", false).checkboxradio("refresh");
+            $(this).parents('tr').find("span[data-producttypecd= 'buttonLink']").hide();
+            $(this).parents('tr').find("span[data-producttypecd= 'linkSI']").hide();
+            $(this).parents('tr').find('a#show_SI').hide();
+        }
+    });
+
+    if ($("input[id='FNARequest[addtnField6D]']").val() == "0") {
+        $("input[id='FNARequest[addtnField6D]']").val("");
+    }
+
+    if ($("input[id='FNARequest[addtnField7D]']").val() == "0") {
+        $("input[id='FNARequest[addtnField7D]']").val("");
+    }
+    function submitForm1() {
+        //Used to trim all the input fields before save
+        //alert("767686");
+        $(':input').each(function() {
+            $(this).val($.trim($(this).val()))
+        });
+
+        if (initialFnaProductSelection != $('#FnaProductSelection').serialize()) {
+            $.ajax({
+                url: "/app/FNARequest/loaddata",
+                method: 'POST',
+                async: false,
+                data: $('#FnaProductSelection').serialize(),
+                headers: {
+                    'Transition-Enabled': false
+                },
+                success: function(data) {
+                    create = data;
+                    $("#FnaProductSelectionProduct").html("").html(create);
+                    $("#FnaProductSelectionProduct").trigger('create');
+                }
+            });
+        }
+    }
+
+    $(document).ready(function() {
+        MyPageData = {};
+        MyPageData.getData = ($('#FnaProductSelection').serialize());
+        initialFnaProductSelection != $('#FnaProductSelection').serialize();
+        $('#nextpre').show();
+        tabExchange($('.active-btn').attr("data-url"));
+        $('#nextTab').removeClass("ui-state-disabled");
+
+        // Ashwini 02-08-2017 : Hide E-signature Tab if chamges are made in Basic Into tab
+        $('#FnaProductSelection').on('keyup change', 'input, select, textarea', function() {
+            $("#FnaProductSelection").data("changed", true)
+            $("#icon-arrow").hide();
+            $("#esignature").hide();
+            $("#changeSelectionForm").val("true");
+        });
+    });
+
+    function submitForm() {
+        //Used to trim all the input fields before save
+        //alert("767686");
+        $(':input').each(function() {
+            $(this).val($.trim($(this).val()))
+        });
+        if ($('#FnaProductSelection').serialize() != (MyPageData.getData)) {
+            // if(initialFnaProductSelection != $('#FnaProductSelection').serialize()) {
+            $.ajax({
+                url: "/app/FNARequest/submitProductSelection",
+                method: 'POST',
+                async: false,
+                data: $('#FnaProductSelection').serialize(),
+                headers: {
+                    'Transition-Enabled': false
+                },
+                success: function(data) {
+                    $("input[name='<%= getObjectMapping(@fnaRequest) %>[addtnField3Str]']").val(data);
+                    $("a#submit").hide();
+                }
+            });
+        }
+    }
+
+    function numbersonly(evt) {
+        var charCode = (evt.which) ? evt.which : event.keyCode
+        if (charCode > 31 && (charCode < 48 || charCode > 57))
+            return false;
+        return true;
+    }
+
+    function checkifNum(val, id) {
+        if (isNaN(val) || val < 0) {
+            $("input[id='" + id + "']").val("");
+            var dialogContent = '<span>' + "<%= getLabelValue('ERR_CONTACT') %>" + '</span>';
+            $("#policyNo-validation-div").html("").html(dialogContent).trigger('create');
+            if (typeof $.mobile.sdCurrentDialog === 'undefined') {
+                $("<div>").simpledialog2({
+                    mode: 'blank',
+                    blankContent: $("#policyNo-validation-div").html() + "<a rel='close' data-role='button' href='#' style='margin-top: 2%;'>" + '<%= getLabelValue("MESSAGE_CLOSE") %>' + "</a>"
+                });
+            }
+            $("input[id='" + id + "']").focus();
+            // showDialog("", "<%#= getLabelValue('ERR_CONTACT') %>", 'warning', 0, 'capture');
+        }
+    }
+
+</script>

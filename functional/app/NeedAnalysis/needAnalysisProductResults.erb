@@ -1,0 +1,163 @@
+<div data-role="page" data-url="<%= Rho::RhoConfig.start_path %>/">
+  <form method="POST" action="<%= url_for :action => :calculate %>" name="needAnalysisForm">
+      <div data-role="header" data-position="inline">
+        <h1><%= getLabelValue('NEEDANALYSISQ') %></h1>    
+        <a href="/app/Menu/leads" class="ui-btn-left" data-direction="reverse">
+          <%= getLabelValue('BACK')   %>
+        </a>
+      </div>
+  
+      <div data-role="content" id="capture" style="-webkit-transform: none;">
+          <%= renderObject(@needAnalysis) %>
+          <div name = "testGraph">
+          </div>
+          
+
+          <div id = "displayProducts">
+            
+          </div>
+
+          
+      </div>
+  </form>
+  <script>
+    
+    var eventCounter = 80;
+    var maxAmount = <%= @maxAmountOnYAxis %>
+    var maxAmountOnYAxis = 0;
+    while(maxAmountOnYAxis < maxAmount)
+    {
+      maxAmountOnYAxis = maxAmountOnYAxis + 50000000;
+    }
+    var amountPerUnit = maxAmountOnYAxis/350;
+    var yAxisDivision = maxAmountOnYAxis/10;
+    var yAxisLabels = new Array();
+    for (var i = 0; i < 10; i++)
+    {
+      yAxisLabels[i] = yAxisDivision * (i + 1);
+    }
+    
+    function drawGraph()
+    {
+      var c = document.getElementById("canvas_1");
+      var ctx = c.getContext("2d");
+      ctx.clearRect(0, 0, c.width, c.height);
+      <% @IncomeString = "incomeArray = ["
+         @ExpensesString = "expensesArray = ["
+         @AdhocExpensesString = "adhocExpensesArray = ["
+         @SavingsString = "savingsArray = ["
+         @EMIString = "emiArray = ["
+         @TermInsuranceString = "termInsuranceArray = ["
+         @mainHash.each_value{|yearHash|
+           income = yearHash["yearlyIncome"]
+           expenses = yearHash["yearlyExpenses"]
+           adhocExpenses = yearHash["adhocExpenses"]
+           savings = yearHash["savings"]
+           emi = yearHash["EMI"]
+           termInsurance = yearHash["termInsurance"]
+           @IncomeString << "#{income},"
+           @ExpensesString << "#{expenses},"
+           @AdhocExpensesString << "#{adhocExpenses},"
+           @SavingsString << "#{savings},"
+           @EMIString << "#{emi},"
+           @TermInsuranceString << "#{termInsurance},"
+         }
+         @IncomeString << "]"
+         @ExpensesString << "]"
+         @AdhocExpensesString << "]"
+         @SavingsString << "]"
+         @EMIString << "]"
+         @TermInsuranceString << "]"
+         @indexOfExtraComma = @IncomeString.index("]") - 1
+         @IncomeString[@indexOfExtraComma, 2] = "]"
+         @indexOfExtraComma = @ExpensesString.index("]") - 1
+         @ExpensesString[@indexOfExtraComma, 2] = "]"
+         @indexOfExtraComma = @AdhocExpensesString.index("]") - 1
+         @AdhocExpensesString[@indexOfExtraComma, 2] = "]"
+         @indexOfExtraComma = @SavingsString.index("]") - 1
+         @SavingsString[@indexOfExtraComma, 2] = "]"
+         @indexOfExtraComma = @EMIString.index("]") - 1
+         @EMIString[@indexOfExtraComma, 2] = "]"
+         @indexOfExtraComma = @TermInsuranceString.index("]") - 1
+         @TermInsuranceString[@indexOfExtraComma, 2] = "]"  
+      %>
+      <%= @IncomeString %>
+      <%= @ExpensesString %>
+      <%= @AdhocExpensesString %>
+      <%= @SavingsString %>
+      <%= @EMIString %>
+      <%= @TermInsuranceString %>
+      
+      for(var i = 0; i < incomeArray.length; i++)
+      { 
+        incomeArray[i] = incomeArray[i]/amountPerUnit;
+        incomeArray[i] = Math.round(incomeArray[i]);
+        expensesArray[i] = Math.round(expensesArray[i]/amountPerUnit);
+        adhocExpensesArray[i] = Math.round(adhocExpensesArray[i]/amountPerUnit);
+        savingsArray[i] = Math.round(savingsArray[i]/amountPerUnit);
+        emiArray[i] = Math.round(emiArray[i]/amountPerUnit);
+        termInsuranceArray[i] = Math.round(termInsuranceArray[i]/amountPerUnit);
+      }
+      
+        for(var i = 0; i < termInsuranceArray.length; i++)
+        {
+          if (i >= <%= @retirementAge - @startAge - 1%>)
+          {   
+            termInsuranceArray[i] = "null";
+          }
+        }
+        for(var i = 0; i < emiArray.length; i++)
+        {
+          if (i >= <%= @EMITillAge - @startAge - 1%>)
+          {   
+            emiArray[i] = "null";
+          }
+        }
+          var xAxixRange = 100 - <%= @startAge %>
+          var numberOfXTicks = Math.round(xAxixRange/2)
+          var xAxisLabels = new Array();
+          var currentLabel = <%= @startAge %>
+          for (var i = 0; i <= numberOfXTicks; i++)
+          {
+            xAxisLabels[i] = currentLabel
+            currentLabel = currentLabel + 2
+          }
+          var line = new RGraph.Line('canvas_1', incomeArray, expensesArray, adhocExpensesArray, savingsArray, emiArray, termInsuranceArray)
+              line.Set('chart.background.color','white');
+              line.Set('chart.background.bars.color1','white');
+              line.Set('chart.background.bars.color2', 'white');
+              line.Set('chart.background.grid.hlines', true);
+              line.Set('chart.background.grid.autofit', true);
+              line.Set('chart.background.grid.hlines.count', 10);
+              line.Set('chart.background.grid.vlines', true);
+              line.Set('chart.background.grid.vlines.count', numberOfXTicks);
+              var xMax = ($(document).width() * 0.9) - 10 
+              line.Set('chart.xaxis.scale.max', xMax);
+              line.Set('chart.xaxis.scale.min', 85);
+              line.Set('chart.yaxis.scale.min', 0);
+              line.Set('chart.yaxis.scale.max',350);
+              line.Set('chart.key', ['Income','Expense','Adhoc Expense','Savings','EMI','Term Isurance']);
+              line.Set('chart.key.interactive', true);
+              line.Set('chart.linewidth', 2);
+              line.Set('chart.shadow', true);
+              line.Set('chart.yaxis.labels.count', 11);
+              line.Set('chart.margin.left', 80);
+              line.Set('chart.yaxis.tickmarks.count', 10);
+              line.Set('chart.xaxis.tickmarks.count', numberOfXTicks);
+              line.Set('chart.xaxis.labels', xAxisLabels);
+              line.Set('chart.yaxis.labels.specific', [yAxisLabels[9].toString(), yAxisLabels[8].toString(), yAxisLabels[7].toString(), yAxisLabels[6].toString(), yAxisLabels[5].toString(), yAxisLabels[4].toString(), yAxisLabels[3].toString(), yAxisLabels[2].toString(), yAxisLabels[1].toString(), yAxisLabels[0].toString(), '0']);
+              line.Draw();
+    } 
+    
+    $(document).focus(function initialise()
+    {
+      $('div[name="testGraph"]').html("<canvas id='canvas_1' name='canvas_1' width='"+ $(document).width() * 0.9 +"px' height='400px'>[No canvas support]</canvas>");
+      $('div[name="testGraph"]').trigger('create');
+      var data = 0
+      drawGraph();
+    });
+    
+    
+  </script> 
+  
+</div>

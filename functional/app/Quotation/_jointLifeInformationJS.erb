@@ -1,0 +1,30 @@
+<script>
+
+
+$(document).ready(function(){
+
+	<% if @facetData[:renderJointLifePanel] %>
+	 if($("input[id='<%= getObjectMapping(@quotation) %>[jointLife]']").is(":checked")) {
+            $("div[name='jointLife']").show();
+            $("input[id='<%= getObjectMapping(@jointLife) %>[removed]']").val("");
+        }
+        else {
+            $("div[name='jointLife']").hide();
+            $("input[id='<%= getObjectMapping(@jointLife) %>[removed]']").val("YES");
+        }
+
+       $("input[id='<%= getObjectMapping(@quotation) %>[jointLife]']").change(function(){
+            if($(this).is(":checked")) {
+                $("div[name='jointLife']").show();
+                $("input[id='<%= getObjectMapping(@jointLife) %>[removed]']").val("");
+            }
+            else {
+                $("div[name='jointLife']").hide();
+                $("input[id='<%= getObjectMapping(@jointLife) %>[removed]']").val("YES");
+            }
+       });
+      <% end %>
+
+});
+
+</script>

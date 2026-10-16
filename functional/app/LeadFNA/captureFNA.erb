@@ -1,0 +1,464 @@
+<div data-role="page" data-url="<%= Rho::RhoConfig.start_path %>/">
+	<link rel="stylesheet" href="/public/css/Eapp/c2l_EAPP.css">
+	<link rel="stylesheet" href="/public/css/jquery.signaturepad.css">
+	
+	<script type="text/javascript" src="/public/js/jquery.signaturepad.js"></script>
+	<script type="text/javascript" src="/public/js/json2.min.js"></script>
+	<script type="text/javascript" src="/public/js/Eapp/c2l_EAPP.js"></script>
+	<style type="text/css">
+	#header {
+	    background-color:#FFF;
+	    background-repeat: repeat-x;
+	    border-radius: 4px;
+	    box-shadow: 0 1px 0 rgba(255, 255, 255, 0.15) inset, 0 1px 5px rgba(0, 0, 0, 0.075);
+	    height: 4em;
+	}
+
+	#header > img {
+	    margin: 0.5em 0 0 1em;
+	    width: 8%;
+	}
+
+	#header a img {
+	    margin: 0.9em;
+	}
+
+	#header h1 {
+	    font-size: 1.5em;
+	    padding: 0.7em 0;
+	}
+	.headerRightButtons {
+		padding-right: 4em;
+	}
+	#errordiv {
+		position: absolute;
+		right: 0;
+		top: 0;
+	}
+
+	.sigNav {
+		width: 751px;
+	}
+
+	.ui-checkbox {
+		width: 100% !important;
+	}
+	</style>
+
+
+	<div data-role="header" id="header" data-position="inline">
+		<a href="/app/Menu/fna" rel="external" data-direction="reverse" data-role="none">
+			<img src="/public/images/SalesIllustration/icon_BackArrow-Red.png" width="70%">
+		</a>
+
+		<h1 style="margin:0 30%";><%= getLabelValue('FNA') %></h1>
+		<div class="ui-btn-right">
+			<div class="headerRightButtons">
+				<% if !@params.has_key?("graphicalFNA") %>
+					<% if @leadfna.outputInsurancePlanSuited.to_s != "" || @leadfna.outputRiders.to_s != "" || @leadfna.outputInsuranceProtectionAmount.to_s != "" || @leadfna.outputPaymentPeriod.to_s != "" %>
+						<a href="#" name="save" data-role="button" style="min-width:100px;">
+							<%= getLabelValue('SAVEVALIDATE')%>
+						</a>
+
+						<% if @extendFl %>
+							<a href="<%= url_for :action => :extendExpiryDt, :id => @leadfna.object %>?capture" rel="external"><%= getLabelValue('EXTEND') %></a>
+						<% else %>
+							<% if @leadfna.fnaStatus.to_s == "" %>
+								<a href="<%= url_for :controller => :LeadRPQ, :action => :newRPQ, :id => @leadfna.object %>" data-role="button" rel="external"><%= getLabelValue('ADDRPQ')%></a>
+							<% end %>
+							<% if @leadfna.outputInsurancePlanSuited == "Accident and Protector" %>
+								<a href="<%= url_for :controller => :Policy, :action => :addProposal %>" data-role="button" rel="external"><%= getLabelValue('EAPP')%></a>
+							<% end %>
+						<% end %>
+					<% else %>
+						<a href="#" name="save" data-role="button" style="min-width:100px;">
+							<%= getLabelValue('EVALUATE')%>
+						</a>
+					<% end %>
+				<% end %>
+
+				<span id='errordiv' style="display:none"> 
+					<a href="#" name="error_dialog" id="error_dialog" style="min-width:100px; bottom: 10px;">
+						<img src="/public/images/SalesIllustration/error_list.png">
+					</a>
+				</span>
+			</div>
+		</div>
+	</div>
+
+
+	<div data-role="content" id="capture" style="-webkit-transform: none;">
+		<div id='totalErrorDiv' style="display:none">
+			<% if !$total_error.empty? %>
+				<%= renderErrorList($total_error) %>
+			<% end %>
+		</div>
+
+		<form method="POST" action="<%= url_for :action => :executeSubmit %>" name="fnaResponseForm" id="fnaResponseForm">
+			<%= renderObject(@leadfna) %>
+
+			<%= renderHiddenField('fnaId', @leadfna.fnaId, 'fnaId', @leadfna) %>
+			<%= renderHiddenField('leadId', @leadfna.leadId, 'leadId', @leadfna) %>
+			<%= renderHiddenField('fromTime', @leadfna.fromTime, 'fromTime', @leadfna) %>
+			<%= renderHiddenField('toTime', @leadfna.toTime, 'toTime', @leadfna) %>
+			<%= renderHiddenField('natureOfDuty', @leadfna.natureOfDuty, 'natureOfDuty', @leadfna) %>
+			<%= renderHiddenField('leadSource', @leadfna.leadSource, 'leadSource', @leadfna) %>
+			<%= renderHiddenField('leadSourceOther', @leadfna.leadSourceOther, 'leadSourceOther', @leadfna) %>
+
+			<div class="illustrationdisplay">
+				<div class="legend">
+					<label class="strongLabel">
+						<%= getLabelValue('PERSONALINFORMATION') %>
+						<a href="#" class="expandButton ui-icon-plus ui-btn-icon-notext ui-alt-icon ui-btn-inline"/></a>
+						<a href="#" class="collapseButton ui-icon-minus ui-btn-icon-notext ui-alt-icon ui-btn-inline"/></a>
+					</label>
+				</div>
+
+				<div class="panelContent">
+					<div data-role="dualfieldcontain">
+						<div class="half">
+							<%= renderLabel('title', 'title', nil, @leadfna) %>
+							<%= getLookup('TITLE', 'title', @leadfna.title, @leadfna) %> 
+						</div>
+					</div>
+
+					<div data-role="dualfieldcontain">
+						<div class="half">
+							<%= renderLabel('firstname', 'firstName', 'mandatory', @leadfna)   %>
+							<%= renderInputField('firstname', @leadfna.firstname, 'FirstName', @leadfna, ' maxlength="30"') %>
+						</div>
+						<div class ="half">
+							<%= renderLabel('middlename', 'middleName', nil, @leadfna)   %>
+							<%= renderInputField('middlename', @leadfna.middlename, 'MiddleName', @leadfna, ' maxlength="30"') %>
+						</div>
+					</div>
+
+					<div data-role="dualfieldcontain">
+						<div class="half">
+							<%= renderLabel('lastname', 'lastName', 'mandatory', @leadfna)   %>
+							<%= renderInputField('lastname', @leadfna.lastname, 'LastName', @leadfna, ' maxlength="30"') %>
+						</div>
+					</div>
+
+			        <div data-role="dualfieldcontain">
+			        	<div class="half">
+			        		<%= renderLabel('genderCd', 'genderCd', nil, @leadfna)    %>
+			        		<%= renderRadioButton('genderCd', @leadfna.genderCd, "#{getObjectMapping(@leadfna)}_male", 'MALE', @leadfna) %>
+			        		<%= renderLabel("#{getObjectMapping(@leadfna)}_male", 'Male', 'radioWidth', nil)   %>
+			        		<%= renderRadioButton('genderCd', @leadfna.genderCd, "#{getObjectMapping(@leadfna)}_female", 'FEMALE', @leadfna) %>
+			        		<%= renderLabel("#{getObjectMapping(@leadfna)}_female", 'Female', 'radioWidth', nil)   %>     
+			        	</div>
+			        	<div class="half">
+			        		<%= renderLabel('maritalStatus', 'maritalStatusCd', nil, @leadfna) %> 
+			        		<%= getLookup('MARITALSTATUS', 'maritalStatus', @leadfna.maritalStatus, @leadfna)   %> 
+			        	</div>
+			        </div>
+
+			        <div data-role="dualfieldcontain">
+			        	<div class="half">
+			        		<%= renderLabel('dob', 'birthDt', nil, @leadfna)   %>
+			        		<%= renderDateField('dob', @leadfna.dob, 'Date Of Birth', @leadfna) %>
+			        	</div>
+			        	<div class="half">
+			        		<%= renderLabel('age', 'age', nil, @leadfna) %>
+			        		<%= renderCountField('age', @leadfna.age, '', @leadfna) %>
+			        		<%= renderLabel('age','YEAR') %>
+			        	</div>
+			        </div>
+
+			        <div data-role="dualfieldcontain">
+			        	<div class="half">
+			        		<%= renderLabel('occupationCd', 'occupationTypeCd', nil, @leadfna) %> 
+			        		<%= getLookup('OCCUPATIONTYPE', 'occupationCd', @leadfna.occupationCd, @leadfna) %>
+			        	</div>
+			        	<div class="half">
+			        		<%= renderLabel('incomeGroup', 'income', nil, @leadfna) %>
+			        		<%= getLookup('INCOMEGROUP', 'incomeGroup', @leadfna.incomeGroup, @leadfna)   %>
+			        	</div>
+			        </div>
+
+			        <div data-role="dualfieldcontain">
+			        	<div class ="half">
+			        		<%= renderLabel('nationality', 'citizenshipCd', nil, @leadfna) %>
+			        		<%= getLookup('CITIZENSHIP', 'nationality', @leadfna.nationality, @leadfna)   %>
+			        	</div>
+			        </div>
+		        </div>
+			</div>
+
+
+			<div class="illustrationdisplay">
+				<div class="legend">
+					<label class="strongLabel">
+						<%= getLabelValue('CONTACTINFORMATION') %>
+						<a href="#" class="scrollTopButton ui-icon-carat-u ui-btn-icon-notext ui-alt-icon ui-btn-inline"></a>
+						<a href="#" class="expandButton ui-icon-plus ui-btn-icon-notext ui-alt-icon ui-btn-inline"/></a>
+						<a href="#" class="collapseButton ui-icon-minus ui-btn-icon-notext ui-alt-icon ui-btn-inline"/></a>
+					</label>
+				</div>
+
+				<div class="panelContent">
+					<div data-role="dualfieldcontain">
+						<div class ="half">
+				     		<%= renderLabel('residence', 'contactResi', nil, @leadfna) %> 
+				     		<%= renderTelephoneField('residenceAreaCode', @leadfna.residenceAreaCode, 'Residence Area Code', @leadfna, 'style="width: 9%;" maxlength="3"') %>
+				     		<%= renderTelephoneField('residenceCountryCode', @leadfna.residenceCountryCode, 'Residence Country Code', @leadfna, 'style="width: 9%;" maxlength="3"') %>
+				     		<%= renderTelephoneField('residenceNumber', @leadfna.residenceNumber, 'Residence Number', @leadfna, 'style="width: 37%;" maxlength="15"') %>
+				     	</div>
+				     	<div class ="half">
+				     		<%= renderLabel('office', 'contactOffice', nil, @leadfna) %> 
+				     		<%= renderTelephoneField('officeAreaCode', @leadfna.officeAreaCode, 'Office Area Code', @leadfna, 'style="width: 9%;" maxlength="3"') %>
+				     		<%= renderTelephoneField('officeCountryCode', @leadfna.officeCountryCode, 'Office Country Code', @leadfna, 'style="width: 9%;" maxlength="3"') %>
+				     		<%= renderTelephoneField('officeNumber', @leadfna.officeNumber, 'Office Number', @leadfna, 'style="width: 37%;" maxlength="15"') %> 
+				     	</div>
+					</div>
+
+					<div data-role="dualfieldcontain">
+				     	<div class ="half">
+				     		<%= renderLabel('mobile', 'contactMobile', nil, @leadfna) %> 
+				     		<%= renderTelephoneField('mobileAreaCode', @leadfna.mobileAreaCode, 'Mobile Area Code', @leadfna, 'style="width: 9%;" maxlength="3"') %>
+				     		<%= renderTelephoneField('mobileCountryCode', @leadfna.mobileCountryCode, 'Mobile Country Code', @leadfna, 'style="width: 9%;" maxlength="3"') %>
+				     		<%= renderTelephoneField('mobileNumber', @leadfna.mobileNumber, 'Mobile Number', @leadfna, 'style="width: 37%;" maxlength="15"') %>
+				     	</div>
+						<div class="half">
+							<%= renderLabel('emailAddress', 'emailID', nil, @leadfna)   %>
+							<%= renderEmailField('emailAddress', @leadfna.emailAddress, 'Email address', @leadfna, "maxlength='30'") %>
+						</div>
+					</div>
+				</div>
+			</div>
+
+
+			<div class="illustrationdisplay">
+				<div class="legend">
+					<label class="strongLabel">
+						<%= getLabelValue('ADDRESSINFORMATION') %>
+						<a href="#" class="scrollTopButton ui-icon-carat-u ui-btn-icon-notext ui-alt-icon ui-btn-inline"></a>
+						<a href="#" class="expandButton ui-icon-plus ui-btn-icon-notext ui-alt-icon ui-btn-inline"></a>
+						<a href="#" class="collapseButton ui-icon-minus ui-btn-icon-notext ui-alt-icon ui-btn-inline"></a>
+					</label>
+				</div>
+
+				<div class="panelContent">
+					<div data-role="dualfieldcontain">
+						<%= renderLabel('address1', 'addressLine1', nil, @leadfna, ' style="width:13.8%" ')   %>
+						<%= renderInputField('address1', @leadfna.address1, 'Address 1', @leadfna, ' maxlength="120" style="width:79.4%" ') %>
+					</div>
+
+					<div data-role="dualfieldcontain">
+						<%= renderLabel('address2', 'addressLine2', nil, @leadfna, ' style="width:13.8%" ')   %>
+						<%= renderInputField('address2', @leadfna.address2, 'Address 2', @leadfna, ' maxlength="120" style="width:79.4%" ') %>
+					</div>
+
+					<div data-role="dualfieldcontain">
+						<%= renderLabel('address3', 'addressLine3', nil, @leadfna, ' style="width:13.8%" ')   %>
+						<%= renderInputField('address3', @leadfna.address3, 'Address 3', @leadfna, ' maxlength="120" style="width:79.4%" ') %>
+					</div>
+
+					<div data-role="dualfieldcontain">
+						<%= renderLabel('address4', 'addressLine4', nil, @leadfna, ' style="width:13.8%" ')   %>
+						<%= renderInputField('address4', @leadfna.address4, 'Address 4', @leadfna, ' maxlength="120" style="width:79.4%" ') %>
+					</div>
+
+					<div data-role="dualfieldcontain">
+						<div class="half">
+							<%= renderLabel('country', 'countryCd', nil, @leadfna)   %>
+							<%= getLookup('COUNTRY','country', @leadfna.country, @leadfna) %>
+						</div>
+						<div class="half">
+							<%= renderLabel('pincode', 'pinCode', nil, @leadfna)   %>
+							<%= renderInputField('pincode', @leadfna.pincode, 'Pincode', @leadfna, 'maxlength="6"') %>
+						</div>
+					</div>
+
+					<div data-role="dualfieldcontain">
+						<div class="half">
+							<%= renderLabel('state', 'stateCd', nil, @leadfna)   %>
+							<span class="districtLookUpData" name="districtLookUpData">
+						  		<% if @districtLookUps.empty? %>
+						  			<%= renderInputField('state', @leadfna.state, 'District', @leadfna, ' maxlength="30"') %>
+					  			<% else %>
+						  			<%= getLookup('DYNAMICLOOKUP','state', @leadfna.state, @leadfna , @districtLookUps) %>
+					  			<% end %>
+					  		</span>
+						</div>
+						<div class="half">
+							<%= renderLabel('city', 'cityCd', nil, @leadfna)   %>
+							<span class="cityLookUpData" name="cityLookUpData">
+						  		<% if @cityLookUps.empty? %>
+						  			<%= renderInputField('city', @leadfna.city, 'City', @leadfna, ' maxlength="30"') %>
+					  			<% else %>
+									<%= getLookup('DYNAMICLOOKUP','city', @leadfna.city, @leadfna, @cityLookUps) %>
+					  			<% end %>
+						  	</span>
+						</div>
+					</div>
+				</div>	
+			</div>
+
+			<% if @params.has_key?("graphicalFNA") %>
+				<div class="ui-grid-b">
+					<div class="ui-block-a"></div>
+					<div class="ui-block-b">
+						<a href="#" name="addgraphicalfna" data-role="button">
+							<%= getLabelValue('Next')%>
+						</a>
+					</div>
+					<div class="ui-block-c"></div>
+				</div>
+			<% else %>
+				<div class="illustrationdisplay">
+					<div class="legend">
+						<label class="strongLabel">
+							<%= getLabelValue('FNAANALYSIS') %>
+							<a href="#" class="scrollTopButton ui-icon-carat-u ui-btn-icon-notext ui-alt-icon ui-btn-inline"></a>
+							<a href="#" class="expandButton ui-icon-plus ui-btn-icon-notext ui-alt-icon ui-btn-inline"></a>
+							<a href="#" class="collapseButton ui-icon-minus ui-btn-icon-notext ui-alt-icon ui-btn-inline"></a>
+						</label>
+					</div>
+
+					<div class="panelContent"><br/>
+	 					<% total_score = 0 %>
+						<% @questionKeys.each_with_index do |labelKey, i| %>
+					 		<div class="ui-grid-a">
+					 			<div class="ui-block-a" style="width : 100%"><%= getLabelValue(labelKey) %></div>
+					 			<div class="ui-block-a">
+					 				<% resp = nil %>
+					 				<% if !@saved_response.nil? %>
+					 					<% resp = @saved_response.select{|resp| resp.question.include? labelKey.to_s }.map{ |only_resp| only_resp.score } unless @saved_response.nil? %>
+					 				<% end %>
+					 				<% if resp.to_s != "" %>
+					 					<%= getQuestionnaireCheckbox(labelKey.to_s, labelKey.to_s, resp, nil, nil, nil) %>
+					 				<% else %>
+					 					<%= getQuestionnaireCheckbox(labelKey.to_s, labelKey, nil, nil, nil, nil) %>
+					 				<% end %>
+					 			</div> 
+					 			<% qscore = resp.inject(0) {|sum, i|  sum + i.to_i } unless resp.to_s=="" %>
+					 			<% total_score = total_score + qscore.to_i  %>
+					 		</div><br/>
+				 		<% end %>
+					</div>
+				</div>
+
+
+				<% if @leadfna.outputInsurancePlanSuited.to_s != "" || @leadfna.outputRiders.to_s != "" || @leadfna.outputInsuranceProtectionAmount.to_s != "" || @leadfna.outputPaymentPeriod.to_s != "" %>
+					<div class="illustrationdisplay">
+						<div class="legend">
+							<label class="strongLabel">
+								<%= getLabelValue('FNAEVALUATIONDIV') %>
+								<a href="#" class="scrollTopButton ui-icon-carat-u ui-btn-icon-notext ui-alt-icon ui-btn-inline"></a>
+								<a href="#" class="expandButton ui-icon-plus ui-btn-icon-notext ui-alt-icon ui-btn-inline"></a>
+								<a href="#" class="collapseButton ui-icon-minus ui-btn-icon-notext ui-alt-icon ui-btn-inline"></a>
+							</label>
+						</div>
+
+						<div class="panelContent"><br/>
+							<div class="ui-grid-d">
+								<div class="ui-block-a"><b><%= getLabelValue('INSURANCEPLANSUITED') %></b></div>
+								<div class="ui-block-b" style="text-align: center;"><b>:</b></div>
+								<div class="ui-block-c"><%= @leadfna.outputInsurancePlanSuited %></div>
+							</div><br/>
+							<div class="ui-grid-d">
+								<div class="ui-block-a"><b><%= getLabelValue('addons') %></b></div>
+								<div class="ui-block-b" style="text-align: center;"><b>:</b></div>
+								<div class="ui-block-c"><%= @leadfna.outputRiders %></div>
+							</div><br/>
+							<div class="ui-grid-d">		
+								<div class="ui-block-a"><b><%= getLabelValue('insuranceprotectionamount') %></b></div>
+								<div class="ui-block-b" style="text-align: center;"><b>:</b></div>
+								<div class="ui-block-c"><%= maskDecimal(@leadfna.outputInsuranceProtectionAmount) %></div>
+							</div><br/>
+						</div>
+					</div>
+
+
+					<div class="illustrationdisplay">
+						<div class="legend">
+							<label class="strongLabel">
+								<%= getLabelValue('Candidate Statement of Understanding and Policyholders') %>
+								<a href="#" class="scrollTopButton ui-icon-carat-u ui-btn-icon-notext ui-alt-icon ui-btn-inline"></a>
+								<a href="#" class="expandButton ui-icon-plus ui-btn-icon-notext ui-alt-icon ui-btn-inline"></a>
+								<a href="#" class="collapseButton ui-icon-minus ui-btn-icon-notext ui-alt-icon ui-btn-inline"></a>
+							</label>
+						</div>
+
+						<div class="panelContent"><br/>
+							<% if @application.value == "en" %>
+								<div style="width: 98%;">
+									<p>I acknowledge that C2LBIZ may recommend the most appropriate product suited to my financial needs. If I choose to avail a product different from that which is recommended, I agree to hold C2LBIZ, its principals, their representatives, and successors in interest free and harmless from any and all liabilities, claims, opportunity cost and/or causes of action of whatever kind or nature, that may affect me as a result of or due to this choice. </p>
+									<br>
+									<p>I understand that the Evaluation and Recommendation on this form are based on the information/data provided by me and are designed to help me assess my financial needs. I am aware that my financial needs may change over time depending on my personal situation and objectives. Therefore, any suggestions and recommendations provided here are general advices only based on my current status and are intended for reference only.</p>
+									<br>
+									<p>I fully understand that suggestions and recommendations provided by C2LBIZ are general suggestion based on my current risk profile and only intended for reference use only, therefore cannot be considered as a contract or agreement which binds both C2LBIZ and myself.</p>
+									<br>
+									<p>I hereby authorize C2LBIZ to use and exchange information about me as necessary to the conduct of performing investment-related services on my behalf, and the release of this information to its affiliates and subsidiaries only where services extend to savings and insurance planning.</p>
+								</div>
+							<% else %>
+								<div style="width: 98%;">
+									<p>Saya mengakui bahwa C2LBIZ merekomendasikan produk yang paling sesuai dengan kebutuhan keuangan Saya.Jika Saya memilih produk yang berbeda dari yang direkomendasikan, Saya setuju bahwa hal tersebut sepenuhnya menjadi tanggung jawab dan risiko Saya sendiri.</p>
+									<br>
+									<p>Saya mengerti bahwa saran dan rekomendasi yang diberikan C2LBIZ didasarkan atas informasi/data yang Saya berikan yang dirancang untuk membantu Saya menilai kebutuhan keuangan Saya dan Saya sadar bahwa kebutuhan keuangan Saya dapat berubah dari waktu ke waktu tergantung pada situasi dan tujuan saya pribadi.</p>
+									<br>
+									<p>Saya sepenuhnya mengerti bahwa saran dan rekomendasi yang diberikan C2LBIZ adalah saran umum berdasarkan keadaan Saya saat ini dan dimaksudkan hanya keperluan referensi saja, karenanya tidak dapat ditafsirkan atau dianggap sebagai suatu kontrak atau perjanjian yang mengikat antara Saya dengan PT Finansial Wiramitra  danadyaksa.</p>
+									<br>
+									<p>Saya setuju untuk memberi kuasa C2LBIZ untuk menggunakan dan mempertukarkan informasi pribadi Saya yang diperlukan untuk melakukan layanan terkait produk keuangan atas nama Saya, dan mendistribusikan informasi ini kepada pihak-pihak terkait perencanaan asuransi dan keuangan.<p>
+								</div>
+		              		<% end %> 
+						</div>
+					</div>
+
+
+					<div class="illustrationdisplay">
+						<div class="legend">
+							<label class="strongLabel">
+								<%= getLabelValue('signature') %>
+								<a href="#" class="scrollTopButton ui-icon-carat-u ui-btn-icon-notext ui-alt-icon ui-btn-inline"></a>
+								<a href="#" class="expandButton ui-icon-plus ui-btn-icon-notext ui-alt-icon ui-btn-inline"></a>
+								<a href="#" class="collapseButton ui-icon-minus ui-btn-icon-notext ui-alt-icon ui-btn-inline"></a>
+							</label>
+						</div>
+
+						<div class="panelContent"><br/>
+							<div class="ui-grid-c">
+								<div class="ui-block-a"><%= getLabelValue('agentSignature') %></div>
+								<div class="ui-block-a">
+									<%= renderSignatureInlineField('agentSignatureCd', @leadfna,returnAppHeightWeight('screen_width', 0.55), returnAppHeightWeight('screen_height', 0.30)) %>
+								</div>
+								<div class="ui-block-b"></div>
+								<div class="ui-block-c"></div>
+								<div class="ui-block-d"></div>
+							</div>
+
+							<div data-role="dualfieldcontain">
+								<div class="half" style="width: 30%;">
+									<%= renderLabel('agentSignatureDt', 'signatureDt', nil, @leadfna) %>
+									<%= renderDateField('agentSignatureDt', @leadfna.agentSignatureDt, 'agentSignatureDt', @leadfna) %>
+								</div>
+							</div>
+							<hr style="width: 98%; margin-left: 0;">
+
+
+							<div class="ui-grid-c">
+								<div class="ui-block-a"><%= getLabelValue('applicantSignature') %></div>
+								<div class="ui-block-a">
+									<%= renderSignatureInlineField('signatureCd', @leadfna,returnAppHeightWeight('screen_width', 0.55), returnAppHeightWeight('screen_height', 0.30)) %>
+								</div>
+								<div class="ui-block-b"></div>
+								<div class="ui-block-c"></div>
+								<div class="ui-block-d"></div>
+							</div>
+
+							<div data-role="dualfieldcontain">
+								<div class="half" style="width: 30%;">
+									<%= renderLabel('signatureDt', 'signatureDt', nil, @leadfna) %>
+									<%= renderDateField('signatureDt', @leadfna.signatureDt, 'signatureDt', @leadfna) %>
+								</div>
+							</div>
+						</div>
+					</div>
+				<% end %>
+			<% end %>
+		</form>
+	</div>
+</div>
+<%= render(:file => 'LeadFNA/captureFNAJS.erb')%>

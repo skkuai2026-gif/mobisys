@@ -1,0 +1,33 @@
+<%= pageTagStart("","Symbiosys") %>
+	<%= headerTag(getLabelValue('securitySetting'), "", "", "/app/Menu/landingPage") %>
+	<div data-role="main" class="ui-content">
+		<div class="main-content-wrapper main-content-full">
+			<%= formTagStart("securitySettingForm","#{url_for :action => :securitySetting}") %>
+				<div class="project-content-bg">
+					<div class="div-with-border no-padding-bottom preferences-content">
+						<div class="content-fullform">  
+							<div class="row-details">
+								<p class="col-left"><%= getLabelValue('enableFingerprintAuth') %></p>
+								<div class="col-right">
+									<%= renderRadioButton('enableFingerprintAuth', @enableFingerprintAuth, 'yes', 'YES') %>
+									<%= renderLabel('yes', 'YES') %>
+									<%= renderRadioButton('enableFingerprintAuth', @enableFingerprintAuth, 'no', 'NO') %>
+									<%= renderLabel('no', 'NO') %>
+								</div>
+							</div>
+						</div>
+					</div>  
+				</div>
+			<%= formTagEnd %>
+		</div>
+		<div class="footer-bg">
+			<a href="javascript: submitForm();" data-transition="slide"><%= getLabelValue('SAVEVALIDATE') %></a>
+		</div>
+	</div>
+<%= pageTagEnd %>
+<script type="text/javascript">
+	function submitForm()
+	{
+		document.securitySettingForm.submit();          
+	}
+</script>

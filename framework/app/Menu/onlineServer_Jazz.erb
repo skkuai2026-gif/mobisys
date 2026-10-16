@@ -1,0 +1,51 @@
+<%= pageTagStart("","Symbiosys") %>
+    <%= headerTag(getLabelValue('onlineServer'), "", "", "/app/Menu/landingPage") %>
+    <div data-role="main" class="ui-content">
+        <div class="main-content-wrapper main-content-full">
+            <%= formTagStart("onlineServerForm","#{url_for :action => :onlineServer}") %>
+                <div class="project-content-bg">
+                    <div class="div-with-border no-padding-bottom preferences-content">
+                        <div class="content-fullform">  
+                            <div class="row-details">
+                                <p class="col-left"><%= getLabelValue('onlineServer') %></p>
+                                <input class="input-controll" type="text" placeholder="<%= getLabelValue('onlineServer') %>" value="<%= @onlineServer %>" name="online_server_url">
+                            </div>
+                        </div>
+                    </div>  
+                </div>
+            <%= formTagEnd %>
+        </div>
+        <div class="footer-bg">
+            <a href="javascript: submitForm();" data-transition="slide"><%= getLabelValue('SAVEVALIDATE') %></a>
+        </div>
+    </div>
+<%= pageTagEnd %>
+<script type="text/javascript">
+    function submitForm(){
+        if($("input[name='online_server_url']").val() == ""){
+            // alert("Please enter online server url");
+            raiseAlert("ERR_PLZENTER_ONLINESERVER_URL","",locale);
+        }
+        else {
+            document.onlineServerForm.submit();
+        }
+    }
+
+    $(document).ready(function() {
+        $(window).keydown(function(event){
+            if(event.keyCode == 13) {
+                event.preventDefault();
+                return false;
+            }
+        });
+        $("input[name='online_server_url']").off('keypress').on('keypress', function (event) {
+            var regex = new RegExp("[\\\\\\\]~`#%^+\{\}|\"<>\[]+");
+            var key = String.fromCharCode(!event.charCode ? event.which : event.charCode);
+            if (regex.test(key)) {
+               event.preventDefault();
+               return false;
+            }
+        });
+    });
+
+</script>

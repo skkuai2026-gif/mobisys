@@ -1,0 +1,418 @@
+
+<script>
+    
+    function tabSetup(){
+
+        $('label[for="TOTALCAPITALNEED"]').css("top", "-10px");
+        $('label[for="TOTAL_CURRCAPITAL_RESERVED"]').css("top", "-10px");
+        // $('label[for="SHORTFALL_CURR_LIFEPROTECTION"]').css("top", "-10px");
+        $('label[for="OTHERPROTECTIONNEED"]').css("top", "-10px");
+        $('label[for="educationNeedPVAmt"]').css("top", "-10px");
+        $('label[for="EFV"]').css("top", "-10px"); 
+        $('label[for="RES_EDU_FUND"]').css("top", "-10px");
+        $('label[for="SHORTFALL_CHILD_EDUCATION"]').css("top", "-10px");
+        // $('label[for="<%=getObjectMapping(@fnaLifeProtectionNeed)%>[protectionNeedPVAmt]"]').css("top", "-10px");
+        $('label[for="<%=getObjectMapping(@fnaLifeProtectionNeed)%>[noOfChildren]"]').css("top", "-10px");
+        $('select[name="<%=getObjectMapping(@fnaLifeProtectionNeed)%>[noOfChildren]"]').css("top", "-10px");
+        $('select[name="<%=getObjectMapping(@fnaLifeProtectionNeed)%>[noOfChildren]"]').css("width", "100%");
+
+        <% if @fnaRequest.statusCd.to_s == "FNASIGNED" || @fnaRequest.statusCd.to_s == "FNASUBMIT" || @fnaRequest.statusCd.to_s == "SYNCDONE" %>
+            setReadOnly($('input[type="text"]'), true);
+            setReadOnly($('input[type="tel"]'), true);
+            setReadOnly($('input[type="num"]'), true);
+            setReadOnly($('input[type="email"]'), true);
+            $('select').selectmenu('disable').trigger("refresh");
+            $('input[type="radio"]').checkboxradio('disable').trigger("refresh");
+            $('input[type="checkbox"]').checkboxradio('disable').trigger("refresh");
+            $('input[type="button"]').off('click');
+            $('input[type="button"]').button('disable').trigger("refresh");
+            $('a[href="#clear"]').hide();
+            $('label[for="<%=getObjectMapping(@fnaRequest)%>[inflationRate]"]').css("top", "-10px");
+            $('label[for="<%=getObjectMapping(@fnaRequest)%>[returnRate]"]').css("top", "-10px");
+            $('label[for="<%=getObjectMapping(@fnaLifeProtectionNeed)%>[montlyExpenseAmt]"]').css("top", "-10px");
+            $('label[for="<%=getObjectMapping(@fnaLifeProtectionNeed)%>[expenseYears]"]').css("top", "-10px");
+            $('label[for="<%=getObjectMapping(@fnaLifeProtectionNeed)%>[protectionNeedPVAmt]"]').css("top", "-10px");
+            $('label[for="<%=getObjectMapping(@fnaLifeProtectionNeed)%>[otherLiabilitiesAmt]"]').css("top", "-10px");
+            $('label[for="<%=getObjectMapping(@fnaLifeProtectionNeed)%>[existingAssetAmt]"]').css("top", "-10px");
+            $('label[for="<%=getObjectMapping(@fnaLifeProtectionNeed)%>[shortfallAmt]"]').css("top", "-10px");
+            $('label[for="<%=getObjectMapping(@fnaLifeProtectionNeed)%>[noOfChildren]"]').css("top", "-10px");
+            $('label[for="<%=getObjectMapping(fnaEducationNeed)%>[childName]"]').css("top", "-10px");
+            $('label[for="<%=getObjectMapping(fnaEducationNeed)%>[savingPeriod]"]').css("top", "-10px");
+            $('label[for="<%=getObjectMapping(fnaEducationNeed)%>[educationFundFVAmt]"]').css("top", "-10px");
+        <% end %>
+
+      // set radio button on
+       $('label[for="CALCTYPESIMPLE"]').removeClass("ui-radio-off"); 
+       $('label[for="CALCTYPESIMPLE"]').addClass("ui-radio-on"); 
+
+    } 
+
+
+
+    function numbersonly(evt){
+        var charCode = (evt.which) ? evt.which : event.keyCode
+        if (charCode > 31 && (charCode < 48 || charCode > 57))
+            return false;
+        return true;
+    }
+
+
+    function isNumberKey(evt){
+        var charCode = (evt.which) ? evt.which : evt.keyCode;
+            if (charCode != 46 && charCode > 31 && (charCode < 48 || charCode > 57)){
+                return false;
+            }
+        return true;
+    }
+
+    function checkifNum(val,id){
+        if (isNaN(val) || val < 0) {
+              $("input[id='" + id + "']").val("");
+              var dialogContent = '<span>'+"<%= getLabelValue('ERR_CONTACT') %>"+'</span>';
+              $("#policyNo-validation-div").html("").html(dialogContent).trigger('create');
+              if (typeof $.mobile.sdCurrentDialog === 'undefined') {
+              $("<div>").simpledialog2({
+                mode : 'blank',
+                blankContent : $("#policyNo-validation-div").html() +"<a rel='close' data-role='button' href='#' style='margin-top: 2%;'>" + '<%= getLabelValue("MESSAGE_CLOSE") %>' + "</a>"
+              });
+          }
+              // showDialog("", "<%#= getLabelValue('ERR_CONTACT') %>", 'warning', 0, 'capture');
+              $("input[id='" + id + "']").focus();
+          }
+        else{
+            if (val != "") {
+              var returnValue = val.indexOf(".");
+              if (returnValue != -1){
+              $("input[id='" + id + "']").val("");
+              var dialogContent = '<span>'+"<%= getLabelValue('ERR_CONTACT') %>"+'</span>';
+              $("#policyNo-validation-div").html("").html(dialogContent).trigger('create');
+              if (typeof $.mobile.sdCurrentDialog === 'undefined') {
+              $("<div>").simpledialog2({
+                mode : 'blank',
+                blankContent : $("#policyNo-validation-div").html() +"<a rel='close' data-role='button' href='#' style='margin-top: 2%;'>" + '<%= getLabelValue("MESSAGE_CLOSE") %>' + "</a>"
+              });
+          }
+              // showDialog("", "<%#= getLabelValue('ERR_CONTACT') %>", 'warning', 0, 'capture');
+              $("input[id='" + id + "']").focus();
+              }
+
+            }        
+        }
+    }
+
+
+function checkifNumdeci(val,id)
+{
+   if (isNaN(val) || val < 0) {
+          $("input[id='" + id + "']").val("");
+              var dialogContent = '<span>'+"<%= getLabelValue('ERR_CONTACT') %>"+'</span>';
+              $("#policyNo-validation-div").html("").html(dialogContent).trigger('create');
+              if (typeof $.mobile.sdCurrentDialog === 'undefined') {
+              $("<div>").simpledialog2({
+                mode : 'blank',
+                blankContent : $("#policyNo-validation-div").html() +"<a rel='close' data-role='button' href='#' style='margin-top: 2%;'>" + '<%= getLabelValue("MESSAGE_CLOSE") %>' + "</a>"
+              });
+          }
+          // showDialog("", "<%#= getLabelValue('ERR_CONTACT') %>", 'warning', 0, 'capture');
+          $("input[id='" + id + "']").focus();
+      }
+     
+}
+
+$('input[name="<%=getObjectMapping(@fnaRequest)%>[inflationRate]"]').change( function(){
+  if(this.value < 0 || this.value > 999.99){
+              var dialogContent = '<span>'+"<%= getLabelValue('INFLATION_RATE_RANGE') %>"+'</span>';
+              $("#policyNo-validation-div").html("").html(dialogContent).trigger('create');
+              if (typeof $.mobile.sdCurrentDialog === 'undefined') {
+              $("<div>").simpledialog2({
+                mode : 'blank',
+                blankContent : $("#policyNo-validation-div").html() +"<a rel='close' data-role='button' href='#' style='margin-top: 2%;'>" + '<%= getLabelValue("MESSAGE_CLOSE") %>' + "</a>"
+              });
+          }
+    // showDialog("", "<%#= getLabelValue('INFLATION_RATE_RANGE') %>", 'warning', 0, 'capture');
+    // $(this).val('');
+    $('input[name="<%=getObjectMapping(@fnaRequest)%>[inflationRate]"]').val('3');
+    $('input[name="<%=getObjectMapping(@fnaRequest)%>[inflationRate]"]').focus();
+  }
+  else {
+    if (this.value == "" || this.value == null){
+     $('input[name="<%=getObjectMapping(@fnaRequest)%>[inflationRate]"]').val('3'); 
+    }
+  }
+});
+
+
+$('input[name="<%=getObjectMapping(@fnaRequest)%>[returnRate]"]').change( function(){
+  if(this.value < 0 || this.value > 999.99){
+              var dialogContent = '<span>'+"<%= getLabelValue('RETURN_RATE_RANGE') %>"+'</span>';
+              $("#policyNo-validation-div").html("").html(dialogContent).trigger('create');
+              if (typeof $.mobile.sdCurrentDialog === 'undefined') {
+              $("<div>").simpledialog2({
+                mode : 'blank',
+                blankContent : $("#policyNo-validation-div").html() +"<a rel='close' data-role='button' href='#' style='margin-top: 2%;'>" + '<%= getLabelValue("MESSAGE_CLOSE") %>' + "</a>"
+              });
+          }
+    // showDialog("", "<%#= getLabelValue('RETURN_RATE_RANGE') %>", 'warning', 0, 'capture');
+    // $(this).val('');
+    $('input[name="<%=getObjectMapping(@fnaRequest)%>[returnRate]"]').val('4');
+    $('input[name="<%=getObjectMapping(@fnaRequest)%>[returnRate]"]').focus();
+  }
+  else {
+    if (this.value == "" || this.value == null){
+     $('input[name="<%=getObjectMapping(@fnaRequest)%>[returnRate]"]').val('4'); 
+    }
+  }
+});
+
+  
+    $('input[name="<%=getObjectMapping(@fnaLifeProtectionNeed)%>[existingAssetAmt]"]').blur(function(){
+        var assets = $('input[name="<%=getObjectMapping(@fnaLifeProtectionNeed)%>[existingAssetAmt]"]').val().replace(/,/g , "");
+        $('input[name="TOTAL_CURRCAPITAL_RESERVED"]').val(assets);
+        var coverageAmt = $('input[name="<%=getObjectMapping(@fnaLifeProtectionNeed)%>[existingCoverageAmt]"]').val().replace(/,/g , "");
+        if (!coverageAmt){
+            var coverageAmt = 0;
+        }
+        var totalCurrentCapital = parseInt(assets) + parseInt(coverageAmt) ;
+        $('input[name="TOTAL_CURRCAPITAL_RESERVED"]').val(totalCurrentCapital);
+    });
+
+    $('input[name="<%=getObjectMapping(@fnaLifeProtectionNeed)%>[existingCoverageAmt]"]').blur(function(){
+        var assets = $('input[name="<%=getObjectMapping(@fnaLifeProtectionNeed)%>[existingAssetAmt]"]').val().replace(/,/g , "");
+        var coverageAmt = $('input[name="<%=getObjectMapping(@fnaLifeProtectionNeed)%>[existingCoverageAmt]"]').val().replace(/,/g , "");
+        if (!coverageAmt){
+            var coverageAmt = 0;
+        }
+        var totalCurrentCapital = parseInt(assets) + parseInt(coverageAmt) ;
+        $('input[name="TOTAL_CURRCAPITAL_RESERVED"]').val(totalCurrentCapital);
+    });
+  
+
+   
+
+    function calculatelifeprotectionneeds(){
+        var inflationRate = $('input[name="<%=getObjectMapping(@fnaRequest)%>[inflationRate]"]').val().replace(/,/g , "");
+        var returnRate = $('input[name="<%=getObjectMapping(@fnaRequest)%>[returnRate]"]').val().replace(/,/g , "");
+        var montlyExpenseAmt = $('input[name="<%=getObjectMapping(@fnaLifeProtectionNeed)%>[montlyExpenseAmt]"]').val().replace(/,/g , "");
+        var expenseYears = $('input[name="<%=getObjectMapping(@fnaLifeProtectionNeed)%>[expenseYears]"]').val().replace(/,/g , "");
+        var otherLiabilitiesAmt = $('input[name="<%=getObjectMapping(@fnaLifeProtectionNeed)%>[otherLiabilitiesAmt]"]').val().replace(/,/g , "");
+        var totalCurrentCapital = $('input[name="TOTAL_CURRCAPITAL_RESERVED"]').val().replace(/,/g , ""); 
+        calculateFnaLifeProtectionNeed(inflationRate, returnRate, montlyExpenseAmt, expenseYears, otherLiabilitiesAmt, totalCurrentCapital)   
+    }
+
+    function calculateFnaLifeProtectionNeed(inflationRate, returnRate, montlyExpenseAmt, expenseYears, otherLiabilitiesAmt, totalCurrentCapital){
+        $(':input').each(function(){
+            $(this).val($.trim($(this).val()))
+        });
+
+        
+        $.ajax({                                    
+            url: "/app/FNARequest/calculateFnaLifeProtectionNeed",
+            method: 'POST',
+            async: false,
+            data: {'inflationRate': inflationRate , 'returnRate': returnRate , 'montlyExpenseAmt' :montlyExpenseAmt , 'expenseYears': expenseYears ,'otherLiabilitiesAmt': otherLiabilitiesAmt, 'totalCurrentCapital': totalCurrentCapital, 'object': '<%= @fnaRequest.object %>' },
+            headers: {
+                'Transition-Enabled': false
+            },
+            success: function(data) {
+                console.log(data);
+                var calData = $.parseJSON(data);                
+                abc = calData.split("|");
+                protectionNeedPVAmt = abc[0];
+                familyCommitment  = abc[1];
+                shortFallLifeProtection = abc[2];
+                console.log(protectionNeedPVAmt);
+                console.log(familyCommitment);
+                $('input[name="<%=getObjectMapping(@fnaLifeProtectionNeed)%>[protectionNeedPVAmt]"]').val(protectionNeedPVAmt);
+                $('input[name="TOTALCAPITALNEED"]').val(familyCommitment); 
+                $('input[name="SHORTFALL_CURR_LIFEPROTECTION"]').val(shortFallLifeProtection);  
+            }
+        });
+    }
+ 
+  // Ashwini 02-08-2017 : Hide E-signature Tab if chamges are made in Basic Into tab 
+ 
+    
+    function submitForm(){
+        //Used to trim all the input fields before save
+        <% if @fnaRequest.statusCd.to_s == "FNASIGNED" || @fnaRequest.statusCd.to_s == "FNASUBMIT" || @fnaRequest.statusCd.to_s == "SYNCDONE"  %>
+      <% else %>
+        var initialFnaLifeProtectionNeedForm = "";
+        $(':input').each(function(){
+            $(this).val($.trim($(this).val()))
+        });
+          if($('#FnaLifeProtectionNeedForm').serialize() != (MyPageData.getData)) {
+            $.ajax({                                    
+                url: "/app/FNARequest/submitFnaLifeProtectionNeed",
+                method: 'POST',
+                async: false,
+                data: $('#FnaLifeProtectionNeedForm').serialize(),
+                headers: {
+                    'Transition-Enabled': false
+                },
+                success: function(data) {
+                    $("input[name='<%= getObjectMapping(@fnaRequest) %>[addtnField3Str]']").val(data);
+                    $("a#submit").hide(); 
+                }
+            });
+        }
+        <% end %>
+    }
+
+    function openPDF(){
+        $.ajax({                                    
+            url: "/app/FNARequest/openPDF",
+            async: false,
+            success: function(data){
+                if(data == "error"){
+                    alert("Cannot Open PDF");
+                }
+            }
+        });
+    }
+
+    function changeTab(clickObject) {
+      
+      submitForm(); 
+      <%# if @fnaLifeProtectionNeed.CalculatorTypeCd == 'CALCTYPESIMPLE' %>
+      // url = getNeeds
+      // var dataURL = clickObject.data("url");
+      <%# elsif @fnaLifeProtectionNeed.CalculatorTypeCd == 'CALCTYPESIMPLE' %>
+      // url = getNeedsLargeV
+      // var dataURL = clickObject.data("url");
+      <%# else %>
+      var dataURL = clickObject.data("url");
+      <%# end %>
+
+      //Append additional data params
+      if (clickObject.data("addl-params-key")) {
+          requestData = $.extend(requestData, additionalData[clickObject.data("addl-params-key")]);
+      
+      }
+      /*Load tab content start*/
+      $.ajax({ 
+          url: "/app/FNARequest/"+dataURL,
+          data: {'id':'<%= @fnaRequest.object.to_s %>'},
+          async: false,
+          headers: {
+              'Transition-Enabled': false
+          },
+          success: function(data) {
+              $("input[type='radio']").checkboxradio();
+              $("input[type='radio']").checkboxradio("refresh");
+              $("#tabDetailsContainer").html(data);
+              $("#tabDetailsContainer").trigger('create');
+              tabSetup();
+              $(document).ready(function(){
+                  $('.scrollTopButton').click(function() {
+                      $("html, body").animate({ scrollTop: 0 }, "slow");
+                  });
+
+                  $('.expandButton').hide();
+
+                  $('.collapseButton').click(function() {
+                      $(this).parents(".legend").siblings(".panelContent").hide();
+                      $(this).hide();
+                      $(this).siblings('.expandButton').show();
+                  });
+
+                  $('.expandButton').click(function() {
+                      $(this).parents(".legend").siblings(".panelContent").show();
+                      $(this).hide();
+                      $(this).siblings('.collapseButton').show();
+                  });
+
+              });
+              //getTabErrors();
+          }
+      });
+      /*Load tab content end*/
+  }
+
+ // Ashwini 02-08-2017 : Hide E-signature Tab if chamges are made in Needs tab 
+$(document).ready(function() {
+      MyPageData = {};
+      MyPageData.getData = ($('#FnaLifeProtectionNeedForm').serialize());
+      $('#nextpre').show();
+      tabExchange($('.active-btn').attr("data-url"));
+      $('#nextTab').removeClass("ui-state-disabled");
+      
+       $('#FnaLifeProtectionNeedForm').on('keyup change', 'input, select, textarea', function(){
+       $("#FnaLifeProtectionNeedForm").data("changed",true);
+       $("#icon-arrow").hide();
+       $("#esignature").hide();
+       $("#changeLifeNeedShortV").val("true");
+    });
+
+    });  
+
+$("#CALCTYPESIMPLE").click(function(){
+      $("html, body").animate({ scrollTop: 0 }, 0);
+  });
+
+  $("#CALCTYPECOMPLEX").click(function(){
+      $("html, body").animate({ scrollTop: 0 }, 0);
+  });
+
+
+function large_version(){
+    var montlyExpenseAmt = $('input[name="<%=getObjectMapping(@fnaLifeProtectionNeed)%>[montlyExpenseAmt]"]').val().replace(/,/g , "");
+    var shortfallAmt = $('input[name="<%=getObjectMapping(@fnaLifeProtectionNeed)%>[shortfallAmt]"]').val().replace(/,/g , "");
+    if (!montlyExpenseAmt && !shortfallAmt){
+      $.ajax({                                    
+      url: "/app/FNARequest/getNeedsclear",
+      data: {'id':'<%= @fnaRequest.object.to_s %>'},
+      async: false,
+      headers: {
+            'Transition-Enabled': false
+      },
+      success: function(data)
+      {
+        $("#tabDetailsContainer").html(data);
+        $("#tabDetailsContainer").trigger('create');
+        tabSetup();
+      }
+    });
+    }
+  else{
+             var dialogContent = '<span>'+"<%= getLabelValue('CLEAR_CALCTYPE_VALUES') %>"+'</span>';
+              $("#policyNo-validation-div").html("").html(dialogContent).trigger('create');
+              if (typeof $.mobile.sdCurrentDialog === 'undefined') {
+              $("<div>").simpledialog2({
+                mode : 'blank',
+                blankContent : $("#policyNo-validation-div").html() +"<a rel='close' data-role='button' href='#' style='margin-top: 2%;' onclick='redirecttogetneedsclear()'>" + '<%= getLabelValue("DELETE_YES") %>' + "</a>" +"<a rel='close' data-role='button' href='#' onclick='donotredirect()' style=''>" + '<%= getLabelValue("DELETE_NO") %>' + "</a>"
+              });
+          }
+    }
+    $('#CALCTYPECOMPLEX').trigger('focus');
+    $('.ui-simpledialog-container').trigger('click');
+    $('body').trigger('click')
+    $('#card').trigger('click');
+
+}
+
+function redirecttogetneedsclear(){
+  $.ajax({                                    
+      url: "/app/FNARequest/getNeedsclear",
+      data: {'id':'<%= @fnaRequest.object.to_s %>'},
+      async: false,
+      headers: {
+            'Transition-Enabled': false
+      },
+      success: function(data)
+      {
+        $("#tabDetailsContainer").html(data);
+        $("#tabDetailsContainer").trigger('create');
+        tabSetup();
+      }
+    });
+
+}
+
+function donotredirect(){
+  $("#CALCTYPESIMPLE").trigger("click");
+  $('label[for="CALCTYPESIMPLE"]').removeClass("ui-radio-off");
+  $('label[for="CALCTYPESIMPLE"]').addClass("ui-radio-on");
+  $('label[for="CALCTYPECOMPLEX"]').removeClass("ui-radio-on");
+  $('label[for="CALCTYPECOMPLEX"]').addClass("ui-radio-off");
+}
+</script>

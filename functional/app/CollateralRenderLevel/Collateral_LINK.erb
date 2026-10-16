@@ -1,0 +1,41 @@
+<link rel="stylesheet" type="text/css" href="/public/css/style.css" /> 
+<div data-role="main" class="ui-content">
+  <div id="linkDiv">
+    <div class="landingpagecontent">
+        <div class="landingpagetop">        
+            <div class="level0header">
+                <label class="level0landinglabel0"><%=@collateralRenderLevelDO.header1 %></label>
+                <label class="level0landinglabel1"><%=@collateralRenderLevelDO.header2%></label>    
+            </div>
+            <div class="level0text">
+            <% if @collateralRenderLevelDO != nil %>
+                <%= @collateralRenderLevelDO.contentPart1 %>
+            <% end %>
+            </div>
+        </div>
+        <div id="contentpane_<%=@collateralRenderLevelDO.guid%>" class="landingpagemenu">
+            <div class="knowledge-house-details-bg">
+                <ul data-role="listview">
+                    <% @collateralRenderLevelChildDOList.each_with_index do |collateralRenderLevelChildDO,index|%>
+                        <%if collateralRenderLevelChildDO.contentEmbedTypeCd == "EXTERNALURL" %>
+                            <li>
+                                <a href="#" id="<%=collateralRenderLevelChildDO.levelCd%>_id" >
+                                    <%=collateralRenderLevelChildDO.header1.to_s%> 
+                                    <%=collateralRenderLevelChildDO.header2.to_s%>
+                                </a>
+                                <script>
+                                    $('#<%=collateralRenderLevelChildDO.levelCd%>_id').click(function () {  
+                                        $.get("/app/Collateral/openURL?url=<%=collateralRenderLevelChildDO.contentPart1.to_s%>",function(data) {});
+                                    });
+                                </script>
+                            </li>
+                        <%end%>
+                    <%end%>
+                </ul>
+            </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+                   

@@ -1,0 +1,27 @@
+<% @playVideoCollateral = Collateral.loadObject(:first, :conditions =>{:collateralCd => "PLAYVIDEO"}) %>
+<script type="text/javascript">  
+   $('#level2list').find('.bottomactivemenu').addClass('bottominactivemenu').removeClass('bottomactivemenu');
+   $('#<%=@collateralRenderLevelDO.levelCd%>').removeClass('bottominactivemenu');
+   $('#<%=@collateralRenderLevelDO.levelCd%>').addClass('bottomactivemenu');
+</script>
+
+<div id="selectedlevel2data" class="bottomlayoutlevel2datadiv">
+	<span class="bottomlayoutlevel1header"><%=@collateralRenderLevelDO.header1%></span>
+	<hr>      
+	<table class="maincontentvideoplayerdiv" width="100%">
+	    <tr>
+	       	<td valign="bottom">
+	            <a href="#" id="<%=@playVideoCollateral.collateralCd%>_id" >
+	            	<script>
+	  					$('#<%=@playVideoCollateral.collateralCd%>_id').click(function () {  
+						$.get("/app/Collateral/showpopup?collateralCd=<%=@collateralRenderLevelDO.contentPart1%>",function(data) {});
+	  					}); 
+    				</script>
+	            	<img src="<%=@playVideoCollateral.fileName%>" style="width: 100%; align:center;">
+	            </a>
+	        </td>
+	    </tr>
+	</table>
+</div>
+	        
+	        

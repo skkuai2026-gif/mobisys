@@ -1,0 +1,215 @@
+<link rel="stylesheet" href="/public/css/FNA/shame.css">      
+<style type="text/css">
+.ui-dual-field-contain label.ui-input-text {
+text-align: left;
+width: 45.5%;
+}
+.ui-dual-field-contain .half .ui-select {
+width: 45% !important;
+}
+
+
+
+</style> 
+<div data-role="content" id="capture" style="-webkit-transform: none;">
+<form method="POST" action="<%= url_for :action => :submitFnaLifeProtectionNeed %>" name="FnaLifeProtectionNeedForm" id="FnaLifeProtectionNeedForm">
+<%= renderObject(@fnaRequest) %>
+<%= renderObject(@fnaProposer, @fnaRequest) %>
+<%= renderObject(@fnaLifeProtectionNeed, @fnaRequest) %>
+<!-- <input type="hidden"  id ="statuscode" name="statuscode" value="<%= @fnaRequest.addtnField1Str %>"/> -->
+<input type="hidden"  id ="changeLifeNeedShortV" name="changeLifeNeedShortV" value=""/>
+
+<div class="header" style="padding-top:15px;">
+        <span class="title"><%= getLabelValue('INSURED_NEED') %></span>
+        <span class="description"><%= getLabelValue('FIN_FIGURES') %></span>
+        <!-- <span class="set-right required-note" style="padding-top:0px;"><%#= getLabelValue('REQD_FIELDS') %></span> -->
+    </div>
+    <div class="illustrationdisplay" >
+
+    <div class="card">
+            <div class="legend rates-header">
+            <label class="strongLabel"><%= getLabelValue('EXPECTED_RATES') %></label>
+            <a id="inline" href="javascript: openPDF();" style="width: 100%;font-weight: bold;color: #4a7295;font-size: 14px;"><%= getLabelValue('AVERAGE_RATES') %></a>
+            </div>
+            <div data-role="dualfieldcontain" class="ui-dual-field-contain ui-body ui-br">
+                <div class="half">
+                    <div class="group">
+                       <%= renderNumericField('inflationRate', thosandSeperator(@fnaRequest.inflationRate.to_s),'inflationRate', @fnaRequest, ' maxlength="6" pattern="/([^\s])" onkeypress="return isNumberKey(event)" onchange="return checkifNumdeci(this.value, this.id)" class="material-input"') %>
+                       <%= renderLabel('inflationRate', 'EXPECTEDINFLATIONRATE', 'mandatory material-label', @fnaRequest) %>
+                    </div>
+                </div>
+                <div class="half">
+                    <div class="group">
+                    <%= renderNumericField('returnRate', thosandSeperator(@fnaRequest.returnRate.to_s) ,'returnRate', @fnaRequest, ' maxlength="6" pattern="/([^\s])" onkeypress="return isNumberKey(event)" onchange="return checkifNumdeci(this.value, this.id)" class="material-input"') %>
+                       <%= renderLabel('returnRate', 'EXPECTEDRETURNRATE', 'mandatory material-label', @fnaRequest) %>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <br/>
+        <div class="tabs">
+         <% if @fnaLifeProtectionNeed.CalculatorTypeCd == "CALCTYPECOMPLEX" %>
+             <div style="margin-bottom: 0px;">
+                <a href="#" onclick="changeTab($(this))" data-url="getNeedsLargeV"><p  class="active"><%= getLabelValue('LIFEPROTNEEDS') %></p></a>
+            </div>
+            
+            <% else %>
+            <div style="margin-bottom: 0px;">
+                <a href="#" onclick="changeTab($(this))" data-url="getNeeds"><p  class="active"><%= getLabelValue('LIFEPROTNEEDS') %></p></a>
+            </div>
+            <% end %>
+            <div style="margin-bottom: 0px;">
+                <a href="#" onclick="changeTab($(this))" data-url="healthNeeds"><p><%= getLabelValue('OTHER_LIFE_RISK_NEED') %></p></a>
+            </div>
+            <div style="margin-bottom: 0px;">
+                <a href="#" onclick="changeTab($(this))" data-url="retirementNeeds"><p><%= getLabelValue('RETIREMENT_PLANNING') %></p></a>
+            </div>
+            <div style="margin-bottom: 0px;">
+                <a href="#" onclick="changeTab($(this))" data-url="otherTargetSaving"><p><%= getLabelValue('OTHER_TARGET_SAVINGS') %></p></a>
+            </div>
+            <div style="margin-bottom: 0px;">
+                <a href="#" onclick="changeTab($(this))" data-url="shortfallSummary"><p><%= getLabelValue('SHORTFALL_SUMMARY') %></p></a>
+            </div>
+        </div>
+        <div class="clear" style="border-top: 5px solid #eaab00;"></div>
+        <div class="tabs-content">
+            <div class="card" id="card">
+             <%# if @fnaLifeProtectionNeed.CalculatorTypeCd.to_s == "" %>
+            <%# CALCTYPESIMPLE = "CALCTYPESIMPLE" %>
+            <% @fnaLifeProtectionNeed.CalculatorTypeCd = 'CALCTYPESIMPLE' %>
+            <%# end %>
+              <div>
+                <%= getLabelValue('CHOOSE_CALCTYPE_TEXT') %>
+                   <table width="100%" style="margin-top:-30px;">
+                        <tr>
+                            <td align="left" style="width:25%;padding-left:10px;">
+                            
+                             <%= renderRadioButton('CalculatorTypeCd', @fnaLifeProtectionNeed.CalculatorTypeCd, 'CALCTYPESIMPLE', 'CALCTYPESIMPLE', @fnaLifeProtectionNeed) %>
+                             <%= renderLabel('CALCTYPESIMPLE', 'CALCTYPESIMPLE','', nil, 'style="padding-left:30px;"') %>
+
+                            </td>
+                            <td align="center" style="width:35%">
+                              
+                                  <%= renderRadioButton('CalculatorTypeCd', @fnaLifeProtectionNeed.CalculatorTypeCd, 'CALCTYPECOMPLEX', 'CALCTYPECOMPLEX', @fnaLifeProtectionNeed, "onclick='large_version()'") %>
+                                    <%= renderLabel('CALCTYPECOMPLEX', 'CALCTYPECOMPLEX','', nil, 'style="padding-left:30px;"') %>
+                            </td>
+                            <td>
+                               
+                            </td>
+                        </tr>
+                   </table>
+                </div>
+                <br/>
+
+                <div class="note"><%= getLabelValue('ALL_VALUES_IN_HKD') %></div>
+                <div class="legend"><label class="strongLabel"><%= getLabelValue('LIFEPROTNEEDS') %></label></div>
+                <div data-role="dualfieldcontain" class="ui-dual-field-contain ui-body ui-br">
+                    <div class="third with-spacer">
+                        <div id="montlyExpenseAmt_div" class="group">
+                            <%= renderNumericField('montlyExpenseAmt',  thosandSeperator(@fnaLifeProtectionNeed.montlyExpenseAmt.to_s),'montlyExpenseAmt', @fnaLifeProtectionNeed, ' maxlength="10" pattern="/([^\s])" onkeypress="return numbersonly(event)"  onchange="return checkifNum(this.value, this.id)" class="material-input mandatory"') %>
+                            <%= renderLabel('montlyExpenseAmt', 'MONTHLYLIVINGEXPENSES', 'mandatory', @fnaLifeProtectionNeed, 'style="line-height: 0.5;"') %>
+                            <%= attachMask("#{getObjectMapping(@fnaLifeProtectionNeed)}[montlyExpenseAmt]") %>
+                            <script type="text/javascript">
+                            $('label[for="<%=getObjectMapping(@fnaLifeProtectionNeed)%>[montlyExpenseAmt]"]').addClass('material-label');    
+                            </script>
+                        </div>
+                    </div>
+    
+                    <div class="operation-label"> </div>
+                    <div class="third with-spacer">
+                        <div id='shortfallAmt_div' class="group"> 
+                            <%= renderNumericField('shortfallAmt',  thosandSeperator(@fnaLifeProtectionNeed.shortfallAmt.to_s) ,'shortfallAmt', @fnaLifeProtectionNeed, ' maxlength="10" pattern="/([^\s])" onkeypress="return numbersonly(event)" onchange="return checkifNum(this.value, this.id)" class="material-input " ') %>
+                            <%= renderLabel('shortfallAmt', 'SHORTFALL_CURR_LIFEPROTECTION', 'mandatory', @fnaLifeProtectionNeed, 'style="line-height: 0.5;"') %>     
+                            <%= attachMask("#{getObjectMapping(@fnaLifeProtectionNeed)}[shortfallAmt]") %>
+                            <script type="text/javascript">
+                            $('label[for="<%=getObjectMapping(@fnaLifeProtectionNeed)%>[shortfallAmt]"]').addClass('material-label');    
+                            </script>
+                        </div>
+                    </div>
+                     
+                    <div class="operation-label"></div>
+                    <div class="third with-spacer">
+                        <div class="group">                          
+                        </div>
+                    </div>
+                </div>
+            </div>
+           
+            <div class="ui-dual-field-contain ui-body ui-br">
+                <div class="half">
+                    <a class="button_UI_1 ui-link ui-btn selected"  onclick="changeTab($(this))" data-url="healthNeeds"><%= getLabelValue('NEXT_SECTION') %>
+                    </a>
+                </div>
+            </div>
+	    </div>
+
+
+
+    <style >
+        .button_UI {
+            background-color:#efbc33!important;
+            border-radius: 7px;
+            border-style: none;
+            color: #003946 !important;
+            display: inline-block;
+            font-size: 14px !important;
+            max-width: 200px;
+            margin: 0;
+            text-shadow: none !important;
+            font-weight: 700;
+            text-align: center;
+            line-height: 1.3;
+            /*padding: .8em 1.5em !important;*/
+            width: 100px;
+        }
+        .button_UI_1 {
+            background-color:#efbc33!important;
+            border-radius: 7px;
+            border-style: none;
+            color: #003946 !important;
+            display: inline-block;
+            font-size: 14px !important;
+            max-width: 200px;
+            margin: 0;
+            text-shadow: none !important;
+            font-weight: 700;
+            text-align: center;
+            line-height: 1.3;
+            /*padding: .8em 1.5em !important;*/
+            /*width: 100px;*/
+        }
+    </style>
+	 
+	<%= render(:partial => 'FNALife_Protection_NeedJS')%>
+
+
+</form>
+</div>
+
+ <div class="" data-role="dualfieldcontain" align="">
+        <div class="">
+            <div class="group" style="font-size: 14px;">
+                <%= getLabelValue('INSTRUCTION_TEXT_NEEDS2') %>
+            </div>
+        </div>     
+    </div>
+
+
+ <!--  <div class="" data-role="dualfieldcontain">
+        <div class="half"  align="left" style="margin:0% 0% 0% 2%">
+            <div class="group">
+                <a href="#" id="previousTab"  class="button_UI ui-link ui-btn selected"  style="" onclick="previousTab()">
+                    <%#= getLabelValue('PREVIOUS') %>
+                </a>
+
+            </div>
+        </div>
+
+        <div class="half" align="right">
+            <div class="group" >
+                <a href="#"  id="nextTab"  class="button_UI ui-link ui-btn selected"  style="" onclick="nextTab()" >
+                    <%#= getLabelValue('NEXT') %> 
+                </a>   
+            </div>
+        </div>
+    </div> -->

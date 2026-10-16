@@ -1,0 +1,53 @@
+<link rel="stylesheet" type="text/css" href="/public/css/style.css" /> 
+<div data-role="main" class="ui-content">
+  <div id="blockDiv">
+    <div class="landingpagecontent">
+      <div class="landingpagetop">        
+        <div class="level0header">
+          <label class="level0landinglabel0"><%=@collateralRenderLevelDO.header1 %></label>
+          <label class="level0landinglabel1"><%=@collateralRenderLevelDO.header2%></label>    
+        </div>
+        <div class="level0text">
+          <% if @collateralRenderLevelDO != nil %>
+            <%= @collateralRenderLevelDO.contentPart1 %>
+          <% end %>
+        </div>
+      </div>
+      <div id="contentpane_<%=@collateralRenderLevelDO.guid%>" class="landingpagemenu">
+        <div class="ui-grid-c knowledge-house-details-bg">
+          <% @collateralRenderLevelChildDOList.each_with_index do |collateralRenderLevelChildDO,index|%>
+            <div
+               <% if index%4 == 0 %>
+                  class="ui-block-a knowledge-house-details" style="clear: left;"
+                <% elsif index%4 == 1 %>
+                  class="ui-block-b knowledge-house-details"
+                <% elsif index%4 == 2 %>
+                  class="ui-block-c knowledge-house-details"
+                <% elsif index%4 == 3 %>
+                  class="ui-block-d knowledge-house-details"
+                <% end %>                                 
+              >  
+               <%if collateralRenderLevelChildDO.contentEmbedTypeCd == "EXTERNAL" %>
+                 <a href="#" id="<%=collateralRenderLevelChildDO.levelCd %>_id" >
+                  <script>
+                    $('#<%=collateralRenderLevelChildDO.levelCd%>_id').click(function () {
+                    $.get("/app/Collateral/showpopup?collateralCd=<%=collateralRenderLevelChildDO.contentPart1%>",function(data) {});
+                    }); 
+                  </script>
+                <% else %>
+                  <a href="javascript:doOnLevelClick('<%=collateralRenderLevelChildDO.levelCd%>','blockDiv');"> 
+                <%end%>
+                <img src="<%=@collateralMap[collateralRenderLevelChildDO.icon].fileName%>" alt="<%=@collateralMap[
+                  collateralRenderLevelChildDO.icon].header%>" style="width: 180px;" class="dropshadow"/>
+                   <div class="landingcollateralRenderLevelChildDOheader"><%=collateralRenderLevelChildDO.header1%>
+                   </div>
+                </a>                
+            </div>
+          <%end%>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+                   

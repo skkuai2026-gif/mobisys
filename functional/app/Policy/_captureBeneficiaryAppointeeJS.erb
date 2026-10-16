@@ -1,0 +1,107 @@
+<script type="text/javascript">
+var beneficiaryCount = <%= @beneficiaryCount %>;
+var initialBeneficiaryAppointeeForm = "";
+var visibleBeneficiaryCount = <%= @beneficiaryCount %>;
+
+
+function changeBeneficiaryAppointeeTab(tabName){
+	$("#beneficiaryContainer").hide();
+	$("#appointeeContainer").hide();
+	$("#"+tabName).show();
+	$("li#beneficiaryContainerLi>a").removeClass("selectedTab");
+	$("li#appointeeContainerLi>a").removeClass("selectedTab");
+	str = "li#" + tabName + "Li>a";
+	$(str).addClass("selectedTab");
+}
+
+
+function addBeneficiary() {
+	$(".allBeneficiaries div[data-role='collapsible']").each(function(){
+		$(this).collapsible("collapse");
+	});
+
+	$.ajax({                                    
+		url: "/app/Policy/addBeneficiary",
+		async: false,
+		data: {'policyObject': '<%= @policy.object.to_s %>', 'beneficiaryCount': beneficiaryCount, 'visibleBeneficiaryCount': visibleBeneficiaryCount},
+		headers: {
+        	'Transition-Enabled': false
+        },
+		success: function(data) {
+			$('.allBeneficiaries').append(data);
+			$('.allBeneficiaries').trigger('create');
+			$("div."+beneficiaryCount).collapsible("expand");
+			beneficiaryCount = beneficiaryCount + 1;
+			visibleBeneficiaryCount = visibleBeneficiaryCount + 1;
+
+			$(document).ready(function(){
+				$('.scrollTopButton').click(function() {
+					$("html, body").animate({ scrollTop: 0 }, "slow");
+			    });
+
+			    $('.expandButton').hide();
+
+			    $('.collapseButton').click(function() {
+			    	$(this).parents(".legend").siblings(".panelContent").hide();
+			    	$(this).hide();
+			    	$(this).siblings('.expandButton').show();
+			    });
+
+			    $('.expandButton').click(function() {
+			    	$(this).parents(".legend").siblings(".panelContent").show();
+			    	$(this).hide();
+			    	$(this).siblings('.collapseButton').show();
+			    });
+			});
+		}
+	}); 
+}
+
+
+function deleteBeneficiary(beneficiaryCount) {
+	$('div#beneficiary'+beneficiaryCount+' input[name$="[removed]"]').val("YES");
+	$('div.'+beneficiaryCount).hide();
+	$(".allBeneficiaries div[data-role='collapsible']").each(function(){
+		$(this).collapsible("collapse");
+	});
+
+	visibleBeneficiaryCount = visibleBeneficiaryCount - 1;
+	var tempCount = visibleBeneficiaryCount - 1;
+	$("h3[class*='beneHeaderDetails']:visible a span.numberSpan").each(function(){
+		$(this).html(visibleBeneficiaryCount-tempCount);
+		tempCount = tempCount - 1;
+	});
+	checkForMinor();
+}
+
+
+function submitForm() {
+	if(initialBeneficiaryAppointeeForm != $('#beneficiaryAppointeeForm').serialize()) {
+		$('span[id="errordiv"]').hide();
+		$.ajax({                                    
+			url: "/app/Policy/submitBeneficiaryAppointeeDetails",
+			method: 'POST',
+			async: false,
+			data: $('#beneficiaryAppointeeForm').serialize(),
+			headers: {
+	        	'Transition-Enabled': false
+	        },
+			success: function(data) {
+				$("a#submit").hide();
+			}
+		});
+	}
+}
+
+
+$(document).ready(function(){
+	initialBeneficiaryAppointeeForm = $('#beneficiaryAppointeeForm').serialize();
+	
+	$("#addBeneficiary").click(function(){
+		addBeneficiary();	
+	});
+
+	changeBeneficiaryAppointeeTab('beneficiaryContainer');
+	checkForMinor();
+});
+</script>

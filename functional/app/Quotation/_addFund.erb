@@ -1,0 +1,43 @@
+<li class="ui-field-contain">
+	<%= renderObject(@quotationProductInvestmentFund, @quotationProduct) %>
+	<%= renderHiddenField('removed', @quotationProductInvestmentFund.removed, 'removed', @quotationProductInvestmentFund) %>
+	<% if @facetData[:renderExpiryDt] %>
+		<%= renderHiddenField('expiryDt', @quotationProductInvestmentFund.expiryDt, 'expiryDt', @quotationProductInvestmentFund) %>
+	<% end %>  
+	<% if @facetData[:renderFundTypeCd] %>
+		<%= renderHiddenField('fundTypeCd', @quotationProductInvestmentFund.fundTypeCd, 'fundTypeCd', @quotationProductInvestmentFund) %>
+	<% end %>  
+	<% if @facetData[:renderMaturityDt] %>
+		<%= renderHiddenField('maturityDt', @quotationProductInvestmentFund.maturityDt, 'maturityDt', @quotationProductInvestmentFund) %>
+	<% end %>
+	<div class="ui-grid-c">
+		<div class="ui-block-a">
+		<% if @facetData[:renderFundcd] %>
+			<%= renderLabel('fundDesc', @fundDesc, nil, @quotationProductInvestmentFund)   %>
+			<%= renderHiddenField('fundCd', @quotationProductInvestmentFund.fundCd, '', @quotationProductInvestmentFund) %>
+		<% end %>
+		</div>
+		<div class="ui-block-b"> 
+		<% if @facetData[:renderAllocationperc] %> 
+				<%= renderAmountField('allocationPerc', @quotationProductInvestmentFund.allocationPerc.to_i, '', @quotationProductInvestmentFund, 'maxlength="3"') %>
+				    <% if @modelFundType == "FIXEDMODEL" %>
+				        <script type="text/javascript">  
+				            setReadOnly($("input[name='<%= getObjectMapping(@quotationProductInvestmentFund) %>[allocationPerc]']"),true);
+                </script>
+            <% end %> 
+	  <% end %>
+	    </div>
+
+		<div class="ui-block-c"> 
+		<% if @facetData[:renderTopupallocationperc] %>
+				<%= renderAmountField('topupAllocationPerc', @quotationProductInvestmentFund.topupAllocationPerc.to_i, '', @quotationProductInvestmentFund, 'style="margin-left:5%;" maxlength="3"') %>
+		<% end %>
+		</div>
+		<% if @showSearchFl == true %>
+		  <div class="ui-block-d"> 
+		    <input type="button" data-inline="true" data-icon="delete" data-iconpos="notext" onclick="removeFund('<%= getObjectMapping(@quotationProductInvestmentFund)%>');"/>
+		  </div>
+		<% end %>
+	</div>
+</li>
+<%= render :partial => "addFundJS" %>

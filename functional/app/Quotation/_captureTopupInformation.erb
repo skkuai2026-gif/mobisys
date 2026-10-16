@@ -1,0 +1,229 @@
+<style type="text/css">
+.topupList .ui-grid-c .ui-block-a,
+.topupList .ui-grid-c .ui-block-b,
+.topupList .ui-grid-c .ui-block-c{
+    width: 30%;
+}
+.topupList .ui-grid-c .ui-block-d{
+    width: 10%;
+}
+</style>
+<% topUpAmountLabel = renderProductLabel('REGULARTOPUPLABEL', @product) %>
+<div name = 'topupinformationdiv'>
+    <div class='illustrationdisplay' name ='topupInformation'>
+        <div class="legend">
+            <label class="strongLabel">
+                <%= getLabelValue('TOPUPINFORMATION') %>
+                <a href="#" class="scrollTopButton ui-icon-carat-u ui-btn-icon-notext ui-alt-icon ui-btn-inline"></a>
+                <a href="#" class="expandButton ui-icon-plus ui-btn-icon-notext ui-alt-icon ui-btn-inline"/></a>
+                <a href="#" class="collapseButton ui-icon-minus ui-btn-icon-notext ui-alt-icon ui-btn-inline"/></a>
+            </label>
+        </div>
+        <div class="panelContent">
+            <% if @facetData[:renderTopupoptioncdPanel] %>
+                <% if @facetData[:renderTopupoptioncd] %>
+                    <div data-role="dualfieldcontain">
+                        <div class ="half">
+                            <%= renderLabel('topupOptionCd', 'topupOptionCd', nil, @quotation)   %>
+                            <%= getLookup('TOPUPOPTION','topupOptionCd', @quotation.topupOptionCd, @quotation, nil) %>
+                        </div>
+                        <div class ="half">
+                        </div>
+                    </div>
+                    <hr class="horizontalline"/>
+                <% end %>
+            <% end %>
+
+            <div name="topUpDiv">
+                <% if @facetData[:renderInitialTopuppanel] %>
+                    <div name="initialTopUpDiv">
+                        <%= renderObject(@initialTopup, @quotation) %>
+                        <%= renderHiddenField('topUpTypeCd', @initialTopup.topUpTypeCd, 'topUpTypeCd', @initialTopup) %>
+                        <u><b><%= getLabelValue('initialTopupFl') %></b></u>
+
+                        <div data-role="dualfieldcontain">
+                            <% if @facetData[:renderInitialtopupfl] %>
+                                <div class ="half">
+                                    <%= renderLabel('initialTopupFl', 'initialTopupFl', nil, @quotation) %>
+                                    <%= renderRadioButton('initialTopupFl', @quotation.initialTopupFl, 'initialTopupYes', 'YES', @quotation) %>
+                                    <%= renderLabel('initialTopupYes', 'YES', 'radioWidth', nil)   %>
+                                    <%= renderRadioButton('initialTopupFl', @quotation.initialTopupFl, 'initialTopupNo', 'NO', @quotation) %>
+                                    <%= renderLabel('initialTopupNo', 'NO', 'radioWidth', nil)   %>
+                                </div>
+                            <% end %>
+                            <% if @facetData[:renderTopupamount] %>
+                                <div class ="half">
+                                    <%= renderLabel('topUpAmount', 'initialInvestAmt', nil, @initialTopup)   %>
+                                    <%= renderAmountField('topUpAmount', @initialTopup.topUpAmount, 'topupFrequencyValUnit', @initialTopup, ' maxlength="20"') %>
+                                    <%=attachMask("#{getObjectMapping(@initialTopup)}[topUpAmount]") %>
+                                </div>
+                            <% end %>    
+                            <hr class="horizontalline"/>
+                        </div>
+                    </div>
+                <% end %>
+
+                <% if @facetData[:renderRegularTopupPanel] %>
+                    <div name="regularTopUpDiv">
+                        <% if @facetData[:renderRegulartopupfl] %>
+
+                            <%= renderObject(@regularTopup, @quotation) %>
+                            <%= renderHiddenField('topUpTypeCd', @regularTopup.topUpTypeCd, 'topUpTypeCd', @regularTopup) %>
+                            <u><b><%= getLabelValue('regularTopupFl') %></b></u>
+
+                            <div data-role="dualfieldcontain" name="">  
+                                <div class ="half">
+                                    <%= renderLabel('regularTopupFl', 'regularTopupFl', nil, @quotation)    %>
+                                    <%= renderRadioButton('regularTopupFl', @quotation.regularTopupFl, 'regularTopupYes', 'YES', @quotation) %>
+                                    <%= renderLabel('regularTopupYes', 'YES', 'radioWidth', nil)   %>
+                                    <%= renderRadioButton('regularTopupFl', @quotation.regularTopupFl, 'regularTopupNo', 'NO', @quotation) %>
+                                    <%= renderLabel('regularTopupNo', 'NO', 'radioWidth', nil)   %>
+                                </div>
+                                <div class ="half">
+                                    <%= renderLabel('topUpPeriod', 'topUpPeriod', nil, @regularTopup)   %>
+                                    <%= renderAmountField('topUpPeriod', @regularTopup.topUpPeriod, 'topUpPeriod', @regularTopup) %>
+                                </div>
+                            </div>
+                        <% end %>
+
+                        <div data-role="dualfieldcontain">
+                            <% if @facetData[:renderTopupamount] %>
+                                <div class ="half">
+                                    <%= renderLabel('topUpAmount', 'regularTopup', nil, @regularTopup)   %>
+                                    <%= renderAmountField('topUpAmount', @regularTopup.topUpAmount, 'topUpAmount', @regularTopup, ' maxlength="20"') %>
+                                    <%=attachMask("#{getObjectMapping(@regularTopup)}[topUpAmount]") %>
+                                </div>
+                            <% end %>
+                            <% if @facetData[:renderTopupfrequencyval] %>  
+                                <div class ="half">
+                                    <%= renderLabel('topupFrequencyVal', 'topupFrequencyVal', nil, @regularTopup)   %>
+                                    <%= renderAmountField('topupFrequencyVal', @regularTopup.topupFrequencyVal, 'topupFrequencyVal', @regularTopup, ' maxlength="3"') %>
+                                </div>
+                            <% end %>  
+                        </div>
+                        <hr class="horizontalline"/>
+                    </div>
+                <% end %>
+                
+                <% if @facetData[:renderTargetFunfPanel]%>
+                    <div name="targetFundFlDiv">
+                        <% if @facetData[:renderTargetfundfl] %>
+                            <u><b><%= getLabelValue('targetFundFl') %></b></u>
+                            <div data-role="dualfieldcontain">
+                                <div class ="half">
+                                    <%= renderLabel('targetFundFl', 'targetFundFl', nil, @baseProduct)    %>
+                                    <%= renderRadioButton('targetFundFl', @baseProduct.targetFundFl, 'targetFundYes', 'YES', @baseProduct) %>
+                                    <%= renderLabel('targetFundYes', 'YES', 'radioWidth', nil) %>
+                                    <%= renderRadioButton('targetFundFl', @baseProduct.targetFundFl, 'targetFundNo', 'NO', @baseProduct) %>
+                                    <%= renderLabel('targetFundNo', 'NO', 'radioWidth', nil) %>
+                                </div>
+                                <div class ="half">
+                                </div>
+                            </div>
+                        <% end %>
+
+                        <div name="targetFundDiv">
+                            <div data-role="dualfieldcontain" >
+                                <% if @facetData[:renderPayingyears] %>
+                                    <div class ="half">
+                                        <%= renderLabel('payingYears', 'payingYears', nil, @baseProduct)   %>
+                                        <%= renderAmountField('payingYears', @baseProduct.payingYears, nil, @baseProduct, ' maxlength="3"') %>
+                                    </div>
+                                <% end %>
+                                <% if @facetData[:renderTargetfundval] %>
+                                    <div class ="half">
+                                        <%= renderLabel('targetFundVal', 'targetFundVal', nil, @baseProduct)   %>
+                                        <%= renderAmountField('targetFundVal', @baseProduct.targetFundVal, nil, @baseProduct, nil) %>
+                                        <%=attachMask("#{getObjectMapping(@baseProduct)}[targetFundVal]") %>
+                                    </div>
+                                <% end %>
+                            </div>
+
+                            <div data-role="dualfieldcontain">
+                                <% if @facetData[:renderTargetperiodrefcd] %>
+                                    <div class ="half">
+                                        <%= renderLabel('targetPeriodRefCd', 'targetPeriodRefCd', nil, @baseProduct)   %>
+                                        <%= getLookup('TARGETPERIODREFCD', 'targetPeriodRefCd', @baseProduct.targetPeriodRefCd, @baseProduct) %>
+                                    </div>
+                                <% end %>
+                                <% if @facetData[:renderTargetperiod] %>
+                                    <div class ="half">
+                                        <%= renderLabel('targetPeriod', 'Target period', nil, @baseProduct)   %>
+                                        <%= renderAmountField('targetPeriod', @baseProduct.targetPeriod, nil, @baseProduct, ' maxlength="3"') %>
+                                    </div>
+                                <% end %>
+                            </div>
+                        </div>
+                        <hr class="horizontalline"/>
+                    </div>
+                <% end %>
+
+            </div>
+
+            <% if @facetData[:renderAdhocTopupPanel] %>
+                <u><b><%= getLabelValue('ADHOCTOPUP') %></b></u>
+                <div class="topupList">      
+                    <div class="ui-grid-c" style="margin-bottom: 10px;">
+                        <div class="ui-block-a"><strong> <%= getLabelValue('policyYearFrom') %> </strong></div>
+                        <div class="ui-block-b"><strong> <%= getLabelValue('policyYearTo') %> </strong></div>
+                        <div class="ui-block-c"><strong> <%= getLabelValue('topUpAmount') %> </strong></div>
+                        <div class="ui-block-d"></div>
+                    </div>
+                    <%if @adHocTopups != nil %>
+                        <ul data-role="listview" id="adHocTopupsList" data-inset="true" style="width: 98%;">
+                            <% @topup_form = "" %>
+                            <% @adHocTopups.each do |adHocTopup| %>
+                            <%   @adHocTopupCount += 1
+                                @topup_form << addTopup(adHocTopup, @quotation, @adHocTopupCount, getObjectMapping(@quotation), adHocTopup.topUpTypeCd)
+                            %>
+                            <% end %>
+                            <%= @topup_form %>
+                        </ul>
+                    <%end%>
+
+                    <div class="ui-grid-d">
+                        <div class="ui-block-a"></div>
+                        <div class="ui-block-b"></div>
+                        <div class="ui-block-c"><a href="#" data-topuptypecd="ADHOCTOPUP" data-role="button" class="addTopupButton"><strong><%= getLabelValue('ADDADHOCTOPUP') %></strong></a></div>  
+                        <div class="ui-block-d"></div>              
+                        <div class="ui-block-e"></div>
+                    </div>
+                    <hr class="horizontalline"/>
+                </div>
+            <% end %>
+
+            <% if @facetData[:renderContributionTopupPanel]%>
+                <u><b><%= getLabelValue('TRANSFERCONTRIBUTION') %></b></u>
+                <div class="topupList">      
+                    <div class="ui-grid-c" style="margin-bottom: 10px;">
+                        <div class="ui-block-a"><strong> <%= getLabelValue('policyYearFrom') %> </strong></div>
+                        <div class="ui-block-b"><strong> <%= getLabelValue('policyYearTo') %> </strong></div>
+                        <div class="ui-block-c"><strong> <%= getLabelValue('transferAmount') %> </strong></div>
+                        <div class="ui-block-d"></div>
+                    </div>
+                    <%if @contributionTopups != nil %>
+                        <ul data-role="listview" id="contributionTopupsList" data-inset="true" style="width: 98%;">
+                        <% @topup_form = "" %>
+                            <% @contributionTopups.each do |contributionTopup| %>
+                                <%   @contributionTopUpCount += 1
+                                @topup_form << addTopup(contributionTopup, @quotation, @contributionTopUpCount, getObjectMapping(@quotation), contributionTopup.topUpTypeCd)
+                                %>
+                            <% end %>
+                            <%= @topup_form %>
+                        </ul>
+                    <%end%>
+
+                    <div class="ui-grid-d">
+                        <div class="ui-block-a"></div>
+                        <div class="ui-block-b"></div>
+                        <div class="ui-block-c"><a href="#" data-topUpTypeCd="TRANSFERTOPUP" data-role="button" class="addTopupButton"><strong><%= getLabelValue('ADDCONTRIBUTIONTOPUP') %></strong></a>  </div>  
+                        <div class="ui-block-d"></div>              
+                        <div class="ui-block-e"></div>
+                    </div>
+                    <hr class="horizontalline"/>
+                </div>
+            <% end %>
+        </div>
+    </div>
+</div>
+<%= render :partial => "captureTopupInformationJS" %>

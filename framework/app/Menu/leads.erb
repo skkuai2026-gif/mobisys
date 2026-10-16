@@ -1,0 +1,73 @@
+<div data-role="page">
+	<link rel="stylesheet" href="/public/css/c2l_dashboard.css">
+	<div data-role="header" id="header" data-position="inline">
+		<a href="/app/Menu/landingPage" rel="external" data-direction="reverse" data-role="none">
+			<img src="/public/images/SalesIllustration/icon_BackArrow-Red.png">
+		</a>
+		<h1><%= getLabelValue('LEADS') %></h1>
+	</div>
+
+	<div data-role="content" id="content">
+		<div class="ui-grid-b" id="main-options">
+			<div class="ui-block-a">
+				<a href="/app/Lead/newLead" rel="external">
+					<img src="/public/images/capture-lead.png">
+					<div class="imgCaption"><%= getLabelValue('CAPTURELEAD') %></div>
+				</a>
+			</div>
+			<div class="ui-block-b">
+				<a href="/app/Lead/searchLead" rel="external">
+					<img src="/public/images/search-lead.png">
+					<div class="imgCaption"><%= getLabelValue('SEARCHLEAD') %></div>
+				</a>
+			</div>
+			<div class="ui-block-c">
+				<a href="/app/Lead/activityList" rel="external">
+					<img src="/public/images/activity-list.png">
+					<div class="imgCaption"><%= getLabelValue('ACTIVITYLIST') %></div>
+				</a>
+			</div>
+		</div>
+
+		<div class="ui-grid-b analytics">
+			<div class="ui-block-a">
+        		<div class="illustrationdisplay">
+          			<table class="searchtable" width="100%">
+            			<tr class="searchtableheader"><td><%= getLabelValue('Interactive Chart') %></td></tr>
+            			<tr class="search1">
+            				<td class="tabletext">
+            					<img src="/public/images/bar-chart-activity-lead.png">
+            				</td>
+            			</tr>	
+           			</table>
+           		</div>
+		    </div>	
+
+			<div class="ui-block-b">
+        		<div class="illustrationdisplay">
+          			<table class="searchtable" width="100%">
+            			<tr class="searchtableheader"><td><%= getLabelValue('Lead Management') %></td></tr>
+            			<tr class="search1">
+            				<td class="tabletext">
+            					<img src="/public/images/pai-chart1.png">
+            				</td>
+            			</tr>	
+           			</table>
+           		</div>
+		    </div>
+
+			<div class="ui-block-c">
+        		<div class="illustrationdisplay">
+          			<table class="searchtable" width="100%">
+            			<tr class="searchtableheader"><td><%= getLabelValue('Interactive Chart') %></td></tr>
+            			<tr class="search1">
+            				<td class="tabletext">
+            					<img src="/public/images/pai-chart-activity-lead.png">
+            				</td>
+            			</tr>	
+           			</table>
+           		</div>
+		    </div>
+		</div>
+	</div>
+</div>

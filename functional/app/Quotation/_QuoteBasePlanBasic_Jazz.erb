@@ -1,0 +1,39 @@
+<%= modelTagStart("basePlan", @baseProduct, @quotation) %>
+	<%= prdFieldDataTag("#{@quotationPckg}.PolicyProductDO",'wopPremium,paidUpValue') %>
+	<%= prdFieldDataTag("#{@quotationPckg}.PolicyProductDO",'productFamilyCd,productId,productPlanOptionCd') %>
+	<%= prdFieldDataTag("#{@quotationPckg}.PolicyProductDO",'currencyCd','CAPTURECURRENCY') %>
+	<%= prdFieldDataTag("#{@quotationPckg}.PolicyProductDO",'paymentTypeCd,paymentFrequencyCd,productTerm,premiumPayingTerm') %>
+	<%= prdFieldDataTag("#{@quotationPckg}.PolicyProductDO",'capturedPremiumAmt','CAPTUREPREMIUMREQUIRED') %>
+	<%= prdFieldDataTag("#{@quotationPckg}.PolicyProductDO",'baseSumAssured,coi',"","",2, true,nil,nil,nil,{:baseSumAssured => 'SALABEL'}) %>
+	<%= prdFieldDataTag("#{@quotationPckg}.PolicyProductDO",'baseAnnualPremium,modalPremium',"","",2, true,nil,nil,nil,{:baseAnnualPremium => 'ANNUALPREMIUMLABEL'}) %>
+
+	<%= prdFieldDataTag("#{@quotationPckg}.PolicyProductDO",'minTargetPremium,maxTargetPremium,recommendedPremium,unapliedPremium','OTHERPREMIUMSREQUIRED') %>
+	<%= prdFieldDataTag("#{@quotationPckg}.PolicyProductDO",'monthlyIncome,annualIncome,tripTypeCd,geographyCd,visitPurposeCd,maxTripPeriod') %>
+
+	<div style="display: none;">
+		<%= inputTag("partyRoleCd") %>
+		<%= inputTag("productFamilyCd") %>
+		<%= inputTag("productId") %>
+		<%= inputTag("productPlanOptionCd") %>
+		<%= inputTag("productTypeCd") %>
+		<%= inputTag("productVersion") %>
+		<%= inputTag("productSeq") %>
+		<%= inputTag("compAnnualPremium") %>
+		<%= inputTag("compHalfYlyPremium") %>
+		<%= inputTag("compQtlyPremium") %>
+		<%= inputTag("compMonthlyPremium") %>
+		<%= inputTag("annualizedPremium") %>
+		<%= inputTag("extraPremium") %>
+
+		<!-- Following should be set as data attribute in tags-->
+		<input type="hidden" name="premiumPayingTermFacet" id="premiumPayingTermFacet" value='<%= $premiumPayingTerm %>'/> 
+		<input type="hidden" name="renderPremiumholidayyear" id="renderPremiumholidayyear" value='<%= @renderPremiumholidayyear %>'/>
+		<input type="hidden" name="renderRetirementpercent" id="renderRetirementpercent" value='<%= @renderRetirementpercent %>'/>
+		<input type="hidden" name="basePlan_premiumSAFl" id="basePlan_premiumSAFl" value='<%= $premiumSAFl %>'/>
+		<input type="hidden" name="basePlan_readOnlyFields" id="basePlan_readOnlyFields" value='<%= @readOnlyFields %>'/>
+		<input type="hidden" name="basePlan_allowedCurrency" id="basePlan_allowedCurrency" value='<%= @allowedCurrency %>'/>
+		<input type="hidden" name="basePlan_allowedPaymentTypeCd" id="basePlan_allowedPaymentTypeCd" value='<%= @allowedPaymentTypeCd %>'/>
+		<input type="hidden" name="basePlan_allowedPaymentFrequencyCd" id="basePlan_allowedPaymentFrequencyCd" value='<%= @allowedPaymentFrequencyCd %>'/>
+		<input type="hidden" name="insured_age" id="insured_age" value='<%= @insured.age %>'/>
+	</div>
+<% modelTagEnd %>

@@ -1,0 +1,103 @@
+<form method="POST" action="<%= url_for :action => :submitReasonsForRecommendation %>" name="reasonsForRecommendationForm" id="reasonsForRecommendationForm">
+    <%=renderObject(@fnaRequest) %>
+    <%=renderObject(@fnaProposer, @fnaRequest) %>
+  <input type="hidden"  id ="changeConsiderationForm" name="changeConsiderationForm" value=""/>
+
+    <div class="illustrationdisplay"><br>
+
+        <div style="margin:0px 30px 0px 0px;"><%= getLabelValue('FNA_REASON_FOR_RECO')%></div><br>
+
+        <div style="margin:0% 2% 0% 4%;border:0px solid black;"><%=getLabelValue('ADVISOR_REASON_FOR_RECOM')%>
+            <br>
+      <%if !@cause_for_deviation_list.empty? && $change_in_resp %>
+        <!-- <h1> change_in_resp is true and @cause_for_deviation is not empty</h1> -->
+        <%= renderCheckBox('reasonForRecoCd', @fnaRequest.reasonForRecoCd, nil, @fnaRequest, 'class="ui-checkbox2 ui-state-disabled" id ="insuredcontent"  disabled="" style="margin-top:-35px !important;display:none; " ' ) %>
+        <%= renderLabel('reasonForRecoCd', 'FNAPOCHOICE', 'icon-checkbox2 ', @fnaRequest, ' style="width:100%;color:#333 !important;padding-left:36px !important;" ') %>
+            <script type="text/javascript">
+            $("#FNARequest[reasonForRecoCd] input[type='radio']").attr("checked",false).checkboxradio("refresh");
+            </script>
+        <br>
+          <%= renderCheckBox('addtnField2Str', @fnaRequest.addtnField2Str, 'addtnField2Str', @fnaRequest, ' onclick="otherson()" readonly= "true" disabled="" class="ui-checkbox2" style="margin-top:-22px !important;display: none;" ' ) %>
+          <%= renderLabel('addtnField2Str', 'FNAOTHERREC', 'icon-checkbox2 ', @fnaRequest, ' style="width:80%;color:#333 !important;padding-left:36px !important;" ') %>
+          <%= renderInputField('reasonForRecommendation', @fnaRequest.reasonForRecommendation ,'reasonForRecommendation', @fnaRequest, 'maxlength="255" pattern="/([^\s])" class="material-input " disabled="true" style="width:65%;margin-bottom: 0px;padding-bottom: 5px !important;padding-top: 0px !important;') %>
+      
+            <%elsif !@cause_for_deviation_list.empty? && !$change_in_resp %>
+        <!-- <h1> change_in_resp is false and @cause_for_deviation is not empty</h1> -->
+        <%= renderCheckBox('reasonForRecoCd', @fnaRequest.reasonForRecoCd, nil, @fnaRequest, 'class="ui-checkbox2 ui-state-disabled" id ="insuredcontent"  disabled="" style="margin-top:-35px !important;display:none; " ' ) %>
+        <%= renderLabel('reasonForRecoCd', 'FNAPOCHOICE', 'icon-checkbox2 ', @fnaRequest, ' style="width:100%;color:#333 !important;padding-left:36px !important;" ') %>
+            <script type="text/javascript">
+                $("#FNARequest[reasonForRecoCd] input[type='radio']").attr("checked",false).checkboxradio("refresh");
+            </script>
+            <br>
+        <%= renderCheckBox('addtnField2Str', @fnaRequest.addtnField2Str, 'addtnField2Str', @fnaRequest, ' onclick="otherson()" readonly= "true" disabled="" class="ui-checkbox2" style="margin-top:-22px !important;display: none;" ' ) %>
+        <%= renderLabel('addtnField2Str', 'FNAOTHERREC', 'icon-checkbox2 ', @fnaRequest, ' style="width:80%;color:#333 !important;padding-left:36px !important;" ') %>
+        <%= renderInputField('reasonForRecommendation', @fnaRequest.reasonForRecommendation ,'reasonForRecommendation', @fnaRequest, 'maxlength="255" pattern="/([^\s])" class="material-input " disabled="true" style="width:65%;margin-bottom: 0px;padding-bottom: 5px !important;padding-top: 0px !important;') %>
+      
+            <%else @cause_for_deviation_list.empty? && $change_in_resp %>
+        <!-- <h1> change_in_resp is true and @cause_for_deviation is empty</h1> -->
+        <%= renderCheckBox('reasonForRecoCd', @fnaRequest.reasonForRecoCd, nil, @fnaRequest, ' class="ui-checkbox2" style="margin-top:-35px !important;display:none; " ' ) %>
+        <%= renderLabel('reasonForRecoCd', 'FNAPOCHOICE', 'icon-checkbox2 ', @fnaRequest, ' style="width:100%;color:#333 !important;padding-left:36px !important;" ') %>
+        <br>
+        <%= renderCheckBox('addtnField2Str', @fnaRequest.addtnField2Str, 'addtnField2Str', @fnaRequest, ' onclick="otherson()" class="ui-checkbox2" style="margin-top:-22px !important;display: none;" ' ) %>
+        <%= renderLabel('addtnField2Str', 'FNAOTHERREC', 'icon-checkbox2 ', @fnaRequest, ' style="width:80%;color:#333 !important;padding-left:36px !important;" ') %>
+        <%= renderInputField('reasonForRecommendation', @fnaRequest.reasonForRecommendation ,'reasonForRecommendation', @fnaRequest, 'maxlength="255" pattern="/([^\s])" class="material-input " disabled="true" style="width:65%;margin-bottom: 0px;padding-bottom: 5px !important;padding-top: 0px !important;') %>
+      <%end%>
+        </div><br><br>  
+
+        <div style="margin:0px 30px 0px 0px"><%= getLabelValue('FNA_REASON_FOR_DEVIATION')%></div><br>
+
+    <div style="margin:0% 2% 0% 4%;border:0px solid black;">
+      <%if !@cause_for_deviation_list.empty?%>
+        <% @cause_for_deviation_list.each do |deviation| %>
+          <h11 style="color:black;"><%=getLabelValue(deviation)%></h11>
+          <br>
+        <%end%>
+      <%end%><br><br>   
+            <div style="display:inline;">
+            <%if @cause_for_deviation_list.empty?%>
+                <%= renderLabel('reasonForDeviation', 'REASONS_RECOMM', '', @fnaRequest, ' style="color:#333 !important;padding-left:0px !important;display:inline;" class="ui-state-disabled"') %>
+                <%= renderInputField('reasonForDeviation', @fnaRequest.reasonForDeviation ,'reasonForDeviation', @fnaRequest, 'maxlength="255" pattern="/([^\s])" class="material-input " readonly= "true" style="width:56%;"  ') %>
+                <script type="text/javascript">
+                    $("input[id='FNARequest[reasonForDeviation]']").val("");
+                </script>
+            <%elsif $isNaBenefitTermPresent%>
+                <%= renderLabel('reasonForDeviation', 'REASONS_RECOMM', '', @fnaRequest, ' style="color:#333 !important;padding-left:0px !important;display:inline;" ') %>
+                <%= renderInputField('reasonForDeviation', @fnaRequest.reasonForDeviation ,'reasonForDeviation', @fnaRequest, ' maxlength="255" pattern="/([^\s])" class="material-input " style="width:56%;"  ') %>
+            <%else%>
+                <%= renderLabel('reasonForDeviation', 'REASONS_RECOMM', '', @fnaRequest, ' style="color:#333 !important;padding-left:0px !important;display:inline;" ') %>
+                <%= renderInputField('reasonForDeviation', @fnaRequest.reasonForDeviation ,'reasonForDeviation', @fnaRequest, ' maxlength="255" pattern="/([^\s])" class="material-input " style="width:56%;"  ') %>
+            <%end%>
+            </div><br><br>
+        </div><br><br>
+
+    </div>
+  <style>
+    .button_UI {
+        background-color:#efbc33!important;
+        border-radius: 7px;
+        border-style: none;
+        color: #003946 !important;
+        display: inline-block;
+        font-size: 14px !important;
+        max-width: 200px;
+        margin: 0;
+        text-shadow: none !important;
+        font-weight: 700;
+        text-align: center;
+        line-height: 1.3;
+        width: 100px;
+    }
+    .ui-checkbox .icon-checkbox2 {
+        top: 0px !important;
+    }
+  </style>
+<%= render(:partial => 'FNAReasonsForRecommendationJS')%>
+</form>
+
+<div class="" data-role="dualfieldcontain" align="">
+  <div class="">
+    <div class="group" style="font-size: 14px;">
+        <%= getLabelValue('INSTRUCTION_TEXT_CONSIDERATION') %>
+    </div>
+  </div>     
+</div>

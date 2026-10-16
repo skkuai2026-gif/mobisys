@@ -1,0 +1,77 @@
+<div class="legend">
+    <label class="strongLabel">
+        <%= getLabelValue('Alt_Prod_Opt') %>
+        <a href="#" class="expandButton ui-icon-plus ui-btn-icon-notext ui-alt-icon ui-btn-inline ui-link" style="display:none;"></a>
+        <a href="#" class="collapseButton ui-icon-minus ui-btn-icon-notext ui-alt-icon ui-btn-inline ui-link"></a>
+    </label>
+</div> 
+
+<span class="description"><%= getLabelValue('ALT_PROD_LABEL')%></span>
+<br><br>
+
+<div style="padding: 2% 2% 1% 0%;"> 
+  <div class="panelContent" style="padding-left:25px;">                 
+    <table class="ui-responsive table-stroke NeedsTableProducts" style="border: 0px solid black;border-collapse:collapse;width:100%;">
+        <tbody style="font-size:16px;"> 
+            <tr style="line-height:24px;font-size:16px;color:#003946;border-bottom:2px solid black;border-top:2px solid black;">
+                <td style="width:33%;"><%= getLabelValue('UI_PRODUCT_OPTIONS_BASE_PLANS')%></td>
+                <td style="width:27%;"><%= getLabelValue('UI_PRODUCT_OPTIONS_RIDERS')%></td> 
+            </tr>
+
+            <% @fnaRequest.FNAIOProductList.each do |io_product| %>
+                <% @alernate_products_recommended = nil %>
+                <% if io_product.fnaIONeedRefGuid == nil %>
+                    <% @alernate_products_recommended = io_product  %>
+                <%break%>
+                <%end%>
+            <%end%>
+
+            <tr class="multiple-productSelect" style="color:#003946;">
+              <% if @alernate_products_recommended %>
+                  <%= renderObject(@alernate_products_recommended, @fnaRequest) %>
+                  <%= renderHiddenField('productIntroduced', @alernate_products_recommended.productIntroduced, 'productIntroduced', @alernate_products_recommended) %>
+                  <% @alternate_products_recommended_array = [] %>
+                  <% @alternate_products_recommended_array << @alernate_products_recommended.productRecommended.split(",") %>
+                  <% @fnaProductId_test = [] %>
+                  <% @alternate_products_recommended_array.first.each do|guid| %>
+                      <% @fnaProductId_list = @fnaRequest.get_product_plans(guid) %> 
+                      <% @fnaProductId_test << @fnaProductId_list %>
+                  <%end%>
+                    
+
+                  <% if @fnaProductId_test.uniq.include? "PLAN" %>
+                      <td class="align-product">
+                          <% @alternate_products_recommended_array.first.each do|guid| %>
+                            <% @fnaProductId = @fnaRequest.get_product_id_by_guid(guid) %> 
+                            <% if @fnaProductId.productTypeCd == "PLAN" %>
+                                    <%= renderCheckBoxForProducts(guid, 'productTypeCd', @alernate_products_recommended.get_check_box_value(@alernate_products_recommended,guid), "", nil,  "class='ui-checkbox2 PLAN' style='display:none' data-id='#{guid}'") %><br>
+                                    <%= renderLabel(guid, @fnaProductId.productId, 'icon-checkbox2',nil, 'style="width:85%;color:#333 !important;padding-left:36px !important;margin-top:-30px; margin-bottom:15px;" ') %>
+                            <%end%>
+                          <%end%>
+                      </td>
+                  <%else%>
+                        <td style="vertical-align: top;padding-top: 15px;padding-bottom:15px;"><%=getLabelValue('UI_NO_PRODUCTS_AVAIL')%></td>
+                  <%end%>
+
+                  <% if @fnaProductId_test.uniq.include? "RIDER" %>
+                      <td class="align-product">
+                          <% @alternate_products_recommended_array.first.each do|guid| %>
+                            <% @fnaProductId = @fnaRequest.get_product_id_by_guid(guid) %> 
+                            <% if @fnaProductId.productTypeCd == "RIDER" %>
+                                    <%= renderCheckBoxForProducts(guid, 'productTypeCd', @alernate_products_recommended.get_check_box_value(@alernate_products_recommended,guid), "", nil,  "class='ui-checkbox2 PLAN' style='display:none' data-id='#{guid}'") %><br>
+                                    <%= renderLabel(guid, @fnaProductId.productId, 'icon-checkbox2',nil, 'style="width:85%;color:#333 !important;padding-left:36px !important;margin-top:-30px; margin-bottom:15px;" ') %>
+                            <%end%>
+                          <%end%>
+                      </td>
+                  <%else%>
+                        <td style="vertical-align: top;padding-top: 15px;padding-bottom:15px;"><%=getLabelValue('UI_NO_PRODUCTS_AVAIL')%></td>
+                  <%end%>
+              <% else %>
+                <td style="vertical-align: top;padding-top: 15px;padding-bottom:15px;"><%=getLabelValue('UI_NO_PRODUCTS_AVAIL')%></td>
+                <td style="vertical-align: top;padding-top: 15px;padding-bottom:15px;"><%=getLabelValue('UI_NO_RIDERS_AVAIL')%></td>
+              <% end %>        
+            </tr>
+        </tbody>
+    </table>
+  </div>
+</div>

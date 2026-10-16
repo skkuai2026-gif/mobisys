@@ -1,0 +1,62 @@
+<style type="text/css">
+	.ui-checkbox input, .ui-radio input {
+		top: 100%;
+	}
+</style>
+<div class="illustrationdisplay" name="proposalOutput">
+	<div style="margin-top: 1em;">
+		<%= renderLabel('languageCd', 'languageCd', nil, @outputPref, 'style="width: 30% !important; margin-top: 0.5em;"') %> 
+		<% lookups = Lookupvalue.find(:all,:conditions=>{'key'=> 'LANGUAGE'}) %>
+		<% lookups.each.with_index(0) do |lookup, index| %>
+			<%= renderRadioButton('languageCd', @outputPref.languageCd, "languageCd#{index}",lookup.cd, @outputPref) %>
+			<%= renderLabel("languageCd#{index}", lookup.desc, nil, nil, 'style="width: 15% !important;margin-top: 0%!important;"')   %>
+		<% end %>
+    </div>
+
+	<div style="margin-top: 1em;">
+		<%= renderLabel('field1', 'coverPage', nil, @outputPref, 'style="width: 30% !important; margin-top: 0.5em;"') %> 
+		<% lookups = Lookupvalue.find(:all,:conditions=>{'key'=> 'COVERPAGE'}) %>
+		<% lookups.reverse.each.with_index(0) do |lookup, index| %>
+			<%= renderRadioButton('field1', @outputPref.field1, "field1#{index}",lookup.cd, @outputPref) %>
+			<%= renderLabel("field1#{index}", lookup.desc, nil, nil, 'style="width: 15% !important;margin-top: 0%!important;"')   %>
+		<% end %>
+    </div>
+
+    <div style="margin-top: 1em;">
+		<%= renderLabel('field2', 'interval', nil, @outputPref, 'style="width: 30% !important; margin-top: 0.5em;"') %> 
+		<%= renderRadioButton('field2', @outputPref.field2,"Policy Year", 'POLICYYEAR', @outputPref) %>
+		<%= renderLabel("Policy Year", 'Policy Year', nil, nil, 'style="width: 15% !important;margin-top: 0%!important;"') %>
+		<%= renderRadioButton('field2', @outputPref.field2, "Calendar Year", 'CALENDARYEAR', @outputPref) %>
+		<%= renderLabel("Calendar Year", 'Calendar Year', nil, nil, 'style="width: 15% !important;margin-top: 0%!important;"') %>
+		<% if @quotation != nil && "TRAD" == @quotation.getBasePlan.productFamilyCd %>
+			<%= renderRadioButton('field2', @outputPref.field2, "Age", 'AGE', @outputPref) %>
+    		<%= renderLabel("Age", 'Age', nil, nil, 'style="width: 15% !important;margin-top: 0%!important;"') %>
+    	<% end %>
+    </div>
+
+    <div style="margin-top: 1em;">
+		<%= renderLabel('field3', 'extendedIllustration', nil, @outputPref, 'style="width: 30% !important;"') %> 
+		<%= renderRadioButton('field3', @outputPref.field3,"Yes", 'YES', @outputPref) %>
+		<%= renderLabel("Yes", 'Yes', nil, nil, 'style="width: 15% !important;margin-top: 0%!important;"')   %>
+		<%= renderRadioButton('field3', @outputPref.field3, "No", 'NO', @outputPref) %>
+		<%= renderLabel("No", 'No', nil, nil, 'style="width: 15% !important;margin-top: 0%!important;"')   %>
+    </div>
+
+	<% if @quotation != nil && "VUL" == @quotation.getBasePlan.productFamilyCd %>
+	    <div style="display:none">
+			<%= renderLabel('field4', 'chargeColumn', nil, @outputPref, 'style="width: 30% !important; margin-top: 0.5em;"') %> 
+			<%= renderRadioButton('field4', @outputPref.field4,"Yes1", 'YES', @outputPref) %>
+			<%= renderLabel("Yes1", 'Yes', nil, nil, 'style="width: 15% !important;margin-top: 0%!important;"')   %>
+			<%= renderRadioButton('field4', @outputPref.field4, "No1", 'NO', @outputPref) %>
+			<%= renderLabel("No1", 'No', nil, nil, 'style="width: 15% !important;margin-top: 0%!important;"')   %>
+	    </div>
+	<% end %>
+
+	<div style="margin-top: 1em; margin-bottom: 1em;">
+		<%= renderLabel('field5', 'useLetterHead', nil, @outputPref, 'style="width: 30% !important;"') %> 
+		<%= renderRadioButton('field5', @outputPref.field5,"Yes2", 'YES', @outputPref) %>
+		<%= renderLabel("Yes2", 'Yes', nil, nil, 'style="width: 15% !important;margin-top: 0%!important;"')   %>
+		<%= renderRadioButton('field5', @outputPref.field5, "No2", 'NO', @outputPref) %>
+		<%= renderLabel("No2", 'No', nil, nil, 'style="width: 15% !important;margin-top: 0%!important;"')   %>
+    </div>
+</div>

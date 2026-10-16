@@ -1,0 +1,41 @@
+<% @policyProduct.PolicyProductInvestmentFundList.each_with_index do |fund, i| %>
+	<li class="ui-field-contain">
+		<%= renderObject(fund, @policyProduct) %>
+		<%= renderHiddenField('removed', fund.removed, '', fund) %>
+		<%= renderHiddenField('fundCd', fund.fundCd, '', fund) %>
+		<%= renderHiddenField('expiryDt', fund.expiryDt, '', fund) %>
+		<%= renderHiddenField('fundTypeCd', fund.fundTypeCd, '', fund) %>
+		<%= renderHiddenField('maturityDt', fund.maturityDt, '', fund) %>
+	    	
+		<% if @facetData[:renderFundCd] %>
+			<label for="allocationPerc"><%= getLabelValue(@fundDescHash[fund.fundCd]) %></label>
+	 	<% end %>
+		<% if @showSearchFl == true %>
+		<span style="float: right; margin-right: 5px;">
+			<input type="button" data-inline="true" data-icon="delete" data-iconpos="notext" onclick="removeFund('<%= getObjectMapping(fund)%>');"/>
+		</span>
+		<% end %>
+		<% if @facetData[:renderTopupAllocationPerc] %>
+			<span style="float: right; margin-right: 15px;">
+		        <%= renderAmountField('topupAllocationPerc', fund.topupAllocationPerc.to_i, 'mandatory', fund, 'maxlength="3"') %>
+		    </span>
+	 	<% end %>
+
+		<% if @facetData[:renderAllocationPerc] %>
+			<span style="float: right; margin-right: 15px;">
+				<%= renderAmountField('allocationPerc', fund.allocationPerc, 'mandatory', fund, 'maxlength="3"') %>
+			</span>
+			<% if @modelFundType == "FIXEDMODEL" %>
+  				<script type="text/javascript">	 
+  			  		setReadOnly($("input[name='<%= getObjectMapping(fund) %>[allocationPerc]']"),true);
+  				</script>
+  		    <% end %>	 
+	 	<% end %>
+	</li>
+<% end %>
+
+<script type="text/javascript">
+	<% if @modelFundType == 'FIXEDMODEL' || @modelFundType == 'FIXEDMODELOVERRIDE' %>
+		$("#searchFundDiv").hide();		
+	<% end %>  
+</script>

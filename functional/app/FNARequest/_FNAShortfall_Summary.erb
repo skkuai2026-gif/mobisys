@@ -1,0 +1,406 @@
+<link rel="stylesheet" href="/public/css/FNA/shame.css">      
+<div data-role="content" id="capture" style="-webkit-transform: none;">
+<form method="POST" action="<%= url_for :action => :submitFNAShortFallDetails %>" name="FNAShortFallForm" id="FNAShortFallForm">
+<%= renderObject(@fnaRequest) %>
+<%= renderObject(@fnaProposer, @fnaRequest) %>
+<%= renderObject(@fnaLifeProtectionNeed, @fnaRequest) %>
+<%= renderObject(@fnaOtherProtectionNeed, @fnaRequest) %>
+<%= renderObject(@fnaRetirementNeed, @fnaRequest) %>
+<%= renderObject(@fnaOtherTargetNeed, @fnaRequest) %>
+<div class="header" style="padding-top:15px;">
+        <span class="title"><%= getLabelValue('INSURED_NEED') %></span>
+        <span class="description"><%= getLabelValue('FIN_FIGURES') %></span>
+        <!-- <span class="set-right required-note" style="padding-top:0px;"><%#= getLabelValue('REQD_FIELDS') %></span> -->
+    </div>
+    <div class="illustrationdisplay">
+        <div class="card">
+           <div class="legend rates-header">
+            <label class="strongLabel"><%= getLabelValue('EXPECTED_RATES') %></label>
+            <a id="inline" href="javascript: openPDF();" style="width: 100%;font-weight: bold;color: #4a7295;font-size: 14px;" ><%= getLabelValue('AVERAGE_RATES') %></a>
+            </div>
+            <div data-role="dualfieldcontain" class="ui-dual-field-contain ui-body ui-br">
+                <div class="half">
+                    <div class="group">
+                       <%= renderNumericField('inflationRate', thosandSeperator(@fnaRequest.inflationRate.to_s) ,'inflationRate', @fnaRequest, ' maxlength="6" pattern="/([^\s])" onkeypress="return numbersonly(event)" readonly="true" style="background-color: #c8c8c8 !important;margin-top:7px !important;" class="material-input "') %>
+                       <%= renderLabel('inflationRate', 'EXPECTEDINFLATIONRATE', 'mandatory material-label', @fnaRequest) %>
+                    </div>
+                </div>
+                <div class="half">
+                    <div class="group">
+                    <%= renderNumericField('returnRate', thosandSeperator(@fnaRequest.returnRate.to_s) ,'returnRate', @fnaRequest, ' maxlength="6" pattern="/([^\s])" class="material-input " readonly="true" style="background-color: #c8c8c8 !important;margin-top:7px !important;" onkeypress="return numbersonly(event)" ') %>
+                       <%= renderLabel('returnRate', 'EXPECTEDRETURNRATE', 'mandatory material-label',  @fnaRequest) %>
+                      
+                    </div>
+                </div>
+            </div>
+        </div>
+        <br/>
+        <div class="tabs">
+            <div style="margin-bottom: 0px;">
+                <a href="#" onclick="changeTab($(this))" data-url="getNeeds"><p><%= getLabelValue('LIFEPROTNEEDS') %></p></a>
+            </div>
+            <div style="margin-bottom: 0px;">
+                <a href="#" onclick="changeTab($(this))" data-url="healthNeeds"><p><%= getLabelValue('OTHER_LIFE_RISK_NEED') %></p></a>
+            </div>
+            <div style="margin-bottom: 0px;">
+                <a href="#" onclick="changeTab($(this))" data-url="retirementNeeds"><p><%= getLabelValue('RETIREMENT_PLANNING') %></p></a>
+            </div>
+            <div style="margin-bottom: 0px;">
+                <a href="#" onclick="changeTab($(this))" data-url="otherTargetSaving"><p><%= getLabelValue('OTHER_TARGET_SAVINGS') %></p></a>
+            </div>
+            <div style="margin-bottom: 0px;">
+                <a href="#" onclick="changeTab($(this))" data-url="shortfallSummary"><p class="active"><%= getLabelValue('SHORTFALL_SUMMARY') %></p></a>
+            </div>
+        </div>
+      <div class="clear" style="border-top: 5px solid #eaab00;"></div>
+        <div class="tabs-content">
+        <% if @fnaLifeProtectionNeed != nil %>
+        <% if @fnaLifeProtectionNeed.CalculatorTypeCd.to_s == 'CALCTYPECOMPLEX' %>
+        <div class="card">
+              <div class="legend"><label class="strongLabel"><%= getLabelValue('LIFEPROTNEEDS') %></label></div>
+                <div data-role="dualfieldcontain" class="ui-dual-field-contain ui-body ui-br">
+                    <div class="third with-spacer">
+                        <div class="group">
+                        <% totalcapitalneed = @totalcapitalneed  if defined?(@totalcapitalneed) %>
+                        <%= renderNumericField('TOTALCAPITALNEED',  thosandSeperator(totalcapitalneed.to_s) ,'TOTALCAPITALNEED', nil, ' maxlength="10" pattern="/([^\s])" class="material-input"  readonly="true" onkeypress="return numbersonly(event)"  onchange="return checkifNum(this.value, this.id)" style="background-color: #c8c8c8 !important;margin-top:7px !important;"') %>
+                       <%= renderLabel('TOTALCAPITALNEED', 'TOTALCAPITALNEED', 'mandatory material-label', nil) %>
+                        
+                        
+                        </div>
+                    </div>
+                    <div class="operation-label"> - </div>
+                    <div class="third with-spacer">
+                        <div class="group">
+                        <% totalCurrentCapital = @totalCurrentCapital  if defined?(@totalCurrentCapital) %>
+                        <%= renderNumericField('TOTAL_CURRCAPITAL_RESERVED', thosandSeperator(totalCurrentCapital.to_s) ,'TOTAL_CURRCAPITAL_RESERVED', nil, ' maxlength="10" pattern="/([^\s])" class="material-input" readonly="true" onkeypress="return numbersonly(event)"  onchange="return checkifNum(this.value, this.id)" style="background-color: #c8c8c8 !important;margin-top:7px !important;"') %>
+                        <%= renderLabel('TOTAL_CURRCAPITAL_RESERVED', 'TOTALCURRCAPITALRESERVED', 'mandatory material-label', nil) %> 
+                            
+                        </div>
+                    </div>
+                    <div class="operation-label"> = </div>
+                    <div class="third with-spacer">
+                        <div class="group">
+                        <% shortFallLifeProtection = @shortFallLifeProtection  if defined?(@shortFallLifeProtection) %>
+                         <%= renderNumericField('SHORTFALL_CURR_LIFEPROTECTION', thosandSeperator(shortFallLifeProtection.to_s) ,'SHORTFALL_CURR_LIFEPROTECTION', nil, ' maxlength="10" pattern="/([^\s])" class="material-input " readonly="true" onkeypress="return numbersonly(event)"  onchange="return checkifNum(this.value, this.id)" style="background-color: #c8c8c8 !important;margin-top:7px !important;"') %>
+                         <%= renderLabel('SHORTFALL_CURR_LIFEPROTECTION', 'SHORTFALL_CURR_LIFEPROTECTION', 'mandatory material-label', nil) %>
+                          
+                        </div>
+                    </div>
+                </div>
+            </div>
+        <% end %>
+        <% if @fnaLifeProtectionNeed.CalculatorTypeCd.to_s == 'CALCTYPESIMPLE' || @fnaLifeProtectionNeed.CalculatorTypeCd.to_s == "" %>
+        <div class="card">
+        <div class="note"><%= getLabelValue('ALL_VALUES_IN_HKD') %></div>
+        <div class="legend"><label class="strongLabel"><%= getLabelValue('LIFEPROTNEEDS') %></label></div>
+        <div data-role="dualfieldcontain" class="ui-dual-field-contain ui-body ui-br">
+          <div class="third">
+            <div class="group">
+              <%= renderNumericField('TOTAL_CAPITAL_NEED_AFTER_DEATH', thosandSeperator(@montlyExpenseAmt.to_s),'TOTAL_CAPITAL_NEED_AFTER_DEATH', nil, ' maxlength="10" pattern="/([^\s])" onkeypress="return numbersonly(event)" readonly="true" style="background-color: #c8c8c8 !important;margin-top:7px !important;" class="material-input "') %>
+              <%= renderLabel('TOTAL_CAPITAL_NEED_AFTER_DEATH', 'TOTAL_CAPITAL_NEED_AFTER_DEATH', 'mandatory material-label', nil) %>
+            </div>
+          </div>
+          <div class="third">
+            <div class="group">
+              
+            </div>
+          </div>
+          <div class="third">
+            <div class="group">
+              <%= renderNumericField('SHORTFALL_CURR_LIFEPROTECTION', thosandSeperator(@shortfallAmt.to_s) ,'SHORTFALL_CURR_LIFEPROTECTION', nil, ' maxlength="10" pattern="/([^\s])" readonly="true" style="background-color: #c8c8c8 !important;margin-top:7px !important;" class="material-input " onkeypress="return numbersonly(event)" ') %>
+              <%= renderLabel('SHORTFALL_CURR_LIFEPROTECTION', 'SHORTFALL_CURR_LIFEPROTECTION', 'mandatory material-label', nil) %>
+            </div>
+          </div>
+        </div>
+     </div>
+    <% end %>  
+    <% else %>
+      <div class="card">
+        <div class="note"><%= getLabelValue('ALL_VALUES_IN_HKD') %></div>
+        <div class="legend"><label class="strongLabel"><%= getLabelValue('LIFEPROTNEEDS') %></label></div>
+        <div data-role="dualfieldcontain" class="ui-dual-field-contain ui-body ui-br">
+          <div class="third">
+            <div class="group">
+              <%= renderNumericField('TOTAL_CAPITAL_NEED_AFTER_DEATH', thosandSeperator(@shortfallAmt.to_s),'TOTAL_CAPITAL_NEED_AFTER_DEATH', nil, ' maxlength="10" pattern="/([^\s])" onkeypress="return numbersonly(event)" readonly="true" style="background-color: #c8c8c8 !important;margin-top:7px !important;" class="material-input "') %>
+              <%= renderLabel('TOTAL_CAPITAL_NEED_AFTER_DEATH', 'TOTAL_CAPITAL_NEED_AFTER_DEATH', 'mandatory material-label', nil) %>
+            </div>
+          </div>
+          <div class="third">
+            <div class="group">
+              
+            </div>
+          </div>
+          <div class="third">
+            <div class="group">
+              <%= renderNumericField('SHORTFALL_CURR_LIFEPROTECTION', thosandSeperator(@shortfallAmt.to_s) ,'SHORTFALL_CURR_LIFEPROTECTION', nil, ' maxlength="10" pattern="/([^\s])" readonly="true" style="background-color: #c8c8c8 !important;margin-top:7px !important;" class="material-input " onkeypress="return numbersonly(event)" ') %>
+              <%= renderLabel('SHORTFALL_CURR_LIFEPROTECTION', 'SHORTFALL_CURR_LIFEPROTECTION', 'mandatory material-label', nil) %>
+            </div>
+          </div>
+        </div>
+     </div>
+    <% end %>
+
+    
+
+      <div class="card">
+        <div class="legend"><label class="strongLabel"><%= getLabelValue('HEALTH_ACC_PROT') %></label></div>
+        <div class="legend"><label class="strongLabel"><%= getLabelValue('HOSPITAL_INCOME_INSURANCE') %></label></div>
+          <div data-role="dualfieldcontain" class="ui-dual-field-contain ui-body ui-br">
+          <div class="third with-spacer">
+            <div class="group">
+               <%= renderNumericField('hincomeNeededAmt', thosandSeperator(@hincomeNeededAmt.to_s),'hincomeNeededAmt', nil, ' maxlength="10" pattern="/([^\s])" class="material-input " readonly="true" style="background-color: #c8c8c8 !important;margin-top:7px !important;" onkeypress="return numbersonly(event)" ') %>
+              <%= renderLabel('hincomeNeededAmt', 'COVERAGE_NEEDED', 'mandatory material-label', nil) %>
+            </div>
+          </div>
+          <div class="operation-label"> - </div>
+          <div class="third with-spacer">
+            <div class="group">
+              <%= renderNumericField('hincomeCoveredAmt', thosandSeperator(@hincomeCoveredAmt.to_s) ,'hincomeCoveredAmt', nil, ' maxlength="10" pattern="/([^\s])" class="material-input " readonly="true" style="background-color: #c8c8c8 !important;margin-top:7px !important;" onkeypress="return numbersonly(event)" ') %>
+              <%= renderLabel('hincomeCoveredAmt', 'EXISTING_COVERAGE', 'mandatory material-label',  nil) %>
+            </div>
+          </div>
+          <div class="operation-label"> = </div>
+          <div class="third with-spacer">
+            <div class="group">
+            <%= renderNumericField('HINCOME_SHORTFALL_RISK_PROT_NEEDS', thosandSeperator(@HIncomeShortFall.to_s) ,'HINCOME_SHORTFALL_RISK_PROT_NEEDS',nil, ' maxlength="10" pattern="/([^\s])" readonly="true" style="background-color: #c8c8c8 !important;margin-top:7px !important;" class="material-input " onkeypress="return numbersonly(event)" ') %>
+              <%= renderLabel('HINCOME_SHORTFALL_RISK_PROT_NEEDS', 'SHORTFALL_RISK_PROT_NEEDS', 'mandatory material-label',nil) %>
+            </div>
+          </div>
+        </div>
+
+
+        <div class="legend"><label class="strongLabel"><%= getLabelValue('HOSPITALIZATION_INSURANCE') %></label></div>
+        <div data-role="dualfieldcontain" class="ui-dual-field-contain ui-body ui-br">
+          <div class="third with-spacer">
+            <div class="group">
+              <%= renderNumericField('hinsuranceNeededAmt', thosandSeperator(@hinsuranceNeededAmt.to_s) ,'hinsuranceNeededAmt', nil, ' maxlength="10" pattern="/([^\s])" onkeypress="return numbersonly(event)" readonly="true" style="background-color: #c8c8c8 !important;margin-top:7px !important;" class="material-input "') %>
+              <%= renderLabel('hinsuranceNeededAmt', 'COVERAGE_NEEDED', 'mandatory material-label', nil) %>
+            </div>
+          </div>
+          <div class="operation-label"> - </div>
+          <div class="third with-spacer">
+            <div class="group">
+              <%= renderNumericField('hinsuranceCoveredAmt', thosandSeperator(@hinsuranceCoveredAmt.to_s) ,'hinsuranceCoveredAmt', nil, ' maxlength="10" pattern="/([^\s])" onkeypress="return numbersonly(event)" readonly="true" style="background-color: #c8c8c8 !important;margin-top:7px !important;" class="material-input "') %>
+              <%= renderLabel('hinsuranceCoveredAmt', 'EXISTING_COVERAGE', 'mandatory material-label', nil) %> 
+            </div>
+          </div>
+          <div class="operation-label"> = </div>
+          <div class="third with-spacer">
+            <div class="group">
+              <%= renderNumericField('HINSURANCE_SHORTFALL_RISK_PROT_NEEDS', thosandSeperator(@HInsuranceShortFall.to_s),'HINSURANCE_SHORTFALL_RISK_PROT_NEEDS', nil, ' maxlength="10" pattern="/([^\s])" class="material-input " readonly="true" style="background-color: #c8c8c8 !important;margin-top:7px !important;"') %>
+              <%= renderLabel('HINSURANCE_SHORTFALL_RISK_PROT_NEEDS', 'SHORTFALL_RISK_PROT_NEEDS', 'mandatory material-label',nil) %>
+            </div>
+          </div>
+        </div>
+
+
+
+
+        <div class="legend"><label class="strongLabel"><%= getLabelValue('SURGICAL_FEES') %></label></div>
+        <div data-role="dualfieldcontain" class="ui-dual-field-contain ui-body ui-br">
+          <div class="third with-spacer">
+            <div class="group">
+              <%= renderNumericField('sfbNeededAmt', thosandSeperator(@sfbNeededAmt.to_s) ,'sfbNeededAmt', nil, ' maxlength="10" pattern="/([^\s])" class="material-input " readonly="true" style="background-color: #c8c8c8 !important;margin-top:7px !important;" onkeypress="return numbersonly(event)" ') %>
+              <%= renderLabel('sfbNeededAmt', 'COVERAGE_NEEDED', 'mandatory material-label', nil) %>
+            </div>
+          </div>
+          <div class="operation-label"> - </div>
+          <div class="third with-spacer">
+            <div class="group">
+              <%= renderNumericField('sfbCoveredAmt', thosandSeperator(@sfbCoveredAmt.to_s),'sfbCoveredAmt', nil, ' maxlength="10" pattern="/([^\s])" class="material-input " readonly="true" style="background-color: #c8c8c8 !important;margin-top:7px !important;" onkeypress="return numbersonly(event)" ') %>
+              <%= renderLabel('sfbCoveredAmt', 'EXISTING_COVERAGE', 'mandatory material-label', nil) %>
+            </div>
+          </div>
+          <div class="operation-label"> = </div>
+          <div class="third with-spacer">
+            <div class="group">
+              <%= renderNumericField('SFB_SHORTFALL_RISK_PROT_NEEDS', thosandSeperator(@SFBShortFall.to_s) ,'SFB_SHORTFALL_RISK_PROT_NEEDS',nil, ' maxlength="10" pattern="/([^\s])" class="material-input " readonly="true" style="background-color: #c8c8c8 !important;margin-top:7px !important;" onkeypress="return numbersonly(event)" ') %>
+              <%= renderLabel('SFB_SHORTFALL_RISK_PROT_NEEDS', 'SHORTFALL_RISK_PROT_NEEDS', 'mandatory material-label', nil) %>
+            </div>
+          </div>
+        </div>
+
+        <div class="legend"><label class="strongLabel"><%= getLabelValue('CII') %></label></div>
+        <div data-role="dualfieldcontain" class="ui-dual-field-contain ui-body ui-br">
+          <div class="third with-spacer">
+            <div class="group">
+              <%= renderNumericField('ciInsuranceNeededAmt', thosandSeperator(@ciInsuranceNeededAmt.to_s),'ciInsuranceNeededAmt', nil, ' maxlength="10" pattern="/([^\s])" class="material-input " readonly="true" style="background-color: #c8c8c8 !important;margin-top:7px !important;" onkeypress="return numbersonly(event)" ') %>
+              <%= renderLabel('ciInsuranceNeededAmt', 'COVERAGE_NEEDED', 'mandatory material-label', nil) %>
+            </div>
+          </div>
+          <div class="operation-label"> - </div>
+          <div class="third with-spacer">
+            <div class="group">
+              <%= renderNumericField('ciInsuranceCoveredAmt', thosandSeperator(@ciInsuranceCoveredAmt.to_s),'ciInsuranceCoveredAmt', nil, ' maxlength="10" pattern="/([^\s])" class="material-input " readonly="true" style="background-color: #c8c8c8 !important;margin-top:7px !important;" onkeypress="return numbersonly(event)" ') %>
+              <%= renderLabel('ciInsuranceCoveredAmt', 'EXISTING_COVERAGE', 'mandatory material-label', nil) %>
+            </div>
+          </div>
+          <div class="operation-label"> = </div>
+          <div class="third with-spacer">
+            <div class="group">
+              <%= renderNumericField('CIINSURANCE_SHORTFALL_RISK_PROT_NEEDS', thosandSeperator(@CIInsuranceShortFall.to_s),'CIINSURANCE_SHORTFALL_RISK_PROT_NEEDS',nil, ' maxlength="10" pattern="/([^\s])" class="material-input " readonly="true" style="background-color: #c8c8c8 !important;margin-top:7px !important;" onkeypress="return numbersonly(event)" ') %>
+              <%= renderLabel('CIINSURANCE_SHORTFALL_RISK_PROT_NEEDS', 'SHORTFALL_RISK_PROT_NEEDS', 'mandatory material-label',nil) %>
+            </div>
+          </div>
+        </div>
+
+
+        <div class="legend"><label class="strongLabel"><%= getLabelValue('ADDI') %></label></div>
+        <div data-role="dualfieldcontain" class="ui-dual-field-contain ui-body ui-br">
+          <div class="third with-spacer">
+            <div class="group">
+              <%= renderNumericField('addInsuranceNeededAmt', thosandSeperator(@addInsuranceNeededAmt.to_s) ,'addInsuranceNeededAmt', nil, ' maxlength="10" pattern="/([^\s])" class="material-input " readonly="true" style="background-color: #c8c8c8 !important;margin-top:7px !important;" onkeypress="return numbersonly(event)" ') %>
+              <%= renderLabel('addInsuranceNeededAmt', 'COVERAGE_NEEDED', 'mandatory material-label', nil) %>
+            </div>
+          </div>
+          <div class="operation-label"> - </div>
+          <div class="third with-spacer">
+            <div class="group">
+              <%= renderNumericField('addInsuranceCoveredAmt', thosandSeperator(@addInsuranceCoveredAmt.to_s) ,'addInsuranceCoveredAmt', nil, ' maxlength="10" pattern="/([^\s])" class="material-input " readonly="true"  style="background-color: #c8c8c8 !important;margin-top:7px !important;" onkeypress="return numbersonly(event)" ') %>
+              <%= renderLabel('addInsuranceCoveredAmt', 'EXISTING_COVERAGE', 'mandatory material-label', nil) %>
+            </div>
+          </div>
+          <div class="operation-label"> = </div>
+          <div class="third with-spacer">
+            <div class="group">
+              <%= renderNumericField('ADDINSURANCE_SHORTFALL_RISK_PROT_NEEDS', thosandSeperator(@ADDInsuranceShortFall.to_s) ,'ADDINSURANCE_SHORTFALL_RISK_PROT_NEEDS', nil, ' maxlength="10" pattern="/([^\s])" readonly="true" style="background-color: #c8c8c8 !important;margin-top:7px !important;" class="material-input " onkeypress="return numbersonly(event)" ') %>
+              <%= renderLabel('ADDINSURANCE_SHORTFALL_RISK_PROT_NEEDS', 'SHORTFALL_RISK_PROT_NEEDS', 'mandatory material-label',nil) %>
+            </div>
+          </div>
+        </div>
+
+
+      </div>
+
+      <div class="card">
+        <div class="legend"><label class="strongLabel"><%= getLabelValue('RETIREMENT_PLANNING') %></label></div>
+         <div data-role="dualfieldcontain" class="ui-dual-field-contain ui-body ui-br">
+            <div class="quarter with-spacer">
+             <div class="group">
+             
+             <%= renderNumericField('TotRetirementNeedAmt', thosandSeperator(@totRetirementNeedAmt.to_s),'TotRetirementNeedAmt', nil, ' maxlength="10" pattern="/([^\s])" class="material-input " readonly="true" style="background-color: #c8c8c8 !important;margin-top:7px !important;" onkeypress="return numbersonly(event)" ') %>  
+                <%= renderLabel('TotRetirementNeedAmt', 'REQT_NEEDS', 'mandatory material-label', nil) %> 
+              </div>
+            </div>
+            <div class="operation-label"> - </div>
+            <div class="quarter with-spacer" style="width: 22.5% !important;">
+              <div class="group">
+              <% projectedMRFfundatretire = @projectedMRFfundatretire  if defined?(@projectedMRFfundatretire) %>
+              <%= renderNumericField('PROJECTED_MPF', thosandSeperator(projectedMRFfundatretire.to_s) ,'PROJECTED_MPF', nil, ' maxlength="10" pattern="/([^\s])" class="material-input " readonly="true" style="background-color: #c8c8c8 !important;margin-top:7px !important;" onkeypress="return numbersonly(event)" ') %>
+                <%= renderLabel('PROJECTED_MPF', 'PROJECTED_MPF_ORSO_FUND', 'mandatory material-label', nil, 'style="width: 22.5% !important;"') %>
+
+              </div>
+            </div>
+            <div class="operation-label"> - </div>
+            <div class="quarter with-spacer">
+              <div class="group">
+              <% projectedLumpSumAmt = @projectedLumpSumAmt  if defined?(@projectedLumpSumAmt) %>
+              <%= renderNumericField('TOTAL_RET_FUND_RES', thosandSeperator(projectedLumpSumAmt.to_s),'TOTAL_RET_FUND_RES', nil, ' maxlength="10" pattern="/([^\s])" class="material-input " readonly="true" style="background-color: #c8c8c8 !important;margin-top:7px !important;" onkeypress="return numbersonly(event)" ') %>
+                <%= renderLabel('TOTAL_RET_FUND_RES', 'RESERVED_RET_FUND', 'mandatory material-label', nil) %>
+              </div>
+            </div>
+            <div class="operation-label"> = </div>
+            <div class="quarter with-spacer">
+              <div class="group">
+              <% shortfall = @shortfall  if defined?(@shortfall) %>
+                <%= renderNumericField('SHORTFALL_RISK_PROT_NEEDS', thosandSeperator(shortfall.to_s),'SHORTFALL_RISK_PROT_NEEDS', nil, ' maxlength="10" pattern="/([^\s])" class="material-input " readonly="true" style="background-color: #c8c8c8 !important;margin-top:7px !important;" onkeypress="return numbersonly(event)" ') %>
+                <%= renderLabel('SHORTFALL_RISK_PROT_NEEDS', 'SHORTFALL_RISK_PROT_NEEDS', 'mandatory material-label', nil) %>
+              </div>
+            </div>
+        </div>
+      </div>
+      
+      <div class="card">
+        <div class="legend"><label class="strongLabel"><%= getLabelValue('OTHER_TARGET_SAVING') %></label></div>
+        <div data-role="dualfieldcontain" class="ui-dual-field-contain ui-body ui-br">
+          <div class="third">
+            <div class="group">
+              <%= renderNumericField('CURRENT_SHORTFALL_SUMMARY', thosandSeperator(@totalcurrentshortfall.to_s) ,'CURRENT_SHORTFALL_SUMMARY', nil, ' maxlength="10" pattern="/([^\s])" readonly="true" style="background-color: #c8c8c8 !important;margin-top:7px !important;" class="material-input " onkeypress="return numbersonly(event)" ') %>
+              <%= renderLabel('CURRENT_SHORTFALL_SUMMARY', 'CURRENT_SHORTFALL_SUMMARY', 'mandatory material-label', nil) %>
+            </div>
+          </div>
+          <div class="third">
+            <div class="group">
+              <%= renderNumericField('SHORTFALL_OTHER_TARGET_SAVING', thosandSeperator(@totalmonthlysavingsshortfall.to_s) ,'SHORTFALL_OTHER_TARGET_SAVING', nil, ' maxlength="10" pattern="/([^\s])" class="material-input " readonly="true" style="background-color: #c8c8c8 !important;margin-top:7px !important;" onkeypress="return numbersonly(event)" ') %>
+              <%= renderLabel('SHORTFALL_OTHER_TARGET_SAVING', 'SHORTFALL_OTHER_TARGET_SAVING', 'mandatory material-label', nil) %>
+            </div>
+          </div>
+          <div class="third">
+            <div class="group">
+              <%= renderNumericField('LUMP_SUM_SHORTFALL_SUMMARY', thosandSeperator(@totallumpsuminvshortfall.to_s) ,'LUMP_SUM_SHORTFALL_SUMMARY', nil, ' maxlength="10" pattern="/([^\s])" class="material-input " readonly="true" style="background-color: #c8c8c8 !important;margin-top:7px !important;" onkeypress="return numbersonly(event)" ') %>
+              <%= renderLabel('LUMP_SUM_SHORTFALL_SUMMARY', 'LUMP_SUM_SHORTFALL_SUMMARY', 'mandatory material-label', nil) %>
+            </div>
+          </div>
+        </div>
+      </div>
+
+	</div>
+<!--  <div class="ui-dual-field-contain ui-body ui-br">
+      <div class="half">
+        <a class="button_UI_1 ui-link ui-btn selected"><%#= getLabelValue('NEXT_SECTION') %></a>
+      </div>
+    </div> -->
+	</div>
+
+        <style >
+        .button_UI {
+            background-color:#efbc33!important;
+            border-radius: 7px;
+            border-style: none;
+            color: #003656 !important;
+            display: inline-block;
+            font-size: 14px !important;
+            max-width: 200px;
+            margin: 0;
+            text-shadow: none !important;
+            font-weight: 700;
+            text-align: center;
+            line-height: 1.3;
+            /*padding: .8em 1.5em !important;*/
+            width: 100px;
+        }
+          .button_UI_1 {
+            background-color:#efbc33 !important;
+            border-radius: 3px;
+            border-style: none;
+            color: #003656;
+            /*display: inline-block;*/
+            font-size: 14px;
+            margin: 0;
+            padding: 10px 20px;
+            text-shadow: none;
+            font-weight: 700;
+            text-align: center;
+            line-height: 1.3;
+        }
+    </style>
+
+<%= render(:partial => 'FNAShortfall_SummaryJS')%>
+</form>
+</div>
+ <div class="" data-role="dualfieldcontain" align="">
+        <div class="">
+            <div class="group" style="font-size: 14px;">
+                <%= getLabelValue('INSTRUCTION_TEXT_NEEDS2') %>
+            </div>
+        </div>     
+    </div>
+
+  <!--   <div class="" data-role="dualfieldcontain">
+        <div class="half"  align="left" style="margin:0% 0% 0% 2%">
+            <div class="group">
+                <a href="#" id="previousTab"  class="button_UI ui-link ui-btn selected"  style="" onclick="previousTab()">
+                    <%#= getLabelValue('PREVIOUS') %>
+                </a>
+
+            </div>
+        </div>
+
+        <div class="half" align="right">
+            <div class="group" >
+                <a href="#"  id="nextTab"  class="button_UI ui-link ui-btn selected"  style="" onclick="nextTab()" >
+                    <%#= getLabelValue('NEXT') %> 
+                </a>   
+            </div>
+        </div>
+    </div> -->

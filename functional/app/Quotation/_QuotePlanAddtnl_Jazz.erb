@@ -1,0 +1,32 @@
+
+<%= panelTagStart(false) %>
+	<%= subPanelTagStart("additionalDetail","true") %>
+		<% for i in 1..6 %>
+			<%
+				currFacetLabelValue = $currentProduct.getFacet("ADDITIONALCAPTUREFIELD"+i.to_s+"LABEL")
+				currFacetInputValue = $currentProduct.getFacet("ADDITIONALCAPTUREFIELD"+i.to_s+"INPUTTYPE")
+				currFacetLookupKey = $currentProduct.getFacet("ADDITIONALCAPTUREFIELD"+i.to_s+"LOOKUP")
+				field='addtnField'+i.to_s
+			%>
+			<% if currFacetLabelValue %>
+				<div class='project-data'>
+					<div class="row-details">
+						<%= labelTag(field,'',currFacetLabelValue.actionValue) %>
+						<p class='col-right'>
+							<% if currFacetInputValue && currFacetInputValue.actionValue=="COMBO" %>
+								<%= inputTag(field,nil,nil,nil,nil,nil,currFacetInputValue.actionValue,currFacetLookupKey.actionValue) %>
+							<% elsif currFacetInputValue && currFacetInputValue.actionValue=="TEXT" %>
+								<%= inputTag(field,nil,nil,nil,nil,nil,currFacetInputValue.actionValue,nil) %>
+							<% elsif currFacetInputValue && currFacetInputValue.actionValue =="RADIO" %>
+								<%= inputTag(field,nil,nil,nil,nil,nil,currFacetInputValue.actionValue,nil) %>
+							<% end %>
+						</p>
+						<%= errorTag(field)%>
+					</div>
+				</div>
+			<% end %>
+		<% end %>
+	<%= subPanelTagEnd %>
+<%= panelTagEnd %>
+
+<div class='clearfix'></div>

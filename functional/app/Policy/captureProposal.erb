@@ -1,0 +1,177 @@
+<div data-role="page" data-url="<%= Rho::RhoConfig.start_path %>/">
+	<link rel="stylesheet" href="/public/css/Eapp/c2l_EAPP.css">
+	<style type="text/css">
+	.selected span {
+		color: #000 !important;
+		text-shadow: none !important;
+	}
+	</style>
+	<script type="text/javascript" src="/public/js/Eapp/c2l_EAPP.js"></script>
+	<script type="text/javascript" src="/public/js/format.min.js"></script>
+
+	<!-- Header div starts here -->
+	<div data-role="header" style="background-color:#FFF;font-weight:bold;">
+
+		<div class="headerButtons" name = "headerButtons">     
+			<a href="#" id = "back" name="back" onclick="location.href='/app/Menu/eapp';" data-direction="reverse">
+				<img src="/public/images/SalesIllustration/icon_BackArrow-Red.png">
+			</a>
+		</div>  
+
+		<div style="margin-left:80px;">
+			<div class="ui-grid-b ui-responsive">
+				<div class="ui-block-a">
+					<div class="ui-body ui-body-d">
+						<span><%= getLabelValue('policyNum') %> : <%= @policy.policyNum %></span><br/>
+						<span><%= getLabelValue('productCd') %> : <%= @policy.baseProductId %> / <%= @product.longName %></span>
+					</div>
+				</div>
+				<div class="ui-block-b">
+					<div class="ui-body ui-body-d">
+						<span><%= getLabelValue('proposalReceivedDt') %> : <%= getScreenDate(@policy.proposalReceivedDt) %> </span><br/>
+						<span><%= getLabelValue('proposerName') %> : <%= @policy.getProposerName %></span>
+					</div>
+				</div>
+				<div class="ui-block-c">
+					<div class="ui-body ui-body-d headerRightButtons">
+						<span id ='errordiv' style ="display:none; float:right;"> 
+							<a href="#" name="error_dialog" id="error_dialog" style="bottom: 10px; float: right; margin-right: 5px;">
+								<img src="/public/images/SalesIllustration/error_list.png">
+							</a>
+						</span>
+
+						<a href="#" name="paymentGateWay" id="paymentGateWay" style="min-width:100px; float: right; margin-right: 5px;">
+							<img src="/public/images/Eapp/paymentgateway.png" height="40px" width="40px">
+						</a>
+
+						<% if @policy.policyNum.to_s == "" %>
+							<a href="#" name="submit" style="float: right; margin-right: 5px;">
+								<img src="/public/images/Eapp/submit.png" height="40px" width="40px">
+							</a>
+
+							<a href="#" name="capturesign" style="float: right; margin-right: 5px;">
+						      	<img src="/public/images/Eapp/signature.png" height="40px" width="40px">
+	            			</a>
+
+							<a href="#" name="save" style="float: right; margin-right: 5px;">
+								<img src="/public/images/Eapp/Save.png" height="40px" width="40px">
+							</a>
+						<% end %>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	<!-- Header div ends here -->
+	<!-- Content div starts here -->
+	<div data-role="content" id="capture" style="-webkit-transform: none;">
+		<form method="POST" action="<%= url_for :action => :executeSubmit %>" name="policyForm" id ="policyForm"onsubmit = "return checkBasicDetails();">
+			<%= renderDateTimeJS %>
+			<%= renderObject(@policy)%>
+			<%= renderHiddenField('guid', @policy.guid, 'guid', @policy) %>
+
+			<div id='totalErrorDiv' style = "display:none">
+				<%if $total_error['allTabs'] %>
+					<%= renderErrorList($total_error) %>
+				<%end %>
+			</div>
+			<div id='singleErrorDiv' style = "display:none"></div>
+			<!-- Implementation of tabs starts here -->
+
+			<div data-role="navbar" data-grid="n" class="eapp-navbar">
+				<ul>
+					<li>
+						<a href="#" id="agentDetails" class="tabLinks" data-url="getAgentDetails">
+							<img src="/public/images/Eapp/basic-info.png">
+						</a>
+						<span>&nbsp;&nbsp;&nbsp;<%= getLabelValue('basic') %></span>
+					</li>
+					
+					<li>
+						<a href="#" id="proposerDetails" class="tabLinks" data-url="getPolicyHolder">
+							<img src="/public/images/Eapp/proposer.png">
+						</a>
+						<span>&nbsp;&nbsp;<%= getLabelValue('owner') %></span>
+					</li>  
+					
+					<% if @proposerDiffFromInsured %>
+						<li>
+							<a href="#" id="insuredDetails" class="tabLinks" data-url="getInsured">
+								<img src="/public/images/Eapp/primary.png">
+							</a>
+							<span>&nbsp;&nbsp;<%= getLabelValue('insured') %></span>
+						</li>
+					<% end %>
+					
+					<% if @enableJointInsuredTab %>
+						<li>
+							<a href="#" id="jointlifeDetails" class="tabLinks" data-url="getJointLifeInsured">
+								<img src="/public/images/Eapp/jointlife.png">
+							</a>
+							<span>&nbsp;&nbsp;<%= getLabelValue('jointLife') %></span>
+						</li>
+					<% end %>
+					
+					<% if @enablePolicySupplementaryTab %>
+						<li>
+							<a href="#" id="supplementaryDetails" class="tabLinks" data-url="getSupplementaryInsured">
+								<img src="/public/images/Eapp/supplementary.png">
+							</a>
+							<span><%= getLabelValue('supplementary') %></span>
+						</li>
+					<% end %>
+					
+					<li>
+						<a href="#" id="planDetails" class="tabLinks" data-url="getPlanDetails">
+							<img src="/public/images/Eapp/plan-details.png">
+						</a>
+						<span>&nbsp;<%= getLabelValue('coverage') %></span>
+					</li>
+					
+					<% if @enableNomineeTab %>
+						<li>
+							<a href="#" id="beneficiaryDetails" class="tabLinks" data-url="getBeneficiaryAppointee">
+								<img src="/public/images/Eapp/beneficiary.png">
+							</a>
+							<span>&nbsp;<%= getLabelValue('beneficiaryHeader') %></span>
+						</li>
+          			<% end %>
+              
+					<li>
+						<a href="#" id="paymentDetails" class="tabLinks" data-url="getPaymentDetails">
+							<img src="/public/images/Eapp/payments.png">
+						</a>
+						<span>&nbsp;<%= getLabelValue('payment') %></span>
+					</li>
+
+					<li>
+						<a href="#" id="questionnaireDetails" class="tabLinks" data-url="getQuestionnaires">
+							<img src="/public/images/Eapp/questionnaire.png">
+						</a>
+						<span><%= getLabelValue('questionnaire') %></span>
+					</li>
+					
+					<li>
+						<a href="#" id="requirementsDetails" class="tabLinks" data-url="getRequirements">
+							<img src="/public/images/Eapp/documents.png">
+						</a>
+						<span><%= getLabelValue('requirements') %></span>
+					</li>
+					
+					<li>
+						<a href="#" id="agentQuestionDetails" class="tabLinks" data-url="getAgentQuestion">
+							<img src="/public/images/Eapp/declarations.png">
+						</a>
+						<span><%= getLabelValue('declaration') %></span>
+					</li>
+				</ul>
+			</div>
+
+			<!-- Implementation of tabs ends here -->
+			<div id="tabDetailsContainer" style="margin-bottom: 250px!important;"></div>
+		
+		</form>
+	</div>
+	<!-- Content div ends here -->
+</div>
+<%= render(:file => 'Policy/captureProposalJS.erb')%>

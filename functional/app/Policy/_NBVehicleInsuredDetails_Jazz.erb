@@ -1,0 +1,55 @@
+<style type="text/css">
+.contact-no .row-details .col-right div.ui-input-text:nth-last-child(2) input{
+	width: 36% !important;
+}
+
+.contact-no .row-details .col-right div.ui-input-text:last-child input{
+	border: 0 !important;
+}
+</style>
+<%= panelTagStart(false) %>
+	<%= subPanelTagStart('policyProposerDetails',false) %>
+		<%= modelTagStart('proposerPolicyPartyRole', @policyHolderPolicyPartyRole, @policy)%>
+			<div style="display: none;">
+				<%= inputTag("roleCd") %>
+				<%= inputTag("refGuid") %>
+			</div>
+		<% modelTagEnd %>
+		<%= render(:partial => 'NBVehicleParty_Jazz', :locals => {:facetkeyprefix => 'PROPOSER' , :partyPckg => 'PolicyProposerDO' , :party => @policyHolder, :tagName => 'PolicyProposerDO', :partyAddressPanel => @renderPolicyHolderAddressPanel, :partyHomeAddressPanel => @renderPolicyHolderHomeAddressPanel, :homeAddressObject => @policyHolderHomeAddress, :resTagId => 'proposerPartyAddressHome', :partyEmailObject => @policyHolderEmail, :emailTagId => 'insuredPartyEmail', :partyMobileObject => @policyHolderContactMobile, :mobTagId => 'proposerPartyContactMobile' }) %>
+	<%= subPanelTagEnd %>
+	
+<%= panelTagEnd %>
+
+<%= panelTagStart(false) %>
+	<% partyPckg = 'com.c2lbiz.symbiosys.insurance.businesscommon.dataobjects.party.PartyDO' %>
+	<%= subPanelTagStart('MAINDRIVERDTLS',false) %>
+		<%= modelTagStart('primaryPolicyPartyRole', @primaryInsuredPolicyPartyRole, @policy)%>
+			<div style="display: none;">
+				<%= inputTag("roleCd") %>
+				<%= inputTag("refGuid") %>
+			</div>
+			<%= prdFieldDataTag("PolicyPartyRoleDO",'partySameAsCd') %>
+		<% modelTagEnd %>
+		<div id ="displayPrimary">
+			<%= render(:partial => 'NBVehicleParty_Jazz', :locals => {:facetkeyprefix => 'PRIMARY' , :partyPckg => partyPckg , :party => @primaryInsured, :policyPartyRole => @primaryInsuredPolicyPartyRole, :tagName => 'PolicyPrimaryLifeDO', :partyAddressPanel => @renderPrimaryInsuredAddressPanel, :partyHomeAddressPanel => @renderPrimaryInsuredHomeAddressPanel, :homeAddressObject => @primaryInsuredHomeAddress, :resTagId => 'insuredPartyAddressHome', :partyEmailObject => @primaryInsuredEmail, :emailTagId => 'proposerPartyEmail', :partyMobileObject => @primaryInsuredContactMobile, :mobTagId => 'insuredPartyContactMobile' }) %>
+		</div>
+	<%= subPanelTagEnd %>
+<%= panelTagEnd %>
+
+<% partyPckg = 'PolicySupplementaryLifeDO' %>
+<%= fieldDataEntryGridTagStart('supplementaryDetails',partyPckg,nil, nil, nil,nil,'delete','',nil,true,true,false,false,false) %>
+	<% @supplementary_form = '' %>
+	<% if @supplementaryLife != nil %>
+		<% @supplementaryLife.each_with_index do |supplementary, count| %>
+			<% policyProduct = @supPolicyProductHM[supplementary.guid] %>
+			<% @supplementary_form << addMoreDriver(@policy, supplementary, count, policyProduct, @supPolicyProductCount.to_i + 1) %>
+		<% end %>
+	<% end %>
+	<%= panelTagStart(true) %>
+		<%= @supplementary_form %>
+	<%= panelTagEnd %>
+<%= fieldDataEntryGridTagEnd('supplementaryDetails', @supplementaryLife, 'ADDDRIVER',true,true) %>
+<input type="hidden" name="suplementaryInsuredCount" id="suplementaryInsuredCount" value='<%= @suplementaryInsuredCount + @supplementaryLife.size %>'/>
+<% if @supplementaryProductFacet%>
+	<input type="hidden" name="supPolicyProductCount" id="supPolicyProductCount" value='<%= @supPolicyProductCount + @supPolicyProductHM.size %>'/>
+<% end %>

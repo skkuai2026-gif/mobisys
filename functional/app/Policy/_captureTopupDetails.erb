@@ -1,0 +1,82 @@
+<div id="topupDetails">
+	<div class="legend">
+		<label class="strongLabel">
+			<%= getLabelValue('TOPUPINFORMATION') %>
+			<a href="#" class="scrollTopButton ui-icon-carat-u ui-btn-icon-notext ui-alt-icon ui-btn-inline"/>
+			<a href="#" class="expandButton ui-icon-plus ui-btn-icon-notext ui-alt-icon ui-btn-inline"/>
+			<a href="#" class="collapseButton ui-icon-minus ui-btn-icon-notext ui-alt-icon ui-btn-inline"/>
+		</label>
+	</div>
+
+	<div class="panelContent">
+		<% if @facetData[:renderInitialTopupPanel] && @initialTopup != nil %>
+			<%= renderObject(@initialTopup, @policy) %>
+			<%= renderHiddenField('topUpTypeCd', @initialTopup.topUpTypeCd, 'topUpTypeCd', @initialTopup) %>
+			<u><b><%= getLabelValue('initialTopupFl') %></b></u>
+			<div data-role="dualfieldcontain">
+				<% if @facetData[:renderInitialTopupFl] %>
+					<div class="half">
+						<%= renderLabel('initialTopupFl', 'initialTopupFl', 'mandatory', @policy) %>
+						<%= renderRadioButton('initialTopupFl', @policy.initialTopupFl, 'initialTopupYes', 'YES', @policy) %>
+						<%= renderLabel('initialTopupYes', 'YES', 'radioWidth', nil) %>
+						<%= renderRadioButton('initialTopupFl', @policy.initialTopupFl, 'initialTopupNo', 'NO', @policy) %>
+						<%= renderLabel('initialTopupNo', 'NO', 'radioWidth', nil) %>
+					</div>
+				<% end %>
+
+				<% if @facetData[:renderTopUpAmount] %>
+					<div class="half">
+						<%= renderLabel('topUpAmount', 'initialInvestAmt', 'mandatory', @initialTopup)   %>
+						<%= renderAmountField('topUpAmount', @initialTopup.topUpAmount, 'topupFrequencyValUnit', @initialTopup, ' maxlength="20"') %>
+						<%= attachMask("#{getObjectMapping(@initialTopup)}[topUpAmount]") %>
+					</div>
+				<% end %>
+			</div>
+		<% end %>
+
+
+		<% if @facetData[:renderRegularTopupPanel] && @regularTopUp != nil %>
+			<%= renderObject(@regularTopUp, @policy) %>
+			<%= renderHiddenField('topUpTypeCd', @regularTopUp.topUpTypeCd, 'topUpTypeCd', @regularTopUp) %> 
+			<% topUpAmountLabel = renderProductLabel('REGULARTOPUPLABEL', @product) %>
+			<% if @facetData[:renderRegularTopupFl] %>
+				<u><b><%= getLabelValue('regularTopupFl') %></b></u>
+				<div data-role="dualfieldcontain">  
+					<div class="half">
+						<%= renderLabel('regularTopupFl', 'regularTopupFl', 'mandatory', @policy) %>
+						<%= renderRadioButton('regularTopupFl', @policy.regularTopupFl, 'regularTopupYes', 'YES', @policy) %>
+						<%= renderLabel('regularTopupYes', 'YES', 'radioWidth', nil)   %>
+						<%= renderRadioButton('regularTopupFl', @policy.regularTopupFl, 'regularTopupNo', 'NO', @policy) %>
+						<%= renderLabel('regularTopupNo', 'NO', 'radioWidth', nil)   %>
+					</div>
+
+					<div class="half">
+						<%= renderLabel('topUpPeriod', 'topUpPeriod', 'mandatory', @regularTopUp) %>
+						<%= renderAmountField('topUpPeriod', @regularTopUp.topUpPeriod, 'topUpPeriod', @regularTopUp, 'maxlength="2"') %>
+					</div>
+				</div>
+			<% end %>
+
+
+			<% if @facetData[:renderTopUpAmount] || @facetData[:renderTopupFrequencyVal] %>
+				<div data-role="dualfieldcontain">
+					<% if @facetData[:renderTopUpAmount] %>
+						<div class="half">
+							<%= renderLabel('topUpAmount', topUpAmountLabel, 'mandatory', @regularTopUp) %>
+							<%= renderAmountField('topUpAmount', @regularTopUp.topUpAmount, 'topUpAmount', @regularTopUp, ' maxlength="20"') %>
+							<%= attachMask("#{getObjectMapping(@regularTopUp)}[topUpAmount]") %>
+						</div>
+					<% end %>
+
+					<% if @facetData[:renderTopupFrequencyVal] %>
+						<div class="half">
+							<%= renderLabel('topupFrequencyVal', 'topupFrequencyVal', 'mandatory', @regularTopUp) %>
+							<%= renderAmountField('topupFrequencyVal', @regularTopUp.topupFrequencyVal, 'topupFrequencyVal', @regularTopUp, ' maxlength="3"') %>
+						</div>
+					<% end %>
+				</div>
+			<% end %>	
+		<% end %>
+	</div>	
+</div>
+<%= render :partial => "captureTopupDetailsJS" %>

@@ -1,0 +1,81 @@
+<script>
+var supplementLifeCount = parseInt(<%= @supplementLifeCount %>) + 1;
+    function addSupplementLife(){
+        quotationObjectName = '<%= getObjectMapping(@quotation) %>';
+        $.ajax({
+            url: "/app/Quotation/addSupplementLife",
+            data: {
+                'quotationObject': '<%= @quotation.object.to_s %>', 
+                'supplementLifeCount': supplementLifeCount, 
+                'quotationObjectName':quotationObjectName 
+            },
+            success: function(data) {
+                supplementLifeCount = supplementLifeCount + 1;
+                $("#supplementLifeList").append(data); 
+                $("#supplementLifeList").listview("refresh");
+                $("#supplementLifeList").trigger('create');                
+            }
+        });
+    }
+
+    function updateSupplementaryAge(fieldName){
+        supplementaryDob = $('input[name="'+fieldName+'[dob]"]').val();
+        supplementaryAge = fieldName+'[age]';
+        getAge(supplementaryDob, supplementaryAge, '', '');
+    }
+
+    var oldAgeValue = "";
+
+    function updateSupplementaryDob(fieldName)
+    {
+        age = $('input[name="'+fieldName+'[age]"]').val();
+        oldAgeValue = age;
+    }
+
+    function updateSupplementaryDobOnBlur(fieldName)
+    {
+        age = $('input[name="'+fieldName+'[age]"]').val();
+        supplementaryDob = fieldName+'[dob]';
+        if (oldAgeValue != age)
+        {          
+            if ( isNaN(age) || age < 0)      
+            {
+                $(this).val('');
+            }
+            else
+            {
+                // showHideAgeSections(this.value, true);                
+                getDOB(age, supplementaryDob);
+            }
+        }   
+    }     
+
+
+    function removeSupplementLife(supplementLife){    
+        $('<div>').simpledialog2({
+            mode: 'button',
+            style: "width: 629px",
+            buttonPrompt: '<%= getLabelValue("DELETE_CONFIRMATION", ["Supplementary"])%>',
+            buttons : {
+                '<%= getLabelValue("OK")%>': {
+                    click: function () {
+                        removeSupplementNames(supplementLife);
+                        $('input[name="'+supplementLife+'[removed]"]').val('YES'); 
+                        $('input[name="'+supplementLife+'[removed]"]').parents("li").hide();
+                    }
+                },
+                '<%= getLabelValue("CANCEL")%>': {
+                    click: function () { 
+                    },
+                    icon: "delete",
+                    theme: "c"
+                }
+            }
+        })
+    }
+$(document).ready(function () {
+     $('.addSupplementLifeButton').click(function(){
+        addSupplementLife();
+    });
+});
+</script>

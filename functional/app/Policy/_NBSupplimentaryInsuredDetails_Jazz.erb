@@ -1,0 +1,22 @@
+<% partyPckg = 'PolicySupplementaryLifeDO' %>
+<% if $currentProduct.getFacetValue('FAMILYINSUREDDETAILS').to_s == 'YES' %>
+    <% addSupLabel = "#{getLabelValue('ADDFAMILY')}" %>
+<% else %>
+    <% addSupLabel = "#{getLabelValue('ADDSUPPLEMENTLIFE')}" %>
+<% end %>
+<%= fieldDataEntryGridTagStart('supplementaryDetails',partyPckg,nil, nil, nil,nil,'delete','',nil,true,true,false,false,false) %>
+	<% @supplementary_form = '' %>
+	<% if @supplementaryLife != nil %>
+		<% @supplementaryLife.each_with_index do |supplementary, count| %>
+			<% policyProduct = @supPolicyProductHM[supplementary.guid] %>
+			<% @supplementary_form << addSupplementaryInsured(@policy, supplementary, count, policyProduct, @supPolicyProductCount.to_i + 1) %>
+		<% end %>
+	<% end %>
+	<%= panelTagStart(true) %>
+		<%= @supplementary_form %>
+	<%= panelTagEnd %>
+<%= fieldDataEntryGridTagEnd('supplementaryDetails', @supplementaryLife, addSupLabel,true,true) %>
+<input type="hidden" name="suplementaryInsuredCount" id="suplementaryInsuredCount" value='<%= @suplementaryInsuredCount + @supplementaryLife.size %>'/>
+<% if @supplementaryProductFacet%>
+	<input type="hidden" name="supPolicyProductCount" id="supPolicyProductCount" value='<%= @supPolicyProductCount + @supPolicyProductHM.size %>'/>
+<% end %>

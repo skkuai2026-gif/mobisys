@@ -1,0 +1,306 @@
+<div data-role="page" data-url="<%= Rho::RhoConfig.start_path %>/">
+
+    <div class="ui-header ui-bar-inherit" role="banner" data-role="header" style="background-color:#FFF;font-weight:bold;">
+        <div class="headerButtons" name="headerButtons">
+             <a href="<%= url_for :action => :show, :id => @fnaRequest.object %>" rel="external" data-direction="reverse" data-role="none" class="ui-btn-left">
+            <!-- <img src="/public/images/FNA/header-back.png"> -->
+           <img src="/public/images/FNA/icon_BackArrow-Red.png" alt="" style="margin-top:3px !important;height:30px !important;width:30px !important;" />
+            </a>
+        </div>
+
+        <div style="margin-left:74px;">
+            <div class="ui-grid-b ui-responsive">
+                <div class="ui-block-a">
+                    <div class="ui-body ui-body-d header-sun-life-logo" style="padding-left: 120%;width: 100%;">
+                        <img src="/public/images/FNA/logo-sun-life-one-line.png">
+                    </div>
+                </div>
+
+                <div class="ui-block-b">
+                </div>
+
+               <div class="ui-block-c">
+                    <div class="ui-body ui-body-d headerRightButtons">
+                      <span id ='errordiv' style ="display:none; float:right;padding-top:0px;"> 
+                        <a href="#" name="error_dialog" id="error_dialog" style="bottom: 10px; float: right; margin-right: 25px;">
+                          <img src="/public/images/FNA/WarningError.png" width="20px" height="20px">
+                        </a>
+                     </span> 
+                     <!-- Tejashree:08-Aug-2017 for email button show n hide -->
+                       <% if @fnaRequest.addtnField1Str == "FNASUBMIT" && @fnaProposer.emailAddress.to_s != "" %>
+                        <a class="ui-link" href="<%= url_for :action => :email, :id=>@fnaRequest.object %>" name="email" id="email" style="float: right; margin-right: 24px;">
+                              <img src="/public/images/FNA/header-email.png" width="21px" height="19px">
+                        </a>
+                        <% else %>
+                        <a class="ui-link ui-state-disabled" href="<%= url_for :action => :email, :id=>@fnaRequest.object %>" name="email" id="email" style="float: right; margin-right: 24px;">
+                              <img src="/public/images/FNA/header-emailDA.png" width="21px" height="19px">
+                        </a>
+                        <% end %>
+                         <!-- code for preview button -->
+                        <% if @fnaRequest.addtnField1Str == "FNASIGNED" %>
+                        <a class="ui-link" href="#" name="submit" style="float: right; margin-right: 24px;">
+                          <img src="/public/images/FNA/header-submit.png" width="21px" height="18px">
+                        </a>
+                        <% else %>
+                        <a class="ui-link ui-state-disabled" href="#" name="submit" style="float: right; margin-right: 24px;">
+                          <img src="/public/images/FNA/header-submitDA.png" width="21px" height="18px">
+                        </a>
+                        <% end %>
+
+                        <a class="ui-link" href="#" name="preview" style="float: right; margin: 2px 24px 0 0;">
+                          <img src="/public/images/FNA/header-view-fna.png" width="24px" height="16px">
+                        </a>
+                        
+                      
+                       
+                        <% if @fnaRequest.addtnField1Str == "FNASUBMIT" %>
+                        <a class="ui-link ui-state-disabled" href="#" name="save" style="float: right; margin-right: 24px;">
+                            <img src="/public/images/FNA/header-saveDA.png" width="20px" height="20px">
+                        </a>
+                        <% else %>
+                        <a class="ui-link" href="#" name="save" style="float: right; margin-right: 24px;">
+                            <img src="/public/images/FNA/header-save.png" width="20px" height="20px">
+                        </a>
+                        <% end %>
+                    </div>
+                </div>
+
+                
+            </div>
+        </div>
+    </div>
+    <!-- Header div ends here -->
+
+    <!-- Content div starts here -->
+    <div data-role="content" id="capture" style="-webkit-transform: none;">
+        <form method="POST" name="emailForm" action="<%= url_for :action => :emailFNA %>">
+      
+            <%= renderObject(@emailRequest) %>
+            <%= renderObject(@outputPreferences) %>
+
+            <div class="illustrationdisplay" id="email">
+            <div class="legend">
+                <label class="strongLabel">
+                    <%= getLabelValue('EMAIL_FNA') %>
+                </label>
+            </div>  
+           
+            <div class="panelContent">
+                <div data-role="dualfieldcontain" class="ui-dual-field-contain ui-body ui-br">
+                    <div class="half">
+                        <div class="group">
+                            <%= renderInputField('toEmail', @emailRequest.toEmail ,'To', @emailRequest, ' maxlength="13" pattern="/([^\s])" onkeypress="return isNumberKey(event)" class="material-input " readonly="true"') %>
+                            <%= renderLabel('toEmail', 'to', 'mandatory material-label', @emailRequest) %>
+                        </div>
+                    </div>
+                    <div class="half">
+                        <div class="group">
+                            <h1 style="display:inline;font-size:18px;"><%= getLabelValue('LANGUAGESETTINGS') %></h1>
+                            <ul style="list-style-type: none;">
+                                <% @locales.each.with_index(0) do |locale, index| %>
+                                    <li style="display: inline;">
+                                        <%= renderRadioButton('languageCd', @outputPreferences.languageCd, "languageCd#{index}",locale.cd, @outputPreferences) %>
+                                        <%= renderLabel("languageCd#{index}", locale.desc, nil, nil, 'style="width: 70% !important; margin: -10px 10px 10px -20px!important;padding-left:30px !important;"')   %>
+                                    </li>
+                                <% end %>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                <div data-role="fieldcontain">
+                    <%#= renderLabel('ccEmail','CC', 'rightAlign') %>
+                    <%#= @emailRequest.ccEmail %>
+                    <%= renderHiddenField('ccEmail',@emailRequest.ccEmail,'Cc', @emailRequest) %>
+                    <%= renderHiddenField('entityGuid',@emailRequest.entityGuid,'entityGuid',@emailRequest) %>
+                    <%= renderHiddenField('entityNumber',@emailRequest.entityNumber,'entityNumber',@emailRequest) %>
+                    <%= renderHiddenField('entityName',@emailRequest.entityName,'entityName',@emailRequest) %>
+                    <%= renderHiddenField('outputPrefEntityGuid',@emailRequest.outputPrefEntityGuid,'outputPrefEntityGuid',@emailRequest) %>
+                </div>
+
+                <!-- <div data-role="fieldcontain">
+                  <%#= renderLabel('message','INSERTMSG', 'rightTopAlign')   %>
+                  <textarea id="EmailRequest[message]" name="EmailRequest[message]"></textarea>
+                </div> -->
+
+                <fieldset class="">
+                    <div class="" align="center">            
+                        <a href="#" name="email" data-role="button" class= "button_UI ui-link ui-btn selected" data-theme="a" onclick="sendemail();">
+                            <%= getLabelValue('SEND')%>
+                            <script>
+                            function sendemail() {
+                              // if( checkForm() && checkNetwork()){    
+                                
+                                // $.mobile.showPageLoadingMsg();
+                                document.emailForm.submit();                    
+                                $("a[name='email']").attr('onclick', 'return false;');
+                                $("a[name='print']").attr('onclick', 'return false;');
+                              // }        
+                            }
+                            </script>
+                        </a>
+                    </div>
+                    <div class="ui-block-d"></div>          
+                </fieldset>
+            </div>
+        <!-- </div> -->
+            <script>
+               var a = 1;
+
+                $(document).ready(function() {
+                    $('label[for="<%=getObjectMapping(@emailRequest)%>[toEmail]"]').css("top", "-10px");
+
+                    if ('<%= @setlanguage %>'  == "en"){
+                        $("input[id='languageCd0']").prop('checked', true);
+                    }
+
+                    if ('<%= @setlanguage %>'  == "ch"){
+                        $("input[id='languageCd1']").prop('checked', true);
+                    }
+                });
+
+                function checkNetwork(){
+                    returnValue = false;        
+                    $.ajax({
+                        url: "/app/FNARequest/checkNetwork",
+                        success: function(data) {
+                            data = data.replace("<div>","");
+                            data = data.replace("</div>","");
+                            try{
+                                if (data == "NETWORK"){
+                                    returnValue = true;
+                                }
+                            else{
+                                returnValue = false;
+                            }
+                            }catch(e){alert(e);}
+                        },
+                        async: false                    
+                    });          
+        
+                    if(!returnValue){
+                        var dialogContent = '<span>'+"<%= getLabelValue('CHECKNETWORK') %>"+'</span>';
+                        $("#policyNo-validation-div").html("").html(dialogContent).trigger('create');
+                        if (typeof $.mobile.sdCurrentDialog === 'undefined') {
+                        $("<div>").simpledialog2({
+                            mode : 'blank',
+                            blankContent : $("#policyNo-validation-div").html() +"<a rel='close' data-role='button' href='#' style='margin-top: 2%;'>" + '<%= getLabelValue("MESSAGE_CLOSE") %>' + "</a>"
+                            });
+                        }
+                        // showDialog("", "<%= getLabelValue('CHECKNETWORK')%>", 'error', 0, 'email');
+                    }
+        
+                    return returnValue;
+                }
+      
+                function checkForm(){
+                    var returnValue = true;
+        
+                    toField = $("input[name='EmailRequest[toEmail]']").val();
+        
+                    // shortChecked = $("input[name='EmailRequest[shortIllustration]']").is(':checked');
+                    
+                    // longChecked = $("input[name='EmailRequest[longIllustration]']").is(':checked');
+                    //completeChecked = $("input[name='EmailRequest[COMPLETEILLUSTRATION]']").is(':checked');
+                    //alert(completeChecked);
+        
+                    errors = "";
+        
+                    if (toField == ""){
+                        errors += "<%= getLabelValue('TOEMAILMANDATORY')%>\n";
+                        returnValue = false;
+                    }
+        
+                    // if (!shortChecked && !longChecked && !completeChecked)
+                    // {
+                    //   errors += "<%= getLabelValue('ILLUSTRATIONREPORTMANDATORY')%>\n";
+                    //   returnValue = false;
+                    // }
+        
+                    if(!returnValue){     
+                        var dialogContent = '<span>'+errors+'</span>';
+                        $("#policyNo-validation-div").html("").html(dialogContent).trigger('create');
+                        if (typeof $.mobile.sdCurrentDialog === 'undefined') {
+                        $("<div>").simpledialog2({
+                            mode : 'blank',
+                            blankContent : $("#policyNo-validation-div").html() +"<a rel='close' data-role='button' href='#' style='margin-top: 2%;'>" + '<%= getLabelValue("MESSAGE_CLOSE") %>' + "</a>"
+                            });
+                        } 
+                        // showDialog("", errors, 'error', 0, 'email');
+                    }
+                    return returnValue
+                }
+      
+                $('input[name="<%=getObjectMapping(@emailRequest)%>[toEmail]"]').change( function(){
+                    if(!testEmail(this.value)){
+                        $(this).val('');
+                    }
+                });
+
+                $('input[name="<%=getObjectMapping(@emailRequest)%>[ccEmail]"]').change( function(){
+                    if(!testEmail(this.value)){
+                        $(this).val('');
+                    }
+                });
+
+                function testEmail(value){
+                    emails = value.replace(" ","").replace(",",";");
+                    emailList = emails.split(";"); 
+                    returnValue = true;
+                    for(i=0; i < emailList.length; i++){    
+                        if (emailList[i] != ""){
+                            emailPattern=new RegExp("[A-Za-z0-9._-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,4}");
+                            returnValue = emailPattern.test(emailList[i]);
+                            if(!returnValue){ 
+                              break;        
+                            }
+                        }
+                    }
+                    return returnValue;
+                }
+
+                // if ($("input[id='languageCd1']"))
+            </script>
+
+            <style >
+                .button_UI {
+                    background-color:#efbc33!important;
+                    border-radius: 7px;
+                    border-style: none;
+                    color: #003946 !important;
+                    display: inline-block;
+                    font-size: 14px !important;
+                    max-width: 200px;
+                    margin: 0;
+                    text-shadow: none !important;
+                    font-weight: 700;
+                    text-align: center;
+                    line-height: 1.3;
+                    /*padding: .8em 1.5em !important;*/
+                }
+
+                .ui-btn-active span {
+                    color: #000 !important;
+                    text-shadow: none !important;
+                    /*font-weight: bold !important;*/
+                }
+
+                .ui-page-theme-a .ui-btn.ui-btn-active{
+                    /*text-decoration-color: #ffffff !important;
+                    text-decoration: underline !important; */
+                    text-shadow:none !important;
+                    /*text-decoration-color: #ffffff !important;*/
+                    border-bottom: 4px white solid !important;
+                    font-weight: bold !important;
+                }
+
+                .ui-btn{
+                   text-shadow:none !important; 
+
+                }
+            </style>
+        </form>
+    </div>  
+    <!-- Content div ends here -->
+</div> <!-- end main--> 
+
+

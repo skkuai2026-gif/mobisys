@@ -1,0 +1,90 @@
+<style type="text/css">
+    .illustrationtable{
+        margin-top: 20px;
+        font-size:16px; 
+        text-shadow:none; 
+        font-weight:none;
+        border: 1px solid #37489e;
+        border-spacing:1px;
+        border-collapse: collapse;
+        width: 98%;
+    }
+
+    .illustrationtable tbody tr td{
+        border: 1px solid #37489e;
+        text-align:center;
+        color:#000;
+    }
+
+    .illustrationtableheader tr th{
+        border: 1px solid #37489e;
+        text-align:center;
+        vertical-align: middle;
+        padding:5px 0px 8px 0px;
+    }
+
+    .illustrationtableheader tr th label {
+        font-weight: bold !important;
+        font-size:16px;
+    }
+
+    .illustrationtableheader {
+        background: #37489e; 
+        color:#fff; 
+    }
+
+    ul.illustrationButtons li{
+        display: inline-block;
+        list-style-type: none;
+        padding-right: 40px;
+    }
+
+</style>
+<div class="illustrationdisplay" name="" style="margin-bottom: 268px!important;">  
+<div class="legend">
+     <label class="strongLabel">
+            <%= getLabelValue('summary') %>
+            <a href="#" class="scrollTopButton ui-icon-carat-u ui-btn-icon-notext ui-alt-icon ui-btn-inline"></a>
+            <a href="#" class="expandButton ui-icon-plus ui-btn-icon-notext ui-alt-icon ui-btn-inline"/></a>
+            <a href="#" class="collapseButton ui-icon-minus ui-btn-icon-notext ui-alt-icon ui-btn-inline"/></a>
+        </label>
+</div>
+<div class="panelContent">
+<table data-role="table" class="ui-responsive table-stroke illustrationtable" style="width:100%">
+    <thead class="illustrationtableheader">
+        <th> <%= renderLabel('productName', 'productName','style="font-weight:bold"') %> </th>
+        <th> <%= renderLabel('baseSumAssured', 'baseSumAssured','style="font-weight:bold"') %> </th>
+        <th> <%= renderLabel('baseAnnualPremium', 'baseAnnualPremium','style="font-weight:bold"') %> </th>
+        <th> <%= renderLabel('extraPremium', 'extraPremium','style="font-weight:bold"') %> </th>
+        <th> <%= renderLabel('modalPremium', 'modalPremium','style="font-weight:bold"') %> </th>
+        <th> <%= renderLabel('serviceTax', 'serviceTax','style="font-weight:bold"') %> </th>
+        <th> <%= renderLabel('educationCess', 'educationCess','style="font-weight:bold"') %> </th>
+        <th> <%= renderLabel('totDiscount', 'totDiscount','style="font-weight:bold"') %> </th>
+        <th> <%= renderLabel('compMonthlyPremium', 'compMonthlyPremium','style="font-weight:bold"') %> </th>
+        <th> <%= renderLabel('compQtlyPremium', 'compQtlyPremium','style="font-weight:bold"') %> </th>
+        <th> <%= renderLabel('compHalfYlyPremium', 'compHalfYlyPremium','style="font-weight:bold"') %></th>
+        <th> <%= renderLabel('compAnnualPremium', 'compAnnualPremium','style="font-weight:bold"') %></th>
+    </thead>
+    <% @quotation.QuotationProductList.each do |quotationProduct| %>
+        <% if quotationProduct && quotationProduct.builtInRiderFl != "YES" %>
+            <tbody class="illustrationtablebody">
+                <tr>
+                    <% productDO = MobiSys::ProductUtil.getProduct(quotationProduct.productSeq) %>
+                    <td><%= productDO.longName %></td>
+                    <td><%= quotationProduct.baseSumAssured.to_s == '' ? '0.0' : quotationProduct.baseSumAssured %> </td>
+                    <td><%= quotationProduct.baseAnnualPremium.to_s == '' ? '0.0' : quotationProduct.baseAnnualPremium %></td>
+                    <td><%= quotationProduct.extraPremium.to_s == '' ? '0.0' : quotationProduct.extraPremium %></td>
+                    <td><%= quotationProduct.modalPremium.to_s == '' ? '0.0' : quotationProduct.modalPremium %></td>
+                    <td><%= quotationProduct.serviceTax.to_s == '' ? '0.0' : quotationProduct.serviceTax %> </td>
+                    <td><%= quotationProduct.educationCess.to_s == '' ? '0.0' : quotationProduct.educationCess %></td>
+                    <td><%= quotationProduct.totDiscount.to_s == '' ? '0.0' : quotationProduct.totDiscount %></td>
+                    <td><%= quotationProduct.compMonthlyPremium.to_s == '' ? '0.0' : quotationProduct.compMonthlyPremium %></td>
+                    <td><%= quotationProduct.compQtlyPremium.to_s == '' ? '0.0' : quotationProduct.compQtlyPremium %> </td>
+                    <td><%= quotationProduct.compHalfYlyPremium.to_s == '' ? '0.0' : quotationProduct.compHalfYlyPremium %></td>
+                    <td><%= quotationProduct.compAnnualPremium.to_s == '' ? '0.0' : quotationProduct.compAnnualPremium %></td>
+                </tr>
+            </tbody>
+        <% end %>
+    <% end %>
+</table>
+</div>

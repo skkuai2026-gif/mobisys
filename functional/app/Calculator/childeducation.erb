@@ -1,0 +1,72 @@
+<div data-role="page" data-url="<%= Rho::RhoConfig.start_path %>/">
+<form method="POST" action="<%= url_for :action => :calcChildEducationValue %>" name="childeducationvalueForm" onsubmit = "return checkBasicDetails();">
+
+    <div data-role="header" data-position="inline">
+      <h1><%= getLabelValue('CHILDEDUCATIONCALC') %></h1>    
+      <a href="/app/Menu/calculators" class="ui-btn-left" data-direction="reverse">
+        <%= getLabelValue('BACK')   %>
+      </a>
+      <div class="ui-btn-right">
+        <a href="javascript: submitForm();" name="save" data-role="button" style="min-width:100px;">
+          <%= getLabelValue('SAVEVALIDATE')%>
+        </a>
+      </div>
+    </div>
+
+    <div data-role="content" id="capture" style="-webkit-transform: none;">
+        <%= renderObject(@calculator) %>
+        <div class="illustrationdisplay">
+            <div data-role="fieldcontain">
+              <%= renderLabel('field23', 'CALCLABEL10', nil, @calculator)   %>
+              <%= renderRangeField('field23', @calculator.field23, 'CALCLABEL10', @calculator, ' min="0" max="30"') %>
+            </div>
+        
+            <div data-role="fieldcontain">
+              <%= renderLabel('field24', 'CALCLABEL23', nil, @calculator)   %>
+              <%= renderRangeField('field24', @calculator.field24, 'CALCLABEL23', @calculator, ' min="16" max="30" ') %>
+            </div>
+           
+        <fieldset data-role="controlgroup">    
+          <div class="ui-grid-b">
+          <div class="ui-block-a"><%= renderLabel('field25', 'CALCLABEL24', nil, @calculator)   %> </div>
+          <div class="ui-block-b"><%= getLookup('ASPIREDDEGREECD', 'field25', @calculator.field25, @calculator)%> </div>   
+          <div class="ui-block-c"> </div> 
+          </div>
+        </fieldset>
+      
+          <div data-role="fieldcontain">
+            <%= renderLabel('field26', 'CALCLABEL25', nil, @calculator)   %>
+            <%= renderRangeField('field26', @calculator.field26, 'CALCLABEL25', @calculator, ' min="50000" max="5000000"') %>
+         </div>
+          <div data-role="fieldcontain">
+             <%= renderLabel('field27', 'CALCLABEL13', nil, @calculator)   %>
+             <%= renderRangeField('field27', @calculator.field27, 'CALCLABEL13', @calculator, ' min="0" max="30"') %>
+          </div>
+        </div>
+
+    </div>
+    
+  </form>
+  <script type="text/javascript">
+        
+        $(document).focus(function() {
+          setTimeout("onFocus()", 100);
+        });
+        
+        function onFocus(){        
+        }
+        
+        function submitForm(){
+          $("a[name='save']").focus();
+          if(true)
+          {
+            $.mobile.showPageLoadingMsg();
+            
+            // # submit form
+            document.childeducationvalueForm.submit();          
+          }  
+        }
+  
+  </script>  
+
+</div>

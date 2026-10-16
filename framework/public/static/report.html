@@ -1,0 +1,465 @@
+<style>
+	@media all {
+
+	#report-wrapper {
+	width: auto;
+	padding: 0;
+	margin: 0;
+	}
+	#report-wrapper *{
+	color: #636466;
+	font-family: "Times New Roman";
+	font-size: 12pt;
+	}
+	#report-wrapper h1{
+	color: #4E7FBB;
+	font-weight: normal;
+	font-size: 20pt;
+	margin: 0 0 12px 0;
+	height: 25px;
+	display: inline-block;
+	}
+	#report-wrapper h3{
+	color: #4E7FBB;
+	font-weight: bold;
+	font-size: 12pt;
+	margin: 0 0 12px 0;
+	height: 19px;
+	}
+	#report-wrapper h4{
+	font-weight: normal;
+	font-size: 12pt;
+	margin: 0 0 12px 0;
+	height: 19px;
+	}
+	#report-wrapper li{
+	padding-left: 8px;
+	}
+
+	#report-wrapper #report-product-list{
+		margin-left: 25px;
+	}
+	
+	#report-wrapper ul#report-product-list li{
+		line-height: 25px;
+		list-style: disc;
+	}
+	#report-wrapper .clear{
+	width: 100%;
+	clear: both;
+	display: block;
+	}
+	#report-wrapper #logo {
+	float: right;
+	margin: 33px 33px 40px 0;
+	}
+	#report-wrapper .page-header {
+	margin: 58px 0 48px 33px;
+
+	}
+	#report-wrapper .page-header1 {
+	margin: 58px 0 12px 33px;
+
+	}
+	#report-wrapper #kv {
+	width: 100%;
+	clear: both;
+	display: block;
+	margin-bottom: 55px;
+	}
+
+
+	#report-wrapper .content-wrapper{
+	padding: 0 30px;
+	overflow: auto;
+	}
+	#report-wrapper .section-sep{
+	display: inline-block;
+	width: 100%;
+	margin: 59px 0 0 0;
+	clear:both;
+	}
+	#report-wrapper div.table-wrapper{
+	float: left;
+	display: block;
+	}
+	#report-wrapper div.table-wrapper.half-width{
+	width: 47%;
+	}
+	#report-wrapper div.table-wrapper.full-width{
+	width: 100%;
+	}
+
+	#report-wrapper div.table-wrapper.margin-right{
+	margin-right: 6%;
+	}
+	/* table style */
+	#report-wrapper table{
+	border-collapse: collapse;
+	width: 100%;
+	}
+	#report-wrapper table td{
+	padding: 5px;
+	margin: 0;
+	vertical-align: top;
+	}
+
+	#report-wrapper table.top-border{
+	border-top:1px solid #231f20;
+	}
+	#report-wrapper table.all-border{
+	border:1px solid #231f20;
+	}
+	#report-wrapper table.all-border td{
+	border:1px solid #231f20;
+	}
+	#report-wrapper .page-break {
+	display: none; 
+	}
+	#report-wrapper table td.header{
+	padding-bottom: 48px;
+	}
+	#report-wrapper table td.title{
+	width: 62%;
+	}
+	#report-wrapper table td.main-value{
+	font-size: 18pt;
+	padding-bottom: 40px;
+	}
+	#report-wrapper table td.value{
+	text-align: right;
+	}
+	#report-wrapper table td.result-box-1{
+	background-color: #9CBC59 !important;
+	font-weight: bold;
+	}
+	#report-wrapper table td.result-box-2{
+	background-color: #9CBC59 !important;
+	font-weight: bold;
+	color: white;
+	}
+	#report-wrapper table td.result-box-3{
+	background-color: #9CBC59 !important;
+	font-weight: normal;
+	font-size: 18pt;
+	}
+	#report-wrapper .print-footer{
+	display:none;
+	}
+
+	}
+
+	@media print{
+	#report-wrapper  {
+	-webkit-print-color-adjust: exact;
+	width: 100%;
+	}
+	#report-wrapper .page-break {
+	display: block;
+	page-break-after: always;
+	}
+	#report-wrapper .print-footer {
+	display: none;
+	width: 100%;
+	text-align: right;
+	position: fixed;
+	bottom: 10px;
+	}
+	}
+	@page { 
+	    margin: 0;
+	}
+	
+</style>
+
+	
+<div id="report-wrapper">
+	<!--page 1-->
+	<img src="/public/static/FWDLOGO.jpg" id="logo" />
+	<h1 class="page-header"><%= App.i18n.prop("fna_report") %></h1>
+	<img src="/public/static/HAPPYFAMILY.jpg" id="kv" />
+	
+	<div class="content-wrapper">
+		<div class="full-width table-wrapper margin-right">
+			<table class="full-width top-border margin-right">
+				<tr>
+					<td class="header"><%= App.i18n.prop("confidential") %></td>
+				</tr>
+				<tr>
+					<td class=""><%= App.i18n.prop("customer") %>:</td>
+				</tr>
+				<tr>
+					<td class="main-value"><%= customer_name %></td>
+				</tr>
+				<tr>
+					<td class=""><%= App.i18n.prop("advisor") %>:</td>
+				</tr>
+				<tr>
+					<td class="main-value"><%= advisor_name %></td>
+				</tr>
+				<tr>
+					<td class=""><%= App.i18n.prop("date") %>:</td>
+				</tr>
+				<tr>
+					<td class="main-value"><%= date %></td>
+				</tr>
+			</table>
+		</div>
+	</div>
+	<div class="print-footer"><%= App.i18n.prop("copyright") %></div>
+	<div class="page-break"></div>
+	<!--page 2-->
+	<h1 class="page-header"><%= App.i18n.prop("financial_needs_analysis_summary") %></h1>
+
+	<div class="content-wrapper">
+		
+		<div class="half-width table-wrapper margin-right">
+			<h3><%= App.i18n.prop("report_information") %></h3>
+			<table class=" all-border">
+				<tr>
+					<td class="title"><%= App.i18n.prop("gender") %></td>
+					<td class="value"><%= App.i18n.prop(inputData.gender) %></td>
+				</tr>
+				<tr>
+					<td class="title"><%= App.i18n.prop("age") %></td>
+					<td class="value"><%= inputData.age %></td>
+				</tr>
+				<tr>
+					<td class="title"><%= App.i18n.prop("marital_status") %></td>
+					<td class="value"><%= App.i18n.prop(inputData.marital_status) %></td>
+				</tr>
+			</table>
+		</div>
+		<div class="half-width table-wrapper">
+			<h3></h3>
+			<table class=" all-border">
+				<tr>
+					<td class="title"><%= App.i18n.prop("num_of_children") %></td>
+					<td class="value"><%= inputData.num_of_children %></td>
+				</tr>
+				<tr>
+					<td class="title"><%= App.i18n.prop("num_of_dependent") %></td>
+					<td class="value"><%= inputData.num_of_dependents %></td>
+				</tr>
+			</table>
+		</div>
+		
+		
+		<div class="section-sep"></div>
+		<div class="half-width table-wrapper margin-right">
+			<h3><%= App.i18n.prop("report_finance") %></h3>
+			<table class="all-border">
+				<tr>
+					<td class="title"><%= App.i18n.prop("monthly_income") %></td>
+					<td class="value"><%= App.i18n.prop("hkd") + DQ.addCommas(inputData.monthly_income) %></td>
+				</tr>
+				<tr>
+					<td class="title"><%= App.i18n.prop("annual_return_rate") %></td>
+					<td class="value"><%= Math.round(inputData.annual_return_rate*100)+"%" %></td>
+				</tr>
+				<tr>
+					<td class="title"><%= App.i18n.prop("annual_inflation_rate") %></td>
+					<td class="value"><%= Math.round(inputData.annual_inflation_rate*100)+"%" %></td>
+				</tr>
+			</table>
+		</div>
+
+		<div class="half-width table-wrapper">
+			<h3></h3>
+			<table class=" all-border">
+				<tr>
+					<td class="title"><%= App.i18n.prop("liquid_assets") %></td>
+					<td class="value"><%= App.i18n.prop("hkd") + DQ.addCommas(results.AssetsInfo.total_liquid_assets) %></td>
+				</tr>
+				<tr>
+					<td class="title"><li><%= App.i18n.prop("cash_deposit") %></li></td>
+					<td class="value"><%= App.i18n.prop("hkd") + DQ.addCommas(inputData.liquid_assets.cash_deposit) %></td>
+				</tr>
+				<tr>
+					<td class="title"><li><%= App.i18n.prop("time_deposit") %></li></td>
+					<td class="value"><%= App.i18n.prop("hkd") + DQ.addCommas(inputData.liquid_assets.time_deposit) %></td>
+				</tr>
+				<tr>
+					<td class="title"><li><%= App.i18n.prop("stock") %></li></td>
+					<td class="value"><%= App.i18n.prop("hkd") + DQ.addCommas(inputData.liquid_assets.stock) %></td>
+				</tr>
+				<tr>
+					<td class="title"><li><%= App.i18n.prop("fund_bond") %></li></td>
+					<td class="value"><%= App.i18n.prop("hkd") + DQ.addCommas(inputData.liquid_assets.fund_bond) %></td>
+				</tr>
+				<tr>
+					<td class="title"><li><%= App.i18n.prop("others") %></li></td>
+					<td class="value"><%= App.i18n.prop("hkd") + DQ.addCommas(inputData.liquid_assets.others) %></td>
+				</tr>
+			</table>
+		</div>
+	
+	
+		<div class="section-sep"></div>
+		<div class="half-width table-wrapper margin-right">
+			<h3><%= App.i18n.prop("report_protection") %></h3>
+			<table class="all-border">
+				<tr>
+					<td class="title"><%= App.i18n.prop("life_policies") %></td>
+					<td class="value"><%= App.i18n.prop("hkd") + DQ.addCommas(inputData.total_coverage_of_life_policies) %></td>
+				</tr>
+				<tr>
+					<td class="title"><%= App.i18n.prop("years_for_supporting") %></td>
+					<td class="value"><%= inputData.num_of_years_for_supporting %></td>
+				</tr>
+				<tr>
+					<td class="title"><%= App.i18n.prop("critical_illness_policie") %></td>
+					<td class="value"><%= App.i18n.prop("hkd") + DQ.addCommas(inputData.total_coverage_of_critical_illness_policies) %></td>
+				</tr>
+				<tr>
+					<td class="title"><%= App.i18n.prop("expected_years_of_loss_of_income") %></td>
+					<td class="value"><%= inputData.expected_years_of_loss_of_income %></td>
+				</tr>
+			</table>
+		</div>
+
+		<div class="half-width table-wrapper">
+			<h3></h3>
+			<table class=" all-border">
+				<tr>
+					<td class="title"><%= App.i18n.prop("monthly_house_rental") %></td>
+					<td class="value"><%= App.i18n.prop("hkd") + DQ.addCommas(inputData.monthly_house_rental) %></td>
+				</tr>
+				<tr>
+					<td class="title"><%= App.i18n.prop("other_monthly_expenses") %></td>
+					<td class="value"><%= App.i18n.prop("hkd") + DQ.addCommas(inputData.other_monthly_expenses) %></td>
+				</tr>
+				<tr>
+					<td class="title"><%= App.i18n.prop("total_cash_need") %></td>
+					<td class="value"><%= App.i18n.prop("hkd") + DQ.addCommas(results.total_cash_need) %></td>
+				</tr>
+				<tr>
+					<td class="title"><li><%= App.i18n.prop("mortgage") %></li></td>
+					<td class="value"><%= App.i18n.prop("hkd") + DQ.addCommas(inputData.immediate_cash_needs.mortgage) %></td>
+				</tr>
+				<tr>
+					<td class="title"><li><%= App.i18n.prop("education_funds") %></li></td>
+					<td class="value"><%= App.i18n.prop("hkd") + DQ.addCommas(inputData.immediate_cash_needs.education_funds) %></td>
+				</tr>
+				<tr>
+					<td class="title"><li><%= App.i18n.prop("funeral_expenses") %></li></td>
+					<td class="value"><%= App.i18n.prop("hkd") + DQ.addCommas(inputData.immediate_cash_needs.funeral_expense) %></td>
+				</tr>
+				<tr>
+					<td class="title"><li><%= App.i18n.prop("others") %></li></td>
+					<td class="value"><%= App.i18n.prop("hkd") + DQ.addCommas(inputData.immediate_cash_needs.others) %></td>
+				</tr>
+			</table>
+		</div>
+	
+	</div>
+	
+	<div class=" print-footer">Page 2</div>
+	<div class="page-break"></div>
+	<!--page 3-->
+	<div id="page3">
+		<h1 class="page-header"><%= App.i18n.prop("financial_needs_analysis_summary") %></h1>
+
+		<div class="content-wrapper">
+		
+			<div id="retirement-summary"></div>
+			<div id="education-summary"></div>
+
+		</div>
+	
+		<div class=" print-footer">Page 3</div>
+		<div class="page-break"></div>
+	</div>
+	<!--page 4-->
+	<h1 class="page-header"><%= App.i18n.prop("financial_needs_analysis_result") %></h1>
+	
+	<div class="content-wrapper">
+		
+		<div class="half-width table-wrapper margin-right">
+			<h3><%= App.i18n.prop("report_life_protection") %></h3>
+			<table class="all-border">
+				<tr>
+					<td class="title"><%= App.i18n.prop("report_life_protection_need") %></td>
+					<td class="value"><%= App.i18n.prop("hkd") + DQ.addCommas(results.life_protection.life_protection_need) %></td>
+				</tr>
+				<tr>
+					<td class="title"><%= App.i18n.prop("report_liquid_assets") %></td>
+					<td class="value"><%= App.i18n.prop("hkd") + DQ.addCommas(results.life_protection.liquid_assets) %></td>
+				</tr>
+				<tr>
+					<td class="title"><%= App.i18n.prop("report_current_life_protection") %></td>
+					<td class="value"><%= App.i18n.prop("hkd") + DQ.addCommas(results.life_protection.current_life_protection) %></td>
+				</tr>
+				<tr>
+					<td class="title result-box-1"><%= App.i18n.prop("report_protection_gap") %></td>
+					<td class="value result-box-1"><%= App.i18n.prop("hkd") + DQ.addCommas(results.life_protection.protection_gap) %></td>
+				</tr>
+			</table>
+		</div>
+		<div class="half-width table-wrapper">
+			<h3><%= App.i18n.prop("report_critical_illness_protection") %></h3>
+			<table class=" all-border">
+				<tr>
+					<td class="title"><%= App.i18n.prop("report_critical_illness_protection_need") %></td>
+					<td class="value"><%= App.i18n.prop("hkd") + DQ.addCommas(results.critical_illness_protection.ci_protection_need) %></td>
+				</tr>
+				<tr>
+					<td class="title"><%= App.i18n.prop("report_current_critical_illness_protection") %></td>
+					<td class="value"><%= App.i18n.prop("hkd") + DQ.addCommas(results.critical_illness_protection.current_ci_protection) %></td>
+				</tr>
+				<tr>
+					<td class="title result-box-1"><%= App.i18n.prop("report_ci_protection_gap") %></td>
+					<td class="value result-box-1"><%= App.i18n.prop("hkd") + DQ.addCommas(results.critical_illness_protection.protection_gap) %></td>
+				</tr>
+			</table>
+		</div>
+		
+		
+		<div id="retirement-result" style="display:none;"></div>
+		<div id="education-result" style="display:none;">
+			<div class="section-sep"></div>
+		</div>
+	
+	</div>
+	
+	<div class="print-footer">Page 4</div>
+	<div class="page-break"></div>
+	<!--page 5-->
+	<h1 class="page-header"><%= App.i18n.prop("your_total_financial_needs") %></h1>
+	<div class="content-wrapper">
+
+		<div class="full-width table-wrapper">
+			<table class="all-border">
+				<tr>
+					<td class=""><%= App.i18n.prop("report_total_financial_needs") %></td>
+					<td class="value"><%= App.i18n.prop("hkd") + DQ.addCommas(results.total_need) %></td>
+				</tr>
+				<tr>
+					<td class=""><%= App.i18n.prop("report_total_liquid_assets") %></td>
+					<td class="value"><%= App.i18n.prop("hkd") + DQ.addCommas(results.AssetsInfo.total_liquid_assets) %></td>
+				</tr>
+				<tr>
+					<td class=""><%= App.i18n.prop("report_total_current_life_protection") %></td>
+					<td class="value"><%= App.i18n.prop("hkd") + DQ.addCommas(results.life_protection.current_life_protection) %></td>
+				</tr>
+				<tr>
+					<td class=""><%= App.i18n.prop("report_total_current_critical_illness_protection") %></td>
+					<td class="value"><%= App.i18n.prop("hkd") + DQ.addCommas(results.critical_illness_protection.current_ci_protection) %></td>
+				</tr>
+				<tr id="retirement-total" style='display: none;'>
+				</tr>
+				<tr id="education-total" style='display: none;'>
+				</tr>
+				<tr>
+					<td class="result-box-1" id="report_total_gap"></td>
+					
+					<td class="result-box-3 value"><%= App.i18n.prop("hkd") + DQ.addCommas(results.total_gap) %></td>
+				</tr>
+			</table>
+		</div>
+	
+	</div>
+	<div id="report-product-section"></div>
+	
+	<div class="print-footer">Page 5</div>
+</div>

@@ -1,0 +1,362 @@
+<div data-role="page">
+	<!-- <link rel="stylesheet" href="/public/css/FNA/c2l_dashboard.css">
+	<link rel="stylesheet" href="/public/mirum/CSS/clean.css">
+	<link rel="stylesheet" href="/public/mirum/CSS/material-fields.css">
+	<link rel="stylesheet" href="/public/mirum/CSS/mirum.css">	 -->
+	<link rel="stylesheet" href="/public/css/FNA/c2l_EAPP_2.css">			
+	<style type="text/css">
+	td span {
+		position: absolute;
+	}
+	.contactLink {
+		padding-right: 60px;
+	}
+	.border {
+		border-left: 1.5px solid black !important;
+    	padding-left: 5px;
+	}
+ 	/*added for search box on 4th Apr 2017*/
+	@media (min-width: 320px)
+    .ui-input-search {
+         width: 90%;
+    }
+    .ui-input-has-clear {
+         padding-right: 0em;
+    }
+    .ui-input-search {
+     	width: 90%;
+    }
+    .ui-input-search{
+     	border:1px solid #f3f3f3;
+    }
+    .button_UI {
+    	/*below values are different from what is used at other place */
+        background-color:#efbc33!important;
+        border-radius: 7px !important;
+        border-style: none;
+        color: #003946 !important;
+        display: inline-block;
+        font-size: 11px !important;
+        max-width: 100px;
+        margin: 0;
+        text-shadow: none !important;
+        font-weight: 700;
+        text-align: center;
+        line-height: 1.3;
+        padding: .8em 1.5em !important;
+    }
+    .icon_UI {
+    	/*below values are different from what is used at other place */
+        background-color:#efbc33!important;
+        border-radius: 7px !important;
+        border-style: none;
+        color: #003946 !important;
+        display: inline-block;
+        /*font-size: 11px !important;*/
+        /*max-width: 100px;*/
+        margin: 0;
+        /*text-shadow: none !important;*/
+        /*font-weight: 700;*/
+        /*text-align: center;*/
+        line-height: 0;
+        padding: 3px !important;
+	}
+	</style>
+
+<!-- Header div starts here -->
+
+	  <div class="ui-header ui-bar-inherit" role="banner" data-role="header" style="background-color:#FFF;font-weight:bold;height:71px;border-top: 3px solid #37489e !important;border-bottom: 3px solid #37489e !important;"  >
+	    <div class="headerButtons" name="headerButtons" style="margin-top:26px;margin-left:17px;">
+	      <a class="ui-link" href="#" id="back" name="back" onclick="location.href='/app/Menu/fna';" data-direction="reverse">
+	        <!-- <img src="/public/images/FNA/header-back.png" style="width: 20px;height: 20px;"> -->
+	       <img src="/public/images/FNA/icon_BackArrow-Red.png" alt="" style="margin-top:-6px !important;height:30px !important;width:30px !important;" />
+	      </a>
+	    </div>
+
+	    <div style="margin-left:50px;margin-top:18px;">
+	      <div class="ui-grid-b ui-responsive">
+	        <div class="ui-block-a">
+	          <div class="ui-body ui-body-d header-sun-life-logo" style="padding-left: 120%;width: 100%;">
+	            <img src="/public/images/FNA/logo-sun-life-one-line.png" style="width: 174px;height: 26px;">
+	          </div>
+	        </div>
+	        <div class="ui-block-b">
+	        </div>
+	        <div class="ui-block-c">
+                <div class="ui-body ui-body-d headerRightButtons">
+                    <span id ='errordiv' style ="display:none; float:right;padding-top:0px;"> 
+                       	<a href="#" name="error_dialog" id="error_dialog" style="bottom: 10px; float: right; margin-right: 25px;">
+                          <img src="/public/images/FNA/WarningError.png" width="20px" height="20px">
+                        </a>
+                    </span> 
+          		</div>
+            </div>
+	      </div>
+	    </div>
+	  </div>
+<!-- Header div ends here -->
+ 	<div data-role="content" id="content" style="background: white;">
+ 		<form method="POST" action="<%= url_for :controller => :FNARequest, :action => :search %>" name="fnaSearchForm" id="fnaSearchForm" data-ajax="false">
+ 		    <div id='totalErrorDiv' style = "display:none">
+                <% if $total_error && $total_error['allTabs'] %>
+                    <%= renderErrorList($total_error) %>
+                <% end %>
+            </div>	
+             <div id= "policyNo-validation-div" style="display:none;"></div>
+			<!-- <div style="font-weight:bold;color:#003946;font-size:16px;"><u><%= getLabelValue('FNA_SEARCH_UI')%></u></div> -->
+ 			<table data-role="table" class="ui-responsive table-stroke" style="bordercollapse:collapse;">
+                <thead>
+                    <tr style="color:#003946;font-size:16px;">
+                        <th data-priority="1" style="vertical-align:middle;width:7%;border:0px solid black;"><%= getLabelValue('NAME')%></th>
+		                <td data-priority="1" style="border:0px solid black;">
+                           	<input name="name" id="name" style="background: white;" value="<%= @params['name'] %>" type="search" placeholder="<%= getLabelValue('NAME')%>">
+                       	</td>
+                        <th data-priority="2" style="vertical-align:middle;width:10%;border:0px solid black;"><%= getLabelValue('CONTACT')%></th>
+                        <td data-priority="2" style="border:0px solid black;">
+                            <input name="mobileNumber" id="mobileNumber" style="background: white;"  value="<%= @params['mobileNumber'] %>" type="search" placeholder="<%= getLabelValue('CONTACT')%>">
+                        </td>
+                        <th data-priority="3" style="vertical-align:middle;width:12%;border:0px solid black;"><%= getLabelValue('EMAIL')%></th>
+                        <td data-priority="3" style="border:0px solid black;">
+                            <input name="emailAddress" id="emailAddress" style="background: white;" value="<%= @params['emailAddress'] %>" type="search" placeholder="<%= getLabelValue('EMAIL')%>">
+                        </td>
+		                <td data-priority="1" style="border:0px solid black;">
+		                	<!-- <div  class="button_UI"  onclick='searchFNAResult()' style="">	 -->
+		                		<%#= getLabelValue('SEARCH_FNA_LANDINGPAGE') %>
+		                	<!-- </div> -->
+		                	<div  class="searchicon" style="vertical-align: middle;display: inline-block;">
+		                		<img src="/public/images/FNA/Search_Icon.png" style="">
+		                	</div>
+		                </td>
+                    </tr>
+                </thead>
+            </table>                                        
+			<div style="border-bottom: 1px double gray;width:100%;border-top: 1px double gray;Padding-top:1px"></div>
+			<div style="height:100%;width:100%;overflow-x:auto;overflow-y:auto;padding-bottom:10px;">
+	            <% if @searchResultList.length < 1 && !@params.empty? %>
+	                	<table width="100%">                    		
+	                    	<tr>
+	                    		<td style="text-align:center;color:#003946;font-size:16px;"><%= getLabelValue('NO_RECORDS')%></td>
+	                    	</tr>
+	                	</table>
+	            <% elsif !@params.empty? %>
+	            <!-- <div style="font-weight:bold;font-size:16px;color:#003946;line-height:30px"><u><%#= getLabelValue('FNA_RESULT')%></u></div> -->
+	            <br>
+					<table data-role="table" class="ui-responsive table-stroke" style="border: 0px solid black;border-collapse:collapse" width="100%">
+						<thead style="font-size:16px;color:#003946;">
+		                    <tr style="background-color:#E6ECED;line-height:24px;border-bottom:2px solid black;border-top:2px solid black;text-align:left;">
+		                        <th data-priority="1"  width="21%" style=""><%= getLabelValue('NAME')%></th>
+				                
+		                        <th data-priority="2"  width="13%" style=""><%= getLabelValue('CONTACT_SEARCH_UI')%></th>
+		                        
+		                        <th data-priority="3"  width="19%" style="max-width:15% !important"><%= getLabelValue('EMAIL')%></th>
+		                        
+		                        <th data-priority="4"  width="12%" style=""><%= getLabelValue('FNA_REF_NUMBER')%></th>
+		                        
+		                        <th data-priority="5"  width="10%" style=""><%= getLabelValue('FNA_STATUS')%></th>
+		                        
+		                        <!-- <th data-priority="6"  width="8%" style=""><%#= getLabelValue('CREATE_DATE')%></th> -->
+		                        
+		                        <th data-priority="7"  width="8%" style=""><%= getLabelValue('LAST_SAVED_DATE')%></th>
+		                        
+		                        <!-- <th data-priority="8"  width="8%" style=""><%#= getLabelValue('PROSPECT_SIGNED_DATE')%></th> -->
+		                        
+		                        <th data-priority="9"  width="8%" style=""><%= getLabelValue('SUBMITTED_DATE')%></th>
+		                        
+		                        <th data-priority="10"  width="3%" style="">
+		                        </th>
+		                        <th data-priority="10"  width="3%" style="">
+		                        </th>
+		                        <th data-priority="10"  width="3%" style="">
+		                        </th>
+
+		                    </tr>
+			            </thead>
+		            	<tbody style="font-size:16px;">
+		            		<% count=0 %>
+		                    <% @searchResultList.each do |fnaRequest| %>
+			                    <% if count%2==0 %> 
+			                        <tr style="background-color:#FAFAFA;height:50px;color:#003946;">
+			                            <td  style="vertical-align:middle;">
+			                                <a href="#" rel="external" style="color:#003946;font-weight:normal;"><%= fnaRequest[:name] %></a>
+			                            </td>
+			                            <td  style="vertical-align:middle;">	
+			                            	<a href="#" rel="external" style="color:#003946;font-weight:normal;"><%= fnaRequest[:mobileNum] %></a>
+			                            </td>
+			                            <td  style="vertical-align:middle;">
+			                                <a href="#" rel="external" style="color:#003946;font-weight:normal;"><%= fnaRequest[:emailAddress] %></a>
+			                            </td>
+			                            <td  style="vertical-align:middle;">
+			                                <a href="#" rel="external" style="color:#003946;font-weight:normal;"><%= fnaRequest[:fnaNum] %></a>
+			                            </td>
+			                            <td  style="vertical-align:middle;">
+			                                <a href="#" rel="external" style="color:#003946;font-weight:normal;"><%= fnaRequest[:statusCd] %></a>
+			                            </td>
+			                            <!-- <td  style="vertical-align:middle;">
+			                                <a href="#" rel="external" style="color:#003946;font-weight:normal;"><%#= fnaRequest[:systemCreatedDt] %></a>
+			                            </td> -->
+			                            <td  style="vertical-align:middle;">
+			                                <a href="#" rel="external" style="color:#003946;font-weight:normal;"><%= fnaRequest[:systemUpdatedDt] %></a>
+			                            </td>
+			                            <!-- <td  style="vertical-align:middle;">
+			                                <a href="#" rel="external" style="color:#003946;font-weight:normal;"><%#= fnaRequest[:applicantSignDt] %></a>
+			                            </td> -->
+			                            <td  style="vertical-align:middle;">
+			                            	<!-- submit date is save in addtnField11DT -->
+			                                <a href="#" rel="external" style="color:#003946;font-weight:normal;"><%= fnaRequest[:submitDt] %></a>
+			                            </td>
+
+			                            <td  style="vertical-align:middle;">
+				                            <% if ((fnaRequest[:statusCd] == getLabelValue('FNAPENDING') && fnaRequest[:consentFl] == "on") || (fnaRequest[:statusCd] == getLabelValue('FNASIGNED')) || (fnaRequest[:statusCd] == getLabelValue('FNASUBMIT')) || (fnaRequest[:statusCd] == getLabelValue('SYNCDONE'))) %>
+				                                 <a href="#" value= "<%= fnaRequest[:object] %>" onclick="validatewithdrawnproduct('<%= fnaRequest[:object] %>');">
+					                                <img src="/public/images/FNA/icon-copy.png"  style="height:30px;width:30px;">
+				                                </a>
+				                            <% end %>
+			                            </td>
+			                            	
+			                            <% if fnaRequest[:statusCd]!= getLabelValue('FNASUBMIT') && fnaRequest[:statusCd] != getLabelValue('SYNCDONE') %>
+				                            <td  style="vertical-align:middle;">
+					                                <a href="<%= url_for :action => :show, :id => fnaRequest[:object] %>" rel="external">
+						                                <img src="/public/images/FNA/Edit-icon32.png"  style="height:30px;width:30px;">
+					                                </a>
+						                    </td>
+			                            <% end %>
+
+			                            <% if fnaRequest[:statusCd] == getLabelValue('FNASUBMIT') || fnaRequest[:statusCd] == getLabelValue('SYNCDONE') %>
+				                            <td  style="vertical-align:middle;">
+					                                <a href="<%= url_for :action => :show, :id => fnaRequest[:object] %>" rel="external">
+						                                <img src="/public/images/FNA/View.png"  style="height:30px;width:30px;">
+					                                </a>
+						                    </td>
+			                            <% end %>
+
+					                    <td  style="vertical-align:middle;">    	
+				                            <% if fnaRequest[:statusCd]== getLabelValue('FNAPENDING') %>
+					                            <a href="#" onclick='$("<div>").simpledialog2({mode:"button",style:"width: 429px", buttonPrompt:"<%= MobiSys::CommonUtil.replacePlaceHolders(getLabelValue('deletePrompt'),['FNA']) %>",buttons:{<%= getLabelValue('DELETE_YES') %>:{click:function(){location.href="<%= url_for :action => :deleteFna, :id=> fnaRequest[:object] %>"}},<%= getLabelValue('DELETE_NO') %>:{click:function(){},icon:"delete",theme:"c"}}});' >
+					                               	<img src="/public/images/cancel.png"  style="height:30px;width:30px;">
+					                                </a>
+					                        <% end %>
+					                    </td>
+		                        	</tr>
+		                       	<% end %>
+
+		                        <% if count%2!=0 %> 
+			                        <tr style="background-color:#E6ECED;height:50px;">
+			                            <td  style="vertical-align:middle;">
+			                                <a href="#" rel="external" style="color:#003946;font-weight:normal;"><%= fnaRequest[:name] %></a>
+			                            </td>
+			                            <td  style="vertical-align:middle;">	
+			                            	<a href="#" rel="external" style="color:#003946;font-weight:normal;"><%= fnaRequest[:mobileNum] %></a>
+			                            </td>
+			                            <td  style="vertical-align:middle;">
+			                                <a href="#" rel="external" style="color:#003946;font-weight:normal;"><%= fnaRequest[:emailAddress] %></a>
+			                            </td>
+			                            <td  style="vertical-align:middle;">
+			                                <a href="#" rel="external" style="color:#003946;font-weight:normal;"><%= fnaRequest[:fnaNum] %></a>
+			                            </td>
+			                            <td  style="vertical-align:middle;">
+			                                <a href="#" rel="external" style="color:#003946;font-weight:normal;"><%= fnaRequest[:statusCd] %></a>
+			                            </td>
+			                            <!-- <td  style="vertical-align:middle;">
+			                                <a href="#" rel="external" style="color:#003946;font-weight:normal;"><%#= fnaRequest[:systemCreatedDt] %></a>
+			                            </td> -->
+			                            <td  style="vertical-align:middle;">
+			                                <a href="#" rel="external" style="color:#003946;font-weight:normal;"><%= fnaRequest[:systemUpdatedDt] %></a>
+			                            </td>
+			                            <!-- <td  style="vertical-align:middle;">
+			                                <a href="#" rel="external" style="color:#003946;font-weight:normal;"><%#= fnaRequest[:applicantSignDt] %></a>
+			                            </td> -->
+			                            <td  style="vertical-align:middle;">
+			                                <a href="#" rel="external" style="color:#003946;font-weight:normal;"><%= fnaRequest[:submitDt] %></a>
+			                            </td>
+			                            
+			                            <td  style="vertical-align:middle;">
+			                                <% if ((fnaRequest[:statusCd] == getLabelValue('FNAPENDING') && fnaRequest[:consentFl] == "on") || (fnaRequest[:statusCd] == getLabelValue('FNASIGNED')) || (fnaRequest[:statusCd] == getLabelValue('FNASUBMIT')) || (fnaRequest[:statusCd] == getLabelValue('SYNCDONE'))) %>
+				                                <a href="#" value= "<%= fnaRequest[:object] %>" onclick="validatewithdrawnproduct('<%= fnaRequest[:object] %>');">
+					                                <img src="/public/images/FNA/icon-copy.png"  style="height:30px;width:30px;">
+				                                </a>
+				                            <% end %>
+			                            </td>
+			                            	
+			                            <% if fnaRequest[:statusCd]!= getLabelValue('FNASUBMIT') && fnaRequest[:statusCd] != getLabelValue('SYNCDONE') %>
+				                            <td  style="vertical-align:middle;">
+					                                <a href="<%= url_for :action => :show, :id => fnaRequest[:object] %>" rel="external">
+						                                <img src="/public/images/FNA/Edit-icon32.png"  style="height:30px;width:30px;">
+					                                </a>
+						                    </td>
+			                            <% end %>
+
+			                            <% if fnaRequest[:statusCd] == getLabelValue('FNASUBMIT') || fnaRequest[:statusCd] == getLabelValue('SYNCDONE') %>
+				                            <td  style="vertical-align:middle;">
+					                                <a href="<%= url_for :action => :show, :id => fnaRequest[:object] %>" rel="external">
+						                                <img src="/public/images/FNA/View.png"  style="height:30px;width:30px;">
+					                                </a>
+						                    </td>
+			                            <% end %>
+
+					                    <td  style="vertical-align:middle;">    	
+				                            <% if fnaRequest[:statusCd]== getLabelValue('FNAPENDING') %>
+					                            <a href="#" onclick='$("<div>").simpledialog2({mode:"button",style:"width: 429px", buttonPrompt:"<%= MobiSys::CommonUtil.replacePlaceHolders(getLabelValue('deletePrompt'),['FNA']) %>",buttons:{<%= getLabelValue('DELETE_YES') %>:{click:function(){location.href="<%= url_for :action => :deleteFna, :id=> fnaRequest[:object] %>"}},<%= getLabelValue('DELETE_NO') %>:{click:function(){},icon:"delete",theme:"c"}}});' >
+					                               	<img src="/public/images/cancel.png"  style="height:30px;width:30px;">
+					                                </a>
+					                        <% end %>
+					                    </td>
+		                        	</tr>
+		                        <% end %>
+		                        <%# if count==29 %>
+		                        	<%# break %>
+		                        <%# end %>
+		                        <% count= count + 1 %>
+	            			<% end %>                    
+	            		</tbody>
+	        		</table>
+	        	<% end %> 
+	        </div>
+        </form>
+	</div>
+</div>
+
+<script type="text/javascript">		
+	$(document).ready(function(){		
+	    $('input').keypress(function (e) {		
+	        if (e.which == 13) {		
+	            $('#fnaSearchForm').submit();		
+	            return false;		
+	        }		
+	    });	
+
+	    $('input').change(function(){		
+	        $('#fnaSearchForm').submit();		
+	    });
+
+		$('.searchicon').click(function (){
+			$('#fnaSearchForm').submit();
+		})			
+	});	
+
+
+	// Tejashree:11-09-2017: Withdrawn Product Validation
+  function validatewithdrawnproduct(value){
+  	 $.ajax({                                    
+      url: "/app/FNARequest/withdrawnProductValidation",
+      data: {'id':value},
+      async: false,
+      headers: {
+            'Transition-Enabled': false
+      },
+      success: function(data)
+      {    
+      	    var calData = $.parseJSON(data);                
+            abc = calData.split("|");
+            var dialogContent = '<span>'+"<%= getLabelValue('SIGN_DATE_NOT_AFTER_WITHDRAWN_DATE') %>"+'</span>';
+            $("#policyNo-validation-div").html("").html(dialogContent).trigger('create');
+            if (typeof $.mobile.sdCurrentDialog === 'undefined') {
+            $("<div>").simpledialog2({
+                mode : 'blank',
+                blankContent : $("#policyNo-validation-div").html() +"<a rel='close' data-role='button' href='"+abc[0]+"' rel='external' onclick='location.href=\""+abc[0]+"\"' style='margin-top: 2%;'>" + '<%= getLabelValue("OK") %>' + "</a>" +"<a rel='close' data-role='button' style=''>" + '<%= getLabelValue("CANCEL") %>' + "</a>"
+
+            });
+          }
+      }
+    });
+  }	
+</script>

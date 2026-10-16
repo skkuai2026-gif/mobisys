@@ -1,0 +1,26 @@
+#!/bin/sh
+
+
+if [ "$RHO_PLATFORM" = "android" ]; then
+
+cd platform/android
+rake --trace
+
+elif [ "$RHO_PLATFORM" = "iphone" ]; then
+
+echo "~~Performing framework injection in Xcode Project bmp"
+#chmod +x xcode_mod_py.sh
+#./xcode_mod_py.sh
+chmod +x xcode_mod_rb.sh
+./xcode_mod_rb.sh
+
+
+cd platform/iphone
+rake --trace
+
+elif [ "$RHO_PLATFORM" = "osx" ]; then
+
+cd platform/qt
+rake --trace
+
+fi

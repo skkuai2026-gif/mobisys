@@ -1,0 +1,81 @@
+<%= pageTagStart("","Symbiosys") %>
+	<%= headerTag(getLabelValue('SYNC'), "","", @backLink) %>
+	<div data-role="main" class="ui-content">
+    	<div class="main-content-wrapper main-content-full">
+	    	<%= formTagStart("syncPreferencesForm","#{url_for :action => :synchronize}") %>
+		    	<div class="project-content-bg">
+		    		<div class="div-with-border no-padding-bottom preferences-content">
+						<div class="content-fullform syncronize-flipswitch">
+						<% @category.each do |heading,transaction_array| %>
+							<h4><%= heading %></h4>
+							<% transaction_array.each do |transaction| %>
+								<div class="row-details">
+			                        <p class="col-left"><%= transaction[:label] %></p>
+			                        <div class="col-right">
+			                        	<div class="ui-grid-a">
+			                        		<div class="ui-block-a"><%= transaction[:torender] %></div>
+			                        		<div class="ui-block-b"><%= transaction[:note] %></div>
+			                        	</div>
+		                        	</div>
+		                    	</div>
+							<% end %>
+						<% end %>
+						</div>
+					</div>
+		    	</div>
+			<%= formTagEnd %>
+    	</div>
+		<div class="footer-bg">
+			<a href='#' name='sync' data-transition='slide'><%= getLabelValue('SYNC') %></a>
+		</div>
+    </div>
+<%= pageTagEnd %>
+<script>
+	$(document).ready(function(){
+		$("a[name='sync']").click( function() {
+			sync = false;
+			$("select[name*='syncCategory']").each(function(i){
+				$(this).removeAttr('disabled');
+				if($(this).val()=="ON"){                      
+					sync = true;
+				}
+			});
+
+			if(!sync){
+				// showDialog("", "<%= getLabelValue('SELECTSYNCOPTION')%>", 'error', 0, 'preferences');  
+				raiseAlert("<%= getLabelValue('SELECTSYNCOPTION')%>");
+			}
+
+			if(sync && checkNetwork()){                    
+				document.syncPreferencesForm.submit();
+			}        
+		});
+	});
+
+	function checkNetwork(){
+		returnValue = false;        
+		$.ajax({
+			url: "/app/Quotation/checkNetwork",
+			headers: {
+ 				'Transition-Enabled': false
+				},
+			success: function(data) {
+				try{
+					if (data == "NETWORK"){
+						returnValue = true;
+					}
+					else{
+						returnValue = false;
+					}
+				}catch(e){raiseAlert(e);}
+			},
+			async: false                    
+		});          
+
+		if(!returnValue){
+			// showDialog("", "<%= getLabelValue('CHECKNETWORK')%>", 'error', 0, 'preferences');
+			raiseAlert("<%= getLabelValue('CHECKNETWORK')%>");
+		}
+		return returnValue;
+	}
+</script>

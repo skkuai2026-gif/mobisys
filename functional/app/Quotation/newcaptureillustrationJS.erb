@@ -1,0 +1,923 @@
+<script type="text/javascript">
+var oldAgeValue = "";
+    function scrollToTop() {
+        verticalOffset = typeof(verticalOffset) != 'undefined' ? verticalOffset : 0;
+        element = $('body');
+        offset = element.offset();
+        offsetTop = offset.top;
+        $('html, body').animate({scrollTop: offsetTop}, 500, 'linear');
+    }
+
+    $(function(){
+        $(document).scroll(function(){
+            if ($(window).scrollTop() > 100) {
+                $('.scroll-top-wrapper').addClass('show');
+            } else {
+                $('.scroll-top-wrapper').removeClass('show');
+            }
+        });
+
+        $('.scroll-top-wrapper').click(function(){
+            scrollToTop();
+        });
+    });
+
+    $(document).focus(function() {
+        setTimeout("onFocus()", 100);
+    });
+       
+    function attachInputMasks() {         
+        $("input[name='<%=getObjectMapping(@baseProduct)%>[baseSumAssured]']").maskMoney();
+    }
+
+    function getErrors(data){
+        if (data!="null") {
+            var parsedJSON = JSON.parse(data);
+            var objectName = "";
+            var field = null;
+            var label = null;
+            var errorsExist = false;
+            
+            /*Refresh Contents of the error dialog start*/
+            var errorData = "<ul>";
+            $.each(parsedJSON, function(objectClass, errorObject) {
+                objectClass = objectClass.replace("DO", "");
+                $.each(errorObject, function(guid, fieldObject) {
+                    if (!jQuery.isEmptyObject(fieldObject)) {
+                        errorsExist = true;
+                        $.each(fieldObject, function(fieldName, errorMessage) {
+                            $.each(errorMessage, function(errIndex, message) {
+                                errorData += "<li>" + message + "</li>";
+                            });
+                        });
+
+                        /*Map labels of error fields to the error dialog start*/
+                        //Get object id based on guid and classname
+                        objectName = $("input[value='"+guid+"'][name*='[guid]'][name*='"+objectClass+"']").attr('name');
+                        if (objectName != undefined) {
+                            $.each(fieldObject, function(fieldName, errorMessage) {
+                                //Get field based on object id and fieldname
+                                field = $("[name='"+objectName.replace("guid", fieldName)+"']");
+                                if (field.length != 0) {
+                                    //Add info icon and click event listeners to label
+                                    label = $("label[for='"+objectName.replace("guid", fieldName)+"']");
+                                    if(label.length==0) {
+                                        label = $("div[name='"+objectName.replace("guid", fieldName)+"']");
+                                        label.append("<a href='#' class='ui-btn error_icon ui-btn-icon-notext ui-corner-all ui-btn-inline ui-alt-icon error' style='border-style:none;'></a>");
+                                        label = label.find("a");
+
+                                    }
+                                    else {
+                                        label.addClass("ui-alt-icon");
+                                        label.addClass("error_icon");
+                                        label.addClass("ui-btn-icon-notext");
+                                        label.addClass("error-field");
+                                    }
+                                    
+                                    //Make a list of errors on field
+                                    var fieldErrors = "";
+                                    $.each(errorMessage, function(errIndex, message) {
+                                        fieldErrors += "<li>" + message + "</li>";
+                                    });
+   
+                                    label.click(function(){
+                                        $("#singleErrorDiv").html("<ul>" + fieldErrors + "</ul>");
+                                        if (typeof $.mobile.sdCurrentDialog === 'undefined') {
+                                            $("<div>").simpledialog2({
+                                                mode : 'blank',
+                                                blankContent : $("#singleErrorDiv").html() + "<a rel='close' data-role='button' href='#'>Close</a>"
+                                            });
+                                        }
+                                    });
+                                }
+                            });
+                        }
+                    }
+                });
+            });
+            errorData += "</ul>";
+            $("#totalErrorDiv").html(errorData);
+            if (errorsExist) {
+                $('span[id="errordiv"]').show();
+            }
+        }
+    }
+
+    var deviceHeight =  $( window ).height() - 100;
+    $(document).delegate('#error_dialog', 'click', function() {
+        $("div[data-role='page']").css('overflow', 'hidden');
+        window.scrollTo(0, 0);
+        $(this).simpledialog2({
+            mode : 'blank',
+            style: "width: 629px",
+            blankContent : $("#totalErrorDiv").html() + "<a rel='close' id ='error_close' data-role='button' href='#'>Close</a>"
+        });
+
+        $('.ui-simpledialog-container').css('max-height','450px');
+        h = parseInt($('.ui-simpledialog-container').css('height').replace('px',''));
+        if(h > deviceHeight || h == 450){        
+            $('.ui-simpledialog-container').css('overflow-y','auto');
+        }
+    });
+        
+    $(document).delegate('#error_close', 'click', function() {
+        $("div[data-role='page']").css('overflow', 'auto');          
+    });
+       
+    function updateAllProducts(reset) {         
+        if(reset) {
+            $('input[name*="[baseSumAssured]"]').val("");
+            $('input[name*="[baseAnnualPremium]"]').val("");
+            $('input[name*="[modalPremium]"]').val("");
+        }
+        else {
+            setReadOnly($("input[name='Quotation[QuotationProduct][0][baseSumAssured]']"), false);
+        }
+        modalPremiumsList = new Array();
+        updateProducts(reset);        
+        updateModalPremiums();
+    }
+       
+    function renderHybridDetails(planCode, age, genderCd, occupationClass) {
+        quotationProductObjectName = '<%= getObjectMapping(@baseProduct) %>';
+        $.ajax({
+            url: "/app/Quotation/addHybridDetails",
+            data: {
+                'age': age, 
+                'genderCd': genderCd, 
+                'occupationClass': occupationClass, 
+                'planType': 'HYBRID',
+                'planCode': planCode, 
+                'quotationProductObject': '<%= @baseProduct.object.to_s %>', 
+                'quotationProductObjects': objectCount, 
+                'quotationProductObjectName':quotationProductObjectName, 
+                'quotationObject': '<%= getObjectMapping(@quotation)%>'
+            },
+            success: function(data) {
+                $('div[name="hybridInformation"]').html("");
+                $('div[name="hybridInformation"]').trigger('create');
+                $('div[name="hybridInformation"]').html(data);  
+                $('div[name="hybridInformation"]').trigger('create');
+            }                    
+        });          
+
+    }
+       
+    function showMonthsDays(){
+        $('#months').show();
+        $('#days').show();
+    }
+       
+    function hideMonthsDays(){
+        $('#months').hide();
+        $('#days').hide();
+    }
+
+
+    function getAge(birthDt, fieldId1, fieldId2, fieldId3) {
+        age = 0;
+        $.ajax({
+            url: "/app/Quotation/getAge",
+            data: $('#quotationForm').serialize(),
+            async:   false,
+            headers: {
+                'Transition-Enabled': false
+            },
+            success: function(data) {
+                var ageData = $.parseJSON(data);
+                ageParts = ageData.split("|");
+                $('input[name="'+ fieldId1 +'"]').val(ageParts[0]);
+                age = ageParts[0];
+                try {
+                    $('input[name="'+ fieldId2 +'"]').val(ageParts[1]);
+                    $('input[name="'+ fieldId3 +'"]').val(ageParts[2]);
+                } catch(e){}
+            }
+        });
+        return age;
+    }
+       
+    function getDOB(age, fieldId){
+        $.ajax({
+            url: "/app/Quotation/getBirthDt",
+            data: $('#quotationForm').serialize() + '&age='+age,
+            headers: {
+                'Transition-Enabled': false
+            },
+            success: function(data) {
+                $('input[name="'+ fieldId +'"]').val(data);
+            }
+        });
+    }
+
+    function calculateSA(fieldName){
+        annualPremium = $("input[name='"+fieldName+"']").val();
+        productTypeCdName = fieldName.replace("baseAnnualPremium","productTypeCd");
+        productTypeCd = $("input[name='"+productTypeCdName+"']").val();
+
+        if( productTypeCd == "RIDER") {
+            productIdName = fieldName.replace("baseAnnualPremium","productId");
+            productId = $("input[name='"+productIdName+"']").val();
+        }
+        else {
+            productId = "";
+        }
+         
+        planOptionCdName = fieldName.replace("baseAnnualPremium","productPlanOptionCd");
+        planOptionCd = $("select[name='"+planOptionCdName+"']").val();
+         
+        planCodeName = fieldName.replace("baseAnnualPremium","planCode");
+        planCode = $("select[name='"+planCodeName+"']").val();
+
+        modalPremiumName = fieldName.replace("baseAnnualPremium","modalPremium");        
+        sumAssured = fetchSumAssured(productId, annualPremium, planOptionCd, planCode, productTypeCd, modalPremiumName);
+
+        updateModalPremiums();
+
+        sumAssuredName = fieldName.replace("baseAnnualPremium","baseSumAssured");
+        $("input[name='"+sumAssuredName+"']").val(sumAssured);
+
+        if(productTypeCd == "PLAN") {
+            modalId = "PLAN";
+        }
+        else if ( productTypeCd == "PA" ) {
+            modalId = "PA";
+        }
+        else {
+            modalId = productId;        
+        }
+
+        if( productTypeCd == "PLAN") {
+            updateWOPSA(annualPremium);
+        }
+    }
+      
+    function calculatePremium(fieldName){
+        sumAssured = $("input[name='"+fieldName+"']").val();
+        productTypeCdName = fieldName.replace("baseSumAssured","productTypeCd");
+        productTypeCd = $("input[name='"+productTypeCdName+"']").val();
+         
+        basePlanCode = "";
+        planType = "";
+        if( productTypeCd == "RIDER") {        
+            productIdName = fieldName.replace("baseSumAssured","productId");
+            productId = $("input[name='"+productIdName+"']").val();
+
+            if(productId=="PB" || productId=="PBC") {
+                // basePlanCode = $("select[name='<%=getObjectMapping(@baseProduct)%>[planCode]']").val();
+            }
+            // round up PBC sumassured to next 1000
+            if (productId=="PBC") {          
+                sumAssured = Math.ceil(sumAssured / 1000) * 1000;
+                $("input[name='"+fieldName+"']").val(sumAssured);                      
+            }
+            if (productId=="RPTDB") {
+                sumAssured = $("input[name='<%=getObjectMapping(@baseProduct)%>[baseAnnualPremium]']").val();
+            }
+        }
+        else {
+            planTypeName = fieldName.replace("baseSumAssured","productFamilyCd");
+            planType = $("select[name='"+planTypeName+"']").val();
+            productId = "";          
+        }
+
+        planOptionCdName = fieldName.replace("baseSumAssured","productPlanOptionCd");
+        planOptionCd = $("select[name='"+planOptionCdName+"']").val();
+
+        planCodeName = fieldName.replace("baseSumAssured","planCode");
+        planCode = $("select[name='"+planCodeName+"']").val();
+
+        if (planCode === undefined || planCode == "") {
+            planCode = $("input[name='"+planCodeName+"']").val();
+        }
+
+        termName = fieldName.replace("baseSumAssured","productTerm");
+        term = $("select[name='"+termName+"']").val();
+
+        premiumPayingTermName = fieldName.replace("baseSumAssured","premiumPayingTerm");
+        premiumPayingTerm = $("select[name='"+premiumPayingTermName+"']").val();
+
+        if (productId=="RPTDB") {
+            term = $("select[name='<%=getObjectMapping(@baseProduct)%>[premiumPayingTerm]']").val();
+            premiumPayingTerm = $("select[name='<%=getObjectMapping(@baseProduct)%>[premiumPayingTerm]']").val();
+        }
+
+        currencyCdName = fieldName.replace("baseSumAssured","currencyCd");
+        currencyCd = $("select[name='" + currencyCdName+"']").val();
+
+        modalPremiumName = fieldName.replace("baseSumAssured","modalPremium");
+        premium = fetchPremium(productId, sumAssured, planOptionCd, planCode, productTypeCd, basePlanCode, modalPremiumName, planType, term, premiumPayingTerm, currencyCd);
+
+        updateModalPremiums();
+
+        if(productTypeCd == "PA") {
+            premium = Math.round(premium);
+        }
+
+        premiumName = fieldName.replace("baseSumAssured","baseAnnualPremium");
+        $("input[name='"+premiumName+"']").val(premium);
+
+        if(productTypeCd == "PLAN") {
+            modalId = "PLAN";
+        }
+        else if ( productTypeCd == "PA" ) {
+            modalId = "PA";
+        }
+        else {
+            modalId = productId;        
+        }
+
+        if( productTypeCd == "PLAN") {        
+            updateWOPSA(premium);
+        }
+
+        if( productTypeCd == "RIDER" && (productId == "AI" || productId == "ADD")) {
+            sumAssured = fetchDependantSAPR(productId, 5000000);
+            riderSelectedObject = $('fieldset[name="rider_RCC'+productId+'"] > div > div > input[name*="selected"]');
+            riderObject = $('fieldset[name="rider_RCC'+productId+'"] > div > input[name*="baseSumAssured"]');
+            if ( riderSelectedObject.is(':checked')) {          
+               riderObject.val(sumAssured);
+                riderObject.blur();
+            }
+        }
+           
+    }
+       
+    function fetchPremium(productId, sumAssured, planOptionCd, planCode, productTypeCd, basePlanCode, modalPremiumName, planType, term, premiumPayingTerm, currencyCd) {
+        if (productId == "PB" || productId == "PBC") {        
+            age = $('input[name="<%=getObjectMapping(@quotation)%>[proposerAge]"]').val();
+            genderCd = $('input[name="<%=getObjectMapping(@quotation)%>[proposerGenderCd]"]').filter(':checked').val();
+            occupationClass = $('select[name="<%=getObjectMapping(@quotation)%>[occupationCd]"]').val();          
+        }
+        else {
+            age = $('input[name="<%=getObjectMapping(@quotation)%>[age]"]').val();
+            genderCd = $('input[name="<%=getObjectMapping(@quotation)%>[genderCd]"]').filter(':checked').val();
+            occupationClass = $('select[name="<%=getObjectMapping(@quotation)%>[occupationCd]"]').val();
+            smoker = $('input[name="<%=getObjectMapping(@quotation)%>[smoker]"]').filter(':checked').val();
+       
+            if (age <= 15 && (productId == "ADD" || productTypeCd == "PA")) {        
+            occupationClass = JUVENILEOCCUPATIONCLASSFORPA;
+            }          
+        }  
+             
+        premium = 0;        
+        if ( age != "" && genderCd != "" && genderCd!==undefined && occupationClass != "" && sumAssured != "" && (productId != "" || planCode != "") && (planCode !== undefined || planOptionCd !== undefined) && smoker != "") {
+            ajaxURL = "/app/Quotation/getPremium";
+            premiumGuarantee = 0;
+            premiumSplit = 0;
+            if (planType == "HYBRID") {
+                ajaxURL = "/app/Quotation/getHybridPremium";
+                premiumGuarantee = $('input[name="<%=getObjectMapping(@baseProduct)%>[premiumGuarantees]"]').val();
+                premiumSplit = $('input[name*="[premiumSplit]"]').val();
+            }
+         
+            $.ajax({
+                url: ajaxURL,
+                data: {
+                    'age': age, 
+                    'genderCd': genderCd, 
+                    'occupationClass': occupationClass, 
+                    'productId': productId, 
+                    'sumAssured': sumAssured, 
+                    'planOptionCd':planOptionCd, 
+                    'planCode': planCode, 
+                    'basePlanCode': basePlanCode, 
+                    'premiumGuarantee':premiumGuarantee, 
+                    'premiumSplit':premiumSplit, 
+                    'term':term, 
+                    'premiumPayingTerm':premiumPayingTerm, 
+                    'smoker':smoker, 
+                    'currenyCd':currencyCd
+                },
+                headers: {
+                    'Transition-Enabled': false
+                },
+                success: function(data) {
+                    var premiumSAData= $.parseJSON(data);
+                    modalPremiums = premiumSAData+"|"+modalPremiumName;
+                    try {
+                        premium = modalPremiums.split("|")[0];
+                    } 
+                    catch (e){ alert("premium error"); premium = 0; }                          
+                     
+                    try {
+                       if (productTypeCd == "PLAN") {
+                         modalPremiumsList["PLAN"] = modalPremiums;
+                       }
+                       else if (productTypeCd == "PA") {
+                         modalPremiumsList["PA"] = modalPremiums;
+                       }
+                       else {
+                            if(productId=="") {
+                                modalPremiumsList[planCode] = modalPremiums;
+                            }
+                            else {
+                                modalPremiumsList[productId] = modalPremiums;
+                            }
+                        }
+                    }
+                    catch(e){alert(e);}
+                },
+                async:   false
+            });
+
+        }
+        return premium;
+    }
+       
+    function fetchSumAssured(productId, annualPremium, planOptionCd, planCode, productTypeCd, modalPremiumName){
+        age = $('input[name="<%=getObjectMapping(@quotation)%>[age]"]').val();
+        genderCd = $('input[name="<%=getObjectMapping(@quotation)%>[genderCd]"]').filter(':checked').val();
+        occupationClass = $('select[name="<%=getObjectMapping(@quotation)%>[occupationCd]"]').val();
+        smoker = $('input[name="<%=getObjectMapping(@quotation)%>[smoker]"]').filter(':checked').val();
+        sumAssured = 0;        
+        if ( age != "" && genderCd != "" && genderCd!==undefined && occupationClass != "" && annualPremium != "" && (productId != "" || planCode != "") && smoker != "") {
+            $.ajax({
+                url: "/app/Quotation/getSumAssured",
+                data: {
+                    'age': age, 
+                    'genderCd': genderCd, 
+                    'occupationClass': occupationClass, 
+                    'productId': productId, 
+                    'annualPremium': annualPremium, 
+                    'planOptionCd':planOptionCd, 
+                    'planCode': planCode, 
+                    'smoker':smoker
+                },
+                headers: {
+                    'Transition-Enabled': false
+                },
+                success: function(data) {
+                    var premiumSAData= $.parseJSON(data);
+                    modalPremiums = premiumSAData+"|"+modalPremiumName;
+                     
+                    try {
+                        sumAssured = modalPremiums.split("|")[0];
+                    }
+                    catch (e){ alert("premium error"); sumAssured = 0; }
+                       
+                    try {
+                        if (productTypeCd == "PLAN") {
+                            modalPremiumsList["PLAN"] = modalPremiums;
+                        }
+                        else if (productTypeCd == "PA") {
+                            modalPremiumsList["PA"] = modalPremiums;
+                        }
+                        else {
+                            if(productId=="") {
+                                modalPremiumsList[planCode] = modalPremiums;
+                            }
+                            else {
+                                modalPremiumsList[productId] = modalPremiums;
+                            }
+                        }
+                    }catch(e){alert(e);}
+                },
+                async:   false
+            });
+        }
+        return sumAssured;
+    }
+
+    function updateModalPremiums() {
+       //   pa_total = 0;
+       //   m_annual = 0;
+       //   m_semiannual = 0;
+       //   m_quarterly = 0;
+       //   m_monthly = 0;
+       //   rider_premium = 0;
+         
+       //  mode = $("input[name='<%=getObjectMapping(@baseProduct)%>[paymentFrequencyCd]']").filter(':checked').val();
+         
+       //   if(mode == "YEARLY")
+       //   {
+       //     MODE_INDEX = 1;
+       //   } 
+       //   else if(mode == "HALFYEARLY")
+       //   {
+       //     MODE_INDEX = 2;
+       //   }
+       //   else if(mode == "QUARTERLY")
+       //   {
+       //     MODE_INDEX = 3;
+       //   }
+       //   else if(mode == "MONTHLY")
+       //   {
+       //     MODE_INDEX = 4; 
+       //   }
+         
+       //   for(modalPremiums in modalPremiumsList)
+       //   {
+       //     //alert(modalPremiums+":"+modalPremiumsList[modalPremiums]);
+       //     modes = modalPremiumsList[modalPremiums].split("|");
+           
+       //     if (modes.length == 6)
+       //     {          
+       //       if(modalPremiums != "PLAN" && modalPremiums != "PA") // # only riders
+       //       {          
+       //         rider_premium += parseInt(modes[MODE_INDEX]);
+       //         pa_total += parseInt(modes[MODE_INDEX]);
+       //       }
+       //       else if (modalPremiums == "PLAN"){ // #only base 
+       //         pa_total += parseInt(modes[MODE_INDEX]);
+       //       }
+       //       else if (modalPremiums == "PA") // #only PA
+       //       {
+       //         pa_total += parseInt(modes[1]);            
+       //       }
+             
+       //       if(modalPremiums != "PA") // # only base and riders
+       //       {
+       //         m_annual += parseInt(modes[1]);
+       //         m_semiannual += parseInt(modes[2]); 
+       //         m_quarterly += parseInt(modes[3]);
+       //         m_monthly += parseInt(modes[4]);
+       //       }
+       //       try{
+       //         $("input[name='"+modes[5]+"']").val(modes[MODE_INDEX]);
+       //       }
+       //       catch(e){alert(e);}
+       //     }          
+       //   }
+       //   $("td[name='m_annual']").html(renderNumber(m_annual));
+       //   $("td[name='m_semiannual']").html(renderNumber(m_semiannual));
+       //   $("td[name='m_quarterly']").html(renderNumber(m_quarterly));
+       //   $("td[name='m_monthly']").html(renderNumber(m_monthly));
+       //   $("td[name='a_annual']").html(renderNumber(m_annual));
+       //   $("td[name='a_semiannual']").html(renderNumber(m_semiannual*2));
+       //   $("td[name='a_quarterly']").html(renderNumber(m_quarterly*4));
+       //   $("td[name='a_monthly']").html(renderNumber(m_monthly*12));
+       //   $("td[name='pa_annual']").html(renderNumber(pa_total));
+       //   $("input[name='totalRiderPremium']").val(rider_premium);
+       //   setReadOnly($("input[name='totalRiderPremium']"), true);
+    }
+       
+    function updateModalPremium(mode, field, id){
+        modalPremiums = modalPremiumsList[id];
+        if(modalPremiums !== undefined && modalPremiums != "") { 
+            modalPremiumsSplit = modalPremiums.split("|");
+            modalPremium = 0;
+
+            if(mode == "YEARLY"){
+                modalPremium = modalPremiumsSplit[1];
+            } 
+            else if(mode == "HALFYEARLY") {
+                modalPremium = modalPremiumsSplit[2];
+            }
+            else if(mode == "QUARTERLY") {
+                modalPremium = modalPremiumsSplit[3];
+            }
+            else if(mode == "MONTHLY") {
+                modalPremium = modalPremiumsSplit[4];
+            }
+           
+            try {
+                $("input[name='"+field+"']").val(modalPremium);
+            }catch(e){alert("error while updating premium:"+e);}
+        }
+    }
+
+    function updatePremiums() {
+        $('input[name*="[baseAnnualPremium]"]').each( function(){
+            premium = this.value;
+            if(premium != "") {
+                productIdName = this.name.replace("baseAnnualPremium","productId");
+                productId = $("input[name='"+productIdName+"']").val();
+                if(productId === undefined) {
+                    productId = $("select[name='"+productIdName+"']").val();
+                }
+                productTypeCdName = this.name.replace("baseAnnualPremium","productTypeCd");
+                productTypeCd = $("input[name='"+productTypeCdName+"']").val();
+
+                modalPremiumName = this.name.replace("baseAnnualPremium","modalPremium");
+                fetchModalPremiums(productId, productTypeCd, premium, modalPremiumName);
+            }
+        });
+        updateModalPremiums();
+    }
+       
+    function fetchModalPremiums(productId, productTypeCd, annualPremium, modalPremiumName){
+        if ( annualPremium != "" && productId != "") {
+            $.ajax({
+                url: "/app/Quotation/getModalRates",
+                data: {'productId': productId, 'annualPremium': annualPremium},
+                headers: {
+                    'Transition-Enabled': false
+                },
+                success: function(data) {
+                    var premiumSAData= $.parseJSON(data);
+                    modalPremiums = premiumSAData+"|"+modalPremiumName;
+                    try {
+                        if (productTypeCd == "PLAN") {
+                            modalPremiumsList["PLAN"] = modalPremiums;
+                        }
+                        else if (productTypeCd == "PA") {
+                            modalPremiumsList["PA"] = modalPremiums;
+                        }
+                        else {
+                            modalPremiumsList[productId] = modalPremiums;
+                        }
+                    }catch(e){alert(e);}
+                },
+                async: false
+            });
+        }
+    }
+       
+    function enableDependantRider(rider) {
+         
+    }
+       
+    function disableDependantRider(rider) {
+        clickRiderObject = $('fieldset[name="rider_'+rider+'"] > div > div > input[name*="selected"]');
+        if(clickRiderObject.is(':checked')){
+            clickRiderObject.click();
+            riderObject = $('fieldset[name="rider_'+rider+'"] > div > div > input[name*="selected"]');
+            labelName = riderObject.attr("name");
+            if ($("label[for='"+labelName+"']").hasClass("ui-checkbox-on")) {
+                $("label[for='"+labelName+"']").removeClass("ui-checkbox-on");
+                $("label[for='"+labelName+"']").addClass("ui-checkbox-off");
+            }
+           
+            $("label[for='"+labelName+"']").children("span").children("span").each(function(i) {
+                if($(this).hasClass("ui-icon-checkbox-on")) {
+                    $(this).removeClass("ui-icon-checkbox-on");
+                    $(this).addClass("ui-icon-checkbox-off");
+                }                            
+            });
+        }
+         
+        $('fieldset[name="rider_'+rider+'"]').hide();
+         
+    }
+
+    function fetchDependantSAPR(rider, maxSA) {
+        riderObject = $('fieldset[name="rider_'+rider+'"] > div > div > input[name*="selected"]');
+        sumAssured = 0;
+        if (riderObject.is(':checked')) {
+            labelName = riderObject.attr("name");
+            sumAssuredName = labelName.replace("selected","baseSumAssured");
+            sumAssured = $("input[name='"+sumAssuredName+"']").val();
+        }
+       
+        if (sumAssured > maxSA) {
+            sumAssured = maxSA
+        }
+        return sumAssured;
+    }
+
+    function updateWOPSA(annualPremium) {        
+        riderObject = $('fieldset[name="rider_PB"] > div > input[name*="baseSumAssured"]');
+        riderObject.val(annualPremium);
+        riderObject.each( function(i) {
+            calculatePremium(this.name);  
+        });      
+    }
+
+    function updatePBCPremium(){
+        riderObject = $('fieldset[name="rider_PBC"] > div > input[name*="baseSumAssured"]');
+        if(riderObject.val() != "") {
+            riderObject.blur();
+        }
+    }
+       
+    function submitForm(){
+        $("a[name='save']").focus();
+        if(checkBasicDetails() && checkRecordExists()) {
+            showLoadingMessage();
+           // # enable the disabled field so that value gets submitted. Field is disabled for juvenile cases
+            $('select[name="<%=getObjectMapping(@baseProduct)%>[productFamilyCd]"]').selectmenu('enable');
+            $('select[name="<%=getObjectMapping(@baseProduct)%>[productPlanOptionCd]"]').selectmenu('enable');
+            $('select[name="<%=getObjectMapping(@baseProduct)%>[productId]"]').selectmenu('enable');
+            $('select[name="<%=getObjectMapping(@baseProduct)%>[paymentFrequencyCd]"]').selectmenu('enable');
+            $('select[name="<%=getObjectMapping(@baseProduct)%>[premiumPayingTerm]"]').selectmenu('enable');
+
+            $('select[name="<%=getObjectMapping(@policyHolder)%>[partyTypeCd]"]').selectmenu('enable');
+            $('select[name="<%=getObjectMapping(@insured)%>[title]"]').selectmenu('enable');
+            $('select[name="<%= getObjectMapping(@insured)%>[relationCd]"]').selectmenu('enable');
+            $("select[name='<%= getObjectMapping(@insured)%>[industryCd]']").selectmenu('enable');
+            $("select[name='<%= getObjectMapping(@insured)%>[natureOfDuty]']").selectmenu('enable');
+            $('select[name="<%= getObjectMapping(@insured)%>[occupationCd]"]').selectmenu('enable');
+            $('input[name="<%= getObjectMapping(@insured)%>[genderCd]"]').checkboxradio('enable');
+            $('input[name="<%= getObjectMapping(@insured)%>[smoker]"]').checkboxradio('enable');
+
+            $('select[name="<%= getObjectMapping(@baseProduct)%>[targetPeriodRefCd]"]').selectmenu('enable');
+            $('select[name="<%= getObjectMapping(@quotation)%>[solverTypeCd]"]').selectmenu('enable');
+            $('select[name="<%= getObjectMapping(@quotation)%>[withdrawalRateTypeCd]"]').selectmenu('enable');
+            $('select[name="<%= getObjectMapping(@baseProduct)%>[premiumOffsetOptionCd]"]').selectmenu('enable');
+            $('select[name="<%= getObjectMapping(@baseProduct)%>[premiumOffsetValues]"]').selectmenu('enable');
+
+            //set removed flag YES for all withdrawls if withdrawls set to NO
+            withdrawalFl = $('input[name="<%= getObjectMapping(@quotation) %>[withdrawalFl]"]');
+            if (withdrawalFl.fieldexists()){
+                if (withdrawalFl.filter(':checked').val() == "NO"){
+                    $('#withdrawalsList input[name*="[removed]"]').val('YES');
+                }
+            }
+            // # submit form
+            document.quotationForm.submit();          
+        }  
+    }
+
+    function viewIllustrationClick() {
+        $.ajax({
+            url: "/app/Quotation/viewIllustrationClick",
+            data: {'quotationObject': '<%= @quotation.object.to_s %>'},
+            success: function(data) {
+                }
+        });
+    }
+
+       
+    function checkBasicDetails(){
+        returnValue = true;
+        return returnValue;
+    }
+    //comented becouse the dropdown not selecteble  
+    function occupationCdChanged(){
+        // age = $("input[name='<%= getObjectMapping(@quotation)%>[age]']").val();
+        // occupationCd = $("select[name='<%= getObjectMapping(@quotation)%>[occupationCd]']").val();
+        //alert("changed, age:"+age+" occ:"+occupationCd);
+        //if( age != "" && age <= 15 && occupationCd != JUVENILEOCCUPATIONCLASS)
+        // {
+        //  $("select[name='<%= getObjectMapping(@quotation)%>[occupationCd]']").val(JUVENILEOCCUPATIONCLASS).change();
+        // }
+        // updateAllProducts(true);
+
+    }
+
+    function checkRecordExists(){
+        returnValue = true;        
+        salesIllustrationCd = $("input[name='<%=getObjectMapping(@quotation)%>[quotationRefNum]']").val();
+        guid = $("input[name='<%=getObjectMapping(@quotation)%>[guid]']").val();
+        if ( salesIllustrationCd != "") {
+               
+            $.ajax({
+                url: "/app/Quotation/checkQuotationRefNum",
+                data: {'quotationRefNum': salesIllustrationCd, 'guid': guid},
+                headers: {
+                    'Transition-Enabled': false
+                },
+                success: function(data) {
+                    var result=$.parseJSON(data);
+                    try {
+                        if (result == "ALLOWSAVE") {
+                            returnValue = true;
+                        }
+                        else {
+                            returnValue = false;
+                        }
+                    }catch(e){alert(e);}
+                },
+                async: false                    
+            });          
+        }
+         
+        if(!returnValue){
+            showDialog("", "<%= getLabelValue('OVERWRITE')%>", 'error', 0, 'capture');          
+            returnValue = false;
+        }
+         
+        return returnValue;
+    }
+
+    function renderLegends(){
+        $('input[name*="state_"]').each(function(i){
+            if ( $(this).val() == "+") {
+                divName = this.name.replace("state_","");
+                $('div[name="'+divName+'"]').hide();
+            }
+        });
+    }
+      
+    
+    function updateFundModels()
+    {
+        currencyCd = $("select[name='<%= getObjectMapping(@baseProduct)%>[currencyCd]']").val();
+        productSeq = $("select[name='<%= getObjectMapping(@baseProduct)%>[productSeq]']").val(); 
+        $.ajax({
+            url: "/app/Quotation/filterPortfolioModel",
+            data: {'currencyCd': currencyCd, 'productSeq': productSeq},
+            headers: {
+                'Transition-Enabled': false
+            },
+            success: function(data) {
+                $("select[name='<%= getObjectMapping(@baseProduct)%>[portfolioModelCd]']").html(data);
+                $("select[name='<%= getObjectMapping(@baseProduct)%>[portfolioModelCd]']").change();
+            }
+        });
+    }
+
+    $.fn.fieldexists = function() {
+        if(typeof this[0] != 'undefined') {
+            return true; 
+        } else {
+            return false;
+        }
+    }
+
+    $.fn.selectit = function(option) {
+        $("select[name='"+this.attr('name')+"'] option:eq("+option+")")[0].selected = true;
+        this.selectmenu().selectmenu("refresh",true);
+    }
+
+ //==========document ready starts==============
+
+    $(document).ready(function(){
+        <% if @errors.to_s != "" %>
+            var data = '<%= @errors %>';
+            getErrors(data);
+        <% end %>
+
+
+        $('.scrollTopButton').click(function() {
+            $("html, body").animate({ scrollTop: 0 }, "slow");
+        });
+
+        $('.expandButton').hide();
+
+        $('.collapseButton').click(function() {
+            $(this).parents(".legend").siblings(".panelContent").hide();
+            $(this).hide();
+            $(this).siblings('.expandButton').show();
+        });
+
+        $('.expandButton').click(function() {
+            $(this).parents(".legend").siblings(".panelContent").show();
+            $(this).hide();
+            $(this).siblings('.collapseButton').show();
+        });
+
+        /* Using custom settings */
+        $("a#premiumId").fancybox({
+            href: '#premium',
+            height: '70%',
+            width: '90%'
+        });
+
+        $("a[name='viewIllustration']").click( function() {
+            <% if @quotation.signature == nil || @quotation.signature == "" %>
+                document.quotationForm.action="viewIllustration";
+                submitForm();
+            <% else %>
+                viewIllustrationClick();
+            <% end %>
+        });
+
+        <% if @msg != nil && @msg != ""
+            if @msg == "SUCCESS" %>
+                showDialog("", "<%= getLabelValue(@msg)%>", 'success', 0, 'capture');
+            <% else %>
+                showDialog("", "<%= getLabelValue(@msg)%>", 'error', 0, 'capture');
+            <% end %>
+        <% end %> 
+
+        $(".adjustWidth").children().each(function(index,value){ $(value).css('width',(100/$(".adjustWidth").last().children().size()).toString()+"%") });
+
+        $('select[name*="[partyRoleCd]"]').each(function(){
+            if (this.value != "SUPPLEMENTARY")
+             name = this.name
+             insuredPartyRef = name.replace("partyRoleCd","insuredPartyRefGuid");
+             $('select[name="'+insuredPartyRef+'"]').val('Select Life').change();
+             $('select[name="'+insuredPartyRef+'"]').selectmenu('disable');
+        });
+
+        setReadOnly($("input[name='<%=getObjectMapping(@quotation)%>[quotationRefNum]']"), true);
+
+        $("span[name='quotationDt']").attr('disabled','disabled');
+
+        updatePremiums();
+        renderLegends();
+         
+        <% if @msg == "ERROR" %>
+            $('span[id="errordiv"]').show();
+        <% else %>
+            $('span[id="errordiv"]').hide();
+        <% end %>
+
+        <% 
+        if @mandatoryFields
+            if @mandatoryFields[@quotation]
+                @mandatoryFields[@quotation].each do |field| 
+            
+        %>
+                $("label[for='<%=getObjectMapping(@quotation)%>[<%= field %>]']").append('<label for=" *" class="mandatory1">&nbsp;*</label>');
+        <% 
+                end
+            end
+
+            if @mandatoryFields[@baseProduct]
+                @mandatoryFields[@baseProduct].each do |field| 
+        %>
+                $("label[for='<%=getObjectMapping(@baseProduct)%>[<%= field %>]']").append('<label for=" *" class="mandatory1">&nbsp;*</label>');
+        <% 
+                end
+            end
+          
+        end
+        %>
+
+    });
+
+//==========document ready ends==============
+ </script>

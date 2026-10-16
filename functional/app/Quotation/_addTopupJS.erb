@@ -1,0 +1,41 @@
+<script>
+
+    $('input[name="<%=getObjectMapping(@topUp)%>[topUpAmount]"]').change( function(){    
+        if (isNaN(this.value))
+        {
+            showDialog("", "<%= getLabelValue('VALID_ADHOC_TOPUP_AMT')%>", 'warning', 0, 'capture');
+            this.value = this.value.replace(/[^0-9.]/g, '');  
+        }
+    }); 
+
+    $('input[name="<%=getObjectMapping(@topUp)%>[policyYearFrom]"]').change( function(){ 
+        if (isNaN(this.value))
+        {
+            showDialog("", "<%= getLabelValue('VALID_ADHOC_TOPUP_FROM_YEAR')%>", 'warning', 0, 'capture');
+            this.value = this.value.replace(/[^0-9.]/g, '');  
+        }
+    }); 
+
+    $('input[name="<%=getObjectMapping(@topUp)%>[policyYearTo]"]').change( function(){ 
+        if (isNaN(this.value))
+        {
+            showDialog("", "<%= getLabelValue('VALID_ADHOC_TOPUP_TO_YEAR')%>", 'warning', 0, 'capture');
+            this.value = this.value.replace(/[^0-9.]/g, '');  
+        }
+    }); 
+
+     //Mark fields mandatory based on Validation Metadata
+    <% 
+    if @mandatoryFields
+        if @mandatoryFields[@topUp]
+            @mandatoryFields[@topUp].each do |field| 
+    %>
+            $("label[for='<%=getObjectMapping(@topUp)%>[<%= field %>]']").append('<label for=" *" class="mandatory1">&nbsp;*</label>');
+    <% 
+            end
+        end
+      
+    end
+    %>
+
+</script>

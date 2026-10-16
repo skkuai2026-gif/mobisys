@@ -1,0 +1,22 @@
+<% require 'CommonModules/mobisysbrowserhelper' 
+%>
+<% case @option 
+when "product" %>
+	<option selected disabled value=""><%= getLabelValue('select')%></option>  
+  <% @productArray.each do|product| %>
+    <option value="<%= product.cd %>"><%= getLabelValue(product.desc) %></option>
+  <% end
+
+when "productVersion" %>
+	<option selected disabled value=""><%= getLabelValue('select')%></option> 
+  <% @filterProductVersionArray.each do|product| %>
+    <option value="<%= product.productVersion%>"><%= getLabelValue(product.versionName) %></option>     
+    <% end 
+
+when "productPlanOptions"%>
+	<%= "#{@product.id}-|-" %>
+	<option selected disabled value=""><%= getLabelValue('select')%></option> 
+  <% @offlinePlanOptionArray.each do|package| %>
+    <option value="<%= package.cd%>"><%= getLabelValue(package.desc) %></option> 
+    <% end 
+end %>

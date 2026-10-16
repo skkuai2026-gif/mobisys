@@ -1,0 +1,179 @@
+<div data-role="page">
+    <link rel="stylesheet" href="/public/css/Eapp/c2l_EAPP.css">
+    <style type="text/css">
+      .rightAlign{
+           text-align:right !important;
+      }
+
+      .searchtable {
+          font-size:16px; 
+          text-shadow:none; 
+          font-weight:none;
+          border: 1px solid #37489e;
+          border-spacing:1px;
+          border-collapse: collapse;
+          width: 98%;
+      }
+
+      .searchtableheader {
+          background: #37489e; 
+          color:#fff; 
+      }
+
+      .searchtableheader tr th{
+          border: 1px solid #37489e;
+          text-align:center;
+          vertical-align: middle;
+          padding:5px 5px 8px 5px;
+      }
+
+      .searchtable tbody tr td{
+          border: 1px solid #37489e;
+          text-align:center;
+          color:#000;
+          padding:5px 5px 8px 5px;
+        }
+
+      .searchtableheader td{
+          text-align:center;
+          padding:5px 5px 8px 5px;
+      }
+
+      .search1 {
+          background: #ffffff; 
+          color:#000;
+          text-shadow:none; 
+      }
+
+      .search1 td {
+          padding:5px 5px 8px 5px;
+      }
+
+      .search2 {
+          background: #f2f2f2; 
+          color:#000;
+          text-shadow:none; 
+/*          border-top: 1px solid #dcdbdb;
+          border-bottom: 1px solid #dcdbdb;*/
+      }
+
+      .search2 td {
+          padding:5px 5px 8px 5px;
+      }
+
+      .tabletext{
+          text-align:left;
+      }
+    </style>
+
+  <div data-role="header" id="header" data-position="inline"  >
+      <a href="/app/Menu/salesIllustration" rel="external" id = "back" name="back" data-direction="reverse" data-role="none">
+            <img src="/public/images/SalesIllustration/icon_BackArrow-Red.png">
+      </a>
+      <h1 style="margin:0 30%";><%= getLabelValue('SEARCHEMAILSREQUESTED')%></h1>
+  </div>
+  <div data-role="content" style="-webkit-transform: none;"> 
+   <form method="POST" action="<%= url_for :action => :searchEmailRequest %>" name="quotationSearchForm" data-ajax="false"> 
+    <div class="illustrationdisplay">
+        <br><br>
+        <div class="panelContent">
+            <div class="ui-grid-a">
+                <div class="ui-block-a" style="width:30%"><div class="ui-bar" style="height:40px">
+                    <label for="search" class="label rightAlign" style="padding-top: 7px;"><%= getLabelValue('SEARCHINPUT')   %></label>
+                </div></div>
+                <div class="ui-block-b" style="width:70%"><div class="ui-bar" style="height:40px">
+                     <input type="search" name="search" id="Searchname" value="<%= @params['search'] %>" />
+                </div></div>
+            </div>
+                <br>
+                <br>
+                <% 
+                  if @params['search'] != nil #&& @params['search'] != ""
+                  %>
+                    <table class="searchtable" width="98%">
+                      <thead class="searchtableheader"> 
+                        <tr>
+                            <th width="25%" style="font-weight:bold;">
+                                <%= getLabelValue('SALESILLUSTRATIONCODE')%>
+                            </th>
+                            <th width="25%">
+                                <%= getLabelValue('PRIMARYINSUREDNAME')%>
+                            </th>
+                            <th width="25%">
+                                <%= getLabelValue('emailID')   %>
+                            </th>
+                            <th width="15%">
+                                <%= getLabelValue('UPDATEDDT')   %>
+                            </th>
+                            <th width="10%">
+                                <%= getLabelValue('STATUS')   %>
+                            </th>
+                            <!-- <td>&nbsp;
+                            </td> -->
+                        </tr>
+                       
+                      </thead>
+                      <tbody>
+                       <% if @quotations.size < 1 %>
+                            <tr>
+                              <th align="center" colspan="5">
+                                <%= getLabelValue('NORECORDS')   %>
+                              </th>
+                            </tr>
+                        <%end%>
+                     <%  
+                        i=0
+                        @quotations.each_with_index do |quotation, index|
+                          if quotation != nil
+                              if (index%2 == 0)
+                    %>
+                                <tr class = "search1">
+                            <% else %>
+                                <tr class = "search2">
+                            <% end %>
+                                <td class="tabletext"  width="20%">
+                                    <!-- <a href="#" onclick="location.href='<%= url_for :action => :show, :id => quotation.object %>';"> -->
+                                      <div style="height:100%;width:100%;margin-left: 26%;"><%= quotation.quotationRefNum %>&nbsp;</div>
+                                    <!-- </a> -->
+                                </td>
+                                <td class="tabletext" width="25%">
+                                    <!-- <a href="#" onclick="location.href='<%= url_for :action => :show, :id => quotation.object %>';"> -->
+                                    <div style="height:100%;width:100%;">&nbsp;<%= quotation.firstname %>&nbsp;<%= quotation.lastname %></div>
+                                    <!-- </a> -->
+                                </td>
+                                <td class="tabletext">
+                                    <!-- <a href="#" onclick="location.href='<%= url_for :action => :show, :id => quotation.object %>';">  -->
+                                    <div style="height:100%;width:100%;">&nbsp;<%= getLabelValue(quotation.toEmail) %>&nbsp;</div>
+                                    <!-- </a>  -->
+                                </td>
+                                <td class="tabletext">
+                                    <!-- <a href="#" onclick="location.href='<%= url_for :action => :show, :id => quotation.object %>';"> -->
+                                    <div style="height:100%;width:100%;">&nbsp;<%= getScreenDate(quotation.systemUpdatedDt) %></div>
+                                    <!-- </a> -->
+                                </td>
+                                <td class="tabletext">
+                                    <!-- <a href="#" onclick="location.href='<%= url_for :action => :show, :id => quotation.object %>';"> -->
+                                    <div style="height:100%;width:100%;"><%= getLabelValue(quotation.emailReqStatusCd) %></div>
+                                    <!-- </a> -->
+                                </td>
+                                  <!-- <td class="tablenum">
+                                    <a href="#" onclick="location.href='<%= url_for :action => :show, :id => quotation.object %>';">
+                                      <div style="height:100%;width:100%">&gt;</div>
+                                    </a>
+                                  </td> -->
+                            </tr>
+                            <%
+                          end
+                        end
+                      %>
+                      </tbody>
+                    </table>
+                    <%
+                  end 
+                %>
+        </div>
+    </div>
+    </form>
+  </div>
+
+</div>

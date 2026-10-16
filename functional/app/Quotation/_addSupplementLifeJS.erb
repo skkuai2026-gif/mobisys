@@ -1,0 +1,24 @@
+<script type="text/javascript">
+            $('input[name="<%=getObjectMapping(@quotationParty)%>[firstname]"]').change(function(){
+                updateSupplementaryNameList("<%=getObjectMapping(@quotationParty)%>[firstname]");
+            });
+
+            $('input[name="<%=getObjectMapping(@quotationParty)%>[firstname2]"]').change(function(){
+                updateSupplementaryNameList("<%=getObjectMapping(@quotationParty)%>[firstname2]");
+            });
+
+            $('input[name="<%=getObjectMapping(@quotationParty)%>[dob]"]').change(function(){
+                updateSupplementaryAge("<%=getObjectMapping(@quotationParty)%>");
+            });
+
+            $('input[name="<%=getObjectMapping(@quotationParty)%>[age]"]').focus(function(){
+                updateSupplementaryDob("<%=getObjectMapping(@quotationParty)%>");
+            });
+
+            $('input[name="<%=getObjectMapping(@quotationParty)%>[age]"]').blur(function(){
+                updateSupplementaryDobOnBlur("<%=getObjectMapping(@quotationParty)%>");
+            });
+
+           
+
+</script>

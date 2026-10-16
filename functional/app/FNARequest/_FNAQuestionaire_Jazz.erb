@@ -1,0 +1,42 @@
+<style type="text/css">
+#fna .ui-radio {
+    width: auto;
+}
+#fna .add-fna-data-full {
+  margin: 0;
+  padding: 0 0 0 50px;
+  width: 100%; 
+  float: left;
+  font-size:16px;
+}
+</style>
+<%= panelTagStart(false) %>
+	<%= subPanelTagStart("fna",false) %>
+		<div id="fnaQuestionaireDiv" class="clear-container">
+			<% @questionResponseIndex = 0 %>
+			<% @fnaRequest.questionSeq.each_with_index do | question, i | %>
+				<div class="clear-container">
+					<% fnaResponse = @fnaRequest.getQuestionResponse(question.questionCd) %>
+					<% puts "~~~~fnaResponse: #{fnaResponse.to_json}" %>
+					<%= renderObject(fnaResponse,@fnaRequest) %>
+					<%= renderHiddenField('fnaQuestionCd',fnaResponse.fnaQuestionCd,'fnaQuestionCd',fnaResponse) %>
+					<div class="add-fna-heading"><%= MobiSys::CommonUtil.replacePlaceHolders( getLabelValue(question.questionCd), question.getChannelMapping ) %></div>
+					<div class="<%= "#{question.questionTypeCd} #{question.questionCd}" %>">
+					<% if question.questionTypeCd=='multiple-select' %>
+						<%= renderHiddenField(question.questionCd.to_s,fnaResponse.fnaQuestionLookupDataCd.to_s, nil, nil) %>
+						<% resp = fnaResponse.fnaQuestionLookupDataCd.to_s.split(",") %>
+						<%= getQuestionnaireCheckbox(question.questionCd.to_s, question.questionCd.to_s, resp, fnaResponse, nil, nil, @questionResponseIndex) %>
+					<% elsif question.questionTypeCd=='single-select' %>
+						<% resp = fnaResponse.fnaQuestionLookupDataCd %>
+						<%= renderHiddenField(question.questionCd.to_s,resp, nil, nil) %>
+						<%= getQuestionRadioButton(question.questionCd.to_s, question.questionCd.to_s,resp, fnaResponse, nil, nil,true)  %>
+					<% else %>
+        				<%= renderAmountField('fnaQuestionLookupDataCd',fnaResponse.fnaQuestionLookupDataCd,'fnaQuestionLookupDataCd',fnaResponse,nil)  %>
+      				<% end %>
+      				</div>
+					
+				</div>
+			<% end %>
+		</div>
+	<%= subPanelTagEnd %>
+<%= panelTagEnd %>

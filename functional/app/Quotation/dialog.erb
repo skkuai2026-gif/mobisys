@@ -1,0 +1,158 @@
+<div data-role="page" id="dialogPage">
+      <script type="text/javascript">
+          $(document).ready(function () {
+              //alert('here');
+              //$('#dStr').html(new Date().format("shortDate"));
+              var cd = new Date(<%=@year%>,<%=@month.to_i-1%>,<%=@day%>);
+              $('#dStr').html(dateFormat(cd, "shortDate"));
+              $('#mon').val(dateFormat(cd, "mm"));
+              $('#day').val(dateFormat(cd, "dd"));
+              $('#year').val(dateFormat(cd, "yyyy"));
+              
+              var interval;
+
+              function incrementYear(){
+                cd.setYear(cd.getFullYear() + 1);
+                updateF();
+              }
+
+              function decrementYear(){
+                cd.setYear(cd.getFullYear() - 1);
+                updateF();
+              }
+              
+              function incrementMonth(){
+                cd.setMonth(cd.getMonth() + 1);
+                updateF();
+              }
+
+              function decrementMonth(){
+                cd.setMonth(cd.getMonth() - 1);
+                updateF();
+              }
+              
+              function incrementDay(){
+                cd.setDate(cd.getDate() + 1);
+                updateF();
+              }
+              
+              function decrementDay(){
+                cd.setDate(cd.getDate() - 1);
+                updateF();
+              }
+              
+              $('#pyear').click(function () {
+                incrementYear();
+              });
+          
+              $('#pmon').click(function () {
+                incrementMonth();
+              });
+              
+              $('#pday').click(function () {
+                incrementDay();
+              });
+              
+              $('#myear').click(function () {
+                decrementYear();
+              });
+              
+              $('#mmon').click(function () {
+                decrementMonth();
+              });
+              
+              $('#mday').click(function () {
+                decrementDay();
+              });
+              
+              $('#day').change(function (){
+                  cd.setDate(this.value);
+                  updateF();
+              });
+              $('#mon').change(function (){
+                  cd.setMonth(this.value-1);
+                  updateF();
+              });
+              $('#year').change(function (){
+                  cd.setYear(this.value);
+                  updateF();
+              });
+              
+              function updateF() {
+                  $('#year').val(dateFormat(cd, "yyyy"));
+                  $('#mon').val(dateFormat(cd, "mm"));
+                  $('#day').val(dateFormat(cd, "dd"));
+                  $('#dStr').html(dateFormat(cd, "shortDate"));
+              }
+            //alert('completed here');
+          });
+    </script>
+    <style>
+      .test {
+          font-size:30px;
+          margin:10px;
+          background-color:#000;
+          color:#fff;
+      }
+      
+      .ui-content {              
+          min-height: 300px;          
+      }
+      .ui-btn {
+        width: 92px !important;
+      }
+
+      input {
+        font-size:20px;
+        text-align:center;
+        padding:0px !important;
+        width:92px !important;
+        height:38px;
+        margin:4px !important;
+      }
+
+    </style>
+  
+  <div data-role="header" data-position="inline">
+    <h1>Date</h1>
+  </div>
+  
+  <div data-role="content" style="height:50px;">
+
+      <div data-role="fieldcontain" >
+        <div align="center" id="dStr"> </div>
+      </div>
+
+      <fieldset class="ui-grid-d">
+        <div class="ui-block-a"> </div>  
+        <div class="ui-block-b" id="pday"> <a href="#" data-role="button">+</a> </div>
+        <div class="ui-block-c" id="pmon"> <a href="#" data-role="button">+</a> </div>        
+        <div class="ui-block-d" id="pyear"> <a href="#" data-role="button">+</a> </div>
+        <div class="ui-block-e"> </div>
+      </fieldset>
+      
+      <fieldset class="ui-grid-d">
+        <div class="ui-block-a"> </div>  
+        <div class="ui-block-b"> <input type="text" id="day" /> </div>
+        <div class="ui-block-c"> <input type="text" id="mon" /> </div>        
+        <div class="ui-block-d"> <input type="text" id="year" /> </div>
+        <div class="ui-block-e"> </div>
+      </fieldset>
+      
+      <fieldset class="ui-grid-d">
+        <div class="ui-block-a"> </div>
+        <div class="ui-block-b" id="mday"> <a href="#" data-role="button">-</a> </div>
+        <div class="ui-block-c" id="mmon"> <a href="#" data-role="button">-</a> </div>        
+        <div class="ui-block-d" id="myear"> <a href="#" data-role="button">-</a> </div>
+        <div class="ui-block-e"> </div>
+      </fieldset>
+
+      <fieldset class="ui-grid-c">
+        <div class="ui-block-a"> </div>
+        <div class="ui-block-b"> <a href="#" data-role="button" id="setDate<%=@id%>" data-rel="back">Set</a> </div>
+        <div class="ui-block-c"> <a href="#" data-role="button" data-rel="back">Cancel</a> </div>
+        <div class="ui-block-d"> </div>
+      </fieldset>      
+  </div>
+  
+</div>

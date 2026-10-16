@@ -1,0 +1,57 @@
+<%= pageTagStart('product-page','Symbiosys - Sales Illustration') %>
+    <%= headerTag("SalesIllustration","add","","/app/Quotation/search") %>
+    <!--MAIN CONTENT-->
+    <div class="main-content-wrapper left-0">
+        <div class="product-selection-wrapper">
+            <!-- ***** product-family Wrapper ********-->
+            <input type="hidden" name="productSeq">
+            <input type="hidden" name="offline_application_environment" id="offline_application_environment" value="<%= @offlineApplicationEnvironment.value %>">
+            <% if @offlineApplicationEnvironment.value == "UAT" %>
+            <div class="col-25 product-family-wrapper product-page-col-1">
+            <% else %>
+            <div class="col-33 product-family-wrapper product-page-col1">
+            <% end %>
+                <div class="family_list">
+                    <h4><%= getLabelValue('productFamilyCd') %></h4>
+                    <% @productFamilyArray.each do |familyHash| %>
+                    <label>
+                    <input class="family_selection" type="radio" name="family_radio" id="family_name" value="<%= familyHash.productFamilyId.strip %>" data-label="<%= getLabelValue(familyHash.description).strip %>"><%= getLabelValue(familyHash.description).strip %></label>
+                    <% end %>
+                </div>
+            </div>
+
+            <!-- ****** product-Name wrapper ******** -->
+            <% if @offlineApplicationEnvironment.value == "UAT" %>
+            <div class="col-25 product-name-wrapper product-page-col-2">
+            <% else %>
+            <div class="col-33 product-name-wrapper product-page-col2">
+            <% end %>
+                <!-- individual product list 1-->
+                <div class="product_list"></div>
+            </div>
+
+            <!-- ******** Plan option Wrapper *********-->
+            <% if @offlineApplicationEnvironment.value == "UAT" %>
+            <div class="col-25 plan-option-wrapper product-page-col-3">
+            <% else %>
+            <div class="col-33 plan-option-wrapper product-page-col3">
+            <% end %>
+                <!--individual plan option 1-->
+                <div class="plan_list"></div>
+            </div>
+
+            <!-- ****** product version wrapper ******** -->
+            <% if @offlineApplicationEnvironment.value == "UAT" %>
+            <div class="col-25 product-page-col-4">
+                <!-- individual version list 1-->
+                <div class="version_list"></div>
+            </div>
+            <% end %>
+
+            <!--  ********* End ******* -->
+            <div><a href="#sales-illustration-personal-info" class="sales-illustration-done" data-transition="slide" id="gobutton">NEXT</a></div>
+        </div>
+    </div>
+<%= pageTagEnd %>
+
+<script src="QuoteProductPage.js" type="text/javascript"></script>

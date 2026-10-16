@@ -1,0 +1,32 @@
+<div class='illustrationdisplay' name ='supplementLife'>
+    <div class="legend">
+        <label class="strongLabel">
+            <%= getLabelValue('SUPPLYINSUREDDETAILS') %>
+            <a href="#" class="scrollTopButton ui-icon-carat-u ui-btn-icon-notext ui-alt-icon ui-btn-inline"></a>
+            <a href="#" class="expandButton ui-icon-plus ui-btn-icon-notext ui-alt-icon ui-btn-inline"/></a>
+            <a href="#" class="collapseButton ui-icon-minus ui-btn-icon-notext ui-alt-icon ui-btn-inline"/></a>
+        </label>
+    </div>
+    <div class="panelContent">
+        <ul data-role="listview" id="supplementLifeList" data-inset="true" style="width: 98%;">
+            <% @supplementaryLife_form = "" %>
+            <% @supplementaryLife.each do |quotationParty|%>
+                <%   @supplementLifeCount += 1
+                @supplementaryLife_form << addSupplementLife(quotationParty, @quotation, getObjectMapping(@quotation), @supplementLifeCount)
+                %>
+            <% end %>
+            <%= @supplementaryLife_form %>
+            
+        </ul>  
+    </div>
+
+    <div class="ui-grid-d">
+            <div class="ui-block-a"> </div>
+            <div class="ui-block-b"></div>
+            <div class="ui-block-c" style="width: 20%;"> <a class="addSupplementLifeButton" href="#" data-role="button"> <%= getLabelValue('ADDSUPPLEMENTLIFE') %> </a> </div> 
+            <div class="ui-block-d"></div>
+            <div class="ui-block-e"></div>               
+    </div>
+
+</div>
+<%= render :partial => "captureSupplementLifeJS" %>

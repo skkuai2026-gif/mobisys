@@ -1,0 +1,55 @@
+<% partyPckg = 'PolicySupplementaryLifeDO' %>
+<div style="display: none;">
+  <%= inputTag('quotationDt') %>
+</div>
+<% panelHeader = "#{getLabelValue('driverDetails')}" %>
+<% addSupLabel = "#{getLabelValue('ADDDRIVER')}" %>
+<%= fieldDataEntryGridTagStart('supplementaryQuotationParty',partyPackage,nil, nil, nil,nil,'delete','',nil,true,true,false,false,false) %>
+	<%= panelTagStart(true) %>
+		<% @supplementaryLife.each_with_index do |supplementary, count| %>
+			<%= subPanelTagStart("#{panelHeader} #{count.to_i+ 1}") %>
+				<div class='add-section'>
+		    		<% gridID = "grid_#{@supplementLifeCount + count + 1 }_supplementaryQuotationParty" %>
+		    		<%= modelTagStart(gridID, supplementary, @quotation,@supplementLifeCount + count + 1) %>
+				        <i class='close-add-section icon-close' onClick='javascript:catchevent(this);' id='<%=gridID%>_removed'></i>
+				        <%= prdFieldDataTag("#{partyPckg}",'partySameAsCd','') %>
+				        <span class="displayDriver">
+					        <%= prdFieldDataTag("#{partyPckg}","dob,age" , '' , 'birthDt,age') %>
+							
+							<%= prdFieldDataTag("#{partyPckg}","genderCd,maritalStatus,contactNum,emailAddress") %>
+				        </span>
+				        <div style="display: none;">
+				            <%= inputTag("roleCd") %>
+				        </div>
+				    <% modelTagEnd %>
+				    <% if @supplementaryProductFacet %>
+				    	
+				    	<% quotationProduct = @supQuotProductHM[supplementary.guid]%>
+		        		<%= modelTagStart(gridID, quotationProduct, @quotation, @supQuotationProductCount) %>
+				            <%= prdFieldDataTag("#{partyPckg}","baseAnnualPremium,baseSumAssured,modalPremium,productPlanOptionCd") %>
+				            <%= inputTag("productTypeCd",nil,nil,nil,nil,nil,'HIDDEN') %>
+				            <%= inputTag("partyRoleCd",nil,nil,nil,nil,nil,'HIDDEN') %>
+				            <%= inputTag("insuredPartyRefGuid",nil,nil,nil,nil,nil,'HIDDEN') %>
+				        <% modelTagEnd %>
+				    <% end %>
+				</div>
+			<%= subPanelTagEnd %>
+		<% end %>
+	<%= panelTagEnd %>	
+<%= fieldDataEntryGridTagEnd('supplementaryQuotationParty', @supplementaryLife, addSupLabel,true,true) %>
+<input type="hidden" name="supplementLifeCount" id="supplementLifeCount" value='<%= @supplementLifeCount + @supplementaryLife.size %>'/>
+<% if @supplementaryProductFacet %>
+	<input type="hidden" name="supQuotationProductCount" id="supQuotationProductCount" value='<%= @supQuotationProductCount + @supQuotProductHM.size %>'/>
+	<% if @baseProduct %>
+		<%= modelTagStart("basePlan", @baseProduct, @quotation) %>
+			<div style="display: none;">
+				<%= inputTag("productTypeCd") %>
+				<%= inputTag("productFamilyCd") %>
+				<%= inputTag("productVersion") %>
+				<%= inputTag("productSeq") %>
+				<%= inputTag("productId") %>
+				<%= inputTag("productPlanOptionCd") %>
+			</div>
+		<% modelTagEnd %>
+	<% end %>
+<% end %>

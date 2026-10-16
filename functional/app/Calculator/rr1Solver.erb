@@ -1,0 +1,130 @@
+<div data-role="page">
+<form method="POST" action="<%= url_for :action => :rr1SolverOutput %>" name="rr1SolverForm" onsubmit = "return checkBasicDetails();">
+
+    <div data-role="header" data-position="inline">
+      <h1><%= getLabelValue('RR1LONG') %> Solver</h1>    
+      <a href="/app/Menu/calculators" class="ui-btn-left" data-direction="reverse">
+        <%= getLabelValue('BACK')   %>
+      </a>
+      <div class="ui-btn-right">
+        <a href="javascript: submitForm();" name="save" data-role="button" style="min-width:100px;">
+          <%= getLabelValue('SAVEVALIDATE')%>
+        </a>
+      </div>
+    </div>
+
+    <div data-role="content" id="capture" style="-webkit-transform: none;">
+        <%= renderObject(@calculator) %>
+        <div class="illustrationdisplay">
+        
+            <div data-role="fieldcontain">
+              <%= renderLabel('field29', 'age', nil, @calculator)   %>
+              <%= renderRangeField('field29', @calculator.field29, 'AGE', @calculator, ' min="0" max="70" ') %>
+            </div>
+          
+            <div data-role="fieldcontain">                        
+                <%= renderLabel('field28', 'genderCd', nil, @calculator)    %>
+            
+                <%= renderRadioButton('field28', @calculator.field28, 'male', 'MALE', @calculator) %>
+                <%= renderLabel('male', 'MALE')   %>
+                <%= renderRadioButton('field28', @calculator.field28, 'female', 'FEMALE', @calculator) %>
+                <%= renderLabel('female', 'FEMALE')   %>
+                
+            </div>
+        
+            <div data-role="fieldcontain">                        
+                <%= renderLabel('field30', 'smoker', nil, @calculator)    %>
+            
+                <%= renderRadioButton('field30', @calculator.field30, 'yes', 'YES', @calculator) %>
+                <%= renderLabel('yes', 'YES')   %>
+                <%= renderRadioButton('field30', @calculator.field30, 'no', 'NO', @calculator) %>
+                <%= renderLabel('no', 'NO')   %>
+                
+            </div>
+
+            <div data-role="fieldcontain">
+              <%= renderLabel('field31', 'INTERESTRATE', nil, @calculator)   %>
+              <%= renderRangeField('field31', @calculator.field31, 'INTERESTRATE', @calculator, ' min="0" max="20" ') %>
+            </div>
+
+            <div data-role="fieldcontain">
+              <%= renderLabel('field32', 'SURRENDERVALUE', nil, @calculator)   %>
+              <%= renderRangeField('field32', @calculator.field32, 'SURRENDERVALUE', @calculator, ' min="0" max="10000000" step="50000" ') %>
+            </div>
+              
+            <div data-role="fieldcontain">
+              <%= renderLabel('field33', 'MAXYEAR', nil, @calculator)   %>
+              <%= renderRangeField('field33', @calculator.field33, 'MAXYEAR', @calculator, ' min="0" max="80" ') %>
+            </div>
+
+            <fieldset data-role="controlgroup">    
+              <div class="ui-grid-b">
+                <div class="ui-block-a"> <%= renderLabel('field34', 'solverTypeCd', nil, @calculator)   %> </div>
+                <div class="ui-block-b"><%= getLookup('SOLVERTYPE', 'field34', @calculator.field34, @calculator, nil, " onchange=\"solverTypeChanged(this.value);\"")%> </div>   
+                <div class="ui-block-c"> </div> 
+              </div>
+            </fieldset>
+
+            <div data-role="fieldcontain" name = "PREMIUMPERIOD">
+              <%= renderLabel('field35', 'TARGETYEAR', nil, @calculator)   %>
+              <%= renderRangeField('field35', @calculator.field35, 'TARGETYEAR', @calculator, ' min="0" max="80" ') %>
+            </div>
+    
+            <div data-role="fieldcontain" name = "MODALPREMIUM">
+              <%= renderLabel('field36', 'PREMIUM', nil, @calculator)   %>
+              <%= renderRangeField('field36', @calculator.field36, 'PREMIUM', @calculator, ' min="0" max="1000000" ') %>
+            </div>
+
+        </div>
+
+    </div>
+    
+  </form>
+  <script type="text/javascript">
+        
+        $(document).focus(function() {
+          setTimeout("onFocus()", 100);
+        });
+        
+        function onFocus(){
+          solverTypeChanged($('select[name="<%= getObjectMapping(@calculator)%>[field34]"]').val());
+        }
+        
+        function submitForm(){
+          $("a[name='save']").focus();
+          if(checkForm())
+          {
+            $.mobile.showPageLoadingMsg();
+            
+            // # submit form
+            document.rr1SolverForm.submit();          
+          }  
+        }
+        
+        function checkForm(){
+          returnValue = true;
+          genderCd = $('input[name="<%=getObjectMapping(@calculator)%>[field28]"]').filter(':checked').val();
+          smoker = $('input[name="<%=getObjectMapping(@calculator)%>[field30]"]').filter(':checked').val();
+          if ( genderCd == "" || smoker == "" || genderCd === undefined || smoker === undefined){
+            showDialog("", "Please fill all fields", 'warning', 0, 'rr1SolverForm');
+            returnValue = false;
+          }
+
+          return returnValue;
+        }
+        
+        function solverTypeChanged(type){
+          if (type == "MODALPREMIUM")
+          {
+            $('div[name="MODALPREMIUM"]').hide();
+            $('div[name="PREMIUMPERIOD"]').show();
+          }
+          else
+          {
+            $('div[name="MODALPREMIUM"]').show();
+            $('div[name="PREMIUMPERIOD"]').hide(); 
+          }
+        }
+  </script>  
+
+</div>

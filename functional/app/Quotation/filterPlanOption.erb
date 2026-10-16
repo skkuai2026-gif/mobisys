@@ -1,0 +1,26 @@
+<%
+require 'CommonModules/mobisysbrowserhelper'
+@planLookups.each do|plan|
+%>
+  <option value="<%= plan.cd %>"
+ 	<% 
+      if @productPlanOptionCd == plan.cd
+        %>
+        selected
+        <%
+      end
+    %>
+  >
+    <%= getLabelValue(plan.desc) %>
+  </option>
+<% end %>
+
+<div class='flagSA'><%= @riderPremiumSAFl %></div>
+<div class = 'hiddenInput'><%= @product.productId %></div>
+<div class='riderRegularPayProd'> <%= @riderRegularPayProd %></div>
+<div class='termAsPlan'><%= @termAsPlan %></div>
+<div class='pptAsPlan'><%= @pptAsPlan %></div>
+<div class='linkedFl'><%= @linkedFl %></div>
+<div class='parentproductSeq'><%= @parentproductSeq %></div>
+
+

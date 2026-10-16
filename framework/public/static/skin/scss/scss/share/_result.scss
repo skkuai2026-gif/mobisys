@@ -1,0 +1,53 @@
+#result {
+	display: none;
+}
+
+#result-panel {
+	
+	nav.result-menu{
+        	
+		$iconHeight:50;
+        	a{
+			height: #{$iconHeight}px;
+                	background-image:url($image-path+"share/icon-datapanel-result.png");                	
+        	}
+        	@for $i from 0 through $totalIcon {
+                	.menu#{$i} {
+                		a{
+                                        background-position: 0px -#{$i*$iconHeight}px;
+                                }
+                                a:hover,a.active{
+                                        background-position: -60px -#{$i*$iconHeight}px;
+                                }
+                                a.filled{
+                                        background-position: -120px -#{$i*$iconHeight}px;
+                                }
+                	}
+                }
+        	
+	}
+	
+	li.basic {
+	    list-style: disc;
+	    border-bottom: none;
+	    padding-top: 10px;
+            padding-bottom: 0px; 
+            margin-left: 20px;
+	}
+}
+
+#result-chart {
+	left: 390px;
+	position: absolute;
+	
+	path {
+	    @include transform(scale3d(1,1,1));
+	        
+            &.gap.zoom {
+                @include transform(scale3d(1.15,1.15,1));
+                @include transition-property(transform);
+                @include transition-duration(1s);
+            }
+                
+        }
+}

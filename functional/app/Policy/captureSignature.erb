@@ -1,0 +1,205 @@
+<div data-role="page" data-url="<%= Rho::RhoConfig.start_path %>/">
+	<link rel="stylesheet" href="/public/css/jquery.signaturepad.css"/>
+	<link rel="stylesheet" href="/public/css/jquery.fancybox.css" type="text/css" media="screen"/>
+	<link rel="stylesheet" href="/public/css/Eapp/c2l_EAPP.css"/>
+	<style type="text/css">
+	#header {
+	    background-color:#FFF;
+	    background-repeat: repeat-x;
+	    border-radius: 4px;
+	    box-shadow: 0 1px 0 rgba(255, 255, 255, 0.15) inset, 0 1px 5px rgba(0, 0, 0, 0.075);
+	    height: 4em;
+	}
+
+	#header > img {
+	    margin: 0.5em 0 0 1em;
+	    width: 8%;
+	}
+
+	#header a img {
+	    margin: 0.9em;
+	}
+
+	#header h1 {
+	    font-size: 1.5em;
+	    padding: 0.7em 0;
+	}
+
+	.sigNav {
+		width: 751px;
+	}
+	</style>
+
+	<script type="text/javascript" src="/public/js/format.min.js"></script>
+	<script type="text/javascript" src="/public/js/jquery.fancybox.pack.js"></script>
+	<script type="text/javascript" src="/public/js/jquery.signaturepad.js"></script>
+	<script type="text/javascript" src="/public/js/json2.min.js"></script>
+	<script type="text/javascript" src="/public/js/Eapp/c2l_EAPP.js"></script>
+	
+
+	<form method="POST" name="signatureForm" id="signatureForm">
+		<%= renderObject(@policy) %>
+		<%= renderObject(@signatureContainer)%>
+		<%= renderObject(@agentSign,@signatureContainer) %>
+		<%= renderObject(@proposerSign,@signatureContainer) if @proposerSign %>
+		<%= renderObject(@insuredSign,@signatureContainer) if @insuredSign %>
+		<%= renderObject(@supplementarySign,@signatureContainer) if @supplementarySign %>
+		<%= renderHiddenField('object', @policy.object ,'object', @policy) %>
+		<%= renderHiddenField('entityGuid', @signatureContainer.entityGuid ,'entityGuid', @signatureContainer) %>
+		<%= renderHiddenField('entityTypeCd', @signatureContainer.entityTypeCd ,'entityTypeCd', @signatureContainer) %>
+	
+		<div data-role="header" id="header" data-position="inline">
+			<a href="<%= url_for :action => :showProposal, :id=> @policy.object %>" rel="external" data-direction="reverse" data-role="none">
+				<img src="/public/images/SalesIllustration/icon_BackArrow-Red.png" width="70%">
+			</a>   
+			<h1 style="margin:0 30%";><%= getLabelValue('captureSign')%></h1>
+
+			<div class="ui-btn-right">
+				<div>
+					<a href="#" name="save" style="min-width:100px;float: left;padding-right: 10px;">
+						<img src="/public/images/Eapp/Save.png" height="40px" width="40px">
+					</a>
+					<span id='errordiv' style="display:none;float: right;">	
+						<a href="#" name="error_dialog" id="error_dialog" style="min-width:100px; bottom: 10px;">
+							<img src="/public/images/SalesIllustration/error_list.png">
+						</a>
+					</span>
+				</div>
+			</div>
+		</div>
+
+
+		<div data-role="content">
+			<div id='totalErrorDiv' style = "display:none">
+				<% if $total_error['eAppSignature'] %>
+					<%= renderErrorList($total_error) %>
+				<% end %>
+			</div>
+
+			<div class="illustrationdisplay">
+				<b><%= getLabelValue('agentDeclarationStart') %></b><br><br>
+				
+				<!-- ******************* Policy Owner Signature ****************** -->
+				<% if @proposerSign.to_s != "" %>
+					<div class="ui-grid-b"> 
+						<div class="ui-block-a"><%= getLabelValue('policyOwnerSignature') %></div>
+						<div class="ui-block-b"></div>
+						<div class="ui-block-c"></div>
+						
+						<div class="ui-block-a">
+							<%= renderSignatureInlineField('signature', @proposerSign ,returnAppHeightWeight('screen_width', 0.55), returnAppHeightWeight('screen_height', 0.30)) %>
+							<%= renderHiddenField('signatureTypeCd', @proposerSign.signatureTypeCd, 'signatureTypeCd', @proposerSign) %>
+							<%= renderHiddenField('roleCd', @proposerSign.roleCd, 'roleCd', @proposerSign) %>
+							<%= renderHiddenField('object', @proposerSign.object ,'object', @proposerSign) %>
+							<%= renderHiddenField('entityGuid', @proposerSign.entityGuid ,'entityGuid', @proposerSign) %>
+							<%= renderHiddenField('partyGuid', @proposerSign.partyGuid ,'partyGuid', @proposerSign) %>
+							<%= renderHiddenField('entityType', @proposerSign.entityType ,'entityType', @proposerSign) %>
+						</div>
+						<div class="ui-block-b"></div>
+						<div class="ui-block-c"></div>
+					</div>
+
+					<div data-role="dualfieldcontain">
+						<div class="half" style="width: 30%;">
+							<%= renderLabel('signatureDt', 'proposalSignedDt', nil, @proposerSign) %>
+							<%= renderDateField('signatureDt', @proposerSign.signatureDt, 'signatureDt', @proposerSign) %>
+						</div>
+						<div class="half" style="width: 30%;">
+							<%= renderLabel('placeOfSignature', 'proposalSignedPlace', nil, @proposerSign) %>
+							<%= renderInputField('placeOfSignature', @proposerSign.placeOfSignature ,'placeOfSignature', @proposerSign)  %>
+						</div>
+					</div>
+				<% end %>
+
+
+				<!-- ******************* Insured Signature ****************** -->   
+				<% if @insuredSign.to_s != "" %>
+					<hr style="width: 98%; margin-left: 0;">
+					<div class="ui-grid-b"> 
+						<div class="ui-block-a"><%= getLabelValue('primaryInsuredSignature') %></div>
+						<div class="ui-block-b"></div>
+						<div class="ui-block-c"></div>
+						
+						<div class="ui-block-a">
+							<%= renderSignatureInlineField('signature', @insuredSign ,returnAppHeightWeight('screen_width', 0.55), returnAppHeightWeight('screen_height', 0.30)) %>
+							<%= renderHiddenField('signatureTypeCd', @insuredSign.signatureTypeCd, 'signatureTypeCd', @insuredSign) %>
+							<%= renderHiddenField('roleCd', @insuredSign.roleCd, 'roleCd', @insuredSign) %>
+							<%= renderHiddenField('object', @insuredSign.object ,'object', @insuredSign) %>
+							<%= renderHiddenField('entityGuid', @insuredSign.entityGuid ,'entityGuid', @insuredSign) %>
+							<%= renderHiddenField('partyGuid', @insuredSign.partyGuid ,'partyGuid', @insuredSign) %>
+							<%= renderHiddenField('entityType', @insuredSign.entityType ,'entityType', @insuredSign) %>
+						</div>
+						<div class="ui-block-b"></div>
+						<div class="ui-block-c"></div>
+					</div>
+
+					<div data-role="dualfieldcontain">
+						<div class="half" style="width: 30%;">
+							<%= renderLabel('signatureDt', 'proposalSignedDt', nil, @insuredSign) %>
+							<%= renderDateField('signatureDt', @insuredSign.signatureDt, 'signatureDt', @insuredSign) %>
+						</div>
+						<div class="half" style="width: 30%;">
+							<%= renderLabel('placeOfSignature', 'proposalSignedPlace', nil, @insuredSign) %>
+							<%= renderInputField('placeOfSignature', @insuredSign.placeOfSignature ,'placeOfSignature', @insuredSign)  %>
+						</div>
+					</div>
+				<% end %>
+
+
+				<!-- ******************* Supplementary Signature ****************** -->      
+				<% if @supplementarySign.to_s != "" %>
+					<hr style="width: 98%; margin-left: 0;">
+					<div class="ui-grid-b"> 
+						<div class="ui-block-a"><%= getLabelValue('supplementaryInsuredSignature') %></div>
+						<div class="ui-block-b"></div>
+						<div class="ui-block-c"></div>
+
+						<div class="ui-block-a">
+							<%= renderSignatureInlineField('signature', @supplementarySign ,returnAppHeightWeight('screen_width', 0.55), returnAppHeightWeight('screen_height', 0.30)) %>
+							<%= renderHiddenField('signatureTypeCd', @supplementarySign.signatureTypeCd, 'signatureTypeCd', @supplementarySign) %>
+							<%= renderHiddenField('roleCd', @supplementarySign.roleCd, 'roleCd', @supplementarySign) %>
+							<%= renderHiddenField('object', @supplementarySign.object ,'object', @supplementarySign) %>
+							<%= renderHiddenField('entityGuid', @supplementarySign.entityGuid ,'entityGuid', @supplementarySign) %>
+							<%= renderHiddenField('partyGuid', @supplementarySign.partyGuid ,'partyGuid', @supplementarySign) %>
+							<%= renderHiddenField('entityType', @supplementarySign.entityType ,'entityType', @supplementarySign) %>
+						</div>
+						<div class="ui-block-b"></div>
+						<div class="ui-block-c"></div>
+					</div>
+
+					<div data-role="dualfieldcontain">
+						<div class="half" style="width: 30%;">
+							<%= renderLabel('signatureDt', 'proposalSignedDt', nil, @supplementarySign) %>
+							<%= renderDateField('signatureDt', @supplementarySign.signatureDt, 'signatureDt', @supplementarySign) %>
+						</div>
+						<div class="half" style="width: 30%;">
+							<%= renderLabel('placeOfSignature', 'proposalSignedPlace', nil, @supplementarySign) %>
+							<%= renderInputField('placeOfSignature', @supplementarySign.placeOfSignature ,'placeOfSignature', @supplementarySign)  %>
+						</div>
+					</div>
+				<% end %>
+
+
+				<!-- ******************* Agent Signature ****************** -->               
+				<div class="legend">
+					<%= renderLabel('agentSignHeader', 'agentSignHeader', 'strongLabel') %>
+				</div>
+				<p style="width: 98%; "><%= getLabelValue('agentDeclaration') %></p>
+
+				<div class="ui-grid-b"> 
+					<div class="ui-block-a">
+						<%= renderSignatureInlineField('signature', @agentSign ,returnAppHeightWeight('screen_width', 0.55), returnAppHeightWeight('screen_height', 0.30)) %>
+						<%= renderHiddenField('signatureTypeCd', @agentSign.signatureTypeCd, 'signatureTypeCd', @agentSign) %>
+						<%= renderHiddenField('object', @agentSign.object ,'object', @agentSign) %>
+						<%= renderHiddenField('entityGuid', @agentSign.entityGuid ,'entityGuid', @agentSign) %>
+						<%= renderHiddenField('partyGuid', @agentSign.partyGuid ,'partyGuid', @agentSign) %>
+						<%= renderHiddenField('entityType', @agentSign.entityType ,'entityType', @agentSign) %>
+					</div>
+					<div class="ui-block-b"></div>
+					<div class="ui-block-c"></div>
+				</div>
+			</div>
+		</div>
+	</form>
+</div>
+<%= render(:file => 'Policy/captureSignatureJS.erb')%>

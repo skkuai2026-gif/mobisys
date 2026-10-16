@@ -1,0 +1,152 @@
+<script type="text/javascript">
+var initialPolicyNumber = "";
+var array = [];
+
+    function tabSetup(){
+        <% if @fnaRequest.statusCd.to_s == "FNASUBMIT" || @fnaRequest.statusCd.to_s == "SYNCDONE"  %>
+            $("label").css("top","-10px");
+            setReadOnly($('input[type="text"]'), true);
+            setReadOnly($('input[type="tel"]'), true);
+            setReadOnly($('input[type="num"]'), true);
+            setReadOnly($('input[type="email"]'), true);
+            $('select').selectmenu('disable').trigger("refresh");
+            $('input[type="radio"]').checkboxradio('disable').trigger("refresh");
+            $('input[type="checkbox"]').checkboxradio('disable').trigger("refresh");
+            $('input[type="button"]').off('click');
+            $('input[type="button"]').button('disable').trigger("refresh");
+            $('a[href="#clear"]').hide();
+            $('input[type="text"]').css("top", "-10px");
+            $('label[for="policyNum"]').css("top", "-10px");
+            $('label[for="<%=getObjectMapping(fnaPolicyLink)%>[policyNum]"]').css("top", "-10px");
+        <% end %>    
+    };
+
+    function submitForm(){
+    //Used to trim all the input fields before save
+    $(':input').each(function(){
+        $(this).val($.trim($(this).val()))
+    });
+
+    if($('#policyNumber').serialize() != (MyPageData.getData)){
+      $.ajax({                                    
+        url: "/app/FNARequest/submitPolicyNumber",
+        method: 'POST',
+        async: false,
+        data: $('#policyNumber').serialize(),
+            headers: {
+                'Transition-Enabled': false
+            },
+        success: function(data) {
+            $("input[name='<%= getObjectMapping(@fnaRequest) %>[addtnField3Str]']").val(data);
+            $("a#submit").hide();
+        }
+      });
+    }
+  }
+
+    // $(document).ready(function() {
+    //    // alert("In ProposerJs")
+    //     initialPolicyNumber != $('#policyNumber').serialize()
+        
+    // });
+
+
+
+    $(document).ready(function() {
+    MyPageData = {};
+    MyPageData.getData = ($('#policyNumber').serialize());
+    <%if @fnaRequest.statusCd.to_s == "FNASIGNED" %>
+      $('#submit_button_for_submission').show();
+    <%else%>
+      $('#submit_button_for_submission').hide();
+    <%end%>
+    
+    $('#nextpre').show();
+    tabExchange($('.active-btn').attr("data-url")); 
+    
+    $("a[name='submit']").click(function(){
+      $('input[type="radio"]').removeAttr("disabled");
+      $('input[type="checkbox"]').removeAttr("disabled");
+        submitForm();
+        if ($("input[name='<%= getObjectMapping(@fnaRequest) %>[addtnField3Str]']").val() == "false" || $("input[name='<%= getObjectMapping(@fnaRequest) %>[addtnField3Str]']").val() == ""){
+                document.fnaForm.action = "executeSubmit";
+                document.fnaForm.submit();
+        }
+        else {
+              getTabErrors();
+        }
+    });
+  });
+
+
+
+function isNumberKey(evt)
+       {
+          var charCode = (evt.which) ? evt.which : evt.keyCode;
+          if (charCode != 46 && charCode > 31 
+            && (charCode < 48 || charCode > 57))
+             return false;
+
+          return true;
+       }
+
+    function numbersonly(evt){
+        var charCode = (evt.which) ? evt.which : event.keyCode
+        if (charCode > 31 && (charCode < 48 || charCode > 57))
+            return false;
+        return true;
+    }
+
+
+function checkifNum(val,id){
+  if (isNaN(val) || val < 0) {
+      $("input[id='" + id + "']").val("");
+      var dialogContent = '<span>'+"<%= getLabelValue('ERR_CONTACT') %>"+'</span>';
+      $("#policyNo-validation-div").html("").html(dialogContent).trigger('create');
+      if (typeof $.mobile.sdCurrentDialog === 'undefined') {
+        $("<div>").simpledialog2({
+          mode : 'blank',
+          blankContent : $("#policyNo-validation-div").html() +"<a rel='close' data-role='button' href='#' style='margin-top: 2%;'>" + '<%= getLabelValue("MESSAGE_CLOSE") %>' + "</a>"
+          });
+      }
+        $("input[id='" + id + "']").focus();
+    }
+  else if (val != "") {
+    var returnValue = val.indexOf(".");
+      if (returnValue != -1){
+        $("input[id='" + id + "']").val("");
+        var dialogContent = '<span>'+"<%= getLabelValue('ERR_CONTACT') %>"+'</span>';
+        $("#policyNo-validation-div").html("").html(dialogContent).trigger('create');
+          if (typeof $.mobile.sdCurrentDialog === 'undefined') {
+            $("<div>").simpledialog2({
+              mode : 'blank',
+              blankContent : $("#policyNo-validation-div").html() +"<a rel='close' data-role='button' href='#' style='margin-top: 2%;'>" + '<%= getLabelValue("MESSAGE_CLOSE") %>' + "</a>"
+            });
+          }
+        $("input[id='" + id + "']").focus();
+      }
+    }        
+      checkdigit(val,id);     
+  }
+
+function checkdigit(val,id){
+    if (val.toString().length != 9){
+          $("input[id='" + id + "']").val("");
+          // showDialog("", "<%#= getLabelValue('NEW_POLICY_NO_9') %>", 'warning', 0, 'capture');
+          var dialogContent = '<span>'+"<%= getLabelValue('NEW_POLICY_NO_9') %>"+'</span>';
+          $("#policyNo-validation-div").html("").html(dialogContent).trigger('create');
+          if (typeof $.mobile.sdCurrentDialog === 'undefined') {
+              $("<div>").simpledialog2({
+                  mode : 'blank',
+                  blankContent : $("#policyNo-validation-div").html() +"<a rel='close' data-role='button' href='#' style='margin-top: 2%;'>" + '<%= getLabelValue("MESSAGE_CLOSE") %>' + "</a>"
+              });
+          } 
+           $("input[id='" + id + "']").focus();
+        }
+  }
+
+
+
+
+
+</script>

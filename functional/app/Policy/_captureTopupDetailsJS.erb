@@ -1,0 +1,78 @@
+<script type="text/javascript">
+function enableInitialTopupFields(){
+    var initialTopupFl = $('input[name="<%=getObjectMapping(@policy)%>[initialTopupFl]"]');
+  	if(initialTopupFl.filter(':checked').val() == "YES") {
+    	$('input[name="<%=getObjectMapping(@initialTopup)%>[topUpAmount]"]').parents('div[class="half"]').show();
+  	}
+  	else {
+  		$('input[name="<%=getObjectMapping(@initialTopup)%>[topUpAmount]"]').val('');
+    	$('input[name="<%=getObjectMapping(@initialTopup)%>[topUpAmount]"]').parents('div[class="half"]').hide();
+  	}
+}
+
+  
+function enableRegularTopupFields() {
+    var regularTopupFl = $('input[name="<%=getObjectMapping(@policy)%>[regularTopupFl]"]');
+	if (regularTopupFl.filter(':checked').val() == "YES") {
+  		$('input[name="<%=getObjectMapping(@regularTopUp)%>[topupFrequencyVal]"]').val('1');
+		$('input[name="<%=getObjectMapping(@regularTopUp)%>[topUpPeriod]"]').parents('div[class="half"]').show();
+  		$('input[name="<%=getObjectMapping(@regularTopUp)%>[topUpAmount]"]').parents('div[data-role="dualfieldcontain"]').show();
+  	}
+  	else {
+  		$('input[name="<%=getObjectMapping(@regularTopUp)%>[topUpPeriod]"]').val('');
+  		$('input[name="<%=getObjectMapping(@regularTopUp)%>[topUpAmount]"]').val('');
+  		$('input[name="<%=getObjectMapping(@regularTopUp)%>[topupFrequencyVal]"]').val('');
+  		$('input[name="<%=getObjectMapping(@regularTopUp)%>[topUpPeriod]"]').parents('div[class="half"]').hide();
+  		$('input[name="<%=getObjectMapping(@regularTopUp)%>[topUpAmount]"]').parents('div[data-role="dualfieldcontain"]').hide();
+  	}
+}
+
+
+$(document).ready(function(){
+	enableInitialTopupFields();
+	enableRegularTopupFields();
+
+	$('input[name="<%=getObjectMapping(@policy)%>[initialTopupFl]"]').change(function(){
+		enableInitialTopupFields();
+	});
+
+	$('input[name="<%=getObjectMapping(@policy)%>[regularTopupFl]"]').change(function(){
+		enableRegularTopupFields();
+	});
+
+	$('input[name="<%=getObjectMapping(@initialTopup)%>[topUpAmount]"]').change( function(){
+		if (isNaN(this.value)) {
+			showDialog("", "<%= getLabelValue('VALID_INITIAL_AMT') %>", 'warning', 0, 'capture');
+			this.value = this.value.replace(/[^0-9.]/g, '');  
+		}
+	});
+
+	$('input[name="<%=getObjectMapping(@regularTopUp)%>[topUpAmount]"]').change( function(){
+		if (isNaN(this.value)) {
+			showDialog("", "<%= getLabelValue('VALID_REG_TOPUP_AMT') %>", 'warning', 0, 'capture');
+			this.value = this.value.replace(/[^0-9.]/g, '');  
+		}
+	});
+
+	<% 
+    if @mandatoryFields
+        if @mandatoryFields[@initialTopup]
+            @mandatoryFields[@initialTopup].each do |field| 
+    %>
+            $("label[for='<%=getObjectMapping(@initialTopup)%>[<%= field %>]']").append('<label for=" *" class="mandatory1">&nbsp;*</label>');
+    <% 
+            end
+        end
+    end
+    if @mandatoryFields
+        if @mandatoryFields[@regularTopUp]
+            @mandatoryFields[@regularTopUp].each do |field| 
+    %>
+            $("label[for='<%=getObjectMapping(@regularTopUp)%>[<%= field %>]']").append('<label for=" *" class="mandatory1">&nbsp;*</label>');
+    <% 
+            end
+        end
+    end
+    %>
+});
+</script>

@@ -1,0 +1,16 @@
+<%
+  require 'CommonModules/mobisysbrowserhelper'
+  
+  @currencyDefinitionTables.each do |currencyDt|
+    #puts ">>> Currency Cd: #{currencyDt.ruleName}"
+    %>
+    <option value="<%= currencyDt.ruleName %>"
+      <% if @currency == currencyDt.ruleName %>
+      selected
+      <% end %>
+    > 
+      <%= getLabelValue(currencyDt.ruleName) %>
+    </option>    
+    <%
+  end
+%>

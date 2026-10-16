@@ -1,0 +1,29 @@
+<script>
+$(document).ready(function () {
+	<% @riderProductExtras.each_with_index do |riderExtra, index| %>
+		setReadOnly($("input[name='<%= getObjectMapping(riderExtra) %>[decisionCd]']"), true);      
+		loadingTypeCd ='<%= riderExtra.loadingTypeCd%>'
+		extraTypeCd = '<% riderExtra.extraTypeCd %>'
+		if ((loadingTypeCd == "FLAT") || (loadingTypeCd == "BOTH") || (loadingTypeCd == "EITHER"))
+		{
+			setReadOnly($("input[name='<%= getObjectMapping(riderExtra) %>[extraFlatAmt]']"), false); 
+			setReadOnly($("input[name='<%= getObjectMapping(riderExtra) %>[extraFlatDuration]']"), false);  
+		}
+		else
+		{
+			setReadOnly($("input[name='<%= getObjectMapping(riderExtra) %>[extraFlatAmt]']"), true); 
+			setReadOnly($("input[name='<%= getObjectMapping(riderExtra) %>[extraFlatDuration]']"), true); 
+		}
+		if ((loadingTypeCd == "PERCENTAGE") || (loadingTypeCd == "BOTH") || (loadingTypeCd == "EITHER"))
+		{
+			setReadOnly($("input[name='<%= getObjectMapping(riderExtra) %>[extraPercent]']"), false); 
+			setReadOnly($("input[name='<%= getObjectMapping(riderExtra) %>[extraPercDuration]']"), false);  
+		}
+		else
+		{
+			setReadOnly($("input[name='<%= getObjectMapping(riderExtra) %>[extraPercent]']"), true); 
+			setReadOnly($("input[name='<%= getObjectMapping(riderExtra) %>[extraPercDuration]']"), true);  
+		}
+	<% end %>
+});
+</script>

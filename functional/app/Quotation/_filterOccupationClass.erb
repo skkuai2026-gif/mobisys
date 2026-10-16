@@ -1,0 +1,14 @@
+<%
+require 'CommonModules/mobisysbrowserhelper'
+@occupationClassLookups.each do|occupationClass|
+%>
+  <option value="<%= occupationClass.cd%>" <% 
+          if @occuClass[0].occupationClassCd == occupationClass.cd
+            %>
+            selected
+            <%
+          end
+        %> >
+    <%= getLabelValue(occupationClass.desc) %>
+  </option>
+<% end %>

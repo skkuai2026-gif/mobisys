@@ -1,0 +1,44 @@
+<div id="partyOtherDetails">
+	<div class="illustrationdisplay">
+		<div class="legend">
+			<label class="strongLabel">
+                <%= getLabelValue('communicationPreference') %>
+                <a href="#" class="scrollTopButton ui-icon-carat-u ui-btn-icon-notext ui-alt-icon ui-btn-inline"/>
+				<a href="#" class="expandButton ui-icon-plus ui-btn-icon-notext ui-alt-icon ui-btn-inline"/>
+				<a href="#" class="collapseButton ui-icon-minus ui-btn-icon-notext ui-alt-icon ui-btn-inline"/>
+            </label>
+		</div>
+
+        <div class="panelContent">
+			<fieldset name="PartyOtherDetails"> 
+				<div data-role="dualfieldcontain">
+					<% if @facetData[:renderPolicyDispatchModeCd] %>
+			         	<div class="half">
+			           		<%= renderLabel('policyDispatchModeCd', 'policyDispatchModeCd', nil, @policy)%>
+			           		<%= getLookup('MODEOFDOCUMENT','policyDispatchModeCd',@policy.policyDispatchModeCd, @policy) %>
+			           	</div>
+		           	<% end %>
+		           	<% if @facetData[:renderCorrByEmail] %>
+			         	<div class="half">
+			              	<%= renderLabel('corrByEmail', 'corrByEmail', nil, @policy) %>
+			              	<%= renderRadioButton('corrByEmail', @policy.corrByEmail, "#{getObjectMapping(@policy)}_corrByEmailYes", 'YES', @policy) %>
+			              	<%= renderLabel("#{getObjectMapping(@policy)}_corrByEmailYes", 'YES','radioWidth') %>
+			              	<%= renderRadioButton('corrByEmail', @policy.corrByEmail, "#{getObjectMapping(@policy)}_corrByEmailNo", 'NO', @policy) %>
+			              	<%= renderLabel("#{getObjectMapping(@policy)}_corrByEmailNo", 'NO','radioWidth') %>
+			        	</div> 
+		         	<% end %>
+		       	</div>  
+
+				<div data-role="dualfieldcontain">
+					<% if @facetData[:renderCommunicationPreference] %>
+						<div class="half">
+							<%= renderLabel('communicationPreference', 'communicationPreference',nil, @policy)%>
+							<%= getLookup('DELIVERYMODE','communicationPreference', @policy.communicationPreference, @policy) %>
+						</div>
+					<% end %>
+				</div>
+			</fieldset>
+		</div>
+	</div>
+</div>
+<%= render :partial => "capturePartyOtherDetailsJS" %>

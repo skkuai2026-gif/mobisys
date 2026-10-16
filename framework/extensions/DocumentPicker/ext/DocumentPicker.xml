@@ -1,0 +1,53 @@
+<?xml version = "1.0"?>
+<?xml-stylesheet type="text/xsl" href="pb_help.xsl"?>
+<API>
+	<MODULE name="DocumentPicker" parent="Rho">
+		<HELP_OVERVIEW>API to select document on the device using a document manager</HELP_OVERVIEW>
+		<MORE_HELP></MORE_HELP>
+
+		<TEMPLATES>
+			<DEFAULT_INSTANCE/>
+			<PROPERTY_BAG/>
+		</TEMPLATES>
+
+		<PROPERTIES >
+			<DESC>list of properties supported by instance of object</DESC>
+			<PROPERTY name="simpleStringProperty" type="STRING" usePropertyBag="accessorsViaPropertyBag" >
+				<DESC>simple string property</DESC>
+			</PROPERTY>
+		</PROPERTIES>
+
+		<METHODS>
+			<METHOD name="enumerate" access="STATIC" hasCallback="optional">
+				<RETURN type="ARRAY">
+					<DESC>Array of DocumentPicker objects</DESC>
+					<PARAM type="SELF_INSTANCE"/>
+				</RETURN>
+			</METHOD>
+
+			<METHOD name="pickDocument" hasCallback="optional">
+				<DESC>Trigger opening of a document manager for file selection</DESC>
+				<PARAMS>
+					<PARAM name="supportedExtensionList" type="STRING">
+						<DESC>Comma separated list of extensions to be allowed in the document manager</DESC>
+					</PARAM>
+				</PARAMS>
+				<CALLBACK type="HASH">
+					<PARAMS>
+						<PARAM name="status" type="STRING">
+							<DESC>Whether or not the document was successfully captured. The returned string will be one of 'ok', 'error' or 'cancel'</DESC>
+						</PARAM>
+						<PARAM name="filePath" type="STRING">
+							<DESC>Whether or not the document was successfully captured. The returned string will be one of 'ok', 'error' or 'cancel'</DESC>
+						</PARAM>
+					</PARAMS>
+				</CALLBACK>
+			</METHOD>
+		</METHODS>
+
+		<USER_OVERVIEW></USER_OVERVIEW>
+
+		<VER_INTRODUCED>1.0.0</VER_INTRODUCED>
+		<PLATFORM>Android,iOS,Windows Desktop</PLATFORM>
+	</MODULE>
+</API>

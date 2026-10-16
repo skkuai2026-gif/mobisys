@@ -1,0 +1,5 @@
+<%= panelTagStart(false) %>
+	<%= subPanelTagStart("pdfRequiredFl","true","PDFDETAILSREQUIRED") %>
+		<%= prdFieldDataTag("#{@quotationPckg}.PolicyProductDO",'pdfRequiredFl,solverTypeCd,pdfAmount,pdfFrequencyVal,pdfPeriod','PDFDETAILSREQUIRED') %>
+	<%= subPanelTagEnd %>
+<%= panelTagEnd %>

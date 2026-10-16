@@ -1,0 +1,15 @@
+
+<%= pageTagStart('add-sales-illustration','Symbiosys - Sales Illustration') %>
+	<%= headerTag("#{@insuranceType}SEARCHILLUSTRATION","search") %>
+	<%= formTagStart("Search","/app/Quotation/searchmulti") %>
+		<div data-role="main" class="ui-content">
+			<%= menuTag('GENERATEMULTIPLEOUTPUTS',true) %>
+			<%= multiSelectsearchTag("quotationRefNum,productId,fullName,quotationDt,quoteStatusCd","SearchProspectDO",@searchResultList, false, false,"Edit","icon-change-status,icon-copy,icon-summary,icon-mail","/app/Quotation/{#object}/show,/app/Quotation/{#object}/show?type=copy,#summaryPopUp/{#object},/app/Quotation/{#object}/printOptionsAndEmail?view_email=email",'#','#','SEARCHEMAILSREQUESTED','/app/Quotation/searchEmailRequest',false,"","","","",true,"","/app/Quotation/{#object}/show") %>
+
+			<input type="hidden" name="insuranceTypeCd" id="insuranceType" value='<%= @insuranceType %>'/>
+
+			<div data-role="popup" id="summaryPopUp" data-theme="a" class="ui-corner-all popup-wrapper"></div>
+	    </div>
+    <%= formTagEnd %>
+<%= pageTagEnd %>
+<script src="/app/Quotation/QuoteSearchmulti_jazz.js" type="text/javascript"></script>

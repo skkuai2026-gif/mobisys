@@ -1,0 +1,16 @@
+<%= render(:partial => 'CommonModules/renderQuestionnaire_Jazz', :locals => { :questionnaireId => "agentQuestionnaire"}) %>
+
+
+<%= modelTagStart("agentQuestionnaireContainer", @signatureContainer) %>
+	<%= modelTagStart("agentQuestionnaire", @agentDeclarationSignature, @signatureContainer) %>
+		<%= signatureTag("signature","agentSignHeader") %>
+		<div style="display: none;">
+			<%= inputTag("signatureTypeCd") %>
+			<%= inputTag("entityGuid") %>
+		</div>
+	<% modelTagEnd %>
+	<div style="display: none;">
+		<%= inputTag("entityGuid") %>
+		<%= inputTag("entityTypeCd") %>
+	</div>
+<% modelTagEnd %>

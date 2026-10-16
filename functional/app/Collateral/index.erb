@@ -1,0 +1,154 @@
+<div data-role="page" id="comparatorPage" data-url="<%= Rho::RhoConfig.start_path %>/">
+
+
+<!-- Content div -->
+<div class="contentdiv">
+      
+<!-- Menu -->
+  <div style="width:100%;">
+   <ul id="css3menu1" class="topmenu" style="width:100%;">
+      <li class="topfirst" style="width:20%;">
+        <a href="/app/Level0/entrypoint" style="padding:0;">
+          <img src="<%=@collateralHM['HDFCLOGO'].fileName%>" alt="<%=@collateralHM['HDFCLOGO'].header%>" height="57px"/>
+        </a>
+      </li>
+      <% 
+        last = @level0s.length-1
+        @level0s.each_with_index{|level0,index|
+         
+          if index == last
+            menuString = "lastmenu"
+          else
+            menuString = "topmenu"
+          end
+      %>
+          <li class="<%=menuString%>" style="width:16%;">
+            <%
+              if level0.menu == "YES"
+                %>
+                <a href="#">
+                <%
+              elsif level0.menu == "NO"
+                %>
+                <a href="/app/Level0/{<%=level0.object%>}/click?level0id=<%=level0.object%>">
+                <%
+              end
+              
+              if level0.levelCd == @level0.levelCd
+                %>
+                  <label class="level0label0selected"><%= level0.name1 %></label>
+                <%
+              else
+                %>
+                  <label class="level0label0"><%= level0.name1 %></label>
+                <%
+              end
+            %>
+              <BR>
+              <label class="level0label1"><%= level0.name2 %></label>
+            </a>
+            <%
+              if level0.menu == "YES"
+                %>
+                  <ul>
+                    <%
+                      @level1s.each do |level1|
+                        if level1.level0_levelCd == level0.levelCd
+                          %>
+                          <li style="position:relative;display:inline-block;">
+                            <a href="/app/Level1/{<%=level0.object%>}/click?level1id=<%=level1.object%>">
+                              <img src="<%=@collateralHM[level1.icon].fileName%>" alt="<%=@collateralHM[level1.icon].header%>"/>
+                            </a>
+                          </li>
+                          <% 
+                        end 
+                      end 
+                    %>
+                  </ul>
+                <%
+              end
+            %>
+          </li>
+          <% 
+        } 
+      %>
+    </ul>
+  </div>
+<!-- end Menu -->
+
+<div data-role="header" data-position="inline">
+  <h1><%=getLabelValue("SEARCHCOLLATERAL")%></h1>
+</div>
+        
+<div>
+      <div  class="illustrationdisplay">
+        <form method="POST" action="<%= url_for :action => :search %>" name="collateralSearchForm">
+            <div data-role="fieldcontain" >
+                <label for="search" class="label"><%= getLabelValue('SEARCHINPUT')%></label>
+                <input type="search" name="search" id="Searchname" value="<%= @params['search'] %>" />
+            </div>
+            <input type="hidden" name="id" value="<%= @level0.object %>">
+            <% 
+              if @params['search'] != nil
+                %>
+                  
+                    <table class="searchtable" width="100%">
+                      <tr class="searchtableheader" >
+                          <td width="20%">
+                             <%= getLabelValue('PATH')   %>
+                          </td>
+                         <td width="35%">
+                             <%= getLabelValue('NAME')   %>
+                         </td>
+                         <td width="35%">
+                            <%= getLabelValue('DESCRIPTION')   %>
+                         </td>
+                          <td width="10%">
+                             <%= getLabelValue('VIEW')   %>
+                          </td>
+                         <td>&nbsp;
+                         </td>
+                      </tr>
+                      
+                  <%  
+                    i=0
+                    @collaterals.each_with_index do |collateral, index|
+                      if collateral != nil
+                          if (index%2 == 0)
+                          %>
+                            <tr class = "search1">
+                          <% else %>
+                            <tr class = "search2">
+                          <% end %>
+                            
+                                <tr>
+                                  <td class="tabletext" width="20%">                  
+                                      <div style="height:100%;width:100%">&nbsp;<%= collateral.path %>&nbsp;</div>                   
+                                  </td>
+                                  <td class="tabletext" width="35%">                    
+                                      <div style="height:100%;width:100%" align="center">&nbsp;<%= collateral.header %>&nbsp;</div>                  
+                                  </td>
+                                  <td class="tabletext" width="35%">                  
+                                      <div style="height:100%;width:100%" align="center">&nbsp;<%= collateral.description %>&nbsp;</div>                   
+                                  </td>
+                                  <td class="tabletext" width="10%">   
+                                    <a href="/app/Collateral/showCollateral?cCd=<%= collateral.collateralCd %>&levelObject=<%= @level0.object %>&search=<%= @params['search'] %>"  name="viewButton" data-role="button">
+                                      <div style="height:100%;width:100%" align="center">&nbsp;<%= getLabelValue('VIEW')   %>&nbsp;</div>
+                                    </a>
+                                  </td>
+                                </tr>
+                        <%
+                      end
+                    end
+                  %>
+                    </table>
+                  </div>
+                <%
+              end 
+            %>
+        </form>
+      </div>
+  </div>
+         
+ </div>
+</div>

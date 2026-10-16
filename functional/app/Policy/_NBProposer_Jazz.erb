@@ -1,0 +1,62 @@
+<%= panelTagStart(false) %>
+	<%= modelTagStart('proposerPolicyPartyRole', @policyHolderPolicyPartyRole, @policy)%>
+		<div style="display: none;">
+			<%= inputTag("roleCd") %>
+			<%= inputTag("refGuid") %>
+		</div>
+	<% modelTagEnd %>
+	<%= modelTagStart("PolicyProposerDO", @policyHolder, @policy) %>
+		<%
+			partyPckg = 'PolicyProposerDO'
+			@tagName = 'PolicyProposerDO'
+		%>
+		<%= navbarTagStart(@proposerNavbarIds,@proposerNavbarLabels) %>
+			<% if @navbarToBeLoaded=="#{@tabToBeLoaded}-proposerDetailsTabContainer" %>
+				<%= tabTagStart("#{@tabToBeLoaded}-proposerDetailsTabContainer") %>
+					<%= render(:partial => 'NBPartyRender_Jazz', :locals => {:facetkeyprefix => 'PROPOSER' , :partyPckg => partyPckg , :party => @policyHolder }) %>
+					<% if @renderPolicyHolderNationalityPanel %>
+						<%= render(:partial => 'NBPartyNationality_Jazz', :locals => {:partyPckg => partyPckg}) %>
+					<% end %>
+
+					<% if @renderPolicyHolderIdentityPanel %>
+						<%= render(:partial => 'NBPartyIdentity_Jazz', :locals => { :partyPckg => partyPckg, :tagId => 'proposerPartyIdentity', :partyIdentity1 => @policyHolderIdentity1, :partyIdentity2 => @policyHolderIdentity2, :party => @policyHolder}) %>
+					<% end %>
+					<% if @renderPolicyHolderOccupationPanel %>
+						<div style="display: none;">
+							<%= inputTag("partyTypeCd") %>
+						</div>
+						<%= render(:partial => 'NBPartyEmployment_Jazz', :locals => {:partyPckg => partyPckg, :partyEmployment => @policyHolderEmployment, :party => @policyHolder, :tagId => 'proposerPartyEmployment'}) %>
+					<% end %>
+				<%= tabTagEnd %>
+			<% end %>
+
+			<% if @navbarToBeLoaded=="#{@tabToBeLoaded}-proposerContactDetailsTabContainer" %>
+				<%= tabTagStart("#{@tabToBeLoaded}-proposerContactDetailsTabContainer") %>
+					<% if @renderPolicyHolderAddressPanel %>
+						<div style="display: none;">
+							<%= inputTag("partyTypeCd") %>
+							<% if @renderPolicyHolderOccupationPanel %>
+								<%= modelTagStart('proposerPartyEmployment', @policyHolderEmployment, @policyHolder) %>
+									<%= inputTag("occupationTypeCd") %>
+						  		<% modelTagEnd %>
+						  	<% end %>
+						</div>
+						<%= render(:partial => 'NBPartyAddress_Jazz', :locals => {:party => @policyHolder, :party_res_address => @policyHolderHomeAddress, :party_office_address => @policyHolderBusinessAddress, :party_per_address => @policyHolderPermanentAddress, :partyPckg => partyPckg, :resTagId => 'proposerPartyAddressHome', :ofcTagId  => 'proposerPartyAddressOffice', :perTagId => 'proposerPartyAddressPermanent', :renderHomeAddressPanel => @renderPolicyHolderHomeAddressPanel, :renderPermanentAddressPanel => @renderPolicyHolderPermanentAddressPanel, :renderOfficeAddressPanel => @renderPolicyHolderOfficeAddressPanel}) %>
+					<% end %>
+
+					<% if @renderPolicyHolderContactPanel %>
+						<%= render(:partial => 'NBPartyContact_Jazz', :locals => {:partyPckg => partyPckg, :party_resi_contact => @policyHolderContactHome, 
+					  :party_off_contact => @policyHolderContactOffice, :party_mob_contact => @policyHolderContactMobile,
+					  :party => @policyHolder, :emailModelId => 'proposerPartyEmail', :partyEmailObject => @policyHolderEmail, 
+					  :resiTagId => 'proposerPartyContactResidential', :offTagId => 'proposerPartyContactOffice', :mobTagId => 'proposerPartyContactMobile'}) %>
+					<% end %>
+				<%= tabTagEnd %>
+			<% end %>
+		<%= navbarTagEnd %>
+	<% modelTagEnd %>
+<%= panelTagEnd %>
+
+<%= setupFilterUsingFieldTargetValueMap('TitleGender', false, "PolicyProposerDO") %>
+<%= setupFilterUsingFieldTargetValueMap('CoverageCountryCity', true, "PolicyProposerDO") %>
+<%= setupFilterUsingFieldTargetValueMap('RelationGender', true, "PolicyProposerDO") %>
+<%= setupFilterUsingFieldTargetValueMap('CITIZENSHIPRACE', true, "PolicyProposerDO") %>

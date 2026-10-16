@@ -1,0 +1,122 @@
+<div data-role="page" id="illustration">
+	<div data-role="header" data-position="inline">
+		<script src="/public/js/RGraph/RGraph.common.core.js"></script>
+    	<script src="/public/js/RGraph/RGraph.line.js"></script>
+    	<h1><%= getLabelValue('BENEFITSUMMARY')%></h1>
+	    <div class="headerButtons" name = "headerButtons">     
+	      <a href="#" id = "back" name="back" onclick="location.href='<%= url_for :action => :illustration1, :id=>@quotation.object %>';" data-direction="reverse">
+	        <img src="/public/images/SalesIllustration/icon_BackArrow-Red.png">
+	      </a>
+    	</div>
+    </div>
+	<div data-role="content">
+		<div data-role="table" class="illustrationdisplay" >
+			<div style="float:left"><h1><%= getLabelValue(@baseQuotationProduct.productId.to_s)%></h1></div>
+			<div style="float:right"><img src = "/public/images/SalesIllustration/small_fwd.jpg"/></div>
+			<div style="clear:both"></div>			
+			<%= getLabelValue('SUMMARYOFBENEFITS') %><br/>
+			<%= getLabelValue('SUMMARYOFBENEFITSHEADER') %><br/><br/>
+			<%= getLabelValue('BASICINSURANCE')%>
+			<ul style="list-style:none">
+				<li>
+					<%=getLabelValue("FWD")%><br/><br/>
+					<%=getLabelValue("BENEFITLABELFWDPART1")%><br/>
+					<table border = "1" style ="border-spacing: 0px;">
+						<tr>
+							<td>Usia</td>
+							<td><%="<1"%></td>
+							<td><%="1-<2"%></td>
+							<td><%= "2-<3"%></td>
+							<td><%= "3-<4"%></td>
+							<td><%=">=4"%></td>
+						</tr>
+						<tr>
+							<td>% Uang Pertanggungan</td>
+							<td>20%</td>
+							<td>40%</td>
+							<td>60%</td>
+							<td>80%</td>
+							<td>100%</td>
+						</tr>
+					</table>
+					<%=getLabelValue("BENEFITLABELFWDPART2")%><br/><br/>
+					<%=getLabelValue("ADDITIONALINSURANCE")%><br/>
+				</li>
+				<%@allRiders.each do |rider|%>
+					<li>
+						<%= getLabelValue(rider.productId.to_s) %><br/>
+						<%= getLabelValue('LABEL' + rider.productId.to_s)  %>
+						<%if rider.productId == "HC"%>
+							<table border = "1" style ="border-spacing: 0px;">
+								<tr>
+									<td>Manfaat</td>
+									<td>Manfaat Per Unit (Rp)</td>
+									<td>Manfaat Per Unit (USD)</td>
+								</tr>
+								<tr>
+									<td>Rawat Inap (per hari, min 1x12 jam, maks 120 hari per Tahun Polis)*</td>
+									<td>100.000</td>
+									<td>10</td>
+								</tr>
+								<tr>
+									<td>Rawat Inap di ICU (per hari, maks 30 hari per Tahun Polis)</td>
+									<td>200.000</td>
+									<td>20</td>
+								</tr>
+								<tr>
+									<td>Tindakan Bedah (per Tahun Polis):</td>
+									<td>
+									</td>
+									<td>
+									</td>
+								</tr>
+								<tr>
+									<td>Minor</td>
+									<td>400.000</td>
+									<td>40</td>
+								</tr>
+								<tr>
+									<td>Medium</td>
+									<td>600.000</td>
+									<td>60</td>
+								</tr>
+								<tr>
+									<td>Mayor</td>
+									<td>800.000</td>
+									<td>80</td>
+								</tr>
+								<tr>
+									<td>Kompleks</td>
+									<td>1000.000</td>
+									<td>100</td>
+								</tr>
+							</table>
+						<% end %>
+						<% if rider.productId == "FTR"%>
+							<table border = "1" style ="border-spacing: 0px;">
+								<tr>
+									<td>Usia</td>
+									<td><%="<1"%></td>
+									<td><%="1-<2"%></td>
+									<td><%= "2-<3"%></td>
+									<td><%= "3-<4"%></td>
+									<td><%=">=4"%></td>
+								</tr>
+								<tr>
+									<td>% Uang Pertanggungan</td>
+									<td>20%</td>
+									<td>40%</td>
+									<td>60%</td>
+									<td>80%</td>
+									<td>100%</td>
+								</tr>
+							</table>
+						<%end%>
+						<br/><br/>
+					</li>
+				<%end%>
+			<ul>
+		</div>
+	</div>
+</div>
+

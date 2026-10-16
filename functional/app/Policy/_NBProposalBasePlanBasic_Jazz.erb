@@ -1,0 +1,32 @@
+<%= panelTagStart(false) %>
+	<%= subPanelTagStart("basePlanDetails","false","",true) %>
+		<%= prdFieldDataTag("#{@policyPckg}.PolicyProductDO",'wopPremium') %>
+		<%= prdFieldDataTag("#{@policyPckg}.PolicyProductDO",'productFamilyCd,productId,productPlanOptionCd') %>
+		<%= prdFieldDataTag("#{@policyPckg}.PolicyProductDO",'currencyCd','CAPTURECURRENCY') %>
+		<%= prdFieldDataTag("#{@policyPckg}.PolicyProductDO",'paymentTypeCd,paymentFrequencyCd,productTerm,premiumPayingTerm') %>
+		<%= prdFieldDataTag("#{@policyPckg}.PolicyProductDO",'capturedPremiumAmt','CAPTUREPREMIUMREQUIRED') %>
+		<%= prdFieldDataTag("#{@policyPckg}.PolicyProductDO",'baseSumAssured,coi') %>
+		<%= prdFieldDataTag("#{@policyPckg}.PolicyProductDO",'baseAnnualPremium,modalPremium') %>
+		<%= prdFieldDataTag("#{@policyPckg}.PolicyProductDO",'minTargetPremium,maxTargetPremium,recommendedPremium,unapliedPremium','OTHERPREMIUMSREQUIRED') %>
+		<%= prdFieldDataTag("#{@policyPckg}.PolicyProductDO",'monthlyIncome,annualIncome,tripTypeCd,geographyCd,visitPurposeCd,maxTripPeriod') %>
+
+		<div style="display: none;">
+			<%= inputTag("productFamilyCd") %>
+			<%= inputTag("productId") %>
+			<%= inputTag("productPlanOptionCd") %>
+			<%= inputTag("productTypeCd") %>
+			<%= inputTag("productVersion") %>
+			<%= inputTag("productSeq") %>
+			<%= inputTag("annualizedPremium") %>
+			<%= inputTag("extraPremium") %>
+
+			<!-- Following should be set as data attribute in tags-->
+			<input type="hidden" name="premiumPayingTermFacet" id="premiumPayingTermFacet" value='<%= $premiumPayingTerm %>'/>
+			<input type="hidden" name="basePlan_premiumSAFl" id="basePlan_premiumSAFl" value='<%= $premiumSAFl %>'/>
+			<input type="hidden" name="basePlan_readOnlyFields" id="basePlan_readOnlyFields" value='<%= @readOnlyFields %>'/>
+			<input type="hidden" name="basePlan_allowedCurrency" id="basePlan_allowedCurrency" value='<%= @allowedCurrency %>'/>
+			<input type="hidden" name="basePlan_allowedPaymentTypeCd" id="basePlan_allowedPaymentTypeCd" value='<%= @allowedPaymentTypeCd %>'/>
+			<input type="hidden" name="basePlan_allowedPaymentFrequencyCd" id="basePlan_allowedPaymentFrequencyCd" value='<%= @allowedPaymentFrequencyCd %>'/>
+		</div>
+	<%= subPanelTagEnd %>
+<%= panelTagEnd %>

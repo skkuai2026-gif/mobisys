@@ -1,0 +1,6 @@
+<h3 class="activityHeaderDetails<%= @leadActivityCount %>">
+	<%= (@leadActivityCount.to_i + 1)%> <%= getLabelValue('Activity')%>
+</h3>
+<fieldset style='margin-left: 92%; margin-top: 20px; position: absolute; z-index: 300;'>
+	<input type="button" data-inline="true" data-icon="delete" data-iconpos="notext" onclick="removeLeadActivity('<%= @leadActivity.object %>', '<%= @leadActivityCount %>');">
+</fieldset>

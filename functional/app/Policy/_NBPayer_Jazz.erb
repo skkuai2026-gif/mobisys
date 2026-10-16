@@ -1,0 +1,41 @@
+<%= panelTagStart(false) %>
+	<%= modelTagStart(payerPolicyPartyRoleId, payerPolicyPartyRole, @policy)%>
+		<div style="display: none;">
+			<%= inputTag("roleCd") %>
+			<%= inputTag("refGuid") %>
+			<%= inputTag("paymentInstructionTypeCd") %>
+		</div>
+	<% modelTagEnd %>
+	<%= modelTagStart(payerId, payer, @policy) %>
+		<% partyPckg = 'PolicyPayerDO' %>
+		<% @tagName = payerId %>
+		
+		<%= render(:partial => 'NBPartyRender_Jazz', :locals => {:facetkeyprefix => 'PolicyPayerDO' , :partyPckg => partyPckg ,:party => payer}) %>
+		 
+		<% if @renderPayerNationalityPanel %>
+			<%= render(:partial => 'NBPartyNationality_Jazz', :locals => {:partyPckg => partyPckg}) %>
+		<% end %>
+
+		<% if @renderPayerIdentityPanel %>
+			<%= render(:partial => 'NBPartyIdentity_Jazz', :locals => { :partyPckg => partyPckg, :tagId => "#{payerId}PartyIdentity",
+		  :partyIdentity1 => payerIdentity1, :partyIdentity2 => payerIdentity2, :party => payer}) %>
+		<% end %>
+		
+		<% if @renderPayerOccupationPanel %>
+			<%= render(:partial => 'NBPartyEmployment_Jazz', :locals => {:partyPckg => partyPckg, :partyEmployment => payerEmployment, :party => payer, :tagId => "#{payerId}PartyEmployment"}) %>
+		<% end %>
+
+		<% if @renderPayerAddressPanel %>
+			<%= render(:partial => 'NBPartyAddress_Jazz', :locals => {:party => payer, :party_res_address => payer_res_address, :party_office_address => payer_office_address, :party_per_address => payer_per_address, :partyPckg => partyPckg, :resTagId => "#{payerId}PartyAddressHome", :ofcTagId  => "#{payerId}PartyAddressOffice", :perTagId => "#{payerId}PartyAddressPermanent", :renderHomeAddressPanel => @renderPayerHomeAddressPanel, :renderPermanentAddressPanel => @renderPayerOfficeAddressPanel, :renderOfficeAddressPanel => @renderPayerPermanentAddressPanel}) %>
+		<% end %>
+
+		<% if @renderPayerContactPanel %>
+			<%= render(:partial => 'NBPartyContact_Jazz', :locals => {:partyPckg => partyPckg, :party_resi_contact => payer_resi_contact, :party_off_contact => payer_off_contact, :party_mob_contact => payer_mob_contact, :party => payer, :emailModelId => "#{payerId}PartyEmail", :partyEmailObject => payerEmailObject, :resiTagId => "#{payerId}PartyContactResidential", :offTagId => "#{payerId}PartyContactOffice", :mobTagId => "#{payerId}PartyContactMobile"}) %>
+		<% end %>
+	<% modelTagEnd %>
+<%= panelTagEnd %>
+
+<%= setupFilterUsingFieldTargetValueMap('TitleGender', false, payerId) %>
+<%= setupFilterUsingFieldTargetValueMap('CoverageCountryCity', true, payerId) %>
+<%= setupFilterUsingFieldTargetValueMap('RelationGender', true, payerId) %>
+<%= setupFilterUsingFieldTargetValueMap('CITIZENSHIPRACE', true, payerId) %>

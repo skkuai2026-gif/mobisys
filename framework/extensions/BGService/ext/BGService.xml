@@ -1,0 +1,55 @@
+<?xml version = "1.0"?>
+<?xml-stylesheet type="text/xsl" href="pb_help.xsl"?>
+<API>
+	<MODULE name="BGService" parent="Rho">
+		<HELP_OVERVIEW>API to start a background service</HELP_OVERVIEW>
+		<MORE_HELP>
+			API works for only Android and iOS platforms. Include 'fingerprint' in the extensions property of build.yml to use the extension.
+			Can be called using
+				Rho::Fingerprint.enableFingerprintScan(CallBackHandler callback)
+		</MORE_HELP>
+
+		<TEMPLATES>
+			<DEFAULT_INSTANCE/>
+			<PROPERTY_BAG/>
+		</TEMPLATES>
+
+		<PROPERTIES >
+			<DESC>list of properties supported by instance of object</DESC>
+			<PROPERTY name="simpleStringProperty" type="STRING" usePropertyBag="accessorsViaPropertyBag" >
+				<DESC>simple string property</DESC>
+			</PROPERTY>
+		</PROPERTIES>
+
+		<METHODS>
+			<METHOD name="enumerate" access="STATIC" hasCallback="optional">
+				<RETURN type="ARRAY">
+					<DESC>Array of BGService objects</DESC>
+					<PARAM type="SELF_INSTANCE"/>
+				</RETURN>
+			</METHOD>
+
+			<METHOD name="startBackgroundService">
+				<DESC>Method to start background service</DESC>
+				<PARAMS>
+					<PARAM name="bgServiceRubyFunc" type="STRING">
+					</PARAM>
+				</PARAMS>
+			</METHOD>
+
+			<METHOD name="stopBackgroundService">
+				<DESC>Method to stop background service</DESC>
+			</METHOD>
+
+			<METHOD name="checkBackgroundServiceStatus">
+				<DESC>Method to check background service running status</DESC>
+				<RETURN type="STRING"/>
+			</METHOD>
+		</METHODS>
+
+		<USER_OVERVIEW></USER_OVERVIEW>
+
+		<VER_INTRODUCED>1.0.0</VER_INTRODUCED>
+		<PLATFORM>Android,iOS</PLATFORM>
+	</MODULE>
+</API>

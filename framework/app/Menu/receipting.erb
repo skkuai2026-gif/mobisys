@@ -1,0 +1,31 @@
+<div data-role="page" data-url="<%= Rho::RhoConfig.start_path %>/">
+  
+  <div data-role="header" data-position="inline">
+    <h1><%= getLabelValue('RECEIPTING')    %></h1>
+    <a href="<%= url_for :action => :landingPage %>" class="ui-btn-left" data-direction="reverse" rel="external">
+      <%= getLabelValue('BACK')   %>
+    </a>
+  </div>
+  
+  <div data-role="content">
+    <ul data-role="listview">
+      <li>
+        <img src = "/public/images/SalesIllustration/capture.png">
+        <a href="#" onclick="location.href='/app/Inward/captureReceipt';"><%= getLabelValue('CAPTURERECEIPT') %></a>
+      </li>
+      <li>
+        <img src = "/public/images/SalesIllustration/search.png">
+        <a href="/app/Inward/search"><%= getLabelValue('SEARCHRECEIPT') %></a>
+      </li>
+      <li>
+        <img src = "/public/images/SalesIllustration/compare.png">
+        <a href="#" onclick=""><%= getLabelValue('GENERATEPIS') %></a>
+      </li>
+   <!--   <li>
+        <a href="#" onclick="location.href='/app/Inward/tabdemo';"><%= getLabelValue('Tab Demo') %></a>
+      </li>
+   -->   
+    </ul>
+  </div>
+  
+</div>

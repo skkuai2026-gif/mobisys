@@ -1,0 +1,94 @@
+<div class="illustrationdisplay">
+	<% if @facetData[:renderInwardPaymentMethodCd] || @facetData[:renderInwardPaymentSubTypeCd] %>
+		<div data-role="dualfieldcontain">
+			<% if @facetData[:renderInwardPaymentMethodCd] %>
+				<div class="half">
+					<%= renderLabel('paymentMethodCd', 'paymentMethodCd', nil, @inwardDetail) %>
+					<%= getLookup('PAYMENTMETHOD', 'paymentMethodCd', @inwardDetail.paymentMethodCd, @inwardDetail) %>
+				</div>
+			<% end %>	
+			<% if @facetData[:renderInwardPaymentSubTypeCd] %>
+				<div class="half">
+					<%= renderLabel('paymentSubTypeCd', 'paymentSubTypeCd', nil, @inwardDetail) %>
+					<%= getLookup('PAYMENTSUBTYPECD', 'paymentSubTypeCd', @inwardDetail.paymentSubTypeCd, @inwardDetail) %>
+				</div>
+			<% end %>	
+		</div>
+	<% end %>
+
+
+	<% if @facetData[:renderInwardMicrNum] || @facetData[:renderInwardAccountName] %>
+		<div data-role="dualfieldcontain">
+			<% if @facetData[:renderInwardMicrNum] %>
+				<div class="half">
+					<%= renderLabel('micrNum', 'micrNum', nil, @inwardDetail) %>
+					<%= renderInputField('micrNum', @inwardDetail.micrNum, 'micrNum', @inwardDetail,'maxlength="90"') %>
+				</div>
+			<% end %>
+			<% if @facetData[:renderInwardAccountName] %>
+				<div class="half">
+					<%= renderLabel('accountName', 'accountName', nil, @inwardDetail) %>
+					<%= renderInputField('accountName', @inwardDetail.accountName ,'Account Name',@inwardDetail) %>
+				</div>
+			<% end %>
+		</div>
+	<% end %>
+
+
+	<% if @facetData[:renderInwardBankCd] || @facetData[:renderInwardBankBranch] %>
+		<div data-role="dualfieldcontain">
+			<% if @facetData[:renderInwardBankCd] %>
+				<div class="half">
+					<%= renderLabel('bankCd', 'bankCd', nil, @inwardDetail) %>
+					<% if @facetData[:renderInwardMicrNum] %>
+						<%= renderInputField('bankCd', @inwardDetail.bankCd, 'Bank Branch', @inwardDetail) %>
+					<% else %>
+						<%= getLookup('DYNAMICLOOKUP', 'bankCd', @inwardDetail.bankCd, @inwardDetail, @bankLookup) %>
+					<% end %>
+				</div>
+			<% end %>
+			<% if @facetData[:renderInwardBankBranch] %>
+				<div class="half">
+					<%= renderLabel('bankBranch', 'bankBranch', nil, @inwardDetail) %>
+					<% if @facetData[:renderInwardMicrNum] %>
+						<%= renderInputField('bankBranch', @inwardDetail.bankBranch, 'Bank Branch', @inwardDetail) %>
+					<% else %>
+						<span class = "<%= getObjectMapping(@inwardDetail)%>[branchLookup]" name="<%= getObjectMapping(@inwardDetail)%>[branchLookup]">	
+							<%= getLookup('DYNAMICLOOKUP', 'bankBranch', @inwardDetail.bankBranch, @inwardDetail, @branchLookup) %>
+						</span>	
+					<% end %>
+				</div>
+			<% end %>
+		</div>
+	<% end %>
+		
+
+	<% if @facetData[:renderInwardInstrumentDt] || @facetData[:renderInwardInwardNum] %>
+		<div data-role="dualfieldcontain">
+			<% if @facetData[:renderInwardInstrumentDt] %>
+				<div class="half">
+					<%= renderLabel('instrumentDt', 'instrumentPickUpDt', nil, @inwardDetail) %>
+					<%= renderDateField('instrumentDt', @inwardDetail.instrumentDt , 'Instrument Date', @inwardDetail, 'maxlength="30"') %> 
+				</div>
+			<% end %>
+			<% if @facetData[:renderInwardInwardNum] %>
+				<div class="half">
+					<%= renderLabel('inwardNum', 'inwardNum', nil, @inwardDetail) %>
+					<%= renderNumericField('inwardNum', @inwardDetail.inwardNum,'Instrument Number', @inwardDetail, 'maxlength="30"') %>
+				</div>
+			<% end %>
+		</div>
+	<% end %>
+
+
+	<% if @facetData[:renderInwardInwardAmount] %>
+		<div data-role="dualfieldcontain">
+			<div class="half">
+				<%= renderLabel('inwardAmount', 'inwardAmount',nil, @inwardDetail)   %>
+				<%= renderAmountField('inwardAmount', @inwardDetail.inwardAmount, 'Inward Amount', @inwardDetail,' maxlength="20" ') %>
+				<%= attachMask("#{getObjectMapping(@inwardDetail)}[inwardAmount]") %>
+			</div>
+		</div>
+	<% end %>
+</div>
+<%= render :partial => "addInitialPaymentMethodJS" %>

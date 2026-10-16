@@ -1,0 +1,7 @@
+<%= panelTagStart(false) %>
+	<%= subPanelTagStart("FUNDSINFORMATION","true","FUNDSREQUIREDNB") %>
+		<%= prdFieldDataTag( "#{@policyPckg}.PolicyProductDO",'portfolioModelCd,topUpAllocSameAsPremAllocFl') %>
+		<%= fieldDataEntryGridTagStart('policyFunds', "#{@policyPckg}.PolicyProductInvestmentFundDO", 'fundCd,allocationPerc,topupAllocationPerc,fundTypeCd,expiryDt,maturityDt', @funds, @baseProduct,@fundLabelObject, '', "", "",true,false,false,true,true,"","","","FUNDSREQUIREDNB",true,false,true) %>
+		<%= fieldDataEntryGridTagEnd('',nil,'',false) %>
+	<%= subPanelTagEnd %>
+<%= panelTagEnd %>

@@ -1,0 +1,33 @@
+<%= pageTagStart("","Symbiosys") %>
+    <%= headerTag(getLabelValue('OFFLINESERVER'), "", "", "/app/Menu/landingPage") %>
+    <div data-role="main" class="ui-content">
+        <div class="main-content-wrapper main-content-full">
+        <%= formTagStart("offlineServerForm","#{url_for :action => :offlineServer}") %>
+            <div class="project-content-bg">
+                <div class="div-with-border no-padding-bottom preferences-content">
+                    <div class="content-fullform">  
+                        <div class="row-details">
+                            <p class="col-left"><%= getLabelValue('USESRULES') %></p>
+                             <div class="col-right">
+	                            <%= renderRadioButton('uses_rules', @uses_rules, 'online', 'ONLINE') %>
+								<%= renderLabel('online', 'ONLINE') %>
+								<%= renderRadioButton('uses_rules', @uses_rules, 'offline', 'OFFLINE') %>
+								<%= renderLabel('offline', 'OFFLINE') %>
+                            </div>
+                        </div>
+                    </div>
+                </div>  
+            </div>
+        <%= formTagEnd %>
+        </div>
+        <div class="footer-bg">
+            <a href="javascript: submitForm();" data-transition="slide"><%= getLabelValue('SAVEVALIDATE') %></a>
+        </div>
+    </div>
+<%= pageTagEnd %>
+<script type="text/javascript">
+    function submitForm()
+    {
+		document.offlineServerForm.submit();          
+	}
+</script>

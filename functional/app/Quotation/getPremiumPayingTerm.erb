@@ -1,0 +1,14 @@
+<%
+require 'CommonModules/mobisysbrowserhelper'
+@ppTermArray.each do|term|
+%>
+  <option value="<%= term.cd%>" <% 
+          if @premiumPayingTerm == term.cd
+            %>
+            selected
+            <%
+          end
+        %> >
+    <%= getLabelValue(term.desc) %>
+  </option>
+<% end %>

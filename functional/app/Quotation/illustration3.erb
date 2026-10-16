@@ -1,0 +1,178 @@
+<!-- Start of illustration page -->
+<div data-role="page" id="">
+    <link rel="stylesheet" href="/public/css/Eapp/c2l_EAPP.css">
+    <script type="text/javascript" src="/public/js/Eapp/c2l_EAPP.js"></script>
+    <style type="text/css">
+        .illustrationtable{
+            margin-top: 20px;
+            font-size:16px; 
+            text-shadow:none; 
+            font-weight:none;
+            border: 1px solid #37489e;
+            border-spacing:1px;
+            border-collapse: collapse;
+            width: 98%;
+        }
+
+        .illustrationtable tbody tr td{
+            border: 1px solid #37489e;
+            text-align:center;
+            color:#000;
+        }
+
+        .illustrationtableheader tr th{
+            border: 1px solid #37489e;
+            text-align:center;
+            vertical-align: middle;
+            padding:5px 0px 8px 0px;
+        }
+
+        .illustrationtableheader tr th label {
+            font-weight: bold !important;
+            font-size:16px;
+        }
+
+        .illustrationtableheader {
+            background: #37489e; 
+            color:#fff; 
+        }
+
+        ul.illustrationButtons li{
+            display: inline-block;
+            list-style-type: none;
+            padding-right: 40px;
+        }
+
+    </style>
+    
+    <div data-role="header" id="header" data-position="inline"  >
+        <a href="#" onclick="location.href='<%= url_for :action => :show, :id=>@quotation.object %>';" rel="external" id = "back" name="back" data-direction="reverse" data-role="none">
+            <img src="/public/images/SalesIllustration/icon_BackArrow-Red.png">
+        </a>
+        <h1 style="margin:0 30%";><%= getLabelValue('ILLUSTRATION')%></h1>
+    </div>
+
+    <div data-role="content" id="capture" style="-webkit-transform: none;">  
+        <div class="illustrationdisplay" >
+            <div class="legend">
+                <label class="strongLabel">
+                    <%= getLabelValue('Summary') %>
+                    <a href="#" class="expandButton ui-icon-plus ui-btn-icon-notext ui-alt-icon ui-btn-inline"/></a>
+                    <a href="#" class="collapseButton ui-icon-minus ui-btn-icon-notext ui-alt-icon ui-btn-inline"/></a>
+                </label>
+            </div>
+            <div class="panelContent">
+                <%= render :partial => "newViewIllustration"%>
+                <%
+                capture_output_preferences = $rhoconfig[:capture_output_preferences]
+                %>
+                <span>
+                    <ul class="illustrationButtons" align="center">
+                        <% if @quotation.signature == nil || @quotation.signature == "" %>
+                            <li>
+                                <% 
+                                if $rhoconfig[:capture_signature_on_quotataion] == "YES"
+                                %>
+                                    <a rel="external" href="<%= url_for :action => :acceptIllustration, :query=> {:quotationObject => @quotation.object} %>" name="sign" data-role="button" data-theme="a">
+                                <% else %>
+                                    <a rel="external" href="javascript: acceptIllustration();" name="sign" data-role="button" data-theme="a">
+                                <% end %>
+                                    <%= getLabelValue('ACCEPTILLUSTRATION')%>
+                                    </a>
+                            </li>
+                        <% 
+                        end
+                        if capture_output_preferences =='YES'
+                        %>
+                            <li>
+                              <a rel="external" href="<%= url_for :action => :printOptionsAndEmail, :query => {"view_email" => 'view'}, :id=>@quotation.object%>" data-role="button" data-theme="a" >
+                                <%= getLabelValue('VIEWILLUSTRATION')%>
+                              </a>
+                            </li>
+                        <% else %>
+                            <li>
+                              <a rel="external" href="<%= url_for :action => :calculateIllustration1, :id=>@quotation.object%>" data-role="button" data-theme="a" >
+                                <%= getLabelValue('VIEWILLUSTRATION')%>
+                              </a>
+                            </li>
+                        <% 
+                        end
+                        if @quotation.quoteStatusCd != "PENDING" && System.get_property('platform') == 'WINDOWS_DESKTOP' && capture_output_preferences =='YES'
+                        %>
+                            <li>
+                                <a rel="external" href="<%= url_for :action => :pdfCalculateIllustration1, :id=>@quotation.object%>" data-role="button" data-theme="a" >
+                                  <%= getLabelValue('DOWNLOADPDF') %>
+                                </a>
+                            </li>
+                        <% 
+                        end
+                        if @quotation.signature.to_s != "" && @quotation.signatureDt.to_s != ""
+                            if capture_output_preferences =='YES'
+                        %>
+                                    <li>
+                                        <a rel="external" href="<%= url_for :action => :printOptionsAndEmail, :query => {"view_email" => 'email'}, :id=>@quotation.object %>" name="email" data-role="button" data-theme="a">
+                                          <%= getLabelValue('Email')%>
+                                        </a>
+                                    </li>
+                            <% else %>
+                                <li>
+                                    <a rel="external" href="<%= url_for :action => :email, :id=>@quotation.object %>" name="email" data-role="button" data-theme="a">
+                                  <%= getLabelValue('Email') %>
+                                    </a>
+                                </li>
+                        <%
+                            end
+
+                            if $rhoconfig[:get_pdf_enabled] == "YES"
+                                if capture_output_preferences =='YES'
+                        %>
+                                    <li>
+                                        <a rel="external" href="<%= url_for :action => :printOptionsAndEmail, :query => {"view_email" => 'get_pdf'}, :id=>@quotation.object %>" name="email" data-role="button" data-theme="a">
+                                            <%= getLabelValue('GETPDF') %>
+                                        </a>
+                                    </li>
+                                <% else %>
+                                    <li>
+                                        <a rel="external" href="<%= url_for :action => :get_pdf, :id=>@quotation.object %>" name="email" data-role="button" data-theme="a">
+                                            <%= getLabelValue('GETPDF') %>
+                                        </a>
+                                    </li>
+                        <%
+                                end  
+                            end
+                        
+                            companyFacet = $rhoconfig[:eappApplicable]
+                            if companyFacet != nil && companyFacet.actionValue.to_s == 'YES'
+                                if $rhoconfig[:link_to_eapp_enabled] == "YES"
+                        %>
+                                    <li>
+                                        <a rel="external" href="#" onclick="location.href='<%= url_for :action => 'linkToEapp', :query =>{ :quotationId => @quotation.object}%>';" name="new" data-role="button" data-theme="a">
+                                            <%= getLabelValue('LINKTOEAPP') %>
+                                        </a>
+                                    </li>
+                        <% 
+                                end
+                            end
+                        else
+                            companyFacet = $rhoconfig[:eappApplicable]
+                            if companyFacet != nil && companyFacet.actionValue.to_s == 'YES'
+                                if $rhoconfig[:link_to_eapp_enabled] == "YES"
+                        %>
+                                    <li>
+                                        <a rel="external" href="#" name="alertIllustration" data-role="button" data-theme="a" id = "alertIllustration">
+                                            <%= getLabelValue('LINKTOEAPP') %>
+                                        </a>
+                                    </li>
+                        <%
+                                end
+                            end
+                        end
+                        %>
+                    </ul>
+                    <center><%=getLabelValue("LEGALDISCLAIMER")%></center>
+                </span>
+            </div>
+        </div> 
+    </div>
+</div>
+<%= render(:file => 'Quotation/illustration3JS.erb')%>

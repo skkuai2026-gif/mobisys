@@ -1,0 +1,42 @@
+<div data-role="page">
+	<link rel="stylesheet" href="/public/css/c2l_dashboard.css">
+	<style type="text/css">
+		.ui-btn-right > a {
+			margin-right: 2em !important;
+			margin-top: 1em !important;
+		}
+	</style>
+
+
+	<div data-role="header" id="header" data-position="inline">
+		<a href="/app/Menu/settings" rel="external" data-direction="reverse" data-role="none">
+			<img src="/public/images/SalesIllustration/icon_BackArrow-Red.png">
+		</a>
+		<h1><%= getLabelValue('OFFLINESERVER') %></h1>
+		<div class="ui-btn-right">
+			<a href="javascript: submitForm();" data-role="button">
+				<%= getLabelValue('SAVEVALIDATE')%>
+			</a>
+		</div>
+	</div>
+
+	<div data-role="content" id="content">
+		<div class="illustrationdisplay">
+			<form method="POST" action="<%= url_for :action => :offlineServer %>" name="offlineServerForm">
+				<div class="ui-field-contain">
+						<legend><%= getLabelValue('USESRULES') %></legend>
+						<%= renderRadioButton('uses_rules', @uses_rules, 'online', 'ONLINE') %>
+						<%= renderLabel('online', 'ONLINE') %>
+						<%= renderRadioButton('uses_rules', @uses_rules, 'offline', 'OFFLINE') %>
+						<%= renderLabel('offline', 'OFFLINE') %>
+				</div>
+			</form>
+		</div>
+	</div>
+
+	<script type="text/javascript">
+		function submitForm(){
+			document.offlineServerForm.submit();          
+		}
+	</script>
+</div>

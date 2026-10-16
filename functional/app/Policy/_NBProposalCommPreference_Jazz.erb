@@ -1,0 +1,5 @@
+<%= panelTagStart(false) %>
+	<%= subPanelTagStart("communicationPreference","true") %>
+		<%= prdFieldDataTag("#{@policyPckg}.PolicyDO",'policyDispatchModeCd,corrByEmail,communicationPreference') %>
+	<%= subPanelTagEnd %>
+<%= panelTagEnd %>

@@ -1,0 +1,35 @@
+<%= headerTag(getLabelValue('captureSign'), '', "","#{url_for :action => :show, :id=> @quotation.object}") %>
+<div data-role="main" class="ui-content">
+    <div class="main-content-wrapper main-content-full">
+		<%= formTagStart("signatureForm", "#{url_for :action => :saveSignature}") %>
+			<div class="project-content-bg">
+                <div class="div-with-border no-padding-bottom preferences-content">
+					<%= modelTagStart("quotation", @quotation) %>
+	                    <div class="content-fullform">
+	                    	<%= signatureTag("signature", "policyOwnerSignature") %>
+	                    	<% if @agentSignatureCaptureFlag %>
+	                    		<%= signatureTag("agentSignature", "agentSignHeader") %>
+	                    	<% end %>
+	                    </div>
+					<% modelTagEnd %>
+                </div>
+            </div>
+        <%= formTagEnd() %>
+	</div>
+    <div class="footer-bg">
+        <a href="#" name="save" onclick="javascript: sendsignature();"><%= getLabelValue('SUBMIT') %></a>
+    </div>
+</div>
+
+<script type="text/javascript">
+$(document).ready(function () {
+	initializeSignature();
+	<% if @quotation.quoteStatusCd == "ACCEPTED" || @quotation.quoteStatusCd == "SYNCDONE" %>
+        disableAllFormFields();
+	<% end %>
+});
+function sendsignature() {
+	document.getElementById('signatureForm').submit();
+	loading('show');    
+}
+</script>

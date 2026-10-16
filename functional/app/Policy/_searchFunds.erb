@@ -1,0 +1,18 @@
+<% if @fundList.length > 0 %>
+	<thead>
+		<tr>
+			<th data-priority="1"><%= getLabelValue('fundCd') %></th>
+			<th data-priority="1"><%= getLabelValue('fundDesc') %></th>
+			<th data-priority="2" style="width: 30%;"><%= getLabelValue('ACTION') %></th>
+		</tr>
+	</thead>
+	<tbody>
+	  	<% @fundList.each_with_index do |fund, index| %>
+	    	<tr>
+	      		<td><%= fund.fundCd %></td>
+	      		<td><%= fund.fundDesc %></td>
+	      		<td><a href='#' id="<%= fund.fundCd %>" class="addButton" data-role="button" data-mini="true">Add</a></td>
+	    	</tr>
+	  	<% end %>
+	</tbody>
+<% end %>

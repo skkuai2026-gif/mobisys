@@ -1,0 +1,134 @@
+<% if @facetData[:renderMultiLanguagePanel] %>
+	<div data-role="dualfieldcontain">
+		<div class="half">
+			<%= renderLabel('language', 'language1', 'languageLabel', @party)%>
+		</div>
+		<div class="half">
+			<%= renderLabel('language', 'language2', 'languageLabel', @party)%>
+		</div>
+	</div>
+<% end %>
+
+
+<div data-role="dualfieldcontain">
+	<% if @facetData[:renderAddressLine1Lang1] %>
+		<div class="half">
+			<%= renderLabel('addressLine1Lang1', 'addressLine1', nil, addressObj) %>
+			<%= renderInputField('addressLine1Lang1', addressObj.addressLine1Lang1, 'Address Line 1', addressObj, ' maxlength="50"') %>
+  		</div>
+	<% end %>
+	
+	<% if @facetData[:renderMultiLanguagePanel] %>
+	  	<% if @facetData[:renderAddressLine1Lang2] %>
+			<div class="half">
+		  		<%= renderLabel('addressLine1Lang2', 'addressLine1', nil, addressObj) %>
+		  		<%= renderInputField('addressLine1Lang2', addressObj.addressLine1Lang2, 'Address Line 1', addressObj, ' maxlength="50"') %>
+			</div>
+	  	<% end %>
+	<% end %>
+</div>
+
+
+<div data-role="dualfieldcontain"> 	
+	<% if @facetData[:renderaddressLine2Lang1] %>
+  		<div class="half">
+			<%= renderLabel('addressLine2Lang1', 'addressLine2', nil, addressObj)   %>
+			<%= renderInputField('addressLine2Lang1', addressObj.addressLine2Lang1, 'Address Line 2', addressObj, ' maxlength="50"') %>
+  		</div>
+	<% end %>
+
+	<% if @facetData[:renderMultiLanguagePanel] %>
+	  	<% if @facetData[:renderaddressLine2Lang2] %>
+			<div class="half">
+		  		<%= renderLabel('addressLine2Lang2', 'addressLine2', nil, addressObj)   %>
+		  		<%= renderInputField('addressLine2Lang2', addressObj.addressLine2Lang2, 'Address Line 2', addressObj, ' maxlength="50"') %>
+			</div>
+	  	<% end %>
+	<% end %>
+</div>
+
+
+<div data-role="dualfieldcontain">
+	<% if @facetData[:renderaddressLine3Lang1] %>
+	  	<div class="half">
+			<%= renderLabel('addressLine3Lang1', 'addressLine3', nil, addressObj)   %>
+			<%= renderInputField('addressLine3Lang1', addressObj.addressLine3Lang1, 'Address Line 3', addressObj, ' maxlength="50"') %>
+	  	</div>
+	<% end %>  
+	  
+	<% if @facetData[:renderMultiLanguagePanel] %>
+	    <% if @facetData[:renderaddressLine3Lang2] %>
+	    <div class="half">
+	        <%= renderLabel('addressLine3Lang2', 'addressLine3', nil, addressObj)   %>
+	        <%= renderInputField('addressLine3Lang2', addressObj.addressLine3Lang2, 'Address Line 3', addressObj, ' maxlength="50"') %>
+	    </div>
+	    <% end %>
+	<% end %>
+</div>	 
+
+
+<div data-role="dualfieldcontain">
+	<% if @facetData[:renderaddressLine4Lang1] %>  
+	  	<div class="half">
+			<%= renderLabel('addressLine4Lang1', 'addressLine4', nil, addressObj)   %>
+			<%= renderInputField('addressLine4Lang1', addressObj.addressLine4Lang1, 'Address Line 4', addressObj, ' maxlength="50"') %>
+	  	</div>
+	<% end %> 
+	  
+	<% if @facetData[:renderMultiLanguagePanel] %>
+	    <% if @facetData[:renderaddressLine4Lang2] %>
+	    <div class="half">
+	        <%= renderLabel('addressLine4Lang2', 'addressLine4', nil, addressObj)   %>
+	        <%= renderInputField('addressLine4Lang2', addressObj.addressLine4Lang2, 'Address Line 4', addressObj, ' maxlength="50"') %>
+	    </div>
+	    <% end %>
+	<% end %>
+</div>	
+
+
+<div data-role="dualfieldcontain">
+	<% if @facetData[:renderAddressCountryCd] %>
+		<div class="half">
+		    <%= renderLabel('countryCd','countryCd', nil, addressObj) %>
+		    <%= getLookup('COUNTRY','countryCd', addressObj.countryCd, addressObj,' maxlength="120"')%>
+		</div>	
+    <% end %>
+	<% if @facetData[:renderPinCode] %>  
+		<div class="half">
+		  	<%= renderLabel('pinCode', 'pinCode', nil, addressObj) %>
+		  	<%= renderInputField('pinCode', addressObj.pinCode, 'Pincode', addressObj, ' maxlength="10"') %>
+	  	</div>
+    <% end %>
+</div>
+
+
+<div data-role="dualfieldcontain">	 
+	<% if @facetData[:renderDistrictCd] %> 
+		<div class="half">
+		  	<%= renderLabel('districtCd','stateCd', nil, addressObj) %>
+		  	<span class="districtLookUpData<%= addressObj.addressTypeCd %>" name="districtLookUpData<%= addressObj.addressTypeCd %>">
+		  		<%# if @districtLookUps.empty? %>
+		  			<%= renderInputField('districtCd', addressObj.districtCd, 'District', addressObj, ' maxlength="30"') %>
+	  			<%# else %>
+		  			<%#= getLookup('DYNAMICLOOKUP','districtCd', addressObj.districtCd, addressObj , @districtLookUps) %>
+	  			<%# end %>
+	  		</span>
+	  	</div>
+    <% end %>
+	<% if @facetData[:renderCityCd] %>
+		<div class="half">
+		  	<%= renderLabel('cityCd','cityCd', nil, addressObj) %>
+		  	<span class="cityLookUpData<%= addressObj.addressTypeCd %>" name="cityLookUpData<%= addressObj.addressTypeCd %>">
+		  		<%# if @cityLookUps.empty? %>
+		  			<%= renderInputField('cityCd', addressObj.cityCd, 'City', addressObj, ' maxlength="30"') %>
+	  			<%# else %>
+					<%#= getLookup('DYNAMICLOOKUP','cityCd', addressObj.cityCd, addressObj, @cityLookUps) %>
+	  			<%# end %>
+		  	</span>
+		</div>	
+    <% end %>
+</div>
+
+<%= renderHiddenField('addressTypeCd', addressObj.addressTypeCd, 'addressTypeCd', addressObj) %>
+<%= renderHiddenField('removed', addressObj.removed, 'removed', addressObj) %>
+<%= render :partial => "captureAddressDetailsJS", :locals => { :addressObj => addressObj} %>

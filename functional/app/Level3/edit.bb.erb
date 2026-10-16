@@ -1,0 +1,44 @@
+<div data-role="page">
+
+  <div data-role="header" data-position="inline">
+    <%= link_to "Back", :action => :show, :id => @level3.object %>
+    <h1>Edit <%= @level3.levelCd%></h1>
+    <%= link_to "Delete", :action => :delete, :id => @level3.object %>
+  </div>
+
+  <div data-role="content">
+    <form method="POST" action="<%= url_for :action => :update %>">
+      <input type="hidden" name="id" value="<%= @level3.object %>"/>
+      <table>
+          
+          <tr>
+              <td class="itemLabel">Levelcd: </td>
+              <td class="itemValue"><input type="text" name="level3[levelCd]" value="<%= @level3.levelCd %>"/></td>
+          </tr>
+          
+          <tr>
+              <td class="itemLabel">Name: </td>
+              <td class="itemValue"><input type="text" name="level3[name]" value="<%= @level3.name %>"/></td>
+          </tr>
+          
+          <tr>
+              <td class="itemLabel">Icon: </td>
+              <td class="itemValue"><input type="text" name="level3[icon]" value="<%= @level3.icon %>"/></td>
+          </tr>
+          
+          <tr>
+              <td class="itemLabel">Text h: </td>
+              <td class="itemValue"><input type="text" name="level3[text_h]" value="<%= @level3.text_h %>"/></td>
+          </tr>
+          
+          <tr>
+              <td class="itemLabel">Text f: </td>
+              <td class="itemValue"><input type="text" name="level3[text_f]" value="<%= @level3.text_f %>"/></td>
+          </tr>
+          
+      </table>
+      <input type="submit" value="Update"/>
+    </form>
+  </div>
+
+</div>

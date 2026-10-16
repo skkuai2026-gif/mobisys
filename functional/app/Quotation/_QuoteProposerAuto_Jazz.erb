@@ -1,0 +1,22 @@
+<%= panelTagStart(false) %>
+	<%= subPanelTagStart("policyProposerDetails","false") %>
+		<%= modelTagStart("proposerQuotationParty", @policyHolder, @quotation) %>
+			<% partyPckg = 'PolicyProposerDO' %>
+			<div id="displayProposer">
+				<div id="ProposerBasic">
+					<%= prdFieldDataTag("#{partyPckg}","dob,age" , '' , 'birthDt,age') %>
+
+					<%= prdFieldDataTag("#{partyPckg}","genderCd,maritalStatus,contactNum,emailAddress" , '' , '') %>
+				</div>
+			</div>	
+			<div style="display: none;">
+				<%= inputTag("roleCd") %>
+				<%= inputTag("partyTypeCd") %>
+			
+				<% if !MobiSys::BrowserHelper.renderPanel?("PRIMARYSMOKER", $currentProduct) && !$ignore_product %>
+					<%= inputTag("smoker") %>
+				<% end %>
+			</div>
+		<% modelTagEnd %>
+	<%= subPanelTagEnd %>
+<%= panelTagEnd %>

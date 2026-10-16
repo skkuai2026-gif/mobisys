@@ -1,0 +1,20 @@
+<%= subPanelTagStart("#{getLabelValue('driverDetails')} #{@driverCount.to_i+ 1}", true, "", true) %>
+	<div class='add-section'>
+		<%
+			supplementaryCount = @suplementaryInsuredCount.to_i + 1
+			tagName = "grid_#{supplementaryCount}_supplementaryParty"
+		%>
+		<%= modelTagStart("grid_#{supplementaryCount}_supplementaryPolicyPartyRole", @policyPartyRole, @policy)%>
+			<div style="display: none;">
+				<%= inputTag("roleCd") %>
+				<%= inputTag("refGuid") %>
+				<%= inputTag("removed") %>
+			</div>
+			<%= prdFieldDataTag("PolicyPartyRoleDO",'partySameAsCd') %>
+		<% modelTagEnd %>
+		<i class='close-add-section icon-close' onClick='javascript:catchevent(this);' id='grid_<%=supplementaryCount%>_supplementaryDetails_removed'></i>
+		<span class="displayDriver">
+			<%= render(:partial => 'NBVehicleParty_Jazz', :locals => {:partyPckg => 'PolicySupplementaryLifeDO' , :party => @party, :policyPartyRole => @policyPartyRole, :tagName => tagName, :partyAddressPanel => @renderSupplementaryAddressPanel, :partyHomeAddressPanel => @renderSupplementaryHomeAddressPanel, :homeAddressObject => @homeAddress, :resTagId => tagName + "_supplementaryPartyAddressHome", :partyEmailObject => @partyEmail, :emailTagId => tagName + "_supplementaryPartyEmail", :partyMobileObject => @partyContactMobile, :mobTagId => tagName + "_supplementaryPartyContactMobile" }) %>
+		</span>
+	</div>
+<%= subPanelTagEnd %>

@@ -1,0 +1,70 @@
+<% riderPackage = 'com.c2lbiz.symbiosys.insurance.businesscommon.dataobjects.policy.PolicyRiderDO' %>
+<% if @riderAutoPopulationReqFlag == "YES" %>
+	<% $displayRidersHM.each_with_index do |(key,riderDetails), riderCount| %>
+		<% unless key.include?'|' %>
+			<% headerFieldName = @displayRiderLifeHeader[key] %>
+			<%= panelTagStart('false') %>
+				<%= subPanelTagStart(headerFieldName, true, '',true, "onClick=javascript:populateRider('#{key}')")%>
+					<div name="riderAutoPopulation" id="riderAutoPopulationDiv<%=key%>">
+
+					</div>
+					<input type="hidden" id="riderInitialCount<%=key%>" name="riderInitialCount<%=key%>" value='<%= @riderObjects %>'/>
+				<%= subPanelTagEnd %>
+			<%= panelTagEnd %>
+			
+			<!--incrementing rider count with fixed value 100 for each grid-->
+			<% @riderObjects = @riderObjects + 100 %>
+		<% end %>
+		<% if riderCount == $displayRidersHM.size-1 %>
+			<input type="hidden" id="riderLastCount" name="riderLastCount" value='<%= @riderObjects.to_i-100 %>'/>
+		<% end %>
+	<% end %>
+	<%= inputTag("unselectedRiders",nil,nil,nil,nil,nil,'HIDDEN') %>
+<% else %>
+	<%= fieldDataEntryGridTagStart('riderDetails', riderPackage, nil, nil, nil,nil,'delete','100',nil,true,true,false,false,false,'','','','',true) %>
+		<% @newriders.each_with_index do |rider,riderCount| %>
+			<% index = @riderObjects + riderCount %>
+			<div class='add-section riderData'>
+				<% gridID = "grid_#{index}_riderDetails" %>
+				<%= modelTagStart(gridID, rider, @quotation,index) %>
+					<i class='close-add-section icon-close' onClick='javascript:catchevent(this);' id='<%=gridID%>_removed'></i>
+					<%= prdFieldDataTag("#{riderPackage}","productSeq,productPlanOptionCd") %>
+					<%= prdFieldDataTag("#{riderPackage}","partyRoleCd,insuredPartyRefGuid",'#none,SUPPLEMENTARYINSUREDREQUIRED') %>
+					<%= prdFieldDataTag("#{riderPackage}","productTerm,premiumPayingTerm") %>
+					<%= prdFieldDataTag("#{riderPackage}","baseSumAssured,modalPremium") %>
+					
+					<% @riderProductExtras, @quotationProduct = MobiSys::QuotationBO.computeProductExtra(@quotation, rider) %>
+					<%= render :partial => "QuoteRiderExtra_Jazz" , :locals => { :@quotationProduct => @quotationProduct , :@riderProductExtras => @riderProductExtras, :@riderObjects => @riderObjects, :rider => rider, :@riderAutoPopulationReqFlag => @riderAutoPopulationReqFlag} %>
+
+					<div style="display: none;">
+						<%= inputTag("productFamilyCd") %>
+						<%= inputTag("productId") %>
+						<%= inputTag("productTypeCd") %>
+						<%= inputTag("productVersion") %>
+						<%= inputTag("compAnnualPremium") %>
+						<%= inputTag("compHalfYlyPremium") %>
+						<%= inputTag("compQtlyPremium") %>
+						<%= inputTag("compMonthlyPremium") %>
+						<%= inputTag("annualizedPremium") %>
+						<%= inputTag("builtInRiderFl") %>
+						
+						<input type="hidden" name="<%= gridID %>_premiumSAFl" id="<%= gridID %>_premiumSAFl" value='<%= @premiumSAFlriders[rider.productSeq.to_s] %>'/>
+						<input type="hidden" name="<%= gridID %>_readOnlyFields" id="<%= gridID %>_readOnlyFields" value='<%= @newRiderFields[rider.productSeq.to_i] %>'/>
+					</div>
+				<% modelTagEnd %>    
+			</div>
+		<% end %>
+	<%= fieldDataEntryGridTagEnd('riderDetails', @newriders, 'ADDRIDER',true,true,false) %>
+	<input type="hidden" id="riderCount" value='<%= @newriders.size %>'/>
+<% end %>
+<input type="hidden" id="riderAutoPopulationReqFlag" value='<%= @riderAutoPopulationReqFlag %>'/>
+<input type="hidden" id="clickedAccordians" value=''/>
+
+<%= modelTagStart("basePlan", @baseProduct, @quotation) %>
+	<div style="display: none;">
+		<%= inputTag("productTypeCd") %>
+		<%= inputTag("productVersion") %>
+		<%= inputTag("productSeq") %>
+		<%= prdFieldDataTag("#{@quotationPckg}.PolicyProductDO",'productFamilyCd,productId,productPlanOptionCd') %>
+	</div>
+<% modelTagEnd %>

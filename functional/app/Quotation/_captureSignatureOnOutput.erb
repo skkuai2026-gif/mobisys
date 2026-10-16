@@ -1,0 +1,45 @@
+<%= modelTagStart("signatureContainer", @signatureContainer) %>
+	<div style="display: none">
+		<%= inputTag("entityGuid") %>
+		<%= inputTag("entityTypeCd") %>
+	</div>
+	<%= modelTagStart("captureSignature#{@signatureTypeCd}", @signature, @signatureContainer) %>
+	    <div style="text-align: center;" >
+			<%= signaturePopupTag("signature",@signatureTypeCd,true,'captureSign','captureSign') %>
+		</div>
+		<div style="display: none">
+			<%= inputTag("signatureDt") %>
+            <%= inputTag("signatureTypeCd") %>
+            <%= inputTag("roleCd") %>
+            <%= inputTag("entityGuid") %>
+            <%= inputTag("partyGuid") %>
+            <%= inputTag("entityType") %>
+        </div>
+	<% modelTagEnd %>
+<% modelTagEnd %>
+<script type="text/javascript">
+$('.okSignatureButton').click(function () {
+	var signatureTypeCd = '<%= @signatureTypeCd %>' ;
+	setSignature("captureSignature<%=@signatureTypeCd%>_signature","<%=@signatureTypeCd%>");
+})
+
+function setSignature(id,signatureTypeCd){ 
+	today = '<%= Time.now.strftime("%d/%m/%Y") %>'
+	var signature = $('#' + id).val();
+	var signatureDtFieldId = id.replace('signature','signatureDt');
+	var signatureImgId = "signature" + signatureTypeCd + "_img";
+	var signatureDtId = "signature" + signatureTypeCd + "_dt";
+	if (signature != undefined && signature != '' && signature != null)
+	{
+		$('#' + signatureDtFieldId).val(today);
+		$('#'+signatureImgId).attr("src",signature).show();
+		$('#' + signatureDtId).html(today);
+	}
+	else if (signature == '' || signature == null)
+	{
+		$('#'+signatureImgId).attr("src","").hide();
+		$('#' + signatureDtId).html('');
+	}
+}
+
+</script>

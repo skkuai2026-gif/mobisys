@@ -1,0 +1,69 @@
+<%= pageTagStart('fna-request','Symbiosys - FNA') %>
+    <%= headerTag("Add FNA","add","","/app/FNARequest/search") %>
+    <%= formTagStart("fna","/app/FNARequest/execute") %>
+    	<%= tabbarTagStart("tab_fna_input,tab_basic_plan,tab_rider,tab_selected_product,tab_fna_signature","FNA Input,Basic Plan,Rider,Product Selected, FNA Signature","",true) %>
+    		<%= modelTagStart("fna", @fnaRequest) %>
+    			<%= tabTagStart("tab_fna_input") %>
+
+					<%= render :partial => "FNAProposer_Jazz" %>
+
+                    <%= render :partial => "FNAInsured_Jazz" %>
+
+					<%= render :partial => "FNAQuestionaire_Jazz" %>
+
+				<%= tabTagEnd %>
+                <div style="display: none;">
+                    <%= inputTag("agentId") %>
+                    <%= inputTag("requestDt") %>
+                </div>
+			<% modelTagEnd %>
+    	<%= tabbarTagEnd %>
+    <%= formTagEnd %>
+<%= pageTagEnd %>
+
+<script type="text/javascript">
+function checkBoxClicked(obj) {
+    var name = obj.name.replace("_hid","");
+    if (obj.checked) {
+        // obj.value = 'YES';
+        var chkHidObj = document.getElementById(obj.id + '_hid');
+        if(chkHidObj != null){
+            chkHidObj.setAttribute("name", name + '_hid');
+            // chkHidObj.value = 'YES';
+            obj.setAttribute("name", name);
+        }
+    }
+    else{
+        // obj.value = 'NO';
+        var chkHidObj = document.getElementById(obj.id + '_hid');
+        if(chkHidObj != null){
+            chkHidObj.setAttribute("name", name);
+            // chkHidObj.value = 'NO';
+            obj.setAttribute("name", name + '_hid');
+        }
+    }
+    catchevent(obj);
+    return false;
+}
+
+$(document).on("change",".multiple-select",function(){
+  values = [];
+  $(this).find("input[type='checkbox']:checked").each(function(i,v){
+    values.push(v.value);
+  });
+  $(this).find('[name*="fnaQuestionLookupDataCd"][type="hidden"]').val(values.join(','));
+});
+
+function fna_laSameAsApplicantFl_func(object){
+    if ($("select[id^='fna_laSameAsApplicantFl']").val() == 'NO') {
+        $('#displayFNAInsured input[type!="radio"][type!="hidden"]').val(''); 
+        $('#displayFNAInsured select').val('').change();
+        $('#displayFNAInsured input[type=radio]').attr("checked", false).checkboxradio("refresh");
+        $('#displayFNAInsured').hide();
+    }
+    else {
+        $('#displayFNAInsured').show();
+    }
+}
+
+</script>

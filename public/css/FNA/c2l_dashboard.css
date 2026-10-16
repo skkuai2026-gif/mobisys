@@ -1,0 +1,197 @@
+header {
+    background-image: linear-gradient(to bottom, #fff 0px, #f8f8f8 100%);
+    background-repeat: repeat-x;
+    border-radius: 4px;
+    box-shadow: 0 1px 0 rgba(255, 255, 255, 0.15) inset, 0 1px 5px rgba(0, 0, 0, 0.075);
+    height: 4em;
+}
+
+#header > img {
+    margin: 0.5em 0 0 1em;
+    /*width: 8%;*/
+}
+
+#header a img {
+    margin: 0.9em;
+    width: 70%;
+}
+
+#header h1 {
+    font-size: 1.5em;
+    padding: 0.7em 0;
+}
+
+#content {
+    background-image: linear-gradient(to bottom, #fff 0px, #f8f8f8 100%);
+    margin-left: auto;
+    margin-right: auto;
+    padding-left: 15px;
+    padding-right: 15px;
+}
+
+#main-options {
+    border: 0 none;
+    margin-bottom: 20px;
+    padding: 0;
+    text-align: center;
+    transition: width 2s ease 0s, height 2s ease 0s, transform 2s ease 0s;
+}
+
+#main-options img {
+    height: auto;
+    margin: 10px;
+}
+
+#main-options div {
+    text-align: center;
+}
+
+.ui-grid-a, .ui-grid-b, .ui-grid-c, .ui-grid-d, .ui-grid-solo {
+    overflow: visible;
+}
+
+.imgCaption {
+    width: 100%;
+    font-family: 12px;
+    margin-top: -20px;
+}
+
+.illustrationdisplay {
+    background-color: rgb(255, 255, 255);
+    border-radius: 10px;
+    box-shadow: 2px 2px 5px 1px rgb(170, 170, 170);
+    margin: 2% 1%;
+    padding: 2%;
+}
+
+.searchtable {
+    font-size:16px; 
+    text-shadow:none; 
+    font-weight:none;
+    border: 1px solid #CCCCCC;
+    border-spacing:1px;
+    border-collapse: collapse;
+}
+
+.searchtableheader {
+    background: #d9edf7; 
+    color:#303132; 
+    font-weight:bold;
+    font-family: Arial, Tahoma;
+    font-size:16px;
+    border-bottom: 1px solid #dcdbdb;
+}
+
+.searchtableheader td{
+    text-align:center;
+    padding:5px 5px 8px 5px;
+}
+
+.search1 {
+    background: #ffffff; 
+    color:rgb(0,79,135); 
+    text-shadow:none; 
+}
+
+.search1 td {
+    padding:5px 5px 8px 5px;
+}
+
+.search2 {
+    background: #fcf8e3; 
+    color:rgb(0,79,135); 
+    text-shadow:none; 
+    border-top: 1px solid #dcdbdb;
+    border-bottom: 1px solid #dcdbdb;
+}
+
+.search2 td {
+    padding:5px 5px 8px 5px;
+}
+
+.tabletext{
+    text-align:left;
+}
+
+.analytics img {
+    width: 100%;
+}
+
+.ui-select {
+    width: 95% !important;
+    margin-top: 0.3em !important;
+}
+
+.ui-select div {
+    line-height: 1.1em !important;
+}
+
+#proposerNameTD div {
+    width: 85% !important;
+}
+
+label {
+    font-size: 20px !important;
+    padding: 1em 0 0 10em;
+}
+
+.blocker {
+    z-index:1000;
+    height:100%;
+    width:100%;
+    background: gray; 
+    opacity:0.7; 
+    position: fixed;
+}
+
+/* custom css for jquery mobile (24/09/2015 by vimarao) */
+.ui-grid-e>.ui-block-a,
+.ui-grid-e>.ui-block-b,
+.ui-grid-e>.ui-block-c,
+.ui-grid-e>.ui-block-d,
+.ui-grid-e>.ui-block-e,
+.ui-grid-e>.ui-block-f {
+    width: 16.6%;
+    float: left;
+}
+
+.ui-grid-l>.ui-block-a,
+.ui-grid-l>.ui-block-b,
+.ui-grid-l>.ui-block-c,
+.ui-grid-l>.ui-block-d,
+.ui-grid-l>.ui-block-e,
+.ui-grid-l>.ui-block-f,
+.ui-grid-l>.ui-block-g,
+.ui-grid-l>.ui-block-g,
+.ui-grid-l>.ui-block-h,
+.ui-grid-l>.ui-block-i,
+.ui-grid-l>.ui-block-j,
+.ui-grid-l>.ui-block-k,
+.ui-grid-l>.ui-block-l {
+    width: 8.333%;
+    float: left;
+}
+
+@media (max-width:35em) {
+    .ui-grid-e>.ui-block-a,
+    .ui-grid-e>.ui-block-b,
+    .ui-grid-e>.ui-block-c,
+    .ui-grid-e>.ui-block-d,
+    .ui-grid-e>.ui-block-e,
+    .ui-grid-e>.ui-block-f {
+        width: 33.3333%;
+        float: left;
+    }
+}
+
+@media (max-width:28em) {
+    .ui-grid-e>.ui-block-a,
+    .ui-grid-e>.ui-block-b,
+    .ui-grid-e>.ui-block-c,
+    .ui-grid-e>.ui-block-d,
+    .ui-grid-e>.ui-block-e,
+    .ui-grid-e>.ui-block-f{
+        width: 50%;
+        float: left;
+    }   
+}

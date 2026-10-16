@@ -1,0 +1,225 @@
+<div data-role="page">
+	<link rel="stylesheet" href="/public/css/c2l_dashboard.css">
+	<style type="text/css">
+	td span {
+		position: absolute;
+	}
+	.contactLink {
+		padding-right: 60px;
+	}
+	.border {
+		border-left: 1.5px solid black !important;
+    	padding-left: 5px;
+	}
+
+	.ui-checkbox {
+        display: inline-block;
+        margin: 0px;
+    }
+
+    .removeLabel {
+        width: 0px;
+        padding-left: 1.2em;
+    }
+
+    .deletePanel {
+        height: 28px;
+    }
+
+    .headerRightButtons {
+        padding-right: 4em;
+        margin-top: 10px;
+    }
+
+    .resultRow {
+        height: 28px;
+    }
+	</style>
+
+
+	<div data-role="header" id="header" data-position="inline">
+		<a href="<%= url_for :controller => :Menu, :action => :leads %>" rel="external" data-direction="reverse" data-role="none">
+			<img src="/public/images/SalesIllustration/icon_BackArrow-Red.png">
+		</a>
+		<h1><%= getLabelValue('SEARCHLEAD') %></h1>
+		<% if @searchResult.length > 0 %>
+        <div class="ui-btn-right">
+            <div class="headerRightButtons">
+                <a data-role="button" id="showDeletePanel" href="#" style="min-width:100px;">
+                    <%= getLabelValue('delete') %>&nbsp;<%= getLabelValue('LEADS') %>
+                </a>
+                <a data-role="button" id="deleteButton" href="#" style="min-width:100px;">
+                    <%= getLabelValue('delete') %>
+                </a>
+                <a data-role="button" id="cancelButton" href="#" style="min-width:100px;">
+                    <%= getLabelValue('CANCEL')%>
+                </a>
+            </div>
+        </div>
+        <% end %>
+	</div>
+
+ 	<div data-role="content" id="content">
+ 		<form method="POST" action="<%= url_for :action => :searchLead %>" name="leadSearchForm" id="leadSearchForm" data-ajax="false">
+ 			<table data-role="table" class="ui-responsive table-stroke">
+                <thead>
+                    <tr>
+                        <th data-priority="1" style="width:25%"><%= getLabelValue('name')%></th>
+                        <th data-priority="2" style="width:22%"><%= getLabelValue('contactMobile')%></th>
+                        <th data-priority="3" style="width:25%"><%= getLabelValue('emailID')%></th>
+                        <th data-priority="4" style="width:20%"><%= getLabelValue('STATUS')%></th>
+                        <th data-priority="4" style="width:8%"></th>
+                    </tr>
+                </thead>
+                <tbody>
+                	<tr>
+                        <td data-priority="1">
+                            <input name="leadName" id="leadName" value="<%= @params['leadName'] %>" type="search" placeholder="<%= getLabelValue('name')%>">
+                        </td>
+                        <td data-priority="2">
+                            <input name="leadMobile" id="leadMobile" value="<%= @params['leadMobile'] %>" type="search" placeholder="<%= getLabelValue('contactMobile')%>">
+                        </td>
+                        <td data-priority="3">
+                            <input name="leadEmail" id="leadEmail" value="<%= @params['leadEmail'] %>" type="search" placeholder="<%= getLabelValue('emailID')%>">
+                        </td>
+                        <td data-priority="4">
+                            <input name="leadStatus" id="leadStatus" value="<%= @params['leadStatus'] %>" type="search" placeholder="<%= getLabelValue('STATUS')%>">
+                        </td>
+                        <td data-priority="4">
+                        </td>
+                    </tr>
+                	<% if @searchResult.length < 1 && !@params.empty? %>
+                        <tr><td colspan="4" style="text-align:center;">No Records</td></tr>
+                    <% else 
+                        @searchResult.each do |lead| %>
+	                        <tr>
+	                            <td>
+	                                <a href="<%= url_for :action => :showLead, :id => lead[:object] %>" rel="external"><%= lead[:leadName] %></a>
+	                            </td>
+	                            <td>	
+                                	<a href="<%= url_for :action => :showLead, :id => lead[:object] %>" rel="external"><%= lead[:leadMobile] %></a>
+	                            </td>
+	                            <td>
+	                                <a href="<%= url_for :action => :showLead, :id => lead[:object] %>" rel="external"><%= lead[:leadEmail] %></a>
+	                            </td>
+	                            <td>
+	                                <a href="<%= url_for :action => :showLead, :id => lead[:object] %>" rel="external"><%= lead[:leadStatus] %></a>
+	                            </td>
+	                            <td class="resultRow">
+	                            	<div class="deletePanel">
+	                            		<label class="removeLabel">
+	                            			<input class="deleteCheck" type="checkbox" value="<%= lead[:object] %>" name="deleteCheck[]">
+	                            		</label>
+	                            	</div> 
+	                            </td>
+	                        </tr>
+
+	                        <tr>
+								<td>
+									<% if @settingsHash["CAPILLUS"].visible == "YES" %>
+										<a href="<%= url_for :controller => :Quotation, :action => :productPage %>?leadid=<%= lead[:object] %>" rel="external">
+											<img src="/public/images/SalesIllustration/capture.png">
+											<span><%= getLabelValue('CAPTUREILLUSTRATION')%></span>
+										</a>
+									<% end %>
+								</td>
+								<td>
+									<% if lead[:leadStatus] != "CLOSED" %>
+										<% if @settingsHash["VIEWACT"].visible == "YES" %>
+											<a href="<%= url_for :action => :showLead, :id => lead[:object] %>?leadActivity=-1" rel="external">
+												<%= getLabelValue('VIEWACTIVITIES')%>
+											</a>
+										<% end %>
+									<% end %>
+								</td>
+								<td>
+									<% if lead[:leadMobile] != "-" && @settingsHash["CALL"].visible == "YES"%>
+	                            		<a href="tel:<%= lead[:leadMobile] %>" class="contactLink">
+	                            			<img src="/public/images/SalesIllustration/call.png">
+	                            			<span><%= getLabelValue('CALL') %></span>
+	                            		</a>
+									<% end %>
+									<% if lead[:leadMobile] != "-" && @settingsHash["SMS"].visible == "YES"%>
+	                            		<a href="sms:<%= lead[:leadMobile] %>" class="contactLink">
+	                            			<img src="/public/images/SalesIllustration/sms.png" class="border">
+	                            			<span><%= getLabelValue('SMS') %></span>
+	                            		</a>
+									<% end %>
+									<% if lead[:leadEmail] != "-" && @settingsHash["EMAIL"].visible == "YES" %>
+	                            		<a href="mailto:<%= lead[:leadEmail] %>" class="contactLink">
+	                            			<img src="/public/images/SalesIllustration/email.png" class="border">
+	                            			<span><%= getLabelValue('Email') %></span>
+	                            		</a>
+									<% end %>
+								</td>
+								<td>
+									<% if lead[:leadStatus] == "-" && @settingsHash["NEEDANALYSIS"].visible == "YES" %>
+										<a href="<%= url_for :controller => :LeadFNA, :action => :newFNA, :id => lead[:object] %>" rel="external"><%= getLabelValue('ADDFNA')%></a>
+									<% end %>
+								</td>
+								<td>
+								</td>
+							</tr>
+                    <%  end
+                    end %>
+                </tbody>
+            </table>
+        </form>
+	</div>
+</div>
+<script type="text/javascript">
+$(document).ready(function(){
+	$('#deleteButton').hide();
+    $('#cancelButton').hide();
+    $('.deletePanel').hide();
+
+    $('#showDeletePanel').click(function () {
+        $('#deleteButton').show();
+        $('#cancelButton').show();
+        $('.deletePanel').show();
+        $(this).hide();
+    });
+
+    $('#cancelButton').click(function(){
+        $('#deleteButton').hide();
+        $('#cancelButton').hide();
+        $('.deletePanel').hide();
+        $(this).hide();
+        $('#showDeletePanel').show();
+        $("input:checkbox[name='deleteCheck[]']:checked").prop("checked", false).checkboxradio('refresh');
+    });
+    
+    $('#deleteButton').click(function(){
+        if($("input:checkbox[name='deleteCheck[]']:checked").length > 0) {
+            $('<div>').simpledialog2({
+                mode: 'button',
+                style: "width: 629px",
+                buttonPrompt: '<%= getLabelValue("DELETE_CONFIRMATION", ["LEAD"])%>',
+                buttons : {
+                    '<%= getLabelValue("OK")%>': {
+                        click: function () {
+                            $('#leadSearchForm').submit();
+                        }
+                    },
+                    '<%= getLabelValue("CANCEL")%>': {
+                        click: function () { 
+                        },
+                        icon: "delete",
+                        theme: "c"
+                    }
+                }
+            });
+        }
+    });
+    $('input[type=text]').keypress(function (e) {
+        if (e.which == 13) {
+            $('#leadSearchForm').submit();
+            return false;
+        }
+    });
+
+    $('input[type=text]').change(function(){
+        $('#leadSearchForm').submit();
+    });
+});
+</script>

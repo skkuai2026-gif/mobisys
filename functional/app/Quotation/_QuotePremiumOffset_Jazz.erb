@@ -1,0 +1,14 @@
+<%
+renderTypeFlag = MobiSys::BrowserHelper.getFacetValueByPlanOption('PREMIUMOFFSET',$currentProduct,@baseProduct)
+if renderTypeFlag
+	lookupKey = ""
+	currFacetDO = $currentProduct.getFacetFast("PREMIUMOFFSETVALUES")
+	if currFacetDO && currFacetDO.actionTypeCd.to_s == "LOOKUP" && currFacetDO.lookupKey.to_s != ""
+		lookupKey = currFacetDO.lookupKey.to_s
+	end
+%>
+	<input type= "hidden" id = "premiumOffsetValues_lookupKey" value = "<%=lookupKey%>">
+	<%= prdFieldDataTag("#{@quotationPckg}.PolicyProductDO",'premiumOffsetFl,premiumOffsetOptionCd,premiumOffsetValues,premiumOffsetYear') %>
+	<%
+end
+%>

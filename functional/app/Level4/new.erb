@@ -1,0 +1,76 @@
+<div data-role="page">
+
+  <div data-role="header" data-position="inline">
+    <h1>New <%= @level4.title %></h1>
+    <a href="<%= url_for :action => :index %>" class="ui-btn-left" data-icon="back" data-direction="reverse">
+      Cancel
+    </a>
+  </div>
+
+  <div data-role="content">
+    <form method="POST" action="<%= url_for :action => :create %>">
+      <input type="hidden" name="id" value="<%= @level4.object %>"/>
+
+      
+          <div data-role="fieldcontain">
+            <label for="level4[levelCd]" class="fieldLabel">Levelcd</label>
+            <input type="text" id="level4[levelCd]" name="level4[levelCd]" <%= placeholder("Levelcd") %> />
+          </div>
+      
+          <div data-role="fieldcontain">
+            <label for="level4[name]" class="fieldLabel">Name</label>
+            <input type="text" id="level4[name]" name="level4[name]" <%= placeholder("Name") %> />
+          </div>
+      
+          <div data-role="fieldcontain">
+            <label for="level4[icon]" class="fieldLabel">Icon</label>
+            <input type="text" id="level4[icon]" name="level4[icon]" <%= placeholder("Icon") %> />
+          </div>
+      
+          <div data-role="fieldcontain">
+            <label for="level4[text_h]" class="fieldLabel">Text h</label>
+            <input type="text" id="level4[text_h]" name="level4[text_h]" <%= placeholder("Text h") %> />
+          </div>
+      
+          <div data-role="fieldcontain">
+            <label for="level4[text_f]" class="fieldLabel">Text f</label>
+            <input type="text" id="level4[text_f]" name="level4[text_f]" <%= placeholder("Text f") %> />
+          </div>
+      
+          <div data-role="fieldcontain">
+            <label for="level4[layout]" class="fieldLabel">Layout</label>
+            <input type="text" id="level4[layout]" name="level4[layout]" <%= placeholder("Layout") %> />
+          </div>
+      
+          <div data-role="fieldcontain">
+            <label for="level4[sortOrder]" class="fieldLabel">Sortorder</label>
+            <input type="text" id="level4[sortOrder]" name="level4[sortOrder]" <%= placeholder("Sortorder") %> />
+          </div>
+          
+          <div data-role="fieldcontain">
+            <label for="level4[collateralView]" class="fieldLabel">Collateral view</label>
+            <input type="text" id="level4[collateralView]" name="level4[collateralView]" value="<%= @level4.collateralView %>" <%= placeholder( "Collateral view" ) %> />
+          </div>
+
+          <div data-role="fieldcontain">
+              <label for="level4[level3_levelCd]" class="fieldLabel">Level3 Reference</label>
+              <select name="level4[level3_levelCd]">
+              <% 
+                @level3s.each do |level3|
+                  %>
+                    <option value="<%= level3.levelCd%>"
+                      <%= "selected" if level3.levelCd == @level4.level3_levelCd%>
+                    >
+                        <%=level3.levelCd%>
+                    </option>
+                  <%
+                end
+              %>
+              </select>
+          </div>
+
+      <input type="submit" value="Create"/>
+    </form>
+  </div>
+
+</div>

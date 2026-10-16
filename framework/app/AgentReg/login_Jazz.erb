@@ -1,0 +1,97 @@
+<%= pageTagStart("","Symbiosys",'page-color-bg') %>
+    <div data-role="main" class="ui-content">
+    	<ul>
+		    <%
+			if $errors
+				$errors.each_value do |error|
+					%>
+					<li><%=error%></li>
+					<%
+				end
+			end
+			%>
+		</ul>
+		<% 
+			android_style = ""
+			if System::get_property('platform') == 'ANDROID' && $rhoconfig[:application_view_mode] != "mobile"
+				android_style = "margin-bottom: 350px !important;"
+			end
+		%>
+		<div class="login-logo-display" style="<%= android_style %>">
+		<%= formTagStart("loginform","#{url_for :action => :loginwait}") %>
+			<img src="/public/jazz/images/logo-symby-big.png" alt="logo">
+			<div class="login-formarea">
+				<div class="ui-field-contain">
+					<div class="ui-body-inherit"><input type="text" name="AgentReg[userId]" id="AgentReg[userId]" placeholder="<%=getLabelValue('USERNAME')%>" value=""></div>
+				</div>
+				<div class="ui-field-contain">
+					<div class="ui-body-inherit"><input type="password" name="AgentReg[regPass]" id="AgentReg[regPass]" placeholder="<%=getLabelValue('PASSWORD')%>" value=""></div>
+				</div>
+				<a href='#' class="ui-btn ui-btn-b" data-role="button" name="login" onclick="javascript: login();"><%=getLabelValue('SIGNIN')%></a>
+			</div>
+		<%= formTagEnd %>
+		</div>
+		<div class="copyright-area">
+			<div data-role="footer" data-position="fixed" data-tap-toggle="false" class="jqm-footer ui-footer ui-footer-fixed slideup" role="contentinfo">
+				<p><%= getLabelValue('LOGINFOOTERDATA') %></p>
+				<p><%= getLabelValue('PROGRAMVER') %> <span class="jqm-version"><%= getLabelValue(Rho::RhoConfig.app_version) %></span></p>
+			</div>	
+		</div>	
+	</div>
+<%= pageTagEnd %>
+<script type="text/javascript" charset="utf-8" src="/public/js/encrypt.js?v=1.0"></script>
+<script type="text/javascript">
+function login(){
+	var returnValue = true;
+	username = $("input[name='AgentReg[userId]']").val();
+	password = $("input[name='AgentReg[regPass]']").val();
+
+	if(username == "" || password == ""){            
+		// showDialog("", "<%#= getLabelValue('USERNAMEPASSWORDMANDATORY')%>", 'error', 0, 'loginPage');
+		// alert("<%#= getLabelValue('USERNAMEPASSWORDMANDATORY')%>");
+		raiseAlert('<%= getLabelValue('USERNAMEPASSWORDMANDATORY')%>','',locale);
+		returnValue = false;
+	}
+
+	if(returnValue){
+		$.ajax({
+        	url: "/app/AgentReg/encryptPass",
+        	success: function(data){
+				if (data != ""){
+					temp = JSON.parse(data);
+					encryptionExponent = temp.RSA_KEY_encryptionExponent;
+					modulus = temp.RSA_KEY_modulus;
+					var encryptedPassword = encryptValueCustom(password,encryptionExponent,modulus);
+					$("input[name='AgentReg[regPass]']").val(encryptedPassword);            
+            	}
+          	},
+          	error: function(jhqr, errorType, exception){
+            	raiseAlert("error: "+exception);
+          	},
+          	complete: function(jqXHR, status){
+            	document.loginform.submit();
+            	$("a[name='login']").attr('onclick','return false;');
+          	}
+        });               
+	}
+}
+
+
+function fetchCredsBasedOnFingerprintAuth(username, password) {
+	$("input[name='AgentReg[userId]']").val(username);
+	$("input[name='AgentReg[regPass]']").val(password);
+	document.loginform.submit();
+}
+
+$(document).ready(function(){
+	$("#loginform").keypress(function(e) {
+	    if ((event.keyCode || event.which) == 13) {
+	        $("[name='login']").click();
+	    }
+	});
+});
+
+<% if Rho::RhoConfig.exists?('upgrade_prompt') and Rho::RhoConfig.upgrade_prompt=='YES' && System::get_property('platform').downcase.include?("windows") %>
+	<%= $js %>
+<% end %>
+</script>

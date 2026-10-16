@@ -1,0 +1,19 @@
+<%  @imageTransCollateral = Collateral.loadObject(:first,:conditions =>{:collateralCd => "IMAGETRANS"}) %>
+
+   <div class="level2leftnavigation" id="level2leftnavigation">
+     <ul class="productfeature-nav">
+     	 <% @collateralRenderLevelChildDOList.each do |collateralRenderLevelChildDO| %>
+   	   		<a href="javascript:doOnLevelClick('<%=collateralRenderLevelChildDO.levelCd%>','childListDiv');">
+   	   	 		<li>
+   	   	 			<img src="<%=@imageTransCollateral.fileName%>" class="productfeature-nav-img <% if @collateralRenderLevelChildDOList[0].levelCd == collateralRenderLevelChildDO.levelCd %> collateral-list-menu-active <%end%>" id="<%=collateralRenderLevelChildDO.levelCd%>" style="background-image:url(<%=@collateralMap[collateralRenderLevelChildDO.icon].fileName%>);" />   
+   	   	 		</li>
+  			 </a>
+  		 <%end%>
+     	    
+       </ul>
+  </div> 
+<script> 
+  doOnLevelClick('<%=@collateralRenderLevelChildDOList[0].levelCd%>','childListDiv');
+</script>
+<div id="childListDiv"></div>
+  			

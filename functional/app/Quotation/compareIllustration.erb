@@ -1,0 +1,318 @@
+<div data-role="page">
+<script>
+var allowSubmit = true;
+var JUVENILEOCCUPATIONCLASS = 2;
+</script>
+  <div data-role="header" data-position="inline">
+    <h1><%= getLabelValue('COMPAREILLUSTRATION')    %></h1>
+    <a href="/app/Menu/salesIllustration" class="ui-btn-left" data-direction="reverse">
+        <%= getLabelValue('BACK')   %>
+    </a>
+  </div>
+  <div data-role="content">
+    <form method="POST" action="<%= url_for :action => :compare %>" name="quotationCompareForm">
+    <div data-role="table" class="illustrationdisplay">
+      
+      <fieldset name="compare">        
+      
+        <div data-role="fieldcontain">
+            <%= renderLabel('age', 'AGE')   %>
+            <%= renderCountField('age', @age, '')  %>
+            <%= getLabelValue('YEAR')   %>
+        </div>
+
+        <div data-role="fieldcontain">                        
+            <%= renderLabel('genderCd', 'GENDER', nil, nil)    %>
+  
+            <%= renderRadioButton('genderCd', @genderCd, 'male', 'MALE', nil) %>
+            <%= renderLabel('male', 'MALE')   %>
+            <%= renderRadioButton('genderCd', @genderCd, 'female', 'FEMALE', nil) %>
+            <%= renderLabel('female', 'FEMALE')   %>
+            
+        </div>
+
+        <fieldset data-role="controlgroup">
+          <div class="ui-grid-b">            
+            <div class="ui-block-a"> <%= renderLabel('occupationCd','OCCUPATIONCLASS', nil, nil) %> </div>
+            <div class="ui-block-b"> <%= getLookup('OCCUPATIONCLASS','occupationCd', @occupationCd, nil, nil, " onchange=\"occupationCdChanged();\"") %> </div>
+            <div class="ui-block-c"> </div>
+          </div>
+        </fieldset>
+
+      <fieldset data-role="controlgroup">
+        <div class="ui-grid-b">
+          <div class="ui-block-a">
+            <%= renderLabel('premiumsa', 'SAANNUALPREMIUM')   %>
+          </div>
+          <div class="ui-block-b">
+            <%= getLookup("PREMIUMSA", 'premiumsa', @premiumsa) %>
+            
+          </div>
+          <div class="ui-block-c">
+            <%= renderAmountField('premiumsaValue', @premiumsaValue, '', nil, " style='max-width:140px;'")  %>
+          </div>
+        </div>
+      </fieldset>
+        
+        <fieldset data-role="controlgroup">
+          <div class="ui-grid-b">            
+            <div class="ui-block-a"> <%= renderLabel('productCd','PRODUCT', nil, nil) %> </div>
+            <div class="ui-block-b"> <%= getLookup('PRODUCT', 'productCd', @params['productCd'], nil, nil, " onchange=\"updateProducts();\"") %> </div>
+            <div class="ui-block-c" style="max-width:255px;">
+              <input type="hidden" name="plancdValues" id="PLANCDVALUES" >
+ 
+              <div id="multi" name="multi">                      
+                <select name="plancd" id="plancd" multiple="multiple" data-native-menu="false">
+                  <option value=""><%=getLabelValue("SELECT_COMPARE")%></option>                         
+                </select>
+              </div>
+              <div id="single" name="single"> 
+                <%= getLookup(MobiSys::BrowserHelper::DYNAMICLOOKUP, 'planType', @params['planType'], nil, @paTypeLookups)   %>
+              </div>
+            
+            </div>
+          </div>
+        </fieldset>
+                 
+        <div class="buttonSize">
+              <a href="#" name="submit" data-role="button" data-theme="a" onclick="compareIllustration();">
+                <%= getLabelValue('COMPARE') %>
+                  <script>
+                  function compareIllustration() {                      
+                      $("select[name='occupationCd']").selectmenu('enable');
+                      document.quotationCompareForm.submit();                    
+                      $("a[name='submit']").attr('onclick', 'return false;');                            
+                  }
+                  </script>
+              </a>
+        </div>
+      </fieldset>
+    </div>
+        
+      
+        <%
+          if $comparisons != nil
+            %>
+            <div class="illustrationdisplay">   
+            <div class="illustrationreport" >
+              <table class="searchtable" width="100%">
+                <tr class="searchtableheader" >
+                   <td width="35%">
+                       <%= getLabelValue('PLAN')   %>
+                   </td>
+                   <td width="15%">
+                        <%= getLabelValue('CT/PPT') %>
+                   </td>
+                   <td width="16%">
+                        <% if @params['premiumsa'] != 'PREMIUM' %>
+                                    <%= getLabelValue('AP') %>
+                        <% end %>
+                        <% if @params['premiumsa'] != 'SUMASSURED' %>
+                                    <%= getLabelValue('SA') %>
+                        <% end %>
+                   </td>
+                   <td width="17%">
+                        <%= getLabelValue('TPP') %>
+                   </td>
+                   <td width="17%">
+                        <%= getLabelValue('ICPM') %>
+                   </td>
+                </tr>
+                <% 
+                  @index = 0
+                  $comparisons.each do |comparisonRow|
+                    if comparisonRow["sumAssured"] != "NA" 
+                      if (@index%2 == 0)
+                       %>
+                          <tr class = "search1">
+                      <% else %>
+                          <tr class = "search2">
+                      <% end %>
+                    
+                        <td class="tabletext">
+                            <a href="#" onclick="location.href='/app/Quotation/captureIllustration?age=<%=@age%>&gender=<%=@genderCd%>&occupation=<%=@occupationCd%>&planType=<%=comparisonRow['planType']%>&planCode=<%=comparisonRow['plan']%>&sumAssured=<%=comparisonRow['sumAssured']%>&premium=<%=comparisonRow['premium']%>&productId=<%=comparisonRow['productId']%>';">
+                            <%= getLabelValue(comparisonRow["plan"]) %>
+                            </a>
+                        </td>
+                        <td class="tablenum">
+                            <%= comparisonRow["term/ppt"] %>
+                        </td>
+                        <td class="tablenum">
+                          <% if @params['premiumsa'] == 'PREMIUM' %>
+                            <%=  renderNumber(comparisonRow["sumAssured"]) %>
+                          <% end %>
+                          <% if @params['premiumsa'] == 'SUMASSURED' %>
+                            <%=  renderNumber(comparisonRow["premium"]) %>
+                          <% end %>
+                        </td>
+                        <td class="tablenum">
+                            <%=  renderNumber(comparisonRow["accumulatedPremium"]) %>
+                        </td>
+                        <td class="tablenum">
+                            <%=  renderNumber(comparisonRow["icp"]) %>
+                        </td>
+                      </tr>                    
+                      <%
+                      @index = @index + 1
+                    end
+                  end
+                %>
+              </table>
+              <% if @index == 0 %>
+                <br>
+                <center><%=getLabelValue("NORECORDFOUND")%></center>
+              <% end %>
+            </div>
+            </div>
+            <% 
+          end 
+          
+          $comparisons = nil
+        %>
+  </form>
+    </div>  
+    <script>
+
+          $(document).focus(function() {
+                allowSubmit = true;
+                age = $("input[name='age']").val();
+                
+                if( age != "" && age <= 15)
+                {
+                  $("select[name='occupationCd']").selectmenu('disable');
+                }
+                
+                
+                $("input[name='age']").blur( function(){
+                  if ( isNaN(this.value) || this.value < 0)
+                  {
+                    $(this).val('');
+                  }
+                  else
+                  {
+                    if (this.value <= 15)
+                    {
+                      $("select[name='occupationCd']").val(JUVENILEOCCUPATIONCLASS).change();
+                      $("select[name='occupationCd']").selectmenu('disable');
+                    }
+                    else
+                    {
+                      $("select[name='occupationCd']").selectmenu('enable');
+                    }
+                    updateProductsCompare();
+                  }        
+                   
+                });
+
+                $("input[name='genderCd']").change( function(){
+            
+                  updateProductsCompare();
+                   
+                });
+                
+                $("input[name='plancdValues']").val($("select[name='plancd']").val())
+
+                updateProducts();                               
+                // # updateSAPremiumOption($("select[name='premiumsa']").val());
+            });
+            
+          $(document).ready(function() {
+            updateProductsCompare();
+          });
+
+          function occupationCdChanged(){
+            age = $("input[name='age']").val();
+            occupationCd = $("select[name='occupationCd']").val();
+            //alert("changed, age:"+age+" occ:"+occupationCd);
+            if( age != "" && age <= 15 && occupationCd != JUVENILEOCCUPATIONCLASS)
+            {
+              $("select[name='occupationCd']").val(JUVENILEOCCUPATIONCLASS).change();
+            }
+            updateProductsCompare();
+          }
+           
+          function updateProducts(){
+            prod = $('select[name="productCd"]').val();
+            if(prod == "INDIVIDUAL"){
+                $('div[name="multi"]').show();
+                $('div[name="single"]').hide();
+            }
+            else
+              {
+                $('div[name="multi"]').hide();
+                $('div[name="single"]').show();
+              }
+              
+            }
+            
+            /*
+              
+            $("input[name='premiumsa']").change( function(){
+              updateSAPremiumOption($(this).val());
+            });
+
+                          
+            function updateSAPremiumOption(option)
+            {
+              
+              alert(option);
+              if(option == "premium")
+              {
+                setReadOnly($("input[name='sumAssured']"), true);
+                setReadOnly($("input[name='premium']"), false);
+                $("input[name='sumAssured']").val(0);
+              }
+              else // # ($(this).val() == "sumAssured")
+              {
+                setReadOnly($("input[name='sumAssured']"), false);
+                setReadOnly($("input[name='premium']"), true);
+                $("input[name='premium']").val(0);                
+              }  
+            }
+            */
+              
+          function updateProductsCompare(){
+              age = $('input[name="age"]').val();
+              genderCd = $('input[name="genderCd"]').filter(':checked').val();
+              occupationClass = $('select[name="occupationCd"]').val();
+              planType = $('select[name="planType"]').val();
+              
+              if ( age != "" && genderCd!==undefined && genderCd != "" && occupationClass != "")
+              {
+                       
+                // base product filtering
+                $.ajax({
+                          url: "/app/Quotation/filterComparisonPlanTypes",
+                          data: {'age': age, 'genderCd': genderCd, 'occupationClass': occupationClass, 'planType':planType},
+                          success: function(data) {
+                              create = '<select id="planType" name="planType" >';
+                              create += '<option value=""><%=getLabelValue("SELECT_TYPE")%></option>';                          
+                              create += data;
+                              create += '</select>';
+                              $('div[name="single"]').html(create);
+                              $('div[name="single"]').trigger('create');
+                          }
+                       })
+                       
+                
+                  planType = $('select[name="planType"]').val();
+                // base plan filtering
+                
+                  $.ajax({
+                            url: "/app/Quotation/filterIndividualPlans",
+                            data: {'age': age, 'genderCd': genderCd, 'occupationClass': occupationClass, 'planType':planType},
+                            success: function(data) {
+                                create = '<select name="plancd" id="plancd" multiple="multiple" data-native-menu="false">';
+                                create += '<option value=""><%=getLabelValue("SELECT_COMPARE")%></option>';                                                    
+                                create += data;
+                                create += '</select>';
+                                $('div[name="multi"]').html(create);
+                                $('div[name="multi"]').trigger('create');
+                            }
+                         })
+                
+              }
+            }
+             
+    </script>
+  </div>

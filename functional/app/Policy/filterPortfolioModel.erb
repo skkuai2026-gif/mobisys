@@ -1,0 +1,4 @@
+<% require 'CommonModules/mobisysbrowserhelper' %>
+<% @models.each_with_index do |model, index| %>
+  <option value="<%=model.modelCd%>" <%if @models.size == 1 and index==0%> selected <%end%>><%=getLabelValue(model.modelDesc)%></option>
+<% end %>

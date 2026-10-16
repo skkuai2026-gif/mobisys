@@ -1,0 +1,98 @@
+<div data-role="page">
+    <link rel="stylesheet" href="/public/css/c2l_dashboard.css">
+    <style type="text/css">
+    .ui-select {
+        width: 98% !important;
+        margin-top: 0.5em !important;
+    }
+	label{
+		padding-left:0 !important;
+	}
+	#mandatory_field label:after {
+	color: #e32;
+	content: ' *';
+	display:inline;
+	}
+    </style>
+
+    <div data-role="header" id="header" data-position="inline">
+        <a href="/app/Menu/salesIllustration" rel="external" data-direction="reverse" data-role="none">
+            <img src="/public/images/SalesIllustration/icon_BackArrow-Red.png">
+        </a>
+        <h1><%= getLabelValue('PRODUCTPAGE')%></h1>
+    </div>
+
+    <div data-role="content" id="content">
+		<br><br>
+        <input type="hidden" name="productSeq" value="" />
+		<div class="ui-field-contain">
+			<div class="ui-grid-c ui-responsive">
+				<div class="ui-block-a"></div>
+				<div class="ui-block-b" id="mandatory_field">
+					<label for="productFamilyCd"><%= getLabelValue('productFamilyCd') %></label>
+				</div>
+				<div class="ui-block-c">
+					<div class="ui-select">
+						<%= getLookup('DYNAMICLOOKUP', 'productFamilyCd', nil, nil, @productFamilyArray) %>
+					</div>
+				</div>
+				<div class="ui-block-d"></div>
+			</div>
+		</div>
+        <div class="ui-field-contain">
+			<div class="ui-grid-c ui-responsive">
+				<div class="ui-block-a"></div>
+				<div class="ui-block-b" id="mandatory_field">
+					<label for="productId"><%= getLabelValue('productName') %></label>
+				</div>
+				<div class="ui-block-c">
+					<div class="ui-select">
+						<%= getLookup('DYNAMICLOOKUP', 'productId', nil, nil,@productArray) %>
+					</div>
+				</div>
+				<div class="ui-block-d"></div>
+			</div>
+        </div>
+        <% if @offlineApplicationEnvironment.value == "UAT" %>
+        <div class="ui-field-contain">
+			<div class="ui-grid-c ui-responsive">
+				<div class="ui-block-a"></div>
+				<div class="ui-block-b">
+                    <label for="productVersion"><%= getLabelValue('productVersion') %></label>
+                </div>
+                <div class="ui-block-b">
+					<div class="ui-select">
+						<%= getLookup('DYNAMICLOOKUP', 'productVersion', nil, nil,@productVersionArray) %>
+					</div>
+				</div>
+                <div class="ui-block-c"></div>         
+            </div>
+		</div>
+        <% end %>     
+        
+        <div class="ui-field-contain">
+			<div class="ui-grid-c ui-responsive">
+				<div class="ui-block-a"></div>
+				<div class="ui-block-b" id="mandatory_field">
+					<label for="productPlanOptionCd"><%= getLabelValue('productPlanOptionCd') %></label>
+				</div>         
+				<div class="ui-block-c">
+					<div class="ui-select">
+						<%= getLookup('DYNAMICLOOKUP', 'productPlanOptionCd', nil, nil,@offlinePlanOptionArray )   %>
+					</div>
+				<div class="ui-block-d"></div>
+			</div>
+		</div>
+        <div class="ui-field-contain">
+			<div class="ui-grid-c ui-responsive">
+				<div class="ui-block-a"></div>
+				<div class="ui-block-b"></div>
+				<div class="ui-block-c">
+					<input type="button" id="goButton" value="<%= getLabelValue('GO') %>"/>
+				</div>
+				<div class="ui-block-d"></div>  
+			</div>
+		</div>
+	</div>
+</div>
+<%= render(:file => 'Quotation/productPageJS.erb')%>

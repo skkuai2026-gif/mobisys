@@ -1,0 +1,118 @@
+<div style="float:left"><h1><%= getLabelValue(@productDesc)%></h1></div>
+<div style="float:right"><img src = "/public/images/SalesIllustration/small_fwd.jpg"/></div>
+<div style="clear:both"></div>
+<% 
+   if (@policyHolder.title == nil)
+       @policyHolder.title = ""  
+elsif (@policyHolder.firstname == nil)
+      @policyHolder.firstname=""
+elsif (@policyHolder.middlename == nil)
+      @policyHolder.middlename  =""
+elsif (@policyHolder.lastname == nil)
+      @policyHolder.lastname = ""    
+end
+%>
+
+<div data-role="dualfieldcontain">
+  <div class="half">
+    <table class="illustrationtable" style="display:inline-block; top:300px;" >
+      <tr class="illustrationtableheader" style="border-collapse:collapse;">
+        <td  align='center' colspan = 3 style ="font-weight:bold;"><%= getLabelValue("OUTPUTPREMIUMSTRUCTHEADER") %></td>
+      </tr>
+      <tr class="illustrationtablerow" style="border-collapse:collapse;">
+        <td align ="left" width="30%"> <%= getLabelValue("currencyCd") %> </td>
+        <td align = "left" width="10%">:</td>
+        <td class="tabletext" width="20%"> <%= @baseQuotationProduct.currencyCd   %> </td>
+      </tr>
+      <tr class="illustrationtablerow" style="border-collapse:collapse;">
+        <td align ="left"> <%= getLabelValue("TOTALREGULARPREM") %> </td>
+        <td align = "left">:</td>
+        <td align ="left"> <%= @baseQuotationProduct.capturedPremiumAmt %> </td>
+      </tr>
+      <tr class="illustrationtablerow" style="border-collapse:collapse;">
+        <td align ="left"> <%= getLabelValue("TOTALREGULARTOPUP") %> </td>
+        <td align = "left">:</td>
+        <td align ="left"> <%= @regularTopup.topUpAmount %> </td>
+      </tr>
+      <tr class="illustrationtablerow" style="border-collapse:collapse;">
+        <td align ="left"> <%= getLabelValue("PAYEMENTMETHOD") %> </td>
+        <td align = "left">:</td>
+        <td align ="left"> <%= getLabelValue(@baseQuotationProduct.paymentFrequencyCd) %> </td>
+      </tr>
+      <tr class="illustrationtablerow" style="border-collapse:collapse;">
+        <td align ="left"> <%= getLabelValue("PAYEMENTPERIOD") %> </td>
+        <td align = "left">:</td>
+        <td align ="left"> <%= @baseQuotationProduct.premiumPayingTerm %> </td>
+      </tr>
+    </table>
+  </div>
+  <div class="half">
+    <table class="illustrationtable" style="display:inline-block; float:left; top:300px;">
+      <tr class="illustrationtableheader" style="border-collapse:collapse;">
+        <td align='center' colspan = 3 style="font-weight:bold;"><%= getLabelValue("OUTPUTINVESTMENT STRUCTHEADER ") %></td>
+      </tr>
+      <% @funds.each_with_index do |fund, index| %>
+        <tr class="illustrationtablerow">
+          <td align ="left" width="40%"><%=@masterFundDesc[index] %></td>
+          <td align = "left" width="10%">:</td>
+          <td class="tabletext" width="20%"><%=fund.allocationPerc%> </td>
+        </tr>
+      <% end %>
+    </table>
+  </div>
+</div>
+<br/>
+<div style="font-weight:bold;"align="center">
+  <%= getLabelValue("GRAPHHEADER") %>
+</div>
+<br/>
+<div class="graphWrapper" style = "height:300px">
+  <div name="hGraph" style ="width:70%;float:left;">
+    <!--<canvas id="myCanvas" width="600" height="250">[No canvas support]</canvas> -->
+  </div>
+  <div class="graphContent" style ="width:30%;float:left;margin-top:25px;">
+    <% if @insured.firstname != nil || @insured.firstname != "" %> 
+      <%= getLabelValue('NAME') + "  :  " + @insured.firstname.to_s + " " +@insured.lastname.to_s %><br/>
+    <%else%>
+     <%= getLabelValue('NAME') + "  :  " + @insured.lastname.to_s %><br/>
+    <%end%>
+    <%= getLabelValue('AGE') + "  :  " +  @insured.age.to_s if @insured.age != nil ? @insured.age : @insured.age == "" %><br/>
+    <%= getLabelValue('occupationCd') + ":" +  getLabelValue(@quotationOcc.desc) if @insured.occupationCd != nil ? @insured.occupationCd : @insured.occupationCd == "" %>
+  </div>
+</div>
+<% if(@quotationBenefitTermForProp.size > 0) && (@quotation.proposerLASame == nil ||  @quotation.proposerLASame == "" || @quotation.proposerLASame != "on")  %>
+  <div class="graphWrapperProp" style = "height:300px">
+    <div name="hGraphProposer" style ="width:70%;float:left;">
+      <!--<canvas id="myCanvas" width="600" height="250">[No canvas support]</canvas> -->
+    </div>
+    <div class="graphContent" style ="width:30%;float:left;margin-top:25px;">
+      <% if @policyHolder.firstname != nil || @policyHolder.firstname != "" %>   
+        <%= getLabelValue('NAME') + "  :  " + @policyHolder.firstname.to_s + " " + @policyHolder.lastname.to_s %><br/>
+      <%else%>
+        <%= getLabelValue('NAME') + "  :  " + @policyHolder.lastname.to_s %><br/>
+      <%end%>
+      <%= getLabelValue('AGE') + "  :  " +  @policyHolder.age.to_s if @policyHolder.age != nil ? @policyHolder.age : @policyHolder.age == "" %><br/>
+      <%= getLabelValue('occupationCd') + ":" +  getLabelValue(@quotationPropOcc.desc) if @policyHolder.occupationCd != nil ? @policyHolder.occupationCd : @policyHolder.occupationCd == "" %>
+    </div>
+  </div>
+<%end%>
+<% if !@supplementaryLife.empty? && @supplementaryLife.size > 0 %>
+  <%@supplementaryLife.each_with_index do |sup, index|%>
+
+    <div class="graphWrapper" >
+      <div name='<%="hGraph_#{index}"%>' style ="height:270px;width:70%;float:left;">
+      </div>
+      <div name='<%="sup_detail_#{index}"%>'style ="width:30%;float:left;margin-top:25px;height:270px;">
+        <% if sup.firstname != nil || sup.firstname != "" %>  
+          <%= getLabelValue('NAME') + "  :  " + sup.firstname.to_s + " " + sup.lastname.to_s  %><br/>
+        <%else%>
+          <%= getLabelValue('NAME') + "  :  " + sup.lastname.to_s %><br/>
+        <%end%>
+        <%= getLabelValue('AGE') + "  :  " + sup.age.to_s if sup.age != nil ? sup.age : sup.age == "" %><br/>
+        <% if @supplementaryOccupation[index] != "Not Found"%>
+          <%= getLabelValue('occupationCd') + ":" + @supplementaryOccupation[index].desc if sup.occupationCd != nil || sup.occupationCd != "" %>
+        <% end %>
+      </div>
+    </div>
+  <%end%>
+<%end%>

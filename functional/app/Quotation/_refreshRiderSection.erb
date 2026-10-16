@@ -1,0 +1,182 @@
+    <% if @riderAutoPopulationReqFlag == "YES" %>
+        <div class="ui-grid-d">
+            <div class="ui-block-a"> </div>
+            <div class="ui-block-b"></div>
+            <div class="ui-block-c"> <input type="button" onclick="refreshPrePolulatedRider()" value="<%= getLabelValue('REFRESH')%>"> </div>
+            <div class="ui-block-d"></div>
+            <div class="ui-block-e"></div>
+        </div>
+    <% end %>
+    <% @builtInRiderArray.each do |builtInRider|%>
+        <%= renderObject(builtInRider, @quotation) %>
+        <%= renderHiddenField('productId', builtInRider.productId, 'productId', builtInRider) %>
+        <%= renderHiddenField('productSeq', builtInRider.productSeq, 'productSeq', builtInRider) %>
+        <%= renderHiddenField('builtInRiderFl', builtInRider.builtInRiderFl, 'builtInRiderFl', builtInRider) %>
+        <%= renderHiddenField('partyRoleCd', builtInRider.partyRoleCd, 'partyRoleCd', builtInRider) %>
+        <%= renderHiddenField('productTypeCd', builtInRider.productTypeCd, 'productTypeCd', builtInRider) %>
+        <%= renderHiddenField('productFamilyCd', builtInRider.productFamilyCd, 'productFamilyCd', builtInRider) %>
+        <%= renderHiddenField('productVersion', builtInRider.productVersion, 'productVersion', builtInRider) %>
+    <% end %>
+    <% if @newriders != nil %>
+    <% @newriders.each_with_index do |rider, count|%>
+        <%if rider.removed == ""%>
+            <%= renderObject(rider, @quotation) %>
+            <%= renderHiddenField('productId', rider.productId, 'productId', rider) %>
+            <%= renderHiddenField('productTypeCd', rider.productTypeCd, 'productTypeCd', rider) %>
+            <%= renderHiddenField('riderRegularPayProduct', rider.riderRegularPayProduct, 'riderRegularPayProduct', rider) %>
+            <%= renderHiddenField('removed', rider.removed, 'removed', rider) %>
+            <%= renderHiddenField('maturityAge', rider.maturityAge,'maturityAge', rider) %>
+            <%= renderHiddenField('combinedEntryAge',rider.combinedEntryAge,'combinedEntryAge', rider) %>
+            <%= renderHiddenField('guid',rider.guid,'guid',rider) %>
+            <%= renderHiddenField('extraPremium',rider.extraPremium,'extraPremium',rider) %>
+            <%= renderHiddenField('linkedFl', rider.linkedFl, 'linkedFl', rider) %>
+            <%= renderHiddenField('parentproductSeq', rider.parentproductSeq, 'parentproductSeq', rider) %>
+            <%= renderHiddenField('productFamilyCd', rider.productFamilyCd, 'productFamilyCd', rider) %>
+            <%= renderHiddenField('productVersion', rider.productVersion, 'productVersion', rider) %>
+            <%= renderHiddenField('premiumSAFl', rider.premiumSAFl, nil, rider) %>
+
+            <div name='<%= getObjectMapping(rider) %>'>
+                <div style= 'margin-left: 97%;'>
+                    <input id="<%= getObjectMapping(rider) %>" type="button" class="removeRiderButton" data-inline="true" data-icon="delete" data-iconpos="notext" onclick="removeRider('<%= getObjectMapping(rider) %>')"/>
+                </div>
+
+                <div data-role="dualfieldcontain">
+                    <% if @facetData[:renderProductseq] %>
+                        <div class="half">     
+                            <%= renderLabel('productSeq', 'rider', '', rider) %>
+                            <%= getLookup('DYNAMICLOOKUP', 'productSeq', rider.productSeq.to_s, rider, @riderArray, "onchange=refreshRiderSection(\""+getObjectMapping(rider)+"\");")%>       
+                        </div>
+                    <% end %>
+                    <% if @facetData[:renderProductplanoptioncd] %>
+                        <div class="half">            
+                            <%= renderLabel('productPlanOptionCd','planOptionCd',nil, rider) %>  
+                            <span name='<%= getObjectMapping(rider) %>[productPlanOptionCd]'>     
+                                <%contentStr = ''
+                                if @planLookups[rider.productSeq] != nil
+                                    if @planLookups[rider.productSeq].size == 0 || (@newRiderFields != nil && @newRiderFields.has_key?(rider.productSeq.to_i) && @newRiderFields[rider.productSeq.to_i] != nil && @newRiderFields[rider.productSeq.to_i].include?('productPlanOptionCd'))
+                                        contentStr = 'disabled' 
+                                    end
+                                end
+                                %>
+                                <%= getLookup('DYNAMICLOOKUP', 'productPlanOptionCd', rider.productPlanOptionCd, rider, @planLookups[rider.productSeq], contentStr) %>
+                            </span>
+                        </div>
+                    <% end %>
+                </div>
+
+                <div data-role="dualfieldcontain">
+                    <% if @facetData[:renderPartyrolecd] %>
+                        <div class="half">      
+                            <%= renderLabel('partyRoleCd', 'partyRoleCd', '', rider) %>
+                            <%= getLookup('RIDERPARTYROLE', 'partyRoleCd', rider.partyRoleCd, rider, @lifeArray, "onchange=updateSupplementaryNameList(\""+getObjectMapping(rider)+"[partyRoleCd]\");")%>
+                        </div>
+                    <% else %>
+                        <%= renderHiddenField('partyRoleCd', rider.partyRoleCd, 'partyRoleCd', rider) %>
+                    <% end %>
+                    <% if @facetData[:renderSupplementaryPanel] %>
+                        <% if @facetData[:renderInsuredpartyrefguid] %>
+                            <div class="half">
+                                <span id ='<%= getObjectMapping(rider) %>'>
+                                    <%= renderLabel('insuredPartyRefGuid', 'insuredPartyRefGuid', nil, rider) %>
+                                    <span id ='<%= getObjectMapping(rider) %>[insuredPartyRefGuid]'>
+                                        <%= getLookup('DYNAMICLOOKUP', 'insuredPartyRefGuid', rider.insuredPartyRefGuid, rider, @insuredPartyRefGuidArray)%>
+                                    </span>
+                                </span>      
+                            </div>
+                        <% end %>
+                    <% end %>
+                </div>
+
+                <div data-role="dualfieldcontain">
+                    <% if @facetData[:renderProductterm] %>
+                        <div class ="half">
+                            <%= renderLabel('productTerm', 'benefitPeriod', '', rider) %> 
+                            <%= renderAmountField('productTerm', rider.productTerm, nil, rider, "style='min-width:200px;' maxlength='3' onchange=setPPTvalue(\""+getObjectMapping(rider)+"[productTerm]\");") %>
+                        </div>
+                    <% else %>
+                        <%= renderHiddenField('productTerm', rider.productTerm, 'productTerm', rider) %>
+                    <% end %>
+                    <% if @facetData[:renderPremiumpayingterm] %>
+                        <div class ="half">
+                            <%= renderLabel('premiumPayingTerm', 'premiumPayingTerm', '', rider)    %>
+                            <%= renderAmountField('premiumPayingTerm', rider.premiumPayingTerm, nil, rider,'style="min-width:200px;" maxlength="3"') %>
+                        </div>
+                    <% else %>
+                        <%= renderHiddenField('premiumPayingTerm', rider.premiumPayingTerm, 'premiumPayingTerm', rider) %>
+                    <% end %>
+                </div>
+
+                <div data-role="dualfieldcontain">
+                    <% if @facetData[:renderBasesumassured] %>
+                        <div class ="half">
+                            <%= renderLabel('sumAssured','sumAssured', '', rider) %> 
+                            <%= renderAmountField('baseSumAssured', rider.baseSumAssured, 'Sum Assured', rider,'style="min-width:200px;" maxlength="20"') %>
+                            <%=attachMask("#{getObjectMapping(rider)}[baseSumAssured]") %>
+                        </div>
+                    <% end %> 
+                    <% if @facetData[:renderCoi] %>
+                        <div class ="half">
+                            <%= renderLabel('coi','coi',nil, rider) %> 
+                            <%= renderAmountField('coi', rider.coi, 'COI', rider,'style="min-width:200px;" maxlength="20"') %>
+                            <%=attachMask("#{getObjectMapping(rider)}[coi]") %>
+                            <script>
+                                setReadOnly($("input[name='<%= getObjectMapping(rider) %>[coi]']"), true);
+                            </script>
+                        </div>
+                    <% end %>
+                </div>
+
+                <div data-role="dualfieldcontain">
+                    <% if @facetData[:renderBaseannualpremium] %>
+                        <div class ="half">
+                            <%= renderLabel('baseAnnualPremium','annualPremium', nil, rider)   %>
+                            <%= renderAmountField('baseAnnualPremium',rider.baseAnnualPremium,'baseAnnualPremium', rider,'style="min-width:200px;" maxlength="20"') %>
+                            <%=attachMask("#{getObjectMapping(rider)}[baseAnnualPremium]") %>
+                        </div>
+                    <% end %>
+                    <% if @facetData[:renderModalpremium] %>
+                        <div class ="half">
+                            <%= renderLabel('Premium','modalPremium',nil, rider) %> 
+                            <%= renderAmountField('modalPremium', rider.modalPremium, 'Modal Premium', rider,'style="min-width:200px;" maxlength="20"') %>
+                            <%=attachMask("#{getObjectMapping(rider)}[modalPremium]") %>
+                        </div>
+                    <% end %>
+                </div>
+                <% if @facetData[:renderProductExtraPanel] %>
+                    <div name = 'riderExtraDiv<%= getObjectMapping(rider) %>'>
+                        <% @riderProductExtras, @quotationProduct = MobiSys::QuotationBO.computeProductExtra(@quotation, rider) %>
+                        <%= render :partial => "captureRiderExtraDetails" , :locals => { :@quotationProduct => @quotationProduct , :@riderProductExtras => @riderProductExtras} %>
+                    </div>
+                <% end %>
+                <hr class="horizontalline"/>
+            </div>
+        <% else %>  
+            <%= renderObject(rider, @quotation) %>
+            <%= renderHiddenField('productId', rider.productId, 'productId', rider) %>
+            <%= renderHiddenField('productTypeCd', rider.productTypeCd, 'productTypeCd', rider) %>
+            <%= renderHiddenField('riderRegularPayProduct', rider.riderRegularPayProduct, 'riderRegularPayProduct', rider) %>
+            <%= renderHiddenField('removed', rider.removed, 'removed', rider) %>
+            <%= renderHiddenField('maturityAge', rider.maturityAge,'maturityAge', rider) %>
+            <%= renderHiddenField('combinedEntryAge',rider.combinedEntryAge,'combinedEntryAge', rider) %>
+            <%= renderHiddenField('guid',rider.guid,'guid',rider) %>
+            <%= renderHiddenField('extraPremium',rider.extraPremium,'extraPremium',rider) %>
+            <%= renderHiddenField('linkedFl', rider.linkedFl, 'linkedFl', rider) %>
+            <%= renderHiddenField('parentproductSeq', rider.parentproductSeq, 'parentproductSeq', rider) %>
+            <%= renderHiddenField('productFamilyCd', rider.productFamilyCd, 'productFamilyCd', rider) %>
+            <%= renderHiddenField('productVersion', rider.productVersion, 'productVersion', rider) %>
+        <%end %>
+    <%end%>
+    <%end%>
+
+    <div name="riderDetails">
+
+    </div>  
+
+    <div class="ui-grid-d">
+        <div class="ui-block-a"></div>
+        <div class="ui-block-b"></div>
+        <div class="ui-block-c"> <input type="button" onclick="addRider()" value="<%= getLabelValue('ADDRIDER')%>" id="addRiderButton">  </div>
+        <div class="ui-block-d"></div>
+        <div class="ui-block-e"></div>
+    </div>
+<%= render :partial => "refreshRiderSectionJS" %>

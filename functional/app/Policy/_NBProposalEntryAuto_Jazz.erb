@@ -1,0 +1,13 @@
+<% if @tabToBeLoaded == "tab_vehicleDetails" %>
+	<%= tabTagStart("tab_vehicleDetails") %>
+		<%= render :partial => "NBBasicAuto_Jazz" %>
+	<%= tabTagEnd %>
+<% elsif @tabToBeLoaded == "tab_vehicleInsuredDetails" %>
+	<%= tabTagStart("tab_vehicleInsuredDetails") %>
+		<%= render :partial => "NBVehicleInsuredDetails_Jazz" %>
+	<%= tabTagEnd %>
+<% elsif @tabToBeLoaded == "tab_paymentGateway" %>
+	<%= tabTagStart("tab_paymentGateway") %>
+		<%= render :partial => "NBTravellerPaymentDetails_Jazz" %>
+	<%= tabTagEnd %>
+<% end %>

@@ -1,0 +1,39 @@
+<tr class='add-tabular-row'>
+    <% gridID = "grid_#{@withdrawalCurrentCount}_quotationWithdrawal" %>
+    <% style = "" %>
+    <% if $rhoconfig[:application_view_mode] == 'mobile' %>
+        <td style= "display: none"> 
+    <%end%>
+         <%= modelTagStart(gridID, @quotationWithdrawal, @quotation, @withdrawalCurrentCount) %>
+    <% if $rhoconfig[:application_view_mode] == 'mobile' %>      
+        </td>
+    <%end%>
+         <% metaDataObject = 'com.c2lbiz.symbiosys.insurance.businesscommon.dataobjects.policy.PolicyWithdrawalDO' %>
+        <% @columns.each do |column| %>
+            <% metaDataCd = metaDataObject + "." + column %>
+            <% if $companyFieldMetaDataCache.include?(metaDataCd.to_sym) %>
+                <% visibility = nil %>
+                <% style = "" %>
+                <% if $uiMetaDataCache.has_key?("#{@currentTagObject.class.name}DO.#{column}".to_sym) %>
+                    <% uiMetaDataDOList = $uiMetaDataCache["#{@currentTagObject.class.name}DO.#{column}".to_sym] %>
+                    <% ui = MobiSys::UIMetaData.getUiMetadataPropDO("VISIBILITY", uiMetaDataDOList, @currentApplicableContexts) %>
+                    <%visibility = (ui == nil ? true : (ui.propertyValue.to_s == "NO" ? false : true)) %>
+                <% end %>
+                <% style = "style='display:none;'" unless visibility %>
+                <td <%= style %>><%= inputTag(column)%></td>
+            <% end %>
+        <% end %>
+
+        <% checked = 'checked' if @currentTagObject.send("removed".to_sym).to_s == "YES" %>
+        <% if @checkboxMode == 'delete' %>
+            <td class='close-checkbox'>
+        <% else %>
+            <td>
+        <% end %>
+        <label class='label' id='<%="#{gridID}_removeButton"%>'>
+        <input type='checkbox' id='<%="#{gridID}_removeButton"%>' data-checkbox-mode='<%="#{@checkboxMode}"%>'  onClick='javascript:catchevent(this);' <%=checked%>/>
+        </label>
+        </td>        
+    <% modelTagEnd %>
+</tr>
+<%= MobiSys::BrowserHelper.attachMaskAll %>

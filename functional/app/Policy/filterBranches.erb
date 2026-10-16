@@ -1,0 +1,16 @@
+<%
+require 'CommonModules/mobisysbrowserhelper'
+@branches.each do|branch|
+%>
+  <option value="<%=branch.cd%>"
+        <% 
+          if @selectedBranch == branch.cd
+            %>
+            selected
+            <%
+          end
+        %>
+  >
+    <%= getLabelValue(branch.desc) %>
+  </option>
+<% end %>

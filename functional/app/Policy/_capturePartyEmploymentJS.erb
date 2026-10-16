@@ -1,0 +1,103 @@
+<script type="text/javascript">
+function getIndustryNatureofdutyLookups(lookup, employmentObj) {
+	var ajaxData = "";
+	var selectID = "";
+	var spanID = "";
+
+	switch (lookup) {
+		case "natureofduty":
+			ajaxData = "option=natureofduty&industryCd="+$('select[name="'+employmentObj+'[industryCd]"]').val();
+			selectID = employmentObj+"[natureOfDuty]";
+			spanID = employmentObj + "[natureOfDutyLookup]";
+			break;
+		case "occupationclass":
+			ajaxData = "option=occupationclass&industryCd="+$('select[name="'+employmentObj+'[industryCd]"]').val()+"&natureOfDuty="+$('select[name="'+employmentObj+'[natureOfDuty]"]').val();
+			selectID = employmentObj+"[occupationClass]";
+			spanID = employmentObj + "[occupationClassLookup]";
+			break;
+	}
+
+	$.ajax({
+     	url: "/app/Policy/getIndustryNatureofdutyLookups",
+     	data: ajaxData,
+     	async: false,
+		headers: {
+        	'Transition-Enabled': false
+        },
+     	success: function(data) {
+           	create = '<select id="'+selectID+'" name="'+selectID+'">';    
+           	create += data;
+           	create += '</select>';
+           	$('span[name="'+ spanID +'"]').html(create);
+           	$('span[name="'+ spanID +'"]').trigger('create');
+           	if (lookup == "natureofduty") {
+           		$('select[name="'+selectID+'"]').change(function(){
+					getIndustryNatureofdutyLookups("occupationclass", employmentObj);
+				});	
+           	}
+       }
+  	});
+}
+
+
+$(document).ready(function(){
+	var occType = $('select[name="<%=getObjectMapping(@partyEmployment)%>[occupationTypeCd]"]').val();
+	if (occType != "EMPLOYED" && occType != "BUSINESS") {
+		$("div[id='<%= getObjectMapping(@party)%>[partyEmployment]'] .illustrationdisplay div[data-role='dualfieldcontain']").hide();
+		$("div[id='<%= getObjectMapping(@party)%>[partyEmployment]'] .illustrationdisplay div[data-role='dualfieldcontain']").first().show();
+		$("input[id='<%= getObjectMapping(@businessAddress)%>[removed]']").val('YES');
+	}
+
+	$('select[name="<%=getObjectMapping(@partyEmployment)%>[occupationTypeCd]"]').change(function(){
+		if ($(this).val() != "EMPLOYED" && $(this).val() != "BUSINESS") {
+			$("div[id='<%= getObjectMapping(@party)%>[partyEmployment]'] .illustrationdisplay div[data-role='dualfieldcontain']").hide();
+			$("div[id='<%= getObjectMapping(@party)%>[partyEmployment]'] .illustrationdisplay div[data-role='dualfieldcontain']").first().show();
+			$("input[id='<%= getObjectMapping(@businessAddress)%>[removed]']").val('YES');
+		}
+		else {
+			$("div[id='<%= getObjectMapping(@party)%>[partyEmployment]'] .illustrationdisplay div[data-role='dualfieldcontain']").show();
+			$("input[id='<%= getObjectMapping(@businessAddress)%>[removed]']").val('');
+		}
+	});
+
+	$('select[name="<%=getObjectMapping(@partyEmployment)%>[industryCd]"]').change(function(){
+		getIndustryNatureofdutyLookups("natureofduty", "<%=getObjectMapping(@partyEmployment)%>");
+		getIndustryNatureofdutyLookups("occupationclass", "<%=getObjectMapping(@partyEmployment)%>");
+	});
+
+	$('select[name="<%=getObjectMapping(@partyEmployment)%>[natureOfDuty]"]').change(function(){
+		getIndustryNatureofdutyLookups("occupationclass", "<%=getObjectMapping(@partyEmployment)%>");
+	});
+
+	$('input[name="<%=getObjectMapping(@partyEmployment)%>[annualIncome]"]').change( function(){
+		if (isNaN(this.value)) {
+			showDialog("", "<%= getLabelValue('VALID_MONINCOME') %>", 'warning', 0, 'capture');
+			this.value = this.value.replace(/[^0-9.]/g, '');  
+		}
+	});
+     
+	// making auto populated fields readonly
+	/*if ('<%= @policy.quotationRefGuid %>' != '' && '<%= @party.roleCd %>' != "NOMINEE" && '<%= @party.roleCd %>' != "APPOINTEE" && '<%= @party.roleCd %>' != "PAYER"){
+		$('select[name="<%=getObjectMapping(@partyEmployment)%>[industryCd]"]').attr('disabled', true);
+		$('select[name="<%=getObjectMapping(@partyEmployment)%>[industryCd]"]').trigger("create");
+		
+		$('select[name="<%=getObjectMapping(@partyEmployment)%>[natureOfDuty]"]').attr('disabled', true);
+		$('select[name="<%=getObjectMapping(@partyEmployment)%>[natureOfDuty]"]').trigger("create");
+		
+		$('select[name="<%=getObjectMapping(@partyEmployment)%>[occupationClass]"]').attr('disabled', true);
+		$('select[name="<%=getObjectMapping(@partyEmployment)%>[occupationClass]"]').trigger("create");
+	}*/
+
+
+	//Mark fields mandatory based on Validation Metadata
+	<% 
+	if @mandatoryFields != nil && @mandatoryFields[@partyEmployment] != nil
+		@mandatoryFields[@partyEmployment].each do |field| 
+	%>
+			$("label[for='<%=getObjectMapping(@partyEmployment)%>[<%= field %>]']").append('<label for=" *" class="mandatory1">&nbsp;*</label>');
+	<% 
+		end 
+	end	
+	%>
+});
+</script> 

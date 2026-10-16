@@ -1,0 +1,60 @@
+<script>
+
+$(document).ready(function(){
+
+    $('input[name="<%=getObjectMapping(@quotationWithdrawal)%>[policyYearFrom]"]').change( function(){    
+        if (isNaN(this.value))
+        {
+            showDialog("", "<%= getLabelValue('VALID_WITHDRAW_FROM_YEAR')%>", 'warning', 0, 'capture');
+            this.value = this.value.replace(/[^0-9.]/g, '');  
+        }
+    }); 
+
+    $('input[name="<%=getObjectMapping(@quotationWithdrawal)%>[policyYearTo]"]').change( function(){    
+        if (isNaN(this.value))
+        {
+            showDialog("", "<%= getLabelValue('VALID_WITHDRAW_TO_YEAR')%>", 'warning', 0, 'capture');
+            this.value = this.value.replace(/[^0-9.]/g, '');  
+        }
+    }); 
+
+    $('input[name="<%=getObjectMapping(@quotationWithdrawal)%>[withdrawalAmount]"]').change( function(){    
+        if (isNaN(this.value))
+        {
+            showDialog("", "<%= getLabelValue('VALID_WITHDRAW_AMT')%>", 'warning', 0, 'capture');
+            this.value = this.value.replace(/[^0-9.]/g, '');  
+        }
+    }); 
+
+    $('input[name="<%=getObjectMapping(@quotationWithdrawal)%>[policyYearFrom]"]').change(function(){
+        calculateAgeFrom('<%=getObjectMapping(@quotationWithdrawal)%>[policyYearFrom]');
+    });
+
+    $('input[name="<%=getObjectMapping(@quotationWithdrawal)%>[ageFrom]"]').change(function(){
+        calculatePolicyFrom('<%=getObjectMapping(@quotationWithdrawal)%>[ageFrom]');
+    });
+
+    $('input[name="<%=getObjectMapping(@quotationWithdrawal)%>[policyYearTo]"]').change(function(){
+        calculateAgeTo('<%=getObjectMapping(@quotationWithdrawal)%>[policyYearTo]');
+    });
+
+    $('input[name="<%=getObjectMapping(@quotationWithdrawal)%>[ageTo]"]').change(function(){
+        calculatePolicyTo('<%=getObjectMapping(@quotationWithdrawal)%>[ageTo]');
+    });
+
+    //Mark fields mandatory based on Validation Metadata
+    <% 
+    if @mandatoryFields
+        if @mandatoryFields[@quotationWithdrawal]
+            @mandatoryFields[@quotationWithdrawal].each do |field| 
+    %>
+            $("label[for='<%=getObjectMapping(@quotationWithdrawal)%>[<%= field %>]']").append('<label for=" *" class="mandatory1">&nbsp;*</label>');
+    <% 
+            end
+        end
+      
+    end
+    %>
+});
+
+</script>

@@ -1,0 +1,162 @@
+<script type ="text/javascript">
+var suplementaryInsuredCount = <%= @suplementaryInsuredCount %>;
+var initialSupplementaryInsuredForm = "";
+var visibleSupplementaryCount = <%= @suplementaryInsuredCount %>;
+
+
+function addSupplementaryInsured() {
+	$(".allSupplementaryInsureds div[data-role='collapsible']").each(function(){
+		$(this).collapsible("collapse");
+	});
+
+	$.ajax({                                    
+		url: "/app/Policy/addSupplementaryInsured",
+		async: false,
+		data: {'policyObject': '<%= @policy.object.to_s %>', 'suplementaryInsuredCount': suplementaryInsuredCount, 'visibleSupplementaryCount': visibleSupplementaryCount},
+        headers: {
+          'Transition-Enabled': false
+        },
+		success: function(data) {
+			$('.allSupplementaryInsureds').append(data);
+			$('.allSupplementaryInsureds').trigger('create');
+			$("div."+suplementaryInsuredCount).collapsible("expand");
+			suplementaryInsuredCount = suplementaryInsuredCount + 1;
+			visibleSupplementaryCount = visibleSupplementaryCount + 1;
+
+			$(document).ready(function(){
+				$('.scrollTopButton').click(function() {
+					$("html, body").animate({ scrollTop: 0 }, "slow");
+			    });
+
+			    $('.expandButton').hide();
+
+			    $('.collapseButton').click(function() {
+			    	$(this).parents(".legend").siblings(".panelContent").hide();
+			    	$(this).hide();
+			    	$(this).siblings('.expandButton').show();
+			    });
+
+			    $('.expandButton').click(function() {
+			    	$(this).parents(".legend").siblings(".panelContent").show();
+			    	$(this).hide();
+			    	$(this).siblings('.collapseButton').show();
+			    });
+			});
+		}
+	});
+}
+
+function deleteSupplementaryInsured(suplementaryInsuredCount) {
+	$('div#supplementaryInsured'+suplementaryInsuredCount+' input[name$="[removed]"]').val("YES");
+	$('div.'+suplementaryInsuredCount).hide();
+	$(".allSupplementaryInsureds div[data-role='collapsible']").each(function(){
+		$(this).collapsible("collapse");
+	});
+
+	visibleSupplementaryCount = visibleSupplementaryCount - 1;
+	var tempCount = visibleSupplementaryCount - 1;
+	$("h3[class*='supHeaderDetails']:visible a span.numberSpan").each(function(){
+		$(this).html(visibleSupplementaryCount-tempCount);
+		tempCount = tempCount - 1;
+	});
+}
+
+
+function submitForm() {
+	if(initialSupplementaryInsuredForm != $('#supplementaryInsuredForm').serialize()) {
+		if ('<%= @policy.quotationRefGuid %>' != ''){
+			$('select[name*="[partyTypeCd]"]').attr('disabled', false);
+			$('select[name*="[partyTypeCd]"]').trigger("create");
+			
+			$('select[name*="[titleCd]"]').attr('disabled', false);
+			$('select[name*="[titleCd]"]').trigger("create");
+			
+			setReadOnly($('input[name=*="[firstName1]"]'), false);
+			setReadOnly($('input[name=*="[middleName1]"]'), false);
+			setReadOnly($('input[name=*="[lastName1]"]'), false);
+			setReadOnly($('input[name=*="[extensionName1]"]'), false);
+			setReadOnly($('input[name=*="[firstName2]"]'), false);
+			setReadOnly($('input[name*="[middleName2]"]'), false);
+			setReadOnly($('input[name*="[lastName2]"]'), false);
+			setReadOnly($('input[name*="[extensionName2]"]'), false);
+			
+			$('input[name*="[genderCd]"]').attr('disabled', false);
+			$('input[name*="[genderCd]"]').trigger("create");
+			
+			$('select[name*="[relationCd]"]').attr('disabled', false);
+			$('select[name*="[relationCd]"]').trigger("create");
+			
+			$('input[name*="[smoker]"]').attr('disabled', false);
+			$('input[name*="[smoker]"]').trigger("create");
+			
+			$('input[name*="[nsap]"]').attr('disabled', false);
+			$('input[name*="[nsap]"]').trigger("create");
+			
+			$('select[name*="[coverageCountryCd]"]').attr('disabled', false);
+			$('select[name*="[coverageCountryCd]"]').trigger("create");
+			
+			$('select[name*="[coverageCityCd]"]').attr('disabled', false);
+			$('select[name*="[coverageCityCd]"]').trigger("create");
+
+			$('input[name*="[maritalStatusCd]"]').attr('disabled', false);
+			$('input[name*="[maritalStatusCd]"]').trigger("create");
+			
+			setReadOnly($('input[name*="[birthDt]"]'), false);
+			setReadOnly($('input[name*="[age]"]'), false);
+			setReadOnly($('input[name*="[corporateName1]"]'), false);
+
+			$('select[name*="[industryCd]"]').attr('disabled', false);
+			$('select[name*="[industryCd]"]').trigger("create");
+			
+			$('select[name*="[natureOfDuty]"]').attr('disabled', false);
+			$('select[name*="[natureOfDuty]"]').trigger("create");
+			
+			$('select[name*="[occupationClass]"]').attr('disabled', false);
+			$('select[name*="[occupationClass]"]').trigger("create");
+
+			setReadOnly($('input[name*="[addressLine1Lang1]"]'), false);
+			setReadOnly($('input[name*="[addressLine2Lang1]"]'), false);
+			setReadOnly($('input[name*="[addressLine3Lang1]"]'), false);
+			setReadOnly($('input[name*="[addressLine4Lang1]"]'), false);
+			setReadOnly($('input[name*="[pinCode]"]'), false);
+			
+			$('select[name*="[countryCd]"]').attr('disabled', false);
+			$('select[name*="[countryCd]"]').trigger("create");
+			
+			$('select[name*="[districtCd]"]').attr('disabled', false);
+			$('select[name*="[districtCd]"]').trigger("create");
+			
+			$('select[name*="[cityCd]"]').attr('disabled', false);
+			$('select[name*="[cityCd]"]').trigger("create");
+
+			setReadOnly($('input[name*="[countryCd]"]'), false);
+			setReadOnly($('input[name*="[stdCode]"]'), false);
+			setReadOnly($('input[name*="[contactNum]"]'), false);
+
+			setReadOnly($('input[name*="[emailAddress]"]'), false);
+		}
+		
+		$('span[id="errordiv"]').hide();
+		$.ajax({                                    
+			url: "/app/Policy/submitSupplementaryInsuredDetails",
+			method: 'POST',
+			async: false,
+			data: $('#supplementaryInsuredForm').serialize(),
+	        headers: {
+	          'Transition-Enabled': false
+	        },
+			success: function(data) {
+				$("a#submit").hide();
+			}
+		});
+	}
+}
+
+$(document).ready(function(){
+	initialSupplementaryInsuredForm = $('#supplementaryInsuredForm').serialize();
+	
+	$("#addSupplementaryInsured").click(function(){
+		addSupplementaryInsured();	
+	});
+})
+</script>

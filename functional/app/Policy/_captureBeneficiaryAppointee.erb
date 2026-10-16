@@ -1,0 +1,36 @@
+<div class="illustrationdisplay">
+	<div data-role="navbar" id="beneficiary-appointee-bar">
+	    <ul style="width: 98%;">
+	  		<li id="beneficiaryContainerLi">
+	  			<a href="#" class="unselectedTab" onclick="changeBeneficiaryAppointeeTab('beneficiaryContainer')"><%=getLabelValue('beneficiaryHeader')%></a>
+	  		</li>  
+	  		<li id="appointeeContainerLi">
+	  			<a href="#" class="unselectedTab" onclick="changeBeneficiaryAppointeeTab('appointeeContainer')"><%=getLabelValue('appointeeHeader')%></a>
+	  		</li>
+	    </ul>
+	</div>
+</div>
+
+
+<form method="POST" action="<%= url_for :action => :submitBeneficiaryAppointeeDetails %>" name="beneficiaryAppointeeForm" id="beneficiaryAppointeeForm">
+    <%= renderObject(@policy)%>
+
+	<div id="beneficiaryContainer">
+	    <fieldset class="ui-grid-b">
+	      	<div class="ui-block-a-equi"></div>
+	      	<div class="ui-block-b-equi">
+            	<input type="button" value="<%= getLabelValue('addBeneficiary')%>" id="addBeneficiary" data-role="button" data-theme="a">
+	      	</div>
+	    	<div class="ui-block-c-equi"> </div>
+	    </fieldset>
+
+	    <div class="allBeneficiaries" data-role='collapsibleset'>
+	      	<%= @beneficiary_form %>
+	  	</div>
+  	</div>
+
+  	<div id="appointeeContainer">
+		<%= @appointee_form %>
+	</div>
+</form>
+<%= render(:partial => 'captureBeneficiaryAppointeeJS')%>

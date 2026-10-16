@@ -1,0 +1,17 @@
+entry: Init_Fingerprint_extension
+javaentry: com.fingerprint.Fingerprint
+libraries: ["Fingerprint"]
+android:
+  source_list: ext/platform/android/ext_java.files
+  exttype: rakefile
+  manifest_changes: 
+  - ext/platform/android/AndroidManifest.rb
+wp8:
+  csharp_impl: yes
+  root_namespace: rho
+
+project_paths:
+  wp8: ext/platform/wp8/FingerprintLib.vcxproj
+  wm: ext/platform/wm/Fingerprint.vcproj
+  
+xml_api_paths: ext/Fingerprint.xml

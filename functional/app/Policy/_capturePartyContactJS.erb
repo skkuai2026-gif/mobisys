@@ -1,0 +1,125 @@
+<script type="text/javascript">
+$(document).ready(function(){              
+	$('input[name$="[countryCd]"]').change( function(){ 
+		var err_mess = null;
+		if($(this).attr("class").indexOf("home") > -1) {
+			err_mess = "<%= getLabelValue('HOME_COUNTRY') %>";
+		} 
+		else if($(this).attr("class").indexOf("office") > -1) {
+			err_mess = "<%= getLabelValue('OFFICE_COUNTRY') %>";
+		}
+		else if($(this).attr("class").indexOf("mobile") > -1) {
+			err_mess = "<%= getLabelValue('MOBILE_COUNTRY') %>";
+		}
+
+	 	if(isNaN(this.value)) {
+	   		showDialog("", err_mess, 'warning', 0, 'capture');
+	   		this.value = this.value.replace(/[^0-9+-]/g, '');  
+	 	}
+	 	if(this.value!=null) {
+	       	var index = this.value.indexOf(" ");
+	       	if(index != -1){
+	         	showDialog("", err_mess, 'warning', 0, 'capture');
+	         	this.value = this.value.replace(/[^0-9+-]/g, ''); 
+	       	}
+	 	}
+	});
+	              
+	$('input[name$="[stdCode]"]').change( function(){ 
+		var err_mess = null;
+		if($(this).attr("class").indexOf("home") > -1) {
+			err_mess = "<%= getLabelValue('HOME_STD') %>";
+		} 
+		else if($(this).attr("class").indexOf("office") > -1) {
+			err_mess = "<%= getLabelValue('OFFICE_STD') %>";
+		}
+		else if($(this).attr("class").indexOf("mobile") > -1) {
+			err_mess = "<%= getLabelValue('MOBILE_STD') %>";
+		}
+
+	 	if(isNaN(this.value)) {
+	   		showDialog("", err_mess, 'warning', 0, 'capture');
+	   		this.value = this.value.replace(/[^0-9+-]/g, '');  
+	 	}
+	 	if(this.value!=null) {
+	       	var index = this.value.indexOf(" ");
+	       	if(index != -1){
+	         	showDialog("", err_mess, 'warning', 0, 'capture');
+	         	this.value = this.value.replace(/[^0-9+-]/g, ''); 
+	       	}
+	 	}
+	});
+	              
+	$('input[name$="[contactNum]"]').change( function(){ 
+		var err_mess = null;
+		if($(this).attr("class").indexOf("home") > -1) {
+			err_mess = "<%= getLabelValue('HOME_CONTACT') %>";
+		} 
+		else if($(this).attr("class").indexOf("office") > -1) {
+			err_mess = "<%= getLabelValue('OFFICE_CONTACT') %>";
+		}
+		else if($(this).attr("class").indexOf("mobile") > -1) {
+			err_mess = "<%= getLabelValue('MOBILE_CONTACT') %>";
+		}
+
+	 	if(isNaN(this.value)) {
+	   		showDialog("", err_mess, 'warning', 0, 'capture');
+	   		this.value = this.value.replace(/[^0-9]/g, '');  
+	 	}
+	 	if(this.value!=null) {
+	       	var index = this.value.indexOf(" ");
+	       	if(index != -1){
+	         	showDialog("", err_mess, 'warning', 0, 'capture');
+	         	this.value = this.value.replace(/[^0-9]/g, ''); 
+	       	}
+	 	}
+	});
+     
+	// making auto populated fields readonly
+	/*if ('<%= @policy.quotationRefGuid %>' != '' && '<%= @party.roleCd %>' != "NOMINEE" && '<%= @party.roleCd %>' != "APPOINTEE" && '<%= @party.roleCd %>' != "PAYER"){
+		setReadOnly($('input[name="<%=getObjectMapping(@partyContactMobile)%>[countryCd]"]'), true);
+		setReadOnly($('input[name="<%=getObjectMapping(@partyContactMobile)%>[stdCode]"]'), true);
+		setReadOnly($('input[name="<%=getObjectMapping(@partyContactMobile)%>[contactNum]"]'), true);
+
+		setReadOnly($('input[name="<%=getObjectMapping(@partyEmail)%>[emailAddress]"]'), true);
+	}*/
+
+
+	//Mark fields mandatory based on Validation Metadata
+	<% 
+	if @mandatoryFields
+		if @mandatoryFields[@partyContactHome]
+			@mandatoryFields[@partyContactHome].each do |field| 
+	%>
+				$("label[for='<%=getObjectMapping(@partyContactHome)%>[<%= field %>]']").append('<label for=" *" class="mandatory1">&nbsp;*</label>');
+	<% 
+			end
+		end
+		
+		if @mandatoryFields[@partyContactOffice]
+			@mandatoryFields[@partyContactOffice].each do |field|
+	%>
+				$("label[for='<%=getObjectMapping(@partyContactOffice)%>[<%= field %>]']").append('<label for=" *" class="mandatory1">&nbsp;*</label>');
+	<% 
+			end
+		end 
+
+		if @mandatoryFields[@partyContactMobile]
+			@mandatoryFields[@partyContactMobile].each do |field| 
+	%>
+				$("label[for='<%=getObjectMapping(@partyContactMobile)%>[<%= field %>]']").append('<label for=" *" class="mandatory1">&nbsp;*</label>');
+	<% 
+			end 
+		end 
+
+		if @mandatoryFields[@partyEmail]	
+			@mandatoryFields[@partyEmail].each do |field| 
+	%>
+				$("label[for='<%=getObjectMapping(@partyEmail)%>[<%= field %>]']").append('<label for=" *" class="mandatory1">&nbsp;*</label>');
+	<% 
+			end 
+		end 
+	end 
+	%>
+});
+</script>

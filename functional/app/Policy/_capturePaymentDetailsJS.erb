@@ -1,0 +1,489 @@
+<script type="text/javascript">
+var initialPaymentCount = <%= @initialPaymentCount %>;
+var paymentForm = "";
+var refundForm = "";
+var visibleInitialPaymentCount = <%= @initialPaymentCount %>;
+
+
+function changePaymentTab(tabName) {
+	$("#initialPaymentContainer").hide();
+	$("#renewalPaymentContainer").hide();
+	$("#refundPaymentContainer").hide();
+	$("#"+tabName).show();
+	$("li#initialPaymentContainerLi>a").removeClass("selectedTab");
+	$("li#renewalPaymentContainerLi>a").removeClass("selectedTab");
+	$("li#refundPaymentContainerLi>a").removeClass("selectedTab");
+	str = "li#" + tabName + "Li>a";
+	$(str).addClass("selectedTab");
+}
+
+
+function addInitialPaymentMethod() {
+	$(".allInitialPayments div[data-role='collapsible']").each(function(){
+		$(this).collapsible("collapse");
+	});
+
+	$("[name*='initialPayments']").hide();
+	$.ajax({                                    
+		url: "/app/Policy/addInitialPaymentMethod",
+		async: false,
+		data: {'inwardObject': '<%= @inward.object.to_s %>', 'initialPaymentCount': initialPaymentCount, 'visibleInitialPaymentCount': visibleInitialPaymentCount},
+		headers: {
+        	'Transition-Enabled': false
+        },
+		success: function(data) {
+			$('.allInitialPayments').append(data);
+			$('.allInitialPayments').trigger('create');
+			$("div."+initialPaymentCount).collapsible("expand");
+			initialPaymentCount = initialPaymentCount + 1;
+			visibleInitialPaymentCount = visibleInitialPaymentCount + 1;
+		}
+	});
+}
+
+
+function deleteInitialPaymentMethod(initialPaymentCount) {
+	$('div#initialPayment'+initialPaymentCount+' input[name$="[removed]"]').val("YES");
+	$('div.'+initialPaymentCount).hide();
+	$(".allInitialPayments div[data-role='collapsible']").each(function(){
+		$(this).collapsible("collapse");
+	});
+
+	visibleInitialPaymentCount = visibleInitialPaymentCount - 1;
+	var tempCount = visibleInitialPaymentCount - 1;
+	$("h3[class*='iniPayHeaderDetails']:visible a span.numberSpan").each(function(){
+		$(this).html(visibleInitialPaymentCount-tempCount);
+		tempCount = tempCount - 1;
+	});
+}
+
+
+function getBankBranchLookups(bankCd, paymentObj, micrNum) {
+	if (bankCd != "") {
+		var selectID = paymentObj+"[branchName]";
+		var spanID = paymentObj+"[branchLookup]";
+		var ajaxData = "bankCd="+bankCd
+	}
+	else if (micrNum != "") {
+		var ajaxData = "micrNum="+micrNum
+	}
+
+	$.ajax({
+     	url: "/app/Policy/getBankBranchLookups",
+     	async: false,
+     	data: ajaxData,
+        headers: {
+          'Transition-Enabled': false
+        },
+     	success: function(data) {
+     		if (bankCd != "") {
+	     		if (data != "") {
+		           	create = '<select id="'+selectID+'" name="'+selectID+'">';    
+		           	create += data;
+		           	create += '</select>';
+	           	}
+	           	$('span[name="'+ spanID +'"]').html(create);
+	           	$('span[name="'+ spanID +'"]').trigger('create');
+           	}
+			else if (micrNum != "NOMICR") {
+				if (data.toUpperCase() != "") {
+					$("input[name='"+paymentObj+"[bankCd]']").val(JSON.parse(data).bankName);
+					$("input[name='"+paymentObj+"[branchName]']").val(JSON.parse(data).bankBranch);
+				}
+   				setReadOnly($("input[name='"+paymentObj+"[bankCd]']"), true);
+   				setReadOnly($("input[name='"+paymentObj+"[branchName]']"), true);
+			}
+       	}
+  	});
+}
+
+
+function payerDependency(object, payerTypeCd, paymentType, onLoad) {
+	if (payerTypeCd == "AGENT") {
+		$('span[name="'+object+'[refGuidLookup]"]').parent().hide();
+		if (onLoad) {
+			$('span[name="'+object+'[refGuidLookup]"] select').attr('disabled','disabled');
+		}
+		else {
+			$('span[name="'+object+'[refGuidLookup]"] select').selectmenu('enable');
+		}
+		$('input[name="'+object+'[payerPartyRefGuid]"]').attr('disabled','disabled');
+		$('#'+paymentType+'Payer input[id*="removed"][id*="Policy[Party]"]').val("YES");
+		$('#'+paymentType+'PaymentContainer .legend').hide();
+		$("#"+paymentType+"Payer").hide();
+	}
+	else if (payerTypeCd == "OTHER") {
+		$('span[name="'+object+'[refGuidLookup]"]').parent().hide();
+		if (onLoad) {
+			$('span[name="'+object+'[refGuidLookup]"] select').attr('disabled','disabled');
+		}
+		else {
+			$('span[name="'+object+'[refGuidLookup]"] select').selectmenu('enable');
+		}
+		$('input[name="'+object+'[payerPartyRefGuid]"]').removeAttr('disabled');
+		$('#'+paymentType+'Payer input[id*="removed"][id*="Policy[Party]"]').val("");
+		$('#'+paymentType+'PaymentContainer .legend').show();
+		$("#"+paymentType+"Payer").show();
+	}
+	else if (payerTypeCd == "SUPPLEMENTARY") {
+		$('span[name="'+object+'[refGuidLookup]"]').parent().show();
+		if (onLoad) {
+			$('span[name="'+object+'[refGuidLookup]"] select').removeAttr('disabled');
+		}
+		else {
+			$('span[name="'+object+'[refGuidLookup]"] select').selectmenu('enable');
+		}
+		$('input[name="'+object+'[payerPartyRefGuid]"]').attr('disabled','disabled');
+		$('#'+paymentType+'Payer input[id*="removed"][id*="Policy[Party]"]').val("YES");
+		$('#'+paymentType+'PaymentContainer .legend').hide();
+		$("#"+paymentType+"Payer").hide();
+	}
+	else {
+		$('span[name="'+object+'[refGuidLookup]"]').parent().hide();
+		if (onLoad) {
+			$('span[name="'+object+'[refGuidLookup]"] select').attr('disabled','disabled');
+		}
+		else {
+			$('span[name="'+object+'[refGuidLookup]"] select').selectmenu('enable');
+		}
+		$('input[name="'+object+'[payerPartyRefGuid]"]').attr('disabled','disabled');
+		$('#'+paymentType+'Payer input[id*="removed"][id*="Policy[Party]"]').val("YES");
+		$('#'+paymentType+'PaymentContainer .legend').hide();
+		$("#"+paymentType+"Payer").hide();
+	}
+}
+
+
+function submitForm() {
+	if(paymentForm != $('#paymentForm').serialize() || refundForm != $('#refundForm').serialize()) {		
+		$('span[id="errordiv"]').hide();
+		$.ajax({                                    
+			url: "/app/Policy/submitPaymentDetails",
+			method: 'POST',
+			async: false,
+			data: $('#paymentForm').serialize(),
+			headers: {
+	        	'Transition-Enabled': false
+	        },
+			success: function(data) {
+				$("a#submit").hide();
+				if (data == "true") {
+					$("a#paymentGateWay").show();
+				}
+				else {
+					$("a#paymentGateWay").hide();	
+				}
+				<% if @facetData[:renderRefundPanel] %>
+					$.ajax({
+						url: "/app/Policy/submitPaymentDetails",
+						method: 'POST',
+						async: false,
+						data: $('#refundForm').serialize(),
+						headers: {
+				        	'Transition-Enabled': false
+				        },
+						success: function(data) {
+							$("a#submit").hide();
+						}
+					});
+				<% end %>
+			}
+		});
+	}
+}
+
+  	
+function clearDataOfPaymentFields(type) {
+	$('input[name="' + type +'[micrNum]"]').val('');
+	$('input[name="' + type +'[bankCd]"]').val('');
+	$('select[name="' + type +'[bankCd]"]').val('').selectmenu('refresh');
+	$('input[name="' + type +'[branchName]"]').val('');
+	$('select[name="' + type +'[branchName]"]').val('').selectmenu('refresh');
+	$('select[name="' + type +'[cardExpiryYear]"]').val('').selectmenu('refresh');
+	$('select[name="' + type +'[cardExpiryMnth]"]').val('').selectmenu('refresh');
+	$('input[name="' + type +'[accountName]"]').val('');
+	$('input[name="' + type +'[inwardNum]"]').val('');
+	$('input[name="' + type +'[accountNum]"]').val('');
+	$('input[name="' + type +'[cardTypeCd]"]').val('');
+	$('select[name="' + type +'[cardTypeCd]"]').val("").selectmenu("refresh");
+} 
+
+
+$(document).ready(function(){
+	paymentForm = $('#paymentForm').serialize();
+	refundForm = $('#refundForm').serialize();
+	
+	$("#addIniPayentMethod").click(function(){
+		addInitialPaymentMethod();	
+	});
+
+	changePaymentTab('initialPaymentContainer');
+
+	payerDependency("<%=getObjectMapping(@inward)%>", $('select[name="<%=getObjectMapping(@inward)%>[payerTypeCd]"]').val(), "initial", true);
+	payerDependency("<%=getObjectMapping(@renewalPayment)%>", $('select[name="<%=getObjectMapping(@renewalPayment)%>[payerTypeCd]"]').val(), "renewal", true);
+
+	$('select[name="<%=getObjectMapping(@inward)%>[payerTypeCd]"]').change(function(){
+		$('span[name="<%=getObjectMapping(@inward)%>[refGuidLookup]"] select').val('');
+		payerDependency("<%=getObjectMapping(@inward)%>", $(this).val(), "initial", false);
+	});
+
+	$('select[name="<%=getObjectMapping(@renewalPayment)%>[payerTypeCd]"]').change(function(){
+		$('span[name="<%=getObjectMapping(@renewalPayment)%>[refGuidLookup]"] select').val('');
+		payerDependency("<%=getObjectMapping(@renewalPayment)%>", $(this).val(), "renewal", false);
+	});
+
+	var newPayerTypeCdSelect = "";
+	var inwardSelectedOption = $('select[name="<%=getObjectMapping(@inward)%>[payerTypeCd]"]').val();
+	var renewalSelectedOption = $('select[name="<%=getObjectMapping(@renewalPayment)%>[payerTypeCd]"]').val();
+	$('select[name="<%=getObjectMapping(@inward)%>[payerTypeCd]"] option').each(function(){
+		switch ($(this).val()) {
+			case "PROPOSER":
+				newPayerTypeCdSelect += '<option value="' + $(this).val() + '">' + $(this).html() + '</option>';
+				break;
+			case "PRIMARY":
+				<% if @insuredExists %>
+				newPayerTypeCdSelect += '<option value="' + $(this).val() + '">' + $(this).html() + '</option>';
+				<% end %>
+				break;
+			case "JOINT":
+				<% if @jointExists %>
+				newPayerTypeCdSelect += '<option value="' + $(this).val() + '">' + $(this).html() + '</option>';
+				<% end %>
+				break;
+			case "SUPPLEMENTARY":
+				<% if @supplementaryExists %>
+				newPayerTypeCdSelect += '<option value="' + $(this).val() + '">' + $(this).html() + '</option>';
+				<% end %>
+				break;
+			default:
+				newPayerTypeCdSelect += '<option value="' + $(this).val() + '">' + $(this).html() + '</option>';
+		}
+	});
+	$('select[name="<%=getObjectMapping(@inward)%>[payerTypeCd]"]').html(newPayerTypeCdSelect);
+   	$('select[name="<%=getObjectMapping(@inward)%>[payerTypeCd]"]').trigger('create');
+   	$('select[name="<%=getObjectMapping(@inward)%>[payerTypeCd]"]').val(inwardSelectedOption);
+
+	<% if @facetData[:renderRenewalPanel] %> 
+		$('select[name="<%=getObjectMapping(@renewalPayment)%>[payerTypeCd]"]').html(newPayerTypeCdSelect);
+	   	$('select[name="<%=getObjectMapping(@renewalPayment)%>[payerTypeCd]"]').trigger('create');
+	   	$('select[name="<%=getObjectMapping(@renewalPayment)%>[payerTypeCd]"]').val(renewalSelectedOption);
+
+	   	<% if @facetData[:renderRenewalMicrNum] %>
+	   		setReadOnly($('input[name="<%=getObjectMapping(@renewalFinancialAccount)%>[bankCd]"]'), true);
+	   		setReadOnly($('input[name="<%=getObjectMapping(@renewalFinancialAccount)%>[branchName]"]'), true);
+
+	   		var micrNum = $('input[name="<%=getObjectMapping(@renewalFinancialAccount)%>[micrNum]"]').val();
+	   		if (micrNum.toUpperCase() === "NOMICR") {
+				$('input[name="<%=getObjectMapping(@renewalFinancialAccount)%>[bankCd]"]').val("");
+				$('input[name="<%=getObjectMapping(@renewalFinancialAccount)%>[branchName]"]').val("");
+				setReadOnly($('input[name="<%=getObjectMapping(@renewalFinancialAccount)%>[bankCd]"]'), false);
+				setReadOnly($('input[name="<%=getObjectMapping(@renewalFinancialAccount)%>[branchName]"]'), false);
+			}
+			else {
+				getBankBranchLookups("", "<%=getObjectMapping(@renewalFinancialAccount)%>", micrNum);
+			}
+
+
+	   		$('input[name="<%=getObjectMapping(@renewalFinancialAccount)%>[micrNum]"]').change(function(){
+	   			if ($(this).val().toUpperCase() === "NOMICR") {
+	   				$('input[name="<%=getObjectMapping(@renewalFinancialAccount)%>[bankCd]"]').val("");
+	   				$('input[name="<%=getObjectMapping(@renewalFinancialAccount)%>[branchName]"]').val("");
+	   				setReadOnly($('input[name="<%=getObjectMapping(@renewalFinancialAccount)%>[bankCd]"]'), false);
+	   				setReadOnly($('input[name="<%=getObjectMapping(@renewalFinancialAccount)%>[branchName]"]'), false);
+	   			}
+	   			else {
+	   				getBankBranchLookups("", "<%=getObjectMapping(@renewalFinancialAccount)%>", $(this).val());
+	   			}
+	   		});
+	   	<% else %>
+	   		getBankBranchLookups($("select[name='<%=getObjectMapping(@renewalFinancialAccount)%>[bankCd]']").val(), "<%=getObjectMapping(@renewalFinancialAccount)%>", "");
+		   	$("select[name='<%=getObjectMapping(@renewalFinancialAccount)%>[bankCd]']").change(function(){
+		   		getBankBranchLookups($(this).val(), "<%=getObjectMapping(@renewalFinancialAccount)%>", "");
+		   	});
+		<% end %>
+
+
+	   	var renewalPaymentMethod = $('#renewalPaymentContainer select[name="<%=getObjectMapping(@renewalPayment)%>[paymentMethodCd]"]').val();
+		if (renewalPaymentMethod == "creditCard") {
+		  $('input[name="<%=getObjectMapping(@renewalFinancialAccount)%>[micrNum]"]').parents(".half").hide();
+			$('input[name="<%=getObjectMapping(@renewalFinancialAccount)%>[bankCd]"]').parents(".half").hide();
+			$('input[name="<%=getObjectMapping(@renewalFinancialAccount)%>[branchName]"]').parents(".half").hide();
+			$('select[name="<%=getObjectMapping(@renewalFinancialAccount)%>[bankCd]"]').parents(".half").hide();
+			$('select[name="<%=getObjectMapping(@renewalFinancialAccount)%>[branchName]"]').parents(".half").hide();
+			$('input[name="<%=getObjectMapping(@renewalFinancialAccount)%>[accountName]"]').parents(".half").show();
+			$('input[name="<%=getObjectMapping(@renewalFinancialAccount)%>[accountNum]"]').parents(".half").show();
+			$('select[name="<%=getObjectMapping(@renewalFinancialAccount)%>[cardExpiryYear]"]').parents(".half").show();
+			$('select[name="<%=getObjectMapping(@renewalFinancialAccount)%>[cardExpiryMnth]"]').parents(".half").show();
+			$('select[name="<%=getObjectMapping(@renewalFinancialAccount)%>[cardTypeCd]"]').parents(".half").show();
+		}
+		else if (renewalPaymentMethod == "directDebit") {
+			$('input[name="<%=getObjectMapping(@renewalFinancialAccount)%>[micrNum]"]').parents(".half").show();
+			$('input[name="<%=getObjectMapping(@renewalFinancialAccount)%>[bankCd]"]').parents(".half").show();
+			$('input[name="<%=getObjectMapping(@renewalFinancialAccount)%>[branchName]"]').parents(".half").show();
+			$('select[name="<%=getObjectMapping(@renewalFinancialAccount)%>[bankCd]"]').parents(".half").show();
+			$('select[name="<%=getObjectMapping(@renewalFinancialAccount)%>[branchName]"]').parents(".half").show();
+			$('input[name="<%=getObjectMapping(@renewalFinancialAccount)%>[accountName]"]').parents(".half").show();
+			$('input[name="<%=getObjectMapping(@renewalFinancialAccount)%>[accountNum]"]').parents(".half").show();
+			$('select[name="<%=getObjectMapping(@renewalFinancialAccount)%>[cardExpiryYear]"]').parents(".half").hide();
+			$('select[name="<%=getObjectMapping(@renewalFinancialAccount)%>[cardExpiryMnth]"]').parents(".half").hide();
+			$('select[name="<%=getObjectMapping(@renewalFinancialAccount)%>[cardTypeCd]"]').parents(".half").hide();
+		}
+		else {
+			$('input[name="<%=getObjectMapping(@renewalFinancialAccount)%>[micrNum]"]').parents(".half").hide();
+			$('input[name="<%=getObjectMapping(@renewalFinancialAccount)%>[bankCd]"]').parents(".half").hide();
+			$('input[name="<%=getObjectMapping(@renewalFinancialAccount)%>[branchName]"]').parents(".half").hide();
+			$('select[name="<%=getObjectMapping(@renewalFinancialAccount)%>[bankCd]"]').parents(".half").hide();
+			$('select[name="<%=getObjectMapping(@renewalFinancialAccount)%>[branchName]"]').parents(".half").hide();
+			$('input[name="<%=getObjectMapping(@renewalFinancialAccount)%>[accountName]"]').parents(".half").hide();
+			$('input[name="<%=getObjectMapping(@renewalFinancialAccount)%>[accountNum]"]').parents(".half").hide();
+			$('select[name="<%=getObjectMapping(@renewalFinancialAccount)%>[cardExpiryYear]"]').parents(".half").hide();
+			$('select[name="<%=getObjectMapping(@renewalFinancialAccount)%>[cardExpiryMnth]"]').parents(".half").hide();
+			$('select[name="<%=getObjectMapping(@renewalFinancialAccount)%>[cardTypeCd]"]').parents(".half").hide();
+		}
+
+
+	  	$('#renewalPaymentContainer select[name="<%=getObjectMapping(@renewalPayment)%>[paymentMethodCd]"]').change(function(){
+	  	  	var type = "<%=getObjectMapping(@renewalFinancialAccount)%>";
+	  	  	var renewalPaymentMethod = $('#renewalPaymentContainer select[name="<%=getObjectMapping(@renewalPayment)%>[paymentMethodCd]"]').val();
+	  	  	$('#renewalPaymentContainer select[name="<%=getObjectMapping(@renewalFinancialAccount)%>[paymentMethodCd]"]').val(renewalPaymentMethod);
+
+        	clearDataOfPaymentFields(type);
+	  		if ($(this).val() == "creditCard") {
+	  			$('input[name="<%=getObjectMapping(@renewalFinancialAccount)%>[micrNum]"]').parents(".half").hide();
+	  			$('input[name="<%=getObjectMapping(@renewalFinancialAccount)%>[bankCd]"]').parents(".half").hide();
+	  		  $('input[name="<%=getObjectMapping(@renewalFinancialAccount)%>[branchName]"]').parents(".half").hide();
+	  			$('select[name="<%=getObjectMapping(@renewalFinancialAccount)%>[bankCd]"]').parents(".half").hide();
+	  			$('select[name="<%=getObjectMapping(@renewalFinancialAccount)%>[branchName]"]').parents(".half").hide();
+	
+	  			$('input[name="<%=getObjectMapping(@renewalFinancialAccount)%>[accountName]"]').parents(".half").show();
+	  			$('input[name="<%=getObjectMapping(@renewalFinancialAccount)%>[accountNum]"]').parents(".half").show();
+	  			$('select[name="<%=getObjectMapping(@renewalFinancialAccount)%>[cardExpiryYear]"]').parents(".half").show();
+	  			$('select[name="<%=getObjectMapping(@renewalFinancialAccount)%>[cardExpiryMnth]"]').parents(".half").show();
+				$('select[name="<%=getObjectMapping(@renewalFinancialAccount)%>[cardTypeCd]"]').parents(".half").show();
+	  		}
+	  		else if ($(this).val() == "directDebit") {
+	  			$('input[name="<%=getObjectMapping(@renewalFinancialAccount)%>[micrNum]"]').parents(".half").show();
+	  			$('input[name="<%=getObjectMapping(@renewalFinancialAccount)%>[bankCd]"]').parents(".half").show();
+	  			$('input[name="<%=getObjectMapping(@renewalFinancialAccount)%>[branchName]"]').parents(".half").show();
+	  			$('select[name="<%=getObjectMapping(@renewalFinancialAccount)%>[bankCd]"]').parents(".half").show().selectmenu("refresh");
+	  			$('select[name="<%=getObjectMapping(@renewalFinancialAccount)%>[branchName]"]').parents(".half").show().selectmenu("refresh");
+	  			$('input[name="<%=getObjectMapping(@renewalFinancialAccount)%>[accountName]"]').parents(".half").show();
+	  			$('input[name="<%=getObjectMapping(@renewalFinancialAccount)%>[accountNum]"]').parents(".half").show();
+	  			$('select[name="<%=getObjectMapping(@renewalFinancialAccount)%>[cardExpiryYear]"]').parents(".half").hide();
+	  			$('select[name="<%=getObjectMapping(@renewalFinancialAccount)%>[cardExpiryMnth]"]').parents(".half").hide();
+	  			$('select[name="<%=getObjectMapping(@renewalFinancialAccount)%>[cardTypeCd]"]').val("").selectmenu("refresh");
+				$('select[name="<%=getObjectMapping(@renewalFinancialAccount)%>[cardTypeCd]"]').parents(".half").hide();
+	  		}
+	  		else {
+	  			$('input[name="<%=getObjectMapping(@renewalFinancialAccount)%>[micrNum]"]').parents(".half").hide();	
+	  			$('input[name="<%=getObjectMapping(@renewalFinancialAccount)%>[bankCd]"]').parents(".half").hide();
+	  			$('input[name="<%=getObjectMapping(@renewalFinancialAccount)%>[branchName]"]').parents(".half").hide();
+	  			$('select[name="<%=getObjectMapping(@renewalFinancialAccount)%>[bankCd]"]').parents(".half").hide();
+	  			$('select[name="<%=getObjectMapping(@renewalFinancialAccount)%>[branchName]"]').parents(".half").hide();
+	  			$('input[name="<%=getObjectMapping(@renewalFinancialAccount)%>[accountName]"]').parents(".half").hide();
+	  			$('input[name="<%=getObjectMapping(@renewalFinancialAccount)%>[accountNum]"]').parents(".half").hide();
+	  			$('select[name="<%=getObjectMapping(@renewalFinancialAccount)%>[cardExpiryYear]"]').parents(".half").hide();
+	  			$('select[name="<%=getObjectMapping(@renewalFinancialAccount)%>[cardExpiryMnth]"]').parents(".half").hide();
+				$('select[name="<%=getObjectMapping(@renewalFinancialAccount)%>[cardTypeCd]"]').parents(".half").hide();
+	  		}
+	  	});
+	<% end %>
+
+	<% if @facetData[:renderRefundPanel] %> 
+
+		<% if @facetData[:renderRefundMicrNum] %>
+	   		setReadOnly($('input[name="<%=getObjectMapping(@refundFinancialAccount)%>[bankCd]"]'), true);
+	   		setReadOnly($('input[name="<%=getObjectMapping(@refundFinancialAccount)%>[branchName]"]'), true);
+
+	   		var micrNum = $('input[name="<%=getObjectMapping(@refundFinancialAccount)%>[micrNum]"]').val();
+	   		if (micrNum.toUpperCase() === "NOMICR") {
+				$('input[name="<%=getObjectMapping(@refundFinancialAccount)%>[bankCd]"]').val("");
+				$('input[name="<%=getObjectMapping(@refundFinancialAccount)%>[branchName]"]').val("");
+				setReadOnly($('input[name="<%=getObjectMapping(@refundFinancialAccount)%>[bankCd]"]'), false);
+				setReadOnly($('input[name="<%=getObjectMapping(@refundFinancialAccount)%>[branchName]"]'), false);
+			}
+			else {
+				getBankBranchLookups("", "<%=getObjectMapping(@refundFinancialAccount)%>", micrNum);
+			}
+
+	   		$('input[name="<%=getObjectMapping(@refundFinancialAccount)%>[micrNum]"]').change(function(){
+	   			if ($(this).val().toUpperCase() === "NOMICR") {
+	   				$('input[name="<%=getObjectMapping(@refundFinancialAccount)%>[bankCd]"]').val("");
+	   				$('input[name="<%=getObjectMapping(@refundFinancialAccount)%>[branchName]"]').val("");
+	   				setReadOnly($('input[name="<%=getObjectMapping(@refundFinancialAccount)%>[bankCd]"]'), false);
+	   				setReadOnly($('input[name="<%=getObjectMapping(@refundFinancialAccount)%>[branchName]"]'), false);
+	   			}
+	   			else {
+	   				getBankBranchLookups("", "<%=getObjectMapping(@refundFinancialAccount)%>", $(this).val());
+	   			}
+	   		});
+	   	<% else %>
+	   		getBankBranchLookups($("select[name='<%=getObjectMapping(@refundFinancialAccount)%>[bankCd]']").val(), "<%=getObjectMapping(@refundFinancialAccount)%>", "");
+		   	$("select[name='<%=getObjectMapping(@refundFinancialAccount)%>[bankCd]']").change(function(){
+		   		getBankBranchLookups($(this).val(), "<%=getObjectMapping(@refundFinancialAccount)%>", "");
+		   	});
+		<% end %>
+
+		var refundPaymentMethod = $('#refundPaymentContainer select[name="<%=getObjectMapping(@refundPayment)%>[paymentMethodCd]"]').val();
+		if (refundPaymentMethod == "directCredit") {
+			$('input[name="<%=getObjectMapping(@refundFinancialAccount)%>[micrNum]"]').parents(".half").show();
+			$('input[name="<%=getObjectMapping(@refundFinancialAccount)%>[bankCd]"]').parents(".half").show();
+			$('input[name="<%=getObjectMapping(@refundFinancialAccount)%>[branchName]"]').parents(".half").show();
+			$('select[name="<%=getObjectMapping(@refundFinancialAccount)%>[bankCd]"]').parents(".half").show().selectmenu("refresh");
+			$('select[name="<%=getObjectMapping(@refundFinancialAccount)%>[branchName]"]').parents(".half").show().selectmenu("refresh");
+			$('input[name="<%=getObjectMapping(@refundFinancialAccount)%>[accountName]"]').parents(".half").show();
+			$('input[name="<%=getObjectMapping(@refundFinancialAccount)%>[accountNum]"]').parents(".half").show();
+		}
+		else {
+			$('input[name="<%=getObjectMapping(@refundFinancialAccount)%>[micrNum]"]').parents(".half").hide();
+			$('input[name="<%=getObjectMapping(@refundFinancialAccount)%>[bankCd]"]').parents(".half").hide();
+			$('input[name="<%=getObjectMapping(@refundFinancialAccount)%>[branchName]"]').parents(".half").hide();
+			$('select[name="<%=getObjectMapping(@refundFinancialAccount)%>[bankCd]"]').parents(".half").hide();
+			$('select[name="<%=getObjectMapping(@refundFinancialAccount)%>[branchName]"]').parents(".half").hide();
+			$('input[name="<%=getObjectMapping(@refundFinancialAccount)%>[accountName]"]').parents(".half").hide();
+			$('input[name="<%=getObjectMapping(@refundFinancialAccount)%>[accountNum]"]').parents(".half").hide();
+		}
+
+
+		$('#refundPaymentContainer select[name="<%=getObjectMapping(@refundPayment)%>[paymentMethodCd]"]').change(function(){
+        	var type = "<%=getObjectMapping(@refundFinancialAccount)%>";
+        	var refundPaymentMethod = $('#refundPaymentContainer select[name="<%=getObjectMapping(@refundPayment)%>[paymentMethodCd]"]').val();
+        	$('#refundPaymentContainer select[name="<%=getObjectMapping(@renewalFinancialAccount)%>[paymentMethodCd]"]').val(refundPaymentMethod);
+
+        	clearDataOfPaymentFields(type);
+	  		if ($(this).val() == "directCredit") {
+	  			$('input[name="<%=getObjectMapping(@refundFinancialAccount)%>[micrNum]"]').parents(".half").show();
+	  			$('input[name="<%=getObjectMapping(@refundFinancialAccount)%>[bankCd]"]').parents(".half").show();
+	  			$('input[name="<%=getObjectMapping(@refundFinancialAccount)%>[branchName]"]').parents(".half").show();
+	  			$('select[name="<%=getObjectMapping(@refundFinancialAccount)%>[bankCd]"]').parents(".half").show().selectmenu("refresh");
+	  			$('select[name="<%=getObjectMapping(@refundFinancialAccount)%>[branchName]"]').parents(".half").show().selectmenu("refresh");
+	  			$('input[name="<%=getObjectMapping(@refundFinancialAccount)%>[accountName]"]').parents(".half").show();
+	  			$('input[name="<%=getObjectMapping(@refundFinancialAccount)%>[accountNum]"]').parents(".half").show();
+	  		}
+	  		else {
+	  			$('input[name="<%=getObjectMapping(@refundFinancialAccount)%>[micrNum]"]').parents(".half").hide();
+	  			$('input[name="<%=getObjectMapping(@refundFinancialAccount)%>[bankCd]"]').parents(".half").hide();
+	        $('input[name="<%=getObjectMapping(@refundFinancialAccount)%>[branchName]"]').parents(".half").hide();
+	  	    $('select[name="<%=getObjectMapping(@refundFinancialAccount)%>[bankCd]"]').parents(".half").hide();
+	  		  $('select[name="<%=getObjectMapping(@refundFinancialAccount)%>[branchName]"]').parents(".half").hide();
+	  			$('input[name="<%=getObjectMapping(@refundFinancialAccount)%>[accountName]"]').parents(".half").hide();
+	  		  $('input[name="<%=getObjectMapping(@refundFinancialAccount)%>[accountNum]"]').parents(".half").hide();
+	  			
+	  		}
+	  	});
+	<% end %>
+
+	//Mark fields mandatory based on Validation Metadata
+	<%
+	if @mandatoryFields
+		@mandatoryFields.each do |object, fields|
+			fields.each do |field|
+	%>
+				$("label[for='<%=getObjectMapping(object)%>[<%= field %>]']").append('<label for=" *" class="mandatory1">&nbsp;*</label>');
+	<% 
+			end
+		end
+	end 
+	%>
+});
+</script>

@@ -1,0 +1,415 @@
+<script src="/public/js/CommonScript_jazz.js" type="text/javascript"></script>
+<script src="/public/js/EntityType.js" type="text/javascript"></script>
+<div data-role="page" data-url="<%= Rho::RhoConfig.start_path %>/">
+<%= renderObject(@fnaRequest)%>
+<!-- Tejashree:08-Aug-2017 for email button show n hide -->
+<%= renderObject(@fnaProposer, @fnaRequest) %>
+<link rel="stylesheet" href="/public/css/FNA/c2l_EAPP.css">
+    <!-- Header div starts here -->
+    <div data-role="header" style="background-color:#FFF;font-weight:bold;">
+        <div class="headerButtons" name = "headerButtons">     
+            <a href="#" id = "back" name="back" onclick="location.href='/app/Menu/eapp';" data-direction="reverse">
+                <!-- <img src="/public/images/FNA/icon_BackArrow-Red.png" alt=""/> -->
+            </a>
+        </div>
+    </div> <!-- Header div ends here -->
+    <!-- Header div starts here -->
+    <div id= "error-container" class="hiddenErrorTab" ></div>
+     <div id='singleErrorDiv' style = "display:none"></div>
+    
+    <div class="ui-header ui-bar-inherit" role="banner" data-role="header" style="background-color:#FFF;font-weight:bold;">
+        <div class="headerButtons" name="headerButtons">
+            <a class="ui-link" href="#" id="back" name="back" onclick="hyperlink_alert()" data-direction="reverse">
+            <!-- <img src="/public/images/FNA/header-back.png"> -->
+            <img src="/public/images/FNA/icon_BackArrow-Red.png" alt="" style="margin-top:3px !important;height:30px !important;width:30px !important;" />
+            </a>
+        </div>
+
+        <div style="margin-left:74px;">
+            <div class="ui-grid-b ui-responsive">
+                <div class="ui-block-a">
+                    <div class="ui-body ui-body-d header-sun-life-logo" style="padding-left: 120%;width: 100%;">
+                        <img src="/public/images/FNA/logo-sun-life-one-line.png">
+                    </div>
+                </div>
+
+                <div class="ui-block-b">
+                </div>
+
+             <div class="ui-block-c">
+                    <div class="ui-body ui-body-d headerRightButtons">
+                      <span id ='errordiv' style ="display:none; float:right;padding-top:0px;"> 
+                        <a href="#" name="error_dialog" id="error_dialog" style="bottom: 10px; float: right; margin-right: 25px;">
+                          <img src="/public/images/FNA/WarningError.png" width="20px" height="20px">
+                        </a>
+                     </span> 
+                     <!-- Tejashree:08-Aug-2017 for email button show n hide -->
+                       <% if @fnaRequest.addtnField1Str == "FNASUBMIT" && @fnaProposer.emailAddress.to_s != "" %>
+                        <a class="ui-link" href="<%= url_for :action => :email, :id=>@fnaRequest.object %>" name="email" id="email" style="float: right; margin-right: 24px;">
+                              <img src="/public/images/FNA/header-email.png" width="21px" height="19px">
+                        </a>
+                        <% else %>
+                        <a class="ui-link ui-state-disabled" href="<%= url_for :action => :email, :id=>@fnaRequest.object %>" name="email" id="email" style="float: right; margin-right: 24px;">
+                              <img src="/public/images/FNA/header-emailDA.png" width="21px" height="19px">
+                        </a>
+                        <% end %>
+                         <!-- code for preview button -->
+                        <% if @fnaRequest.addtnField1Str == "FNASIGNED" %>
+                        <a class="ui-link" href="#" name="submit" style="float: right; margin-right: 24px;">
+                          <img src="/public/images/FNA/header-submit.png" width="21px" height="18px">
+                        </a>
+                        <% else %>
+                        <a class="ui-link ui-state-disabled" href="#" name="submit" style="float: right; margin-right: 24px;">
+                          <img src="/public/images/FNA/header-submitDA.png" width="21px" height="18px">
+                        </a>
+                        <% end %>
+
+                        <a class="ui-link" href="#" name="preview" style="float: right; margin: 2px 24px 0 0;">
+                          <img src="/public/images/FNA/header-view-fna.png" width="24px" height="16px">
+                        </a>
+                        
+                      
+                       
+                        <% if @fnaRequest.addtnField1Str == "FNASUBMIT" %>
+                        <a class="ui-link ui-state-disabled" href="#" name="save" style="float: right; margin-right: 24px;">
+                            <img src="/public/images/FNA/header-saveDA.png" width="20px" height="20px">
+                        </a>
+                        <% else %>
+                        <a class="ui-link" href="#" name="save" style="float: right; margin-right: 24px;">
+                            <img src="/public/images/FNA/header-save.png" width="20px" height="20px">
+                        </a>
+                        <% end %>
+                    </div>
+                </div>
+
+
+            </div>
+        </div>
+    </div>
+    <!-- Header div ends here -->
+
+    <!-- Content div starts here -->
+    <div data-role="content" id="capture" style="-webkit-transform: none;">
+        <form method="POST" action="<%= url_for :action => :executeSubmit %>" name="fnaForm" id ="fnaForm" onsubmit = "return checkBasicDetails();">
+            <%= renderDateTimeJS %>
+            <%= renderObject(@fnaRequest)%>
+            <%= renderHiddenField('guid', @fnaRequest.guid, 'guid', @fnaRequest) %>
+            <%= renderHiddenField('addtnField3Str', @fnaRequest.addtnField3Str, 'addtnField3Str', @fnaRequest) %>
+            <%= renderHiddenField('addtnField4Str', @fnaRequest.addtnField4Str, 'addtnField4Str', @fnaRequest) %>
+            <%= renderHiddenField('addtnField5Str', @fnaRequest.addtnField5Str, 'addtnField5Str', @fnaRequest) %>
+            <div id='totalErrorDiv' style = "display:none">
+                <% if $total_error && $total_error['allTabs'] %>
+                    <%= renderErrorList($total_error) %>
+                <% end %>
+            </div>
+            <div id= "field-validation-div" style="display:none;"></div>
+             <div id= "policyNo-validation-div" style="display:none;"></div>
+             
+     
+      <!-- Implementation of tabs starts here -->
+            <div role="navigation" data-role="navbar" class="eapp-navbar" >
+                <ul class="" style="height:55px;" >
+                    <%= concatStr = ""
+                        if System::get_property('platform') == 'APPLE'
+                            concatStr += "<li class=\"checkv1\" style=\"width:7% !important;height:100%;\" >"
+                        else
+                            concatStr += "<li class=\"checkv1\" style=\"width:5% !important;height:100%;\" >"
+                        end
+                        #return concatStr;
+                    %>
+                    <!-- <li class="checkv1" style="width:5% !important;" > -->
+                        <a href="#" id="basicPage" class="tabLinks ui-link ui-btn ui-btn-active" style="align:center !important;" data-url="getBasicDetails">
+                            <!-- <span style="padding-top:0px;min-height:30px;"><%#= getLabelValue('BASIC_INFO') %></span> -->
+                            <%= concatStr = ""
+                                if $currentLanguageCode == "en"
+                                    concatStr += "<span style=\"min-height:40px;\">"
+                                    concatStr += getLabelValue('BASIC_INFO') 
+                                    concatStr += "</span>"
+                                else
+                                    concatStr += "<span style=\"padding-top:13px;min-height:32px;\">"
+                                    concatStr += getLabelValue('BASIC_INFO')
+                                    concatStr += "</span>"
+                                end
+                            %>
+                        </a>
+                    </li>
+                    <li class="navbar-seperator alignment" >
+                        <img src="/public/images/FNA/nav/icon-arrow.png" alt=""/>
+                    </li>
+
+                    <!-- <li class="checkv1" style="width:11%;" >
+                        <a href="#" id="handwrittenNote" class="tabLinks ui-link ui-btn " style="align:center !important;" data-url="getHandwrittenNote">
+                            <div class="nav-icon " style="padding-left:15px;">
+                            <img src="/public/mirum/images/nav/icon-basic.png" alt=""/>
+                            </div>
+                            <span style="width:50px;min-height:30px;"><%#= getLabelValue('Handwritten_note') %></span>
+                        </a>
+                    </li>
+                    <li class="navbar-seperator alignment" >
+                        <img src="/public/images/FNA/nav/icon-arrow.png" alt=""/>
+                    </li> -->
+                    <%#= $currentLanguageCode %>
+                    <%= concatStr = ""
+                        if System::get_property('platform') == 'APPLE'
+                            concatStr += "<li class=\"checkv1\" style=\"width:10% !important;height:100%;\" >"
+                        else
+                            concatStr += "<li class=\"checkv1\" style=\"width:7% !important;height:100%;\" >"
+                        end
+                    %>
+                    <!-- <li class="checkv1" style="width:10% !important;" > -->
+                        <a href="#" id="needsCalculations" class="tabLinks ui-link ui-btn " data-url="getNeeds">
+                            <!-- <span style="padding-top:0px;min-height:30px;"><%#= getLabelValue('NEEDS_CALCULATION') %></span> -->
+                            <%= concatStr = ""
+                                if $currentLanguageCode == "en"
+                                    concatStr += "<span style=\"min-height:40px;\">"
+                                    concatStr += getLabelValue('NEEDS_CALCULATION') 
+                                    concatStr += "</span>"
+                                else
+                                    concatStr += "<span style=\"padding-top:13px;min-height:32px;\">"
+                                    concatStr += getLabelValue('NEEDS_CALCULATION')
+                                    concatStr += "</span>"
+                                end
+                            %>
+                        </a>
+                    </li>
+                    <li class="navbar-seperator alignment">
+                        <img src="/public/images/FNA/nav/icon-arrow.png" alt=""/>
+                    </li>
+
+                    <%= concatStr = ""
+                        if System::get_property('platform') == 'APPLE'
+                            concatStr += "<li class=\"checkv1\" style=\"width:18% !important;height:100%;\" >"
+                        else
+                            concatStr += "<li class=\"checkv1\" style=\"width:8% !important;height:100%;\" >"
+                        end
+                    %>
+                        <a href="#" id="productIntroduction" class="tabLinks ui-link ui-btn " style="align:center !important;" data-url="getProductList">
+                            <!-- <span style="padding-top:0px;min-height:30px;"><%#= getLabelValue('PRODUCT_INTRODUCTION') %></span> -->
+                            <%= concatStr = ""
+                                if $currentLanguageCode == "en"
+                                    concatStr += "<span style=\"min-height:40px;\">"
+                                    concatStr += getLabelValue('PRODUCT_INTRODUCTION') 
+                                    concatStr += "</span>"
+                                else
+                                    concatStr += "<span style=\"padding-top:13px;min-height:32px;\">"
+                                    concatStr += getLabelValue('PRODUCT_INTRODUCTION')
+                                    concatStr += "</span>"
+                                end
+                            %>
+                        </a>
+                    </li>
+                    <li class="navbar-seperator alignment">
+                        <img src="/public/images/FNA/nav/icon-arrow.png" alt=""/>
+                    </li>
+
+                    <%= concatStr = ""
+                        if System::get_property('platform') == 'APPLE'
+                            concatStr += "<li class=\"checkv1\" style=\"width:8% !important;height:100%;\" >"
+                        else
+                            concatStr += "<li class=\"checkv1\" style=\"width:6% !important;height:100%;\" >"
+                        end
+                    %>
+                        <a href="#" id="productSelection" class="tabLinks ui-link ui-btn " data-url="getProductSelection">
+                            <!-- <span style="padding-top:0px;min-height:30px;"><%#= getLabelValue('PRODUCT_SELECTION') %></span> -->
+                            <%= concatStr = ""
+                                if $currentLanguageCode == "en"
+                                    concatStr += "<span style=\"min-height:40px;\">"
+                                    concatStr += getLabelValue('PRODUCT_SELECTION') 
+                                    concatStr += "</span>"
+                                else
+                                    concatStr += "<span style=\"padding-top:13px;min-height:32px;\">"
+                                    concatStr += getLabelValue('PRODUCT_SELECTION')
+                                    concatStr += "</span>"
+                                end
+                            %>
+                        </a>
+                    </li>
+                    <li class="navbar-seperator alignment">
+                        <img src="/public/images/FNA/nav/icon-arrow.png" alt=""/>
+                    </li>
+
+                    <%= concatStr = ""
+                        if System::get_property('platform') == 'APPLE'
+                            concatStr += "<li class=\"checkv1\" style=\"width:21% !important;height:100%;\" >"
+                        else
+                            concatStr += "<li class=\"checkv1\" style=\"width:9% !important;height:100%;\" >"
+                        end
+                    %>
+                        <a href="#" id="reasonsForRecommendation" class="tabLinks ui-link ui-btn " data-url="getReasonsForRecommendation">
+                            <!-- <span style="min-height:30px;"><%#= getLabelValue('CONSIDERATION') %></span> -->
+                            <%#= $currentLanguageCode %>
+                            <%= concatStr = ""
+                                if $currentLanguageCode == "en"
+                                    concatStr += "<span style=\"padding-top:13px;min-height:32px;\">"
+                                    concatStr += getLabelValue('CONSIDERATION') 
+                                    concatStr += "</span>"
+                                else
+                                    concatStr += "<span style=\"padding-top:13px;min-height:32px;\">"
+                                    concatStr += getLabelValue('CONSIDERATION')
+                                    concatStr += "</span>"
+                                end
+                            %>
+                        </a>
+                    </li>
+
+                    <li class="navbar-seperator alignment">
+                        <img src="/public/images/FNA/nav/icon-arrow.png" alt=""/>
+                    </li>
+
+                    <%= concatStr = ""
+                        if System::get_property('platform') == 'APPLE'
+                            concatStr += "<li class=\"checkv1\" style=\"width:8% !important;height:100%;\" >"
+                        else
+                            concatStr += "<li class=\"checkv1\" style=\"width:6% !important;height:100%;\" >"
+                        end
+                    %>
+                        <a href="#"  name="preview" class="tabLinks ui-link ui-btn" data-url="previewtab">
+                            <!-- <span style="min-height:30px;"><%#= getLabelValue('CONSIDERATION') %></span> -->
+                            <%#= $currentLanguageCode %>
+                            <%= concatStr = ""
+                                if $currentLanguageCode == "en"
+                                    concatStr += "<span style=\"padding-top:13px;min-height:32px;\">"
+                                    concatStr += getLabelValue('PREVIEW_FNA') 
+                                    concatStr += "</span>"
+                                else
+                                    concatStr += "<span style=\"padding-top:13px;min-height:32px;\">"
+                                    concatStr += getLabelValue('PREVIEW_FNA')
+                                    concatStr += "</span>"
+                                end
+                            %>
+                        </a>
+                    </li>
+
+
+
+                    <% if @fnaRequest.addtnField1Str == "FNACOMPLETE" || @fnaRequest.addtnField1Str == "FNASIGNED" || @fnaRequest.addtnField1Str == "FNASUBMIT" %>
+                        <li class="navbar-seperator alignment">
+                            <img src="/public/images/FNA/nav/icon-arrow.png" alt=""/>
+                        </li>
+                        <%= concatStr = ""
+                            if System::get_property('platform') == 'APPLE'
+                                concatStr += "<li class=\"checkv1\" style=\"width:9% !important;height:100%;\" >"
+                            else
+                                concatStr += "<li class=\"checkv1\" style=\"width:7% !important;height:100%;\" >"
+                            end
+                        %>
+                            <a href="#" id="esignature" class="tabLinks ui-link ui-btn " data-url="getDeclaration">
+                                <!-- <span style="min-height:30px;"><%#= getLabelValue('ESIGNATURE') %></span> -->
+                                <%= concatStr = ""
+                                    if $currentLanguageCode == "en"
+                                        concatStr += "<span style=\"padding-top:13px;min-height:32px;\">"
+                                        concatStr += getLabelValue('ESIGNATURE') 
+                                        concatStr += "</span>"
+                                    else
+                                        concatStr += "<span style=\"padding-top:13px;min-height:32px;\">"
+                                        concatStr += getLabelValue('ESIGNATURE')
+                                        concatStr += "</span>"
+                                    end
+                                %>
+                            </a>
+                        </li>
+                    <% else %>
+                    <% end %>
+                   
+                    <% if @fnaRequest.addtnField1Str == "FNASIGNED" || @fnaRequest.addtnField1Str == "FNASUBMIT" %>
+                        <li class="navbar-seperator alignment">
+                            <img src="/public/images/FNA/nav/icon-arrow.png" alt=""/>
+                        </li>
+
+                        <%= concatStr = ""
+                            if System::get_property('platform') == 'APPLE'
+                                concatStr += "<li class=\"checkv1\" style=\"width:9% !important;height:100%;\" >"
+                            else
+                                concatStr += "<li class=\"checkv1\" style=\"width:7% !important;height:100%;\" >"
+                            end
+                        %>
+                            <a href="#" id="policyNo" class="tabLinks ui-link ui-btn " data-url="getPolicyNo">
+                                <!-- <span style="min-height:30px;"><%#= getLabelValue('SUBMISSION') %></span> -->
+                                <%= concatStr = ""
+                                    if $currentLanguageCode == "en"
+                                        concatStr += "<span style=\"padding-top:13px;min-height:32px;\">"
+                                        concatStr += getLabelValue('SUBMISSION') 
+                                        concatStr += "</span>"
+                                    else
+                                        concatStr += "<span style=\"padding-top:13px;min-height:32px;\">"
+                                        concatStr += getLabelValue('SUBMISSION') 
+                                        concatStr += "</span>"
+                                    end
+                                %>
+                            </a>
+                        </li>
+                    <% else %>
+                    
+                    <% end %>
+
+                   
+                </ul>
+            </div>
+           
+
+            <div id="tabDetailsContainer" style="margin-bottom: 0px!important;">
+            </div>
+
+            <table id="nextpre" style="display:none;" width="100%">
+        <tr>
+          <td align="left" style="width:30%;">
+           <a href="#" id="previousTab" data-url="" class="button_UI scrollup tabLinks ui-link ui-btn selected"> <%=getLabelValue('PREVIOUS')%></a>     
+          </td>
+          <td align="center" style="width:35%"></td>
+          <td align="right">
+            <a href="#"  id="nextTab" data-url="" class="button_UI scrollup tabLinks ui-link ui-btn selected" ><%=getLabelValue('NEXT')%></a>
+            <%# if @fnaRequest.addtnField1Str == "FNASIGNED" %>
+            <a href="#" name="submit" id="submit_button_for_submission" class="button_UI ui-link ui-btn selected" style="display:none;"><%=getLabelValue('SUBMIT')%> </a>
+            <%# end %> 
+          </td>
+        </tr>
+      </table>
+
+        </form>
+    </div>
+    <!-- Content div ends here -->
+
+    <style >
+      .checkv1{
+          border:0px solid red;
+          height:45px;
+          vertical-align: middle;
+      }
+      span{
+          padding-top: 5px;
+          text-shadow:none !important;
+          font-weight: normal !important;
+          vertical-align: middle;
+        }
+      .alignment{
+          margin-top:0px !important;
+          padding-top:5px !important;
+      }
+      .disabledLink{
+          background-color: #EDB41A;
+          text-decoration : none;
+          cursor: default;
+      }
+      @media (width: 1024px){
+        .eapp-navbar li{
+          max-width: 11% !important;
+        }
+      }
+      .active-btn{
+          text-shadow:none !important;
+          border-bottom: 4px white solid !important;
+          font-weight: bold !important;
+      }
+      .ui-btn{
+         text-shadow:none !important; 
+
+      }
+      .eapp-navbar li{
+          margin: 0px !important;
+      }
+        .hiddenErrorTab{
+          display: none;
+    }
+    </style>
+</div> <!-- end main-->
+<%= render(:file => 'FNARequest/FNACaptureJS')%>   

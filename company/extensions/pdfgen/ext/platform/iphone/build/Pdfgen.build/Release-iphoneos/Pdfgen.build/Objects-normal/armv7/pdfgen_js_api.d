@@ -1,0 +1,22 @@
+dependencies: \
+  /Users/C2lBiz/Documents/Source/TestProduct/MobiSys/extensions/pdfgen/ext/shared/generated/pdfgen_js_api.cpp \
+  /Users/C2lBiz/.rvm/gems/ruby-1.9.3-p551/gems/rhodes-oss/platform/shared/api_generator/js_helpers.h \
+  /Users/C2lBiz/.rvm/gems/ruby-1.9.3-p551/gems/rhodes-oss/platform/shared/json/JSONIterator.h \
+  /Users/C2lBiz/.rvm/gems/ruby-1.9.3-p551/gems/rhodes-oss/platform/shared/common/RhoStd.h \
+  /Users/C2lBiz/.rvm/gems/ruby-1.9.3-p551/gems/rhodes-oss/platform/shared/common/RhoPort.h \
+  /Users/C2lBiz/.rvm/gems/ruby-1.9.3-p551/gems/rhodes-oss/platform/shared/common/RhoDefs.h \
+  /Users/C2lBiz/.rvm/gems/ruby-1.9.3-p551/gems/rhodes-oss/platform/shared/common/app_build_capabilities.h \
+  /Users/C2lBiz/.rvm/gems/ruby-1.9.3-p551/gems/rhodes-oss/platform/shared/common/app_build_configs.h \
+  /Users/C2lBiz/.rvm/gems/ruby-1.9.3-p551/gems/rhodes-oss/platform/shared/common/stat.h \
+  /Users/C2lBiz/.rvm/gems/ruby-1.9.3-p551/gems/rhodes-oss/platform/shared/api_generator/Api.h \
+  /Users/C2lBiz/.rvm/gems/ruby-1.9.3-p551/gems/rhodes-oss/platform/shared/logging/RhoLog.h \
+  /Users/C2lBiz/.rvm/gems/ruby-1.9.3-p551/gems/rhodes-oss/platform/shared/logging/RhoLogConf.h \
+  /Users/C2lBiz/.rvm/gems/ruby-1.9.3-p551/gems/rhodes-oss/platform/shared/common/RhoMutexLock.h \
+  /Users/C2lBiz/.rvm/gems/ruby-1.9.3-p551/gems/rhodes-oss/platform/shared/common/RhoTime.h \
+  /Users/C2lBiz/.rvm/gems/ruby-1.9.3-p551/gems/rhodes-oss/platform/shared/common/RhoThread.h \
+  /Users/C2lBiz/.rvm/gems/ruby-1.9.3-p551/gems/rhodes-oss/platform/shared/common/IRhoThreadImpl.h \
+  /Users/C2lBiz/.rvm/gems/ruby-1.9.3-p551/gems/rhodes-oss/platform/shared/common/AutoPointer.h \
+  /Users/C2lBiz/.rvm/gems/ruby-1.9.3-p551/gems/rhodes-oss/platform/shared/common/RhoSystem.h \
+  /Users/C2lBiz/.rvm/gems/ruby-1.9.3-p551/gems/rhodes-oss/platform/shared/common/StringConverter.h \
+  /Users/C2lBiz/.rvm/gems/ruby-1.9.3-p551/gems/rhodes-oss/platform/shared/logging/RhoLogCat.h \
+  /Users/C2lBiz/.rvm/gems/ruby-1.9.3-p551/gems/rhodes-oss/platform/shared/common/RhoFatalError.h

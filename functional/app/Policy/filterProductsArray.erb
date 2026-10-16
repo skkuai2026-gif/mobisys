@@ -1,0 +1,8 @@
+<%
+require 'CommonModules/mobisysbrowserhelper'
+@productPackages.each do|package|
+%>
+  <option value="<%= package.cd %>">
+    <%= getLabelValue(package.desc) %>
+  </option>
+<% end %>

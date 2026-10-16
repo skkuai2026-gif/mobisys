@@ -1,0 +1,20 @@
+<div data-role="page" data-url="<%= Rho::RhoConfig.start_path %>/">
+  <div data-role="header" data-position="inline">
+    <h1><%= renderLabel('rpq','RPQ') %></h1>
+      <div class="headerButtons" name = "headerButtons">     
+        <a href="#" id = "back" name="back" onclick="location.href='/app/Menu/landingPage';" data-direction="reverse">
+          <img src="/public/images/SalesIllustration/icon_BackArrow-Red.png">
+        </a>
+      </div>
+  </div>
+  
+  <div data-role="content">
+    <ul data-role="listview">
+      <li>
+        <img src = "/public/images/SalesIllustration/searchlead.png">
+        <a href="/app/LeadRPQ/search"><%= getLabelValue('SEARCHRPQ') %></a>
+      </li>
+    </ul>
+  </div>
+  
+</div>

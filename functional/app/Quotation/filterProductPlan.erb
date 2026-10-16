@@ -1,0 +1,8 @@
+<%
+require 'CommonModules/mobisysbrowserhelper'
+@offlinePlanOptionArray.each do|plan|
+%>
+  <option value="<%= plan.cd %>">
+    <%= getLabelValue(plan.desc) %>
+  </option>
+<% end %>

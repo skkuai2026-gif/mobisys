@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<Title>SalesTool Requirement Capture</Title>
+
+		<style type="text/css">
+		td {
+	    	border: 1px solid blue;
+			text-align: center;   
+		}
+		</style>
+		
+		<script type="text/javascript">
+			window.addEventListener("DOMContentLoaded", function() {
+				// Grab elements, create settings, etc.
+				var canvas = document.getElementById("canvas"),
+					context = canvas.getContext("2d"),
+					video = document.getElementById("video"),
+					videoObj = { "video": true },
+					errBack = function(error) {
+						console.log("Video capture error: ", error.code);
+					};
+
+				// Put video listeners into place
+				if(navigator.getUserMedia) { // Standard
+					navigator.getUserMedia(videoObj, function(stream) {
+						video.src = window.URL.createObjectURL(stream);
+						video.play();
+					}, errBack);
+				} else if(navigator.webkitGetUserMedia) { // WebKit-prefixed
+					navigator.webkitGetUserMedia(videoObj, function(stream){
+						video.src = window.webkitURL.createObjectURL(stream);
+						video.play();
+					}, errBack);
+				}
+				else if(navigator.mozGetUserMedia) { // Firefox-prefixed
+					navigator.mozGetUserMedia(videoObj, function(stream){
+						video.src = window.URL.createObjectURL(stream);
+						video.play();
+					}, errBack);
+				}
+
+				// Trigger photo take
+				document.getElementById("snap").addEventListener("click", function() {
+					context.drawImage(video, 0, 0, 320, 240);
+				});
+
+			}, false);
+
+			function photo() {
+				getId();
+				var img = document.getElementById("canvas").toDataURL("image/png");
+				document.getElementById('img').value = img;
+				document.imgSubmit.submit();
+			}
+			
+			function getId() {
+				var docId= get("docId");
+				document.getElementById('docId').value=docId;
+			}
+
+			function get(name) {
+				if(name=(new RegExp('[?&]'+encodeURIComponent(name)+'=([^&]*)')).exec(location.search))
+				return decodeURIComponent(name[1]);
+			}
+		</script>
+	</head>
+	
+	<body>
+		<table>
+			<tr>
+				<th>Web Cam</th>
+				<th width=50%></th>
+				<th>Snap Shot</th>
+			</tr>
+			<tr>
+				<td><video id="video" width="320" height="240" autoplay></video></td>
+				<th width=50%></th>
+				<td><canvas id="canvas" width="320" height="240"></canvas></td>
+			</tr>
+			<tr>
+				<th><button id="snap">Snap Photo</button></th>
+				<th width=50%></th>
+				<th>
+					<form id="imgSubmit" name="imgSubmit" action="http://127.0.0.1:9000/app/Policy/get_decode_string" method="POST">
+						<input type="button" value="Select Photo" onClick="photo()">
+						<input type="hidden" name="img" id="img"></input>
+						<input style="float:bottom" type="hidden" name="docId" id="docId" ></input>
+					</form>
+				</th>
+			</tr>
+		</table>
+	</body>
+</html>

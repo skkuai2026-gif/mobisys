@@ -1,0 +1,336 @@
+<form method="POST" action="<%= url_for :action => :submitProductSelection %>" name="FnaProductSelection" id="FnaProductSelection">
+<%= renderObject(@fnaRequest) %>
+<%= renderObject(@fnaProposer, @fnaRequest) %>
+<input type="hidden"  id ="changeSelectionForm" name="changeSelectionForm" value=""/>
+
+   <div class="header" style="padding-top:10px;padding-bottom: 10px;">
+        <span class="title"></span>
+        <span class="description"></span>
+        <!-- <span class="set-right required-note" style="padding-top:0px;float: right;"><%#= getLabelValue('PRODUCTSELECTION_REQD_FIELDS') %></span> -->
+    </div>
+
+
+<div class="illustrationdisplay">
+<div name ="FnaProductSelectionProduct" id ="FnaProductSelectionProduct">
+    <%= render(:partial => 'FNAProduct_Selection_Product_selected')%>
+</div>
+<br/>
+<br/>
+</div>
+
+
+
+    <div class="illustrationdisplay">
+        <div class="legend">
+            <label class="strongLabel">
+                <%= getLabelValue('UI_PRODUCT_OPTIONS') %>
+                <a href="#" class="expandButton ui-icon-plus ui-btn-icon-notext ui-alt-icon ui-btn-inline ui-link" style="display: none;"></a>
+                <a href="#" class="collapseButton ui-icon-minus ui-btn-icon-notext ui-alt-icon ui-btn-inline ui-link"></a>
+            </label>
+        </div>
+        <div class="panelContent">
+            <div class="header">
+                <span class="description"><%= getLabelValue('UI_NOTE_IO_2')%></span>
+            </div>
+            <br/>
+            <table class="ui-responsive table-stroke" style="border: 0px solid black;border-collapse:collapse; width:100%;">
+                <tbody style="font-size:16px;">
+                    <tr style="background-color:#E6ECED;line-height:24px;font-size:16px;color:#003946;border-bottom:2px solid black;border-top:2px solid black;">
+                        <td style="width: 35%;"><b><%= getLabelValue('UI_PRODUCT_OPTIONS_BASE_PLANS') %> </b></td>
+                        <td  style="width: 35%;"><b><%= getLabelValue('UI_PRODUCT_OPTIONS_RIDERS') %> </b></td>
+                        <td  style="width: 30%;"><b><%= getLabelValue('CREATE_SI') %> </b></td>
+                   </tr>
+                   <% count=0 %>
+                        <% @array_final.each do |pro|  %>
+                            <% productSeqForButton = nil %>
+                            <% if count%2==0 %>
+                                <tr style="background-color:#FAFAFA;height:50px;color:#003946;">
+                                    <td style="vertical-align: top;padding-top: 10px;">
+                                        <% pro.each do |key , value| %>
+                                            <%= renderObject(value, @fnaRequest) %>
+                                            <% if key.split("|").last == "PLAN" %>
+                                                <% productSeq = value.fnaBaseProductRefGuid.to_s  if value.fnaBaseProductRefGuid != nil %>
+                                                <% productSeqForButton = productSeq %>
+                                                <span id= '<%= productSeq %>' data-productTypeCd= "PLAN" style="padding-top: 0px;">
+                                                    <%= renderCheckBox('selectedFlag', value.selectedFlag, "NO", value, 'class="ui-checkbox2 PLAN" style="display:none;"') %>
+                                                    <%= renderLabel('selectedFlag', key.split("|").first , 'icon-checkbox2 ', value, ' style="width:100%;color:#333 !important;padding-left:36px !important;" ') %>
+                                                </span>
+                                            <% end %>
+                                        <% end %>
+                                    </td>
+
+                                    <td style="vertical-align: top;padding-top: 10px;">
+                                        <% pro.each do |key , value| %>
+                                            <% if key.split("|").last == "RIDER" %>
+                                                <% productSeq = value.fnaBaseProductRefGuid.to_s  if value.fnaBaseProductRefGuid != nil  %>
+                                                <span id= '<%= productSeq %>' data-productTypeCd= "RIDER" style="padding-top: 0px;">
+                                                    <%= renderCheckBox('selectedFlag', value.selectedFlag, "NO", value, '" class="ui-checkbox2 RIDER" style="display:none;"') %>
+                                                    <%= renderLabel('selectedFlag', key.split("|").first , 'icon-checkbox2 ', value, ' style="width:100%;color:#333 !important;padding-left:36px !important;" ') %>
+                                                </span>
+                                                <br/>
+                                            <% end %>
+                                        <% end %>
+                                    </td>
+
+                                    <td style="vertical-align: middle;">
+                                        <% pro.each do |key , value| %>
+                                            <%#= renderObject(value, @fnaRequest) %>
+                                            <% if key.split("|").last == "PLAN" %>
+                                                <%# productSeq = value.fnaBaseProductRefGuid.to_s  if value.fnaBaseProductRefGuid != nil %>
+                                                <% if value.quotationId.to_s != "" %>
+                                                    <a href="<%= url_for :controller => :Quotation, :action=> :show, :query => { :quotationId => value.quotationId } %>" id="" rel="external" class="button_UI_create ui-link ui-btn selected show_SI" >
+                                                        <%= value.quotationId  %>
+                                                    </a>
+                                                <% else %>
+                                                    <% if @applicableMenus.include?('SalesIllustrationTab') && @applicableMenus.include?('FNA') %>
+                                                        <span id= '<%= productSeqForButton %>' style="padding-top: 0px;">
+                                                            <a href="#" id="show_SI" rel="external" class="button_UI_create ui-link ui-btn selected show_SI" ></a>
+                                                        </span>
+                                                        <span id= '<%= productSeqForButton %>' data-productTypeCd= "buttonLink" style="padding-top: 0px;">
+                                                            <a href="#" id="" class="button_UI_create ui-link ui-btn selected SI_Link" style="" onclick="linkToSI('<%= productSeqForButton %>')">
+                                                                <%= getLabelValue('CREATE_SI') %>
+                                                            </a>
+                                                        </span>
+                                                        &nbsp;
+                                                        <span id= '<%= productSeqForButton %>' data-productTypeCd= "linkSI" style="padding-top: 0px;">
+                                                            <a href='#' class='button_UI_create ui-link ui-btn selected SI_Link' onclick="fetchUnlinkedQuotations('<%= productSeqForButton %>', '<%= @fnaRequest.object %>')">
+                                                                <%= getLabelValue('LINK_SI') %>
+                                                            </a>
+                                                        </span>
+                                                        <span id= '<%= productSeqForButton %>' style="padding-top: 0px;">
+                                                            <%= renderHiddenField('quotationId', '', '', value) %>
+                                                        </span>
+                                                        <br/>
+                                                    <% end %>
+                                                <% end %>
+                                            <% end %>
+                                        <% end %>
+                                    </td>
+                                </tr>
+                            <% end %>
+
+                            <% if count%2!=0 %>
+                                <tr style="background-color:#E6ECED;height:50px;">
+                                    <td style="vertical-align: top;padding-top: 10px;">
+                                        <% pro.each do |key , value| %>
+                                            <%= renderObject(value, @fnaRequest) %>
+                                            <% if key.split("|").last == "PLAN" %>
+                                                <% productSeq = value.fnaBaseProductRefGuid.to_s  if value.fnaBaseProductRefGuid != nil %>
+                                                <% productSeqForButton = productSeq %>
+                                                <span id= '<%= productSeq %>' data-productTypeCd= "PLAN" style="padding-top: 0px;">
+                                                    <%= renderCheckBox('selectedFlag', value.selectedFlag, "NO", value, '" class="ui-checkbox2 PLAN" style="display:none;"') %>
+                                                    <%= renderLabel('selectedFlag', key.split("|").first , 'icon-checkbox2 ', value, ' style="width:100%;color:#333 !important;padding-left:36px !important;" ') %>
+                                                </span>
+                                            <% end %>
+                                        <% end %>
+                                    </td>
+
+                                    <td style="vertical-align: top;padding-top: 10px;">
+                                        <% pro.each do |key , value| %>
+                                            <% if key.split("|").last == "RIDER" %>
+                                                <% productSeq = value.fnaBaseProductRefGuid.to_s  if value.fnaBaseProductRefGuid != nil  %>
+                                                <span id= '<%= productSeq %>' data-productTypeCd= "RIDER" style="padding-top: 0px;">
+                                                    <%= renderCheckBox('selectedFlag', value.selectedFlag, "NO", value, '" class="ui-checkbox2 RIDER" style="display:none;"') %>
+                                                    <%= renderLabel('selectedFlag', key.split("|").first , 'icon-checkbox2 ', value, ' style="width:100%;color:#333 !important;padding-left:36px !important;" ') %>
+                                                </span>
+                                                <br/>
+                                            <% end %>
+                                        <% end %>
+                                    </td>
+
+                                    <td style="vertical-align: middle;">
+                                        <% pro.each do |key , value| %>
+                                            <%#= renderObject(value, @fnaRequest) %>
+                                            <% if key.split("|").last == "PLAN" %>
+                                                <%# productSeq = value.fnaBaseProductRefGuid.to_s  if value.fnaBaseProductRefGuid != nil %>
+                                                <% if value.quotationId.to_s != "" %>
+                                                    <a href="<%= url_for :controller => :Quotation, :action=> :show, :query => { :quotationId => value.quotationId } %>" id="" rel="external" class="button_UI_create ui-link ui-btn selected show_SI" >
+                                                        <%= value.quotationId  %>
+                                                    </a>
+                                                <% else %>
+                                                    <% if @applicableMenus.include?('SalesIllustrationTab') && @applicableMenus.include?('FNA') %>
+                                                        <span id= '<%= productSeqForButton %>' style="padding-top: 0px;">
+                                                            <a href="#" id="show_SI" rel="external" class="button_UI_create ui-link ui-btn selected show_SI" ></a>
+                                                        </span>
+                                                        <span id= '<%= productSeqForButton %>' data-productTypeCd= "buttonLink" style="padding-top: 0px;">
+                                                            <a href="#" id="" class="button_UI_create ui-link ui-btn selected SI_Link" style="" onclick="linkToSI('<%= productSeqForButton %>')">
+                                                                <%= getLabelValue('CREATE_SI') %>
+                                                            </a>
+                                                        </span>
+                                                        &nbsp;
+                                                        <span id= '<%= productSeqForButton %>' data-productTypeCd= "linkSI" style="padding-top: 0px;">
+                                                            <a href="#" class="button_UI_create ui-link ui-btn selected SI_Link" onclick="fetchUnlinkedQuotations('<%= productSeqForButton %>', '<%= @fnaRequest.object %>')">
+                                                                <%= getLabelValue('LINK_SI') %>
+                                                            </a>
+                                                        </span>
+                                                        <span id= '<%= productSeqForButton %>' style="padding-top: 0px;">
+                                                            <%= renderHiddenField('quotationId', '', '', value) %>
+                                                        </span>
+                                                        <br/>
+                                                    <% end %>
+                                                <% end %>
+                                            <% end %>
+                                        <% end %>
+                                    </td>
+                                </tr>
+                            <% end %>
+                        <% count= count + 1 %>
+                    <% end %>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <div class="illustrationdisplay">
+        <div class="legend">
+            <label class="strongLabel">
+                <%= getLabelValue('UI_COVERAGE_PREM_SUMMARY') %>
+                <a href="#" class="expandButton ui-icon-plus ui-btn-icon-notext ui-alt-icon ui-btn-inline ui-link" style="display: none;"></a>
+                <a href="#" class="collapseButton ui-icon-minus ui-btn-icon-notext ui-alt-icon ui-btn-inline ui-link"></a>
+            </label>
+        </div>
+        <div class="panelContent">
+            <div class="header">
+                <span class="description"><%= getLabelValue('UI_AFFOR_TEST') %></span>
+            </div>
+            <br/>
+            <div class="ui-dual-field-contain ui-body ui-br" data-role="dualfieldcontain">
+                <div class="half" style="width:20%;">
+                    <div class="group">
+                        <%= renderNumericField('totSumAssured', thosandSeperator(@fnaRequest.totSumAssured.to_s) ,'totSumAssured', @fnaRequest, ' maxlength="10" pattern="/([^\s])" onkeypress="return numbersonly(event)" onchange="return checkifNum(this.value, this.id)"  class="material-input "') %>
+                        <%= renderLabel('totSumAssured', 'TOTAL_FA', 'mandatory', @fnaRequest, "style='line-height:.5'") %>
+                        <%= attachMask("#{getObjectMapping(@fnaRequest)}[totSumAssured]") %>
+
+                        <script type="text/javascript">
+                            $('label[for="<%=getObjectMapping(@fnaRequest)%>[totSumAssured]"]').addClass('material-label');
+                        </script>
+                    </div>
+                </div>
+                <div class="half">
+                    <div class="group">
+                           <%= getLabelValue('UI_MAX_FACE_AMOUNT_1')%> <%= thosandSeperator(@shortfallAmt.to_s)  %><br/>
+                           <%= getLabelValue('UI_MAX_FACE_AMOUNT_2')%>
+                    </div>
+                </div>
+            </div>
+
+
+                <div class="ui-dual-field-contain ui-body ui-br" data-role="dualfieldcontain">
+                    <div class="half" style="width:20%;">
+                        <div class="group">
+                            <%= renderNumericField('addtnField6D', thosandSeperator(@fnaRequest.addtnField6D.to_s) ,'addtnField6D', @fnaRequest, ' maxlength="10" pattern="/([^\s])" onkeypress="return numbersonly(event)" onchange="return checkifNum(this.value, this.id)"  class="material-input "') %>
+                            <%= renderLabel('addtnField6D', 'NS_TOTALSINGLE', 'mandatory', @fnaRequest, "style='line-height:.5'") %>
+                            <%= attachMask("#{getObjectMapping(@fnaRequest)}[addtnField6D]") %>
+                            <script type="text/javascript">
+                            $('label[for="<%=getObjectMapping(@fnaRequest)%>[addtnField6D]"]').addClass('material-label');
+                            </script>
+                        </div>
+                    </div>
+                    <div class="half">
+                        <div class="group">
+                            <%= getLabelValue('UI_MAX_SP_1')%> <%= thosandSeperator(@fnaRequest.addtnField9D.to_s) %><br/>
+                            <%= getLabelValue('UI_MAX_SP_2')%>
+                            <%= attachMask("#{getObjectMapping(@fnaRequest)}[addtnField9D]") %>
+                        </div>
+                    </div>
+                </div>
+                <div class="ui-dual-field-contain ui-body ui-br" data-role="dualfieldcontain">
+                    <div class="half" style="width:20%;">
+                        <div class="group">
+                            <%= renderNumericField('addtnField7D', thosandSeperator(@fnaRequest.addtnField7D.to_s) ,'addtnField7D', @fnaRequest, ' maxlength="10" pattern="/([^\s])" onkeypress="return numbersonly(event)" onchange="return checkifNum(this.value, this.id)" class="material-input "') %>
+                            <%= renderLabel('addtnField7D', 'NS_TOTALREGULAR', 'mandatory', @fnaRequest, "style='line-height:.5'") %>
+                            <%= attachMask("#{getObjectMapping(@fnaRequest)}[addtnField7D]") %>
+                            <script type="text/javascript">
+                            $('label[for="<%=getObjectMapping(@fnaRequest)%>[addtnField7D]"]').addClass('material-label');
+                            </script>
+                        </div>
+                    </div>
+                    <div class="half">
+                        <div class="group">
+                            <%= getLabelValue('UI_MAX_RP_1')%> <%= thosandSeperator(@fnaRequest.addtnField8D.to_s) %><br/>
+                            <%= getLabelValue('UI_MAX_RP_2')%>
+                            <%= attachMask("#{getObjectMapping(@fnaRequest)}[addtnField8D]") %>
+                        </div>
+                    </div>
+                </div>
+
+        </div>
+    </div>
+
+
+    <style >
+        .button_UI {
+            background-color:#efbc33!important;
+            border-radius: 7px;
+            border-style: none;
+            color: #003946 !important;
+            display: inline-block;
+            font-size: 14px !important;
+            max-width: 200px;
+            margin: 0;
+            text-shadow: none !important;
+            font-weight: 700;
+            text-align: center;
+            line-height: 1.3;
+            /*padding: .8em 1.5em !important;*/
+            width: 150px;
+        }
+        .button_UI_create{
+            background-color:#efbc33!important;
+            border-radius: 7px;
+            border-style: none;
+            color: #003946 !important;
+            display: inline-block;
+            font-size: 14px !important;
+            max-width: 200px;
+            margin: 0;
+            text-shadow: none !important;
+            font-weight: 700;
+            text-align: center;
+            /*line-height: 1.3;*/
+            /*padding: .8em 1.5em !important;*/
+            width: 150px;
+        }
+        .ui-state-disabled {
+            border-bottom: none !important;
+        }
+        .ui-simpledialog-container{
+            z-index: 500;
+            position: relative !important;
+            top: -800px !important;
+            left: 137px;
+        }
+
+
+    </style>
+
+<%= render(:partial => 'FNAProduct_SelectionJS')%>
+</form>
+
+
+ <div class="" data-role="dualfieldcontain" align="">
+        <div class="">
+            <div class="group" style="font-size: 14px;">
+                <%= getLabelValue('INSTRUCTION_TEXT_PRODUCT_SELECTION') %>
+            </div>
+        </div>
+    </div>
+
+
+     <!--  <div class="" data-role="dualfieldcontain">
+        <div class="half"  align="left">
+            <div class="group">
+                <a href="#" id="previousTab"  class="button_UI ui-link ui-btn selected"  style="" onclick="previousTab()">
+                    <%#= getLabelValue('PREVIOUS') %>
+                </a>
+
+            </div>
+        </div>
+        <div class="half" align="right">
+            <div class="group" >
+                <a href="#"  id="nextTab"  class="button_UI ui-link ui-btn selected"  style="" onclick="nextTab()" >
+                    <%#= getLabelValue('NEXT') %>
+                </a>
+            </div>
+        </div>
+    </div> -->

@@ -1,0 +1,9 @@
+ext/platform/android/generated/src/com/rho/apptracking/ApptrackingBase.java
+ext/platform/android/generated/src/com/rho/apptracking/ApptrackingFactorySingleton.java
+ext/platform/android/generated/src/com/rho/apptracking/ApptrackingSingletonBase.java
+ext/platform/android/generated/src/com/rho/apptracking/IApptracking.java
+ext/platform/android/generated/src/com/rho/apptracking/IApptrackingFactory.java
+ext/platform/android/generated/src/com/rho/apptracking/IApptrackingSingleton.java
+ext/platform/android/src/com/rho/apptracking/Apptracking.java
+ext/platform/android/src/com/rho/apptracking/ApptrackingFactory.java
+ext/platform/android/src/com/rho/apptracking/ApptrackingSingleton.java

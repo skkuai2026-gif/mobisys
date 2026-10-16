@@ -1,0 +1,96 @@
+<div id="<%= getObjectMapping(@party)%>[partyAddress]">
+	<div class="illustrationdisplay">
+	  	<div class="legend">
+	  		<label class="strongLabel">
+                <%= getLabelValue('ADDRESSINFORMATION') %>
+				<a href="#" class="scrollTopButton ui-icon-carat-u ui-btn-icon-notext ui-alt-icon ui-btn-inline"/>
+				<a href="#" class="expandButton ui-icon-plus ui-btn-icon-notext ui-alt-icon ui-btn-inline"/>
+				<a href="#" class="collapseButton ui-icon-minus ui-btn-icon-notext ui-alt-icon ui-btn-inline"/>
+            </label>
+	  	</div>
+
+		<div class="panelContent">
+	  		<br>
+		  	<div data-role="navbar" id="<%= getObjectMapping(@party)%>[home-permanent-business-bar]">
+			    <ul style="width: 98%;">
+			    	<% if @facetData[:renderHomeAddressPanel] %>
+			      		<li name="homeAddressLi">
+			      			<a href="#" class="unselectedTab" onclick="changePartyHolderAddressTab('homeAddressContainer', '<%=getObjectMapping(@party)%>')"><%=getLabelValue('residentialAddress')%></a>
+			      		</li>  
+			      	<% end %>
+			      	<% if @facetData[:renderPermanentAddressPanel] %>
+			      		<li name="permanentAddressLi">
+			      			<a href="#" class="unselectedTab" onclick="changePartyHolderAddressTab('permanentAddressContainer', '<%=getObjectMapping(@party)%>')"><%=getLabelValue('permanentAddress')%></a>
+			      		</li>
+			      	<% end %>
+			      	<% if @facetData[:renderOfficeAddressPanel] %>
+			      		<li name="officeAddressLi">
+			      			<a href="#" class="unselectedTab" onclick="changePartyHolderAddressTab('officeAddressContainer', '<%=getObjectMapping(@party)%>')"><%=getLabelValue('officeAddress')%></a>
+			      		</li>
+			      	<% end %>
+			    </ul>
+		  	</div>
+		  
+		  	<!-- Tab for Home address begins-->
+		  	<% if @facetData[:renderHomeAddressPanel] %>
+			  	<div id="<%= getObjectMapping(@party)%>[homeAddressContainer]">
+			  		<% if @facetData[:renderCopyFromAddr1] %>
+				  		<div data-role="dualfieldcontain" id="<%= getObjectMapping(@party)%>[copy-from-select1]">
+				  			<div class="half">
+						  		<%= renderLabel('copyFromAddr1', 'sameAs', nil, @party) %> 
+					            <%= getLookup('COPYFROMADDRESS1', 'copyFromAddr1', @party.copyFromAddr1, @party, nil)   %>
+			            	</div>
+			            </div>
+		            <% end %>
+
+				    <div id="<%= getObjectMapping(@party)%>[home-address-details]">
+				      	<%= render :partial => "captureAddressDetails" , :locals => { :addressObj => @homeAddress} %>
+				    </div>
+			  	</div>
+		  	<% end %>
+		  	<!-- End of Home address Tab-->
+		  
+
+		  	<!-- Swati Ahire 02-05-2014: Tab for Permanent address begins -->
+		  	<% if @facetData[:renderPermanentAddressPanel] %>
+			  	<div id="<%= getObjectMapping(@party)%>[permanentAddressContainer]">
+			  		<% if @facetData[:renderCopyFromAddr2] %>
+				  		<div data-role="dualfieldcontain" id="<%= getObjectMapping(@party)%>[copy-from-select3]">
+				  			<div class="half">
+						  		<%= renderLabel('copyFromAddr2', 'sameAs', nil, @party) %> 
+					            <%= getLookup('COPYFROMADDRESS2', 'copyFromAddr2', @party.copyFromAddr2, @party, nil) %>
+					    	</div>
+			            </div>
+			        <% end %>    
+		                 
+				    <div id="<%= getObjectMapping(@party)%>[permanent-address-details]">
+				      	<%= render :partial => "captureAddressDetails" , :locals => { :addressObj => @permanentAddress} %>
+				    </div>
+			  	</div>
+		  	<% end %>
+		  	<!-- End of Permanent Address Tab -->
+
+		  
+		  	<!-- Tab for Office address begins-->
+		  	<% if @facetData[:renderOfficeAddressPanel] %>
+			  	<div id="<%= getObjectMapping(@party)%>[officeAddressContainer]">
+			  		<% if @facetData[:renderCopyFromAddr3] %>
+				  		<div data-role="dualfieldcontain" id="<%= getObjectMapping(@party)%>[copy-from-select2]">
+				  			<div class="half">
+						  		<%= renderLabel('copyFromAddr3', 'sameAs', nil, @party) %> 
+					            <%= getLookup('COPYFROMADDRESS3', 'copyFromAddr3', @party.copyFromAddr3, @party, nil)   %>
+					    	</div>
+			            </div>
+			        <% end %>    
+		                  
+				    <div id="<%= getObjectMapping(@party)%>[office-address-details]">
+				      	<%= render :partial => "captureAddressDetails" , :locals => { :addressObj => @businessAddress} %>
+				    </div>  
+			  	</div>
+			<% end %>  	
+		  	<!-- End of Office Address Tab -->
+		</div>
+	</div>   
+</div>   
+<!-- End of Address tab-->
+<%= render :partial => "capturePartyAddressJS" %>  

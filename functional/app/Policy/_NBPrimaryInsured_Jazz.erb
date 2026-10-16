@@ -1,0 +1,60 @@
+<%= panelTagStart(false) %>
+	<%= modelTagStart('primaryPolicyPartyRole', @primaryInsuredPolicyPartyRole, @policy)%>
+		<div style="display: none;">
+			<%= inputTag("roleCd") %>
+			<%= inputTag("refGuid") %>
+			<%= inputTag('partySameAsCd',nil, nil, nil, nil, nil, 'HIDDEN') if @proposerExists %>
+		</div>
+	<% modelTagEnd %>
+	
+	<%= layoutFieldTag("insuredSameAsProposer") %>
+	
+	<div id="primaryInsuredContainer" >
+		<%= modelTagStart("PolicyPrimaryLifeDO", @primaryInsured, @policy) %>
+			<%
+				partyPckg = 'com.c2lbiz.symbiosys.insurance.businesscommon.dataobjects.party.PartyDO'
+				@tagName = 'PolicyPrimaryLifeDO'
+			%>
+			<%= navbarTagStart(@primaryInsuredNavbarIds,@primaryInsuredNavbarLabels) %>
+				<% if @navbarToBeLoaded=="#{@tabToBeLoaded}-insuredDetailsTabContainer" %>
+					<%= tabTagStart("#{@tabToBeLoaded}-insuredDetailsTabContainer") %>
+						<%= render(:partial => 'NBPartyRender_Jazz', :locals => {:facetkeyprefix => 'PRIMARY' , :partyPckg => partyPckg , :party => @primaryInsured }) %>
+						<% if @renderPrimaryInsuredNationalityPanel %>
+							<%= render(:partial => 'NBPartyNationality_Jazz', :locals => {:partyPckg => partyPckg}) %>
+						<% end %>
+						<% if @renderPrimaryInsuredIdentityPanel %>
+							<%= render(:partial => 'NBPartyIdentity_Jazz', :locals => { :partyPckg => partyPckg, :tagId => 'insuredPartyIdentity', :partyIdentity1 => @primaryInsuredIdentity1, :partyIdentity2 => @primaryInsuredIdentity2, :party => @primaryInsured}) %>
+						<% end %>
+						<% if @renderPrimaryInsuredOccupationPanel %>
+							<%= render(:partial => 'NBPartyEmployment_Jazz', :locals => {:partyPckg => partyPckg, :partyEmployment => @primaryInsuredEmployment, :party => @primaryInsured, :tagId => 'insuredPartyEmployment'}) %>
+						<% end %>
+					<%= tabTagEnd %>
+				<% end %>
+
+				<% if @navbarToBeLoaded=="#{@tabToBeLoaded}-insuredContactDetailsTabContainer" %>
+					<%= tabTagStart("#{@tabToBeLoaded}-insuredContactDetailsTabContainer") %>
+						<% if @renderPrimaryInsuredAddressPanel %>
+							<div style="display: none;">
+								<% if @renderPrimaryInsuredOccupationPanel %>
+									<%= modelTagStart('insuredPartyEmployment', @primaryInsuredEmployment, @primaryInsured) %>
+										<%= inputTag("occupationTypeCd") %>
+							  		<% modelTagEnd %>
+							  	<% end %>
+							</div>
+							<%= render(:partial => 'NBPartyAddress_Jazz', :locals => {:party => @primaryInsured, :party_res_address => @primaryInsuredHomeAddress, :party_office_address => @primaryInsuredBusinessAddress, :party_per_address => @primaryInsuredPermanentAddress, :partyPckg => partyPckg, :resTagId => 'insuredPartyAddressHome', :ofcTagId  => 'insuredPartyAddressOffice', :perTagId => 'insuredPartyAddressPermanent', :renderHomeAddressPanel => @renderPrimaryInsuredHomeAddressPanel, :renderPermanentAddressPanel => @renderPrimaryInsuredPermanentAddressPanel, :renderOfficeAddressPanel => @renderPrimaryInsuredOfficeAddressPanel}) %>
+						<% end %>
+
+						<% if @renderPrimaryInsuredContactPanel %>
+							<%= render(:partial => 'NBPartyContact_Jazz', :locals => {:partyPckg => partyPckg, :party_resi_contact => @primaryInsuredContactHome, :party_off_contact => @primaryInsuredContactOffice, :party_mob_contact => @primaryInsuredContactMobile, :party => @primaryInsured, :emailModelId => 'insuredPartyEmail', :partyEmailObject => @primaryInsuredEmail, :resiTagId => 'insuredPartyContactResidential', :offTagId => 'insuredPartyContactOffice', :mobTagId => 'insuredPartyContactMobile'}) %>
+						<% end %>
+					<%= tabTagEnd %>
+				<% end %>
+			<%= navbarTagEnd %>
+		<% modelTagEnd %>
+	</div>
+<%= panelTagEnd %>
+
+<%= setupFilterUsingFieldTargetValueMap('TitleGender', false, "PolicyPrimaryLifeDO") %>
+<%= setupFilterUsingFieldTargetValueMap('CoverageCountryCity', true, "PolicyPrimaryLifeDO") %>
+<%= setupFilterUsingFieldTargetValueMap('RelationGender', true, "PolicyPrimaryLifeDO") %>
+<%= setupFilterUsingFieldTargetValueMap('CITIZENSHIPRACE', true, "PolicyPrimaryLifeDO") %>

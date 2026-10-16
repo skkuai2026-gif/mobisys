@@ -1,0 +1,263 @@
+<form method="POST" action="<%= url_for :action => :submitAgentDetails %>" name="agentForm" id="agentForm">
+	<%= renderObject(@policy)%>
+	<%= renderObject(@policyAgent1, @policy)%>
+	<%= renderObject(@policyAgent2, @policy)%>
+	<%= renderHiddenField('isBackdatedFl', @policy.isBackdatedFl, 'isBackdatedFl', @policy) %>
+	<%= renderHiddenField('quotationDt', @policy.quotationDt, 'quotationDt', @policy) %>
+	<%= renderHiddenField('policyCommencementDt', @policy.policyCommencementDt, 'policyCommencementDt', @policy) %>
+	<%= renderHiddenField('proposalEntryDt', @policy.proposalEntryDt, 'proposalEntryDt', @policy) %>	
+
+	<div class="illustrationdisplay">
+		<div class="legend"><%= renderLabel('basicDetails','basicDetails','strongLabel') %></div>
+		
+		<% if @facetData[:renderPolicyNum] || @facetData[:renderProposalNum] %>
+			<div data-role="dualfieldcontain">
+				<% if @facetData[:renderPolicyNum] %>
+					<div class ="half">
+						<%= renderLabel('policyNum', 'policyNum', nil , @policy)   %>
+						<%= renderInputField('policyNum', @policy.policyNum ,'PolicyNo', @policy, ' maxlength="20" ')  %>
+					</div>
+				<% end %>
+				<% if @facetData[:renderProposalNum] %>
+					<div class ="half">
+						<%= renderLabel('proposalNum', 'proposalNum', nil, @policy) %>
+						<%= renderInputField('proposalNum', @policy.proposalNum ,'REF_NO', @policy, ' maxlength="20" ')  %>
+					</div>
+				<% end %>
+			</div>
+		<% end %>
+		
+		<% if @facetData[:renderQuotationRefNum] || @facetData[:renderProposalSignedDt] %>
+			<div data-role="dualfieldcontain">
+				<% if @facetData[:renderQuotationRefNum] %>
+					<div class ="half">
+						<%= renderLabel('quotationRefNum', 'quotationRefNum', nil, @policy) %>
+						<%= renderInputField('quotationRefNum', @policy.quotationRefNum ,'QRNO', @policy, ' maxlength="20" ')  %>
+					</div>
+				<% end %>
+				<% if @facetData[:renderProposalSignedDt] %>
+					<div class ="half">
+						<%= renderLabel('proposalSignedDt', 'proposalSignedDt', nil, @policy)   %>
+						<%= renderReadonlyDateField('proposalSignedDt', @policy.proposalSignedDt ,'PSD', @policy) %>
+					</div>
+				<% end %>
+			</div>
+		<% end %>
+
+		<% if @facetData[:renderRiskCommencementDt] || @facetData[:renderProposalReceivedDt] %>
+			<div data-role="dualfieldcontain">
+				<% if @facetData[:renderRiskCommencementDt] %>
+					<div class ="half">
+						<%= renderLabel('riskCommencementDt', 'riskCommencementDt', nil, @policy) %>
+						<%= renderReadonlyDateField('riskCommencementDt', @policy.riskCommencementDt ,'RCNO', @policy) %>
+					</div>
+				<% end %>
+				<% if @facetData[:renderProposalReceivedDt] %>
+					<div class ="half">
+						<%= renderLabel('proposalReceivedDt', 'proposalReceivedDt', nil, @policy) %>
+						<%= renderReadonlyDateField('proposalReceivedDt', @policy.proposalReceivedDt, 'PRD', @policy) %>
+					</div>
+				<% end %>
+			</div>
+		<% end %>
+
+		<% if @facetData[:renderProductFamilyCd] || @facetData[:renderProductId] %>	
+			<div data-role="dualfieldcontain">
+				<% if @facetData[:renderProductFamilyCd] %>
+					<div class ="half">
+						<%= renderLabel('baseProductFamilyCd', 'productFamilyCd', nil, @policy) %>
+						<%= getLookup('DYNAMICLOOKUP', 'baseProductFamilyCd', @policy.baseProductFamilyCd, @policy, @productFamilyLookup, 'disabled') %>
+					</div>
+				<% end %>
+				<% if @facetData[:renderProductId] %>
+					<div class ="half">
+						<%= renderLabel('baseProductId', 'productCd', nil, @policy) %>
+						<%= getLookup('DYNAMICLOOKUP', 'baseProductId', @policy.baseProductId, @policy, @productLookup, 'disabled') %>
+					</div>
+				<% end %>
+			</div>
+		<% end %>
+	
+		<% if @facetData[:renderProductPlanOptionCd] || @facetData[:renderStatcd] %>	
+			<div data-role="dualfieldcontain">
+				<% if @facetData[:renderProductPlanOptionCd] %>
+					<div class ="half">
+						<%= renderLabel('productPlanOptionCd', 'planOptionCd', nil, @policy) %>
+						<%= getLookup('DYNAMICLOOKUP', 'productPlanOptionCd', @policy.productPlanOptionCd, @policy, @productPlanLookup, 'disabled') %>
+					</div>
+				<% end %>
+				<% if @facetData[:renderStatcd] %>
+					<div class ="half">
+						<%= renderLabel('statCd', 'statCd', nil, @policy) %>
+						<%= getLookup('BOOLEAN', 'statCd', @policy.statCd, @policy, nil) %>
+					</div>
+				<% end %>
+			</div>
+		<% end %>
+
+		<% if @facetData[:renderLeadGenerationCd] || @facetData[:renderCampaignCode] %>	
+			<div data-role="dualfieldcontain">
+				<% if @facetData[:renderLeadGenerationCd] %>
+					<div class ="half">
+						<%= renderLabel('leadGenerationCd', 'leadGenerationCd', nil, @policy) %>
+						<%= getLookup('LEADGENERATION', 'leadGenerationCd', @policy.leadGenerationCd, @policy, nil) %>
+					</div>
+				<% end %>
+				<% if @facetData[:renderCampaignCode] %>
+					<div class ="half">
+						<%= renderLabel('campaignCode', 'campaignCode', nil, @policy) %>
+						<%= getLookup('CAMPAIGNCODE', 'campaignCode', @policy.campaignCode, @policy, nil) %>
+					</div>
+				<% end %>
+			</div>
+		<% end %>
+
+		<% if @facetData[:renderPurposeOfInsuranceCd] || @facetData[:renderOtherPurposeOfInsurance] %>	
+			<div data-role="dualfieldcontain">
+				<% if @facetData[:renderPurposeOfInsuranceCd] %>
+					<div class ="half">
+						<%= renderLabel('purposeOfInsuranceCd', 'purposeOfInsuranceCd', nil, @policy) %>
+						<%= getLookup('PURPOSEOFINSURANCE', 'purposeOfInsuranceCd', @policy.purposeOfInsuranceCd, @policy, nil) %>
+					</div>
+				<% end %>
+				<% if @facetData[:renderOtherPurposeOfInsurance] %>
+					<div class ="half">
+						<%= renderLabel('otherPurposeOfInsurance', 'otherPurposeOfInsurance', nil, @policy) %>
+						<%= renderInputField('otherPurposeOfInsurance', @policy.otherPurposeOfInsurance, 'otherPurposeOfInsurance', @policy, ' maxlength="20"') %>
+					</div>
+				<% end %>
+			</div>
+		<% end %>
+
+		<% if @facetData[:renderSourceOfFund] || @facetData[:renderOtherSourceOfFund] %>	
+			<div data-role="dualfieldcontain">
+				<% if @facetData[:renderSourceOfFund] %>
+					<div class ="half">
+						<%= renderLabel('sourceOfFund', 'sourceOfFund', nil, @policy) %>
+						<%= getLookup('SOURCEOFFUND', 'sourceOfFund', @policy.sourceOfFund, @policy, nil) %>
+					</div>
+				<% end %>
+				<% if @facetData[:renderOtherSourceOfFund] %>
+					<div class ="half">
+						<%= renderLabel('otherSourceOfFund', 'otherSourceOfFund', nil, @policy) %>
+						<%= renderInputField('otherSourceOfFund', @policy.otherSourceOfFund, 'otherSourceOfFund', @policy, ' maxlength="20"') %>
+					</div>
+				<% end %>
+			</div>
+		<% end %>
+	</div>
+		
+	<% if @facetData[:renderJointFieldWork] %>	
+		<%= renderHiddenField('channelId', @policyAgent1.channelId, 'channelId', @policyAgent1) %>
+		<%= renderHiddenField('primaryAgentFl', @policyAgent1.primaryAgentFl, 'primaryAgentFl', @policyAgent1) %>
+		<%= renderHiddenField('primaryAgentFl', @policyAgent2.primaryAgentFl, 'primaryAgentFl', @policyAgent2) %>
+		<%= renderHiddenField('jointFieldWork', @policyAgent1.jointFieldWork, 'jointFieldWork', @policyAgent1) %>
+		<%= renderHiddenField('jointFieldWork', @policyAgent2.jointFieldWork, 'jointFieldWork', @policyAgent2) %>
+		<div class="illustrationdisplay">
+			<div class="legend"><%= renderLabel('agentSharing', 'agentSharing', 'strongLabel') %></div>
+		  	<div data-role="dualfieldcontain">
+		  		<% if @facetData[:renderAgentId] %>
+			     	<div class ="half">
+			        	<%= renderLabel('agentId', 'agentID', nil, @policyAgent1)   %>
+			        	<%= renderInputField('agentId', @policyAgent1.agentId, 'agentId', @policyAgent1) %>
+			     	</div>
+				<% end %>
+		     	<div class ="half">
+		        	<%= renderLabel('agentName2', 'agentName', nil, @policyAgent1)   %>
+		        	<%= renderInputField('agentName', @policyAgent1.agentName, 'agentName', @policyAgent1, ' maxlength="30"') %>
+		     	</div> 
+		  	</div>
+
+		  	<% if @facetData[:renderCommPercent] || @facetData[:renderProdnPercent] %>
+			  	<div data-role="dualfieldcontain">
+			  		<% if @facetData[:renderCommPercent] %>
+				     	<div class ="half">
+				       		<%= renderLabel('commPercent', 'commPercent', nil, @policyAgent1) %>
+				       		<%= renderAmountField('commPercent', @policyAgent1.commPercent, nil, @policyAgent1,' maxlength="3"') %>
+				      	</div>
+					<% end %>
+			  		<% if @facetData[:renderProdnPercent] %>
+				     	<div class ="half">
+				       		<%= renderLabel('prodnPercent', 'prodnPercent', nil, @policyAgent1) %>
+				       		<%= renderAmountField('prodnPercent', @policyAgent1.prodnPercent, nil, @policyAgent1,' maxlength="3"') %>
+				      	</div>
+					<% end %>
+			  	</div>
+			<% end %>
+
+		  	<% if @facetData[:renderYearFrom] || @facetData[:renderYearTo] %>
+			  	<div data-role="dualfieldcontain">
+			  		<% if @facetData[:renderYearFrom] %>
+			  			<div class="half">
+							<%= renderLabel('yearFrom', 'yearFrom', nil, @policyAgent1)   %>
+			            	<%= renderDateField('yearFrom', @policyAgent1.yearFrom, nil, @policyAgent1, nil) %>
+						</div>
+					<% end %>
+			  		<% if @facetData[:renderYearTo] %>
+			  			<div class="half">
+							<%= renderLabel('yearTo', 'yearTo', nil, @policyAgent1)   %>
+			            	<%= renderDateField('yearTo', @policyAgent1.yearTo, nil, @policyAgent1, nil) %>
+						</div>
+					<% end %>
+			  	</div>
+			<% end %>
+
+
+		  	<div data-role="dualfieldcontain">
+		  		<% if @facetData[:renderAgentId] %>
+			     	<div class ="half">
+			        	<%= renderLabel('agentId', 'agentID', nil, @policyAgent2)   %>
+			        	<%= renderInputField('agentId', @policyAgent2.agentId, 'agentID', @policyAgent2) %>
+			     	</div>
+				<% end %>
+		  	</div>
+
+		  	<% if @facetData[:renderCommPercent] || @facetData[:renderProdnPercent] %>
+			  	<div data-role="dualfieldcontain">
+			  		<% if @facetData[:renderCommPercent] %>
+				     	<div class ="half">
+				       		<%= renderLabel('commPercent', 'commPercent', nil, @policyAgent2) %>
+				       		<%= renderAmountField('commPercent', @policyAgent2.commPercent, nil, @policyAgent2,' maxlength="3"') %>
+				      	</div>
+					<% end %>
+			  		<% if @facetData[:renderProdnPercent] %>
+				     	<div class ="half">
+				       		<%= renderLabel('prodnPercent', 'prodnPercent', nil, @policyAgent2) %>
+				       		<%= renderAmountField('prodnPercent', @policyAgent2.prodnPercent, nil, @policyAgent2,' maxlength="3"') %>
+				      	</div>
+					<% end %>
+			  	</div>
+			<% end %>
+
+		  	<% if @facetData[:renderYearFrom] || @facetData[:renderYearTo] %>
+			  	<div data-role="dualfieldcontain">
+			  		<% if @facetData[:renderYearFrom] %>
+			  			<div class="half">
+							<%= renderLabel('yearFrom', 'yearFrom', nil, @policyAgent2)   %>
+			            	<%= renderDateField('yearFrom', @policyAgent2.yearFrom, nil, @policyAgent2, nil) %>
+						</div>
+					<% end %>
+			  		<% if @facetData[:renderYearTo] %>
+			  			<div class="half">
+							<%= renderLabel('yearTo', 'yearTo', nil, @policyAgent2)   %>
+			            	<%= renderDateField('yearTo', @policyAgent2.yearTo, nil, @policyAgent2, nil) %>
+						</div>
+					<% end %>
+			  	</div>
+			<% end %>
+		</div>
+	<% else %>
+		<%= renderHiddenField('channelId', @policyAgent1.channelId, 'channelId', @policyAgent1) %>
+		<%= renderHiddenField('agentId', @policyAgent1.agentId, 'agentId', @policyAgent1) %>
+		<%= renderHiddenField('agentName', @policyAgent1.agentName, 'agentName', @policyAgent1) %>
+		<%= renderHiddenField('commPercent', @policyAgent1.commPercent, 'commPercent', @policyAgent1) %>
+		<%= renderHiddenField('prodnPercent', @policyAgent1.prodnPercent, 'prodnPercent', @policyAgent1) %>
+		<%= renderHiddenField('yearFrom', @policyAgent1.yearFrom, 'yearFrom', @policyAgent1) %>
+		<%= renderHiddenField('yearTo', @policyAgent1.yearTo, 'yearTo', @policyAgent1) %>	
+		<%= renderHiddenField('primaryAgentFl', @policyAgent1.primaryAgentFl, 'primaryAgentFl', @policyAgent1) %>
+		<%= renderHiddenField('primaryAgentFl', @policyAgent2.primaryAgentFl, 'primaryAgentFl', @policyAgent2) %>
+		<%= renderHiddenField('jointFieldWork', @policyAgent1.jointFieldWork, 'jointFieldWork', @policyAgent1) %>
+		<%= renderHiddenField('jointFieldWork', @policyAgent2.jointFieldWork, 'jointFieldWork', @policyAgent2) %>
+	<% end %>	
+</form>
+<%= render(:partial => 'captureAgentDetailsJS')%>

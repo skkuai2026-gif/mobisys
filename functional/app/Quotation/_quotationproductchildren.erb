@@ -1,0 +1,55 @@
+<% if @funds != nil && @funds.size > 0 %>
+  <!-- funds -->
+    <table class="illustrationtable" width = "100%" align="center">
+      <tr class="illustrationtableheader" >
+        <td width="70%"> <%= getLabelValue('FUNDS')   %> </td>
+        <td width="15%"> <%= getLabelValue('ALLOCATION')   %> </td>
+        <td width="15%"> <%= getLabelValue('TOPUP')   %> </td>
+        
+      </tr>
+      <% 
+      totalAllocation = 0
+      @funds.each do |fund| 
+        totalAllocation = totalAllocation + fund.allocationPerc.to_i   
+        %>
+        <tr class="illustrationtablerow">
+          <td class="tabletext"> <%= fund.fundCd %> - <%= getLabelValue(fund.fundCd) %> </td>
+          <td class="tablenum"> <%= fund.allocationPerc %>% </td>
+          <td class="tablenum"> &nbsp; </td>
+        </tr>
+      <% end %>
+      
+      <tr class="illustrationtablerow">
+        <td class="tabletext"> <b>Total</b> </td>
+        <td class="tablenum"> <b><%= totalAllocation %>%</b> </td>
+        <td class="tablenum"> &nbsp; </td>
+      </tr>
+    
+    </table>
+  <!-- end funds -->
+  <br>
+
+<% end %>
+
+<% if @topups != nil && @topups.size > 0 %>
+  <!-- topups -->
+    <table class="illustrationtable" width = "100%" align="center">
+      <tr class="illustrationtableheader" >
+        <td width="70%"> <%= getLabelValue('TOPUPYEAR')   %> </td>
+        <td width="30%"> <%= getLabelValue('TOPUPAMOUNT')   %> </td>                
+        
+      </tr>
+      <% 
+      @topups.each do |topup| 
+        %>
+        <tr class="illustrationtablerow">
+          <td class="tabletext"> <%= getLabelValue('YEAR') %> <%= topup.year %> </td>
+          <td class="tablenum"> <%= renderNumber(topup.topupAmt) %> </td>
+        </tr>
+      <% end %>
+    
+    </table>
+  <!-- end topups -->
+  <br>
+
+<% end %>

@@ -1,0 +1,9 @@
+<%= panelTagStart(false) %>
+	<%= subPanelTagStart("FUNDSINFORMATION","true","FUNDSREQUIRED") %>
+		<%= modelTagStart("basePlan", @baseProduct, @quotation) %>
+			<%= prdFieldDataTag("com.c2lbiz.symbiosys.insurance.businesscommon.dataobjects.policy.PolicyProductDO",'portfolioModelCd,topUpAllocSameAsPremAllocFl') %>
+		<% modelTagEnd %>
+		<%= fieldDataEntryGridTagStart('quotationFunds', 'com.c2lbiz.symbiosys.insurance.businesscommon.dataobjects.policy.PolicyProductInvestmentFundDO', 'fundCd,allocationPerc,topupAllocationPerc,fundTypeCd,expiryDt,maturityDt', @funds, @baseProduct,@fundLabelObject, '', "", "",true,false,false,true,true,"","","","FUNDSREQUIRED",true,false,true) %>
+		<%= fieldDataEntryGridTagEnd('',nil,'',false) %>
+	<%= subPanelTagEnd %>
+<%= panelTagEnd %>

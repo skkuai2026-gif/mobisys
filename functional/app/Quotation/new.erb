@@ -1,0 +1,84 @@
+<div data-role="page">
+
+  <div data-role="header" data-position="inline">
+    <h1><%= renderLabel('New','NEW')   %><%= @quotation.title %></h1>
+    <a href="<%= url_for :action => :index %>" class="ui-btn-left" data-icon="back" data-direction="reverse">
+      <%= renderLabel('Cancel','CANCEL')   %>
+    </a>
+  </div>
+  
+  <div data-role="content" >
+    <form method="POST" action="<%= url_for :action => :create %>">
+     <input type="hidden" name="id" value="<%= @quotation.object %>" />
+    <!-- INSURED INFORMATION --> 
+     <%= renderLabel('InsuredInformation','INSUREDINFORMATION','bold')   %>
+          <div data-role="fieldcontain">
+               <%= renderLabel('quotation[firstName]','NAMESURNAME')   %>
+               <%= renderInputField('quotation[firstName]',nil,'Name and Surname') %>
+          </div>     
+          <div data-role="fieldcontain">
+               <%= renderLabel('GENDER','GENDER')    %>
+               <%= getSwitch('GEND', 'GENDER', nil) %>                       
+          </div>
+          <div data-role="fieldcontain">
+               <%= renderLabel('quotation[dob]','DATEOFBIRTH')   %>
+               <%= renderInputField('quotation[dob]',nil,'Date Of Birth') %>      
+          </div>
+          <div data-role="fieldcontain">  
+                   <div class="ui-block-a"><%= renderLabel('Age','AGE')   %></div>
+                   <div class="ui-block-b" id="ye"><%= renderInputField('year',nil,'') %><%= renderLabel('year','YEAR')   %></div>
+                   <div class="ui-block-c" id="mo"><%= renderInputField('month',nil,'') %><%= renderLabel('month','MONTH')   %></div>
+                   <div class="ui-block-d" id="da"><%= renderInputField('day',nil,'') %><%= renderLabel('day','DAY')   %></div>
+          </div>      
+          <div data-role="fieldcontain">
+               <%= renderLabel('quotation[occupationClass]','OCCUPATIONCLASS')   %> 
+               <%= getLookup('OCCUPATIONCLASS','quotation[occupationClass]',nil)   %>
+          </div>      
+          <div data-role="fieldcontain">
+               <%= renderLabel('quotation[emailAddress]','EMAILADDRESS')   %>
+               <%= renderInputField('quotation[emailAddress]',nil,'Email address') %>
+          </div>     
+          <div data-role="fieldcontain">
+               <%= renderLabel('quotation[teleNum]','TELEPHONENUMBER')   %>
+               <%= renderInputField('quotation[teleNum]',nil,'Telephone Number') %>
+          </div>
+  <!-- End of INSURED INFORMATION -->        
+  <!-- PAYER INFORMATION -->             
+     <div id="payer">
+        <%= renderLabel('PayerInformation','PAYERINFORMATION','bold')   %>
+          <div data-role="fieldcontain">
+               <%= renderLabel('quotation[firstName]','NAMESURNAME')   %>
+               <%= renderInputField('quotation[firstName]',nil,'Name and Surname') %>
+          </div>                            
+          <div data-role="fieldcontain">
+               <%= renderLabel('GENDER','GENDER')    %>
+               <%= getSwitch('GEND', 'GENDER', nil) %>                  
+          </div>
+          <div data-role="fieldcontain">
+               <%= renderLabel('quotation[dob]','DATEOFBIRTH')   %>
+               <%= renderInputField('quotation[dob]',nil,'Date Of Birth') %>                     
+          </div>                                    
+          <div data-role="fieldcontain" >
+               <%= renderLabel('year2','AGE')   %>
+               <%= renderInputField('year2',nil,'Years') %>
+          </div>                     
+          <div data-role="fieldcontain">
+               <%= renderLabel('quotation[emailAddress]','EMAILADDRESS')   %>
+               <%= renderInputField('quotation[emailAddress]',nil,'Email address') %>
+          </div>                              
+          <div data-role="fieldcontain">
+               <%= renderLabel('quotation[teleNum]','TELEPHONENUMBER')   %>
+               <%= renderInputField('quotation[teleNum]',nil,'Telephone Number') %>
+          </div>
+     </div>
+        <!-- End of PAYER INFORMATION -->
+      <div data-role="footer">
+          <fieldset class="ui-grid-b">
+                   <div class="ui-block-a"></div>
+                   <div class="ui-block-b"><a href="<%= url_for :action => :landingPage %>" data-role="button" data-theme="a"><%= renderLabel('create','CREATE')%></a></div>
+                   <div class="ui-block-c"></div>
+          </fieldset>
+      </div>
+    </form>
+  </div>
+</div>

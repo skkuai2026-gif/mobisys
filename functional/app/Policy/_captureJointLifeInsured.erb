@@ -1,0 +1,58 @@
+<form method="POST" action="<%= url_for :action => :submitJointLifeInsuredDetails %>" name="jointLifeInsuredForm" id="jointLifeInsuredForm">
+	<!-- Rendering of objects (Has to be defined inside form tag to be considered)Start -->
+	<%= renderObject(@policy)%>
+	
+	<%= renderObject(@party, @policy)%>
+	<%= renderObject(@policyPartyRole, @policy)%>
+
+	<%= renderObject(@partyIdentity1, @party) %>
+	<%= renderObject(@partyIdentity2, @party) %>
+
+	<%= renderObject(@homeAddress, @party)%>
+	<%= renderObject(@businessAddress, @party)%>
+	<%= renderObject(@permanentAddress, @party)%>
+
+	<%= renderObject(@partyContactHome, @party) %>
+	<%= renderObject(@partyContactOffice, @party) %>
+	<%= renderObject(@partyContactMobile, @party) %>
+	<%= renderObject(@partyEmail, @party) %>
+
+	<%= renderObject(@partyEmployment, @party) %>
+	<!-- Rendering of objects End -->
+
+	<%= renderHiddenField('removed', @party.removed, 'Removed', @party) %>
+	<%= renderHiddenField('removed', @policyPartyRole.removed, 'Removed', @policyPartyRole) %>
+
+	<div class="illustrationdisplay">
+		<div class="legend"><%= renderLabel('jointLife','jointLife','strongLabel') %></div>
+
+		<div data-role="dualfieldcontain">
+			<div class="half"> 
+		       	<%= renderLabel('jointLife', 'jointLife', nil, @policy, " style='width:100%;'") %>
+				<%= renderCheckBox('jointLife', @policy.jointLife, 'Selected', @policy) %>
+			</div>
+		</div>
+	</div>
+
+	<div id="jointinsuredcontent">
+		<%= render(:partial => 'capturePartyDetails') %>
+		
+		<% if @facetData[:renderIdentityPanel] %>
+			<%= render(:partial => 'capturePartyIdentity') %>
+		<% end %>
+		
+		<% if @facetData[:renderOccupationPanel] %>
+			<%= render(:partial => 'capturePartyEmployment') %>
+		<% end %>
+		
+		<% if @facetData[:renderAddressPanel] %>
+			<%= render(:partial => 'capturePartyAddress') %>
+		<% end %>
+		
+		<% if @facetData[:renderContactPanel] %>
+			<%= render(:partial => 'capturePartyContact')%>
+		<% end %>
+	</div>
+
+	<%= render(:partial => 'captureJointLifeInsuredJS')%>
+</form>

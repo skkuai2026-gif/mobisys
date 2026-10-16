@@ -1,0 +1,102 @@
+<script type="text/javascript">
+$(document).ready(function(){
+	<% if $total_error['LeadRPQ'] != nil && !$total_error['LeadRPQ'].empty? %>
+		showDialog("", "<%= getLabelValue('ERROR')%>", 'error', 0, 'capture');
+		$('span[id="errordiv"]').show();
+	<% elsif $total_error['LeadRPQ'] %>
+		showDialog("", "<%= getLabelValue('SUCCESS')%>", 'success', 0, 'capture');
+	<% end %>
+
+	$('.sigPad').signaturePad({drawOnly:true});
+
+	$("select[name='<%=getObjectMapping(@leadRPQ)%>[title]']").selectmenu('disable');
+	setReadOnly($("input[name='<%= getObjectMapping(@leadRPQ)%>[firstname]']"), true);
+	setReadOnly($("input[name='<%= getObjectMapping(@leadRPQ)%>[middlename]']"), true);
+	setReadOnly($("input[name='<%= getObjectMapping(@leadRPQ)%>[lastname]']"), true);
+	$("input[name='<%=getObjectMapping(@leadRPQ)%>[genderCd]']").checkboxradio('disable');
+	$("select[name='<%=getObjectMapping(@leadRPQ)%>[maritalStatus]']").selectmenu('disable');
+	setReadOnly($("input[name='<%= getObjectMapping(@leadRPQ)%>[dob]']"), true);
+	setReadOnly($("input[name='<%= getObjectMapping(@leadRPQ)%>[age]']"), true);
+	$("select[name='<%=getObjectMapping(@leadRPQ)%>[occupationCd]']").selectmenu('disable');
+	$("select[name='<%=getObjectMapping(@leadRPQ)%>[incomeGroup]']").selectmenu('disable');
+	$("select[name='<%=getObjectMapping(@leadRPQ)%>[nationality]']").selectmenu('disable');
+	setReadOnly($("input[name='<%= getObjectMapping(@leadRPQ)%>[residenceNumber]']"), true);
+	setReadOnly($("input[name='<%= getObjectMapping(@leadRPQ)%>[officeNumber]']"), true);
+	setReadOnly($("input[name='<%= getObjectMapping(@leadRPQ)%>[mobileNumber]']"), true);
+	setReadOnly($("input[name='<%= getObjectMapping(@leadRPQ)%>[emailAddress]']"), true);
+	setReadOnly($("input[name='<%= getObjectMapping(@leadRPQ)%>[address1]']"), true);
+	setReadOnly($("input[name='<%= getObjectMapping(@leadRPQ)%>[address2]']"), true);
+	setReadOnly($("input[name='<%= getObjectMapping(@leadRPQ)%>[address3]']"), true);
+	setReadOnly($("input[name='<%= getObjectMapping(@leadRPQ)%>[address4]']"), true);
+	$("select[name='<%=getObjectMapping(@leadRPQ)%>[country]']").selectmenu('disable');
+	setReadOnly($("input[name='<%= getObjectMapping(@leadRPQ)%>[pincode]']"), true);
+	$("select[name='<%=getObjectMapping(@leadRPQ)%>[state]']").selectmenu('disable');
+	$("select[name='<%=getObjectMapping(@leadRPQ)%>[city]']").selectmenu('disable');
+	setReadOnly($("input[name='<%= getObjectMapping(@leadRPQ)%>[state]']"), true);
+	setReadOnly($("input[name='<%= getObjectMapping(@leadRPQ)%>[city]']"), true);
+	$("input[name='<%= getObjectMapping(@leadRPQ)%>[dob]']").siblings('.datepickerimg').hide();
+	
+	//Changing checkboxes to behave like radio buttons
+	<% @questionKeys.each do |question| %>
+		$('[name="<%= question %>"]').click(function(){
+			$('[name="<%= question %>"]').prop("checked", false).checkboxradio("refresh");
+			$(this).prop("checked", true).checkboxradio("refresh");
+		});
+	<% end %>
+
+	$('.scrollTopButton').click(function() {
+		$("html, body").animate({ scrollTop: 0 }, "slow");
+    });
+
+    $('.expandButton').hide();
+
+    $('.collapseButton').click(function() {
+    	$(this).parents(".legend").siblings(".panelContent").hide();
+    	$(this).hide();
+    	$(this).siblings('.expandButton').show();
+    });
+
+    $('.expandButton').click(function() {
+    	$(this).parents(".legend").siblings(".panelContent").show();
+    	$(this).hide();
+    	$(this).siblings('.collapseButton').show();
+    });
+
+	$('#error_dialog').click(function(){
+		if (typeof $.mobile.sdCurrentDialog === 'undefined') {
+			$("<div>").simpledialog2({
+				mode : 'blank',
+				blankContent : $("#totalErrorDiv").html() + "<a rel='close' data-role='button' href='#'>Close</a>"
+			});
+		}
+	});
+
+	$("a[name='save']").click( function() {
+		$("select[name='<%=getObjectMapping(@leadRPQ)%>[title]']").selectmenu('enable');
+		setReadOnly($("input[name='<%= getObjectMapping(@leadRPQ)%>[firstname]']"), false);
+		setReadOnly($("input[name='<%= getObjectMapping(@leadRPQ)%>[middlename]']"), false);
+		setReadOnly($("input[name='<%= getObjectMapping(@leadRPQ)%>[lastname]']"), false);
+		$("input[name='<%=getObjectMapping(@leadRPQ)%>[genderCd]']").checkboxradio('enable');
+		$("select[name='<%=getObjectMapping(@leadRPQ)%>[maritalStatus]']").selectmenu('enable');
+		setReadOnly($("input[name='<%= getObjectMapping(@leadRPQ)%>[dob]']"), false);
+		setReadOnly($("input[name='<%= getObjectMapping(@leadRPQ)%>[age]']"), false);
+		$("select[name='<%=getObjectMapping(@leadRPQ)%>[occupationCd]']").selectmenu('enable');
+		$("select[name='<%=getObjectMapping(@leadRPQ)%>[incomeGroup]']").selectmenu('enable');
+		$("select[name='<%=getObjectMapping(@leadRPQ)%>[nationality]']").selectmenu('enable');
+		setReadOnly($("input[name='<%= getObjectMapping(@leadRPQ)%>[residenceNumber]']"), false);
+		setReadOnly($("input[name='<%= getObjectMapping(@leadRPQ)%>[officeNumber]']"), false);
+		setReadOnly($("input[name='<%= getObjectMapping(@leadRPQ)%>[mobileNumber]']"), false);
+		setReadOnly($("input[name='<%= getObjectMapping(@leadRPQ)%>[emailAddress]']"), false);
+		setReadOnly($("input[name='<%= getObjectMapping(@leadRPQ)%>[address1]']"), false);
+		setReadOnly($("input[name='<%= getObjectMapping(@leadRPQ)%>[address2]']"), false);
+		setReadOnly($("input[name='<%= getObjectMapping(@leadRPQ)%>[address3]']"), false);
+		setReadOnly($("input[name='<%= getObjectMapping(@leadRPQ)%>[address4]']"), false);
+		$("select[name='<%=getObjectMapping(@leadRPQ)%>[country]']").selectmenu('enable');
+		setReadOnly($("input[name='<%= getObjectMapping(@leadRPQ)%>[pincode]']"), false);
+		$("select[name='<%=getObjectMapping(@leadRPQ)%>[state]']").selectmenu('enable');
+		$("select[name='<%=getObjectMapping(@leadRPQ)%>[city]']").selectmenu('enable');
+
+		document.rpqResponseForm.submit();
+	});
+});
+</script>

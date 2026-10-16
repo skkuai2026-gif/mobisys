@@ -1,0 +1,4 @@
+entry: Init_EncrypterUtil_extension	
+javaentry: com.encrypterutil.EncrypterUtil
+android_additional_sources_list: ext/encrypterutil/platform/android/ext_build.files
+libraries: ["EncrypterUtil"]

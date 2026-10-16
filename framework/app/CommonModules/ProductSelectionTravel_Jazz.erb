@@ -1,0 +1,98 @@
+<div class="product-selection-tab-content product-travel-selection-wrapper left-0">
+	<input type="hidden" name="offlineApplicationEnvironment" id="offlineApplicationEnvironment" value="<%= @offlineApplicationEnvironment %>">
+	<input type="hidden" class="selectProductFamily" name="selectProductFamily" id="<%= @baseProduct.productFamilyCd %>" value="<%= @baseProduct.productFamilyCd %>">
+	<% additionalFactor = @offlineApplicationEnvironment == "UAT" ? 2 : 1 %>
+	<% if @baseProduct.productSeq.to_s != ''%>
+		<% productWidth = (100.00/(@productPlanOptionHash[@baseProduct.productSeq.to_s.to_sym].size+additionalFactor)).round(2) %>
+	<%else%>
+		<% productWidth = 25 %>
+	<% end %>
+	<div class="product-page-col-1" style="width: <%=productWidth%>%;">
+		<% @productIdHash.each do |productFamilyId, productIdArray| %>
+			<div class="product_list" data-parent="<%= productFamilyId %>">
+				<h4><%= @productFamilyHash[productFamilyId] ? @productFamilyHash[productFamilyId][0][:value] : '' %> <%= getLabelValue('Products') %>
+				</h4>
+				<% productIdArray.each do |productId| %>
+				<label>
+				<%
+				checked = ""
+				value = @offlineApplicationEnvironment == "UAT" ? productId[:key] : productId[:id]
+				dataLabel = @offlineApplicationEnvironment == "UAT" ? "#{productId[:value]} #{getLabelValue('ProductVersions')}" : "#{productId[:value]} #{getLabelValue('planOptions')}"
+				if (@baseProduct && @offlineApplicationEnvironment == "UAT" && @baseProduct.productId.to_s == productId[:key].to_s) || (@baseProduct && @baseProduct.productSeq.to_s == productId[:id].to_s)
+					checked = "checked"
+				end
+				%>
+					<input type="radio" class="selectProductId" name="selectProductId" id="<%= productId[:id] %>" value="<%= value %>" data-label="<%= dataLabel %>" <%= checked %>>
+					<%= productId[:value] %>
+				</label>
+				<input type="hidden" id='<%="noOfColumnsFor#{productId[:id]}"%>' value="<%= (100.00/(@productPlanOptionHash[productId[:id].to_s.to_sym].size+additionalFactor)).round(2) %>">
+				<input type="hidden" id='<%="countOfPlanOptionsFor#{productId[:id]}"%>' value="<%= @productPlanOptionHash[productId[:id].to_s.to_sym].size %>">
+				<% end %>
+			</div>
+		<% end %>
+	</div>
+	<% if @offlineApplicationEnvironment == "UAT" %>
+		<div class="product-page-col-2 plan-version-wrapper">
+			<% @productVersionHash.each do |productId, productVersionArray| %>
+				<div class="version_list" data-parent="<%= productId %>">
+					<h4></h4>
+					<% productVersionArray.each do |productVersion| %>
+					<label>
+					<%
+					checked = ""
+					if @baseProduct && @baseProduct.productSeq.to_s == productVersion[:key].to_s 
+						checked = "checked"
+					end
+					%>
+						<input type="radio" class="selectProductVersion" name="selectProductVersion" id="<%= productVersion[:id] %>" value="<%= productVersion[:key] %>" data-label="<%= productVersion[:value] %> <%=getLabelValue('planOptions') %>" <%= checked %>>
+						<%= productVersion[:value] %>
+					</label>
+					<% end %>
+				</div>
+			<% end %>
+		</div>
+	<% end %>
+
+	<% @productPlanOptionHash.each do |productSeq, productPlanOptionArray| %>
+		<% factor = @offlineApplicationEnvironment == "UAT" ? 3 : 2 %>
+		<% productPlanOptionArray.each_with_index do |productPlanOption,index| %>
+			<div class="product-page-col-<%=index + factor%> plan-option-wrapper" >
+				<div class="plan_list" data-parent="<%= productSeq %>">
+					<h4></h4>
+					<label>
+					<%
+					checked = ""
+					if @baseProduct && @baseProduct.productPlanOptionCd.to_s == productPlanOption[:key].to_s && @baseProduct.productSeq.to_s == productSeq.to_s
+						checked = "checked"
+					end
+					%>
+
+						<input type="radio" class="selectProductPlan" name="selectProductPlan" id="<%= productSeq %>_<%= productPlanOption[:id] %>" value="<%= productPlanOption[:key] %>" <%= checked %>>
+						<%= productPlanOption[:value] %>
+					</label>
+					<img src="/public/jazz/images/<%=productPlanOption[:key]%>.jpg" style="width: 296px; margin-left: 10%;">
+					<% if !@premiumMatrix.empty? %>
+						<div class="premiumValue">Rs. <%= @premiumMatrix[productSeq.to_sym][productPlanOption[:key].to_sym][1].to_f%></div>
+					<% end %>
+					<div class="planDescription"><span>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Pellentesque volutpat non libero sed tincidunt. Sed in molestie tortor. Sed lacinia egestas elit, vel lacinia est convallis vitae.</span></div>
+					<button style="width: 120px; display: inline-block; margin-left: 10%;">Explore</button>
+				</div>
+			</div>
+		<% end %>
+	<% end %>
+</div>
+
+
+<script src="/app/CommonModules/ProductSelectionTravel_Jazz.js" type="text/javascript"></script>
+<script type="text/javascript">
+	function openPdf() {
+		$.ajax({
+	        url: "/app/Quotation/openPdf",
+	        data: { },
+	        headers: {'Transition-Enabled': false},
+	        success: function(data){
+	            
+	        }
+	    });
+	}
+</script>

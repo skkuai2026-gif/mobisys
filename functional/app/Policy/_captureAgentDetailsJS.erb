@@ -1,0 +1,80 @@
+<script type="text/javascript">
+var initialAgentForm = "";
+
+
+function submitForm() {
+	if(initialAgentForm != $('#agentForm').serialize()){
+		$('span[id="errordiv"]').hide();
+	  	$.ajax({                                    
+	  		url: "/app/Policy/submitAgentDetails",
+	  		method: 'POST',
+	  		async: false,
+	  		data: $('#agentForm').serialize(),
+	        headers: {
+	          'Transition-Enabled': false
+	        },
+	  		success: function(data) {
+		  		$("a#submit").hide();
+	  		}
+	  	});
+	}
+}
+
+
+$(document).ready(function(){
+	initialAgentForm = $('#agentForm').serialize();
+
+	setReadOnly($('input[name="<%=getObjectMapping(@policy)%>[policyNum]"]'), true);
+	setReadOnly($('input[name="<%=getObjectMapping(@policy)%>[agentRefNum]"]'), true);
+	setReadOnly($('input[name="<%=getObjectMapping(@policy)%>[quotationRefNum]"]'), true);
+	setReadOnly($('input[name="<%=getObjectMapping(@policy)%>[proposalNum]"]'), true);
+	setReadOnly($('input[name="<%=getObjectMapping(@policyAgent1)%>[agentName]"]'), true);
+
+	if ($("select[name='<%=getObjectMapping(@policy)%>[purposeOfInsuranceCd]']").val()=="OTHERS"){
+  		$("input[name='<%=getObjectMapping(@policy)%>[otherPurposeOfInsurance]']").parents('div[class="half"]').show();
+  	}
+  	else{
+  		$("input[name='<%=getObjectMapping(@policy)%>[otherPurposeOfInsurance]']").parents('div[class="half"]').hide();
+  	}
+
+  	$("select[name='<%=getObjectMapping(@policy)%>[purposeOfInsuranceCd]']").change(function(){
+		if ($(this).val()=="OTHERS"){
+	  		$("input[name='<%=getObjectMapping(@policy)%>[otherPurposeOfInsurance]']").parents('div[class="half"]').show();
+	  	}
+	  	else{
+	  		$("input[name='<%=getObjectMapping(@policy)%>[otherPurposeOfInsurance]']").parents('div[class="half"]').hide();
+	  	}  		
+  	});
+
+
+	if ($("select[name='<%=getObjectMapping(@policy)%>[sourceOfFund]']").val()=="OTHERS"){
+  		$("input[name='<%=getObjectMapping(@policy)%>[otherSourceOfFund]']").parents('div[class="half"]').show();
+  	}
+  	else{
+  		$("input[name='<%=getObjectMapping(@policy)%>[otherSourceOfFund]']").parents('div[class="half"]').hide();
+  	}
+
+  	$("select[name='<%=getObjectMapping(@policy)%>[sourceOfFund]']").change(function(){
+		if ($(this).val()=="OTHERS"){
+	  		$("input[name='<%=getObjectMapping(@policy)%>[otherSourceOfFund]']").parents('div[class="half"]').show();
+	  	}
+	  	else{
+	  		$("input[name='<%=getObjectMapping(@policy)%>[otherSourceOfFund]']").parents('div[class="half"]').hide();
+	  	}  		
+  	});
+
+
+	//Mark fields mandatory based on Validation Metadata
+	<%
+	if @mandatoryFields
+		@mandatoryFields.each do |object, fields|
+			fields.each do |field|
+	%>
+				$("label[for='<%=getObjectMapping(object)%>[<%= field %>]']").append('<label for=" *" class="mandatory1">&nbsp;*</label>');
+	<% 
+			end
+		end
+	end 
+	%>
+});
+</script>

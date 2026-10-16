@@ -1,0 +1,49 @@
+<%= headerTag('OUTPUTPREFERENCES', '', "","#{url_for :action => :searchmulti}") %>
+<div data-role="main" class="ui-content">
+    <div class="main-content-wrapper main-content-full">
+        <%= formTagStart(@formname,@formaction) %>
+            <div class="project-content-bg">
+                <div class="div-with-border no-padding-bottom preferences-content">
+                    <%= panelTagStart %>
+                        <%= subPanelTagStart(@header_field, false,"",false) %>
+                                        <%= modelTagStart("OUTPUTPREFERENCES", @outputPref) %>
+                                        <% if @render_c_o_p %>
+                                            <%= layoutFieldTag('languageCd,field1,field2,field3,field4,field5', 1) %>
+                                        <%else%>
+                                            <div style="display: none">
+                                                <%= inputTag("languageCd") %>
+                                                <%= inputTag("field1") %>
+                                                <%= inputTag("field2") %>
+                                                <%= inputTag("field3") %>
+                                                <%= inputTag("field4") %>
+                                                <%= inputTag("field5") %>
+                                            </div>
+                                        <% end %>
+                                        <%= renderObject(@outputPref) %>
+                                         <% @quotationObjects.each do |quotationObject| %>
+                                        <input type="hidden" value= '<%= quotationObject %>' name="illustrationsToBeGenerated[]" id ="illustrationsToBeGenerated[]">
+                                        <% end %>
+                                    <% modelTagEnd %>
+                                
+                                <% modelTagEnd %>
+                            </div>
+                        <%= subPanelTagEnd %>
+                    <%= panelTagEnd %>
+                </div>
+            </div>
+        <%= formTagEnd() %>
+    </div>
+    <div class="footer-bg">
+        <%= @submit_anchor_tag %>
+    </div>
+</div>
+<script type="text/javascript" charset="utf-8" src="/app/Quotation/captureIllustrationPreferences_Jazz.js"></script>
+<style type="text/css">
+    .project-data-full .row-details .col-left {
+        width: 50%;
+    }
+
+    .project-data-full .row-details .col-right {
+        width: 50%;
+    }  
+</style>

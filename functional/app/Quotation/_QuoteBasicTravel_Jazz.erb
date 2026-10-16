@@ -1,0 +1,30 @@
+<%= prdFieldDataTag("#{@quotationPckg}.PolicyDO",'agentId,channel,subChannel,parentAgency,productId') %>
+<%= layoutFieldTag('quotationRefNum,quotationDt') %>
+<%= layoutFieldTag('tripTypeCd,maxTripPeriod,startDt,endDt,travelGeographyCd,visitPurposeCd,numberOfAdult,numberOfChildren') %>
+<div style="display: none;">
+	<%= inputTag("currentPartyRole") %>
+	<%= inputTag("proposerLASame") %>
+</div>
+<%= modelTagStart("basePlan", @baseProduct, @quotation) %>
+	<div style="display: none;">
+		<%= inputTag("productTypeCd") %>
+		<%= inputTag("productVersion") %>
+		<%= inputTag("productSeq") %>
+		<%= prdFieldDataTag("#{@quotationPckg}.PolicyProductDO",'productFamilyCd,productId,productPlanOptionCd') %>
+	</div>
+<% modelTagEnd %>
+<%= modelTagStart("proposerQuotationParty", @policyHolder, @quotation) %>
+	<% partyPckg = 'PolicyProposerDO' %>
+	<%= prdFieldDataTag("#{partyPckg}","contactNum,emailAddress" , '' , '') %>
+	<div style="display: none;">
+		<%= inputTag("roleCd") %>
+		<%= inputTag("partyTypeCd") %>
+	</div>
+<% modelTagEnd %>
+<%= modelTagStart("primaryQuotationParty", @insured, @quotation) %>
+	<% partyPckg = 'com.c2lbiz.symbiosys.insurance.businesscommon.dataobjects.party' %>
+	<div style="display: none;">
+		<%= inputTag("roleCd") %>
+		<%= inputTag("partyTypeCd") %>
+	</div>
+<% modelTagEnd %>

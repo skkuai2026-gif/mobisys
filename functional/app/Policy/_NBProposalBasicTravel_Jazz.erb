@@ -1,0 +1,34 @@
+<%= prdFieldDataTag("#{@policyPckg}.PolicyDO",'policyNum,proposalNum,quotationRefNum,proposalSignedDt,proposalReceivedDt,riskCommencementDt') %>
+
+<%= modelTagStart("basePlan", @baseProduct, @policy) %>
+	<%= prdFieldDataTag("#{@policyPckg}.PolicyProductDO",'productFamilyCd,productId') %>
+	<%= prdFieldDataTag("#{@policyPckg}.PolicyProductDO",'productVersion,productPlanOptionCd') %>
+	<div style="display: none">
+		<%= inputTag("productSeq") %>
+		<%= inputTag("productTypeCd") %>
+	</div>
+<% modelTagEnd %>
+
+<%= layoutFieldTag('tripTypeCd,maxTripPeriod,startDt,endDt,travelGeographyCd,visitPurposeCd,numberOfAdult,numberOfChildren') %>
+<%#= prdFieldDataTag("#{@policyPckg}.PolicyDO",'intimationSourceCd,statCd,leadGenerationCd,campaignCode,purposeOfInsuranceCd,otherPurposeOfInsurance') %>
+
+<div style="display: none">
+	<%= inputTag("schemeCd") %>
+	<%= inputTag("statusCd") %>
+	<%= inputTag("stageCd") %>
+	<%= inputTag("processStatusCd") %>
+	<%= inputTag("policyStatusCd") %>
+	<%= inputTag("baseProductVersion") %>
+	<%= inputTag("baseProductTypeCd") %>
+	<%= inputTag("proposalEntryDt") %>
+	<%= inputTag("formName") %>
+	<%= inputTag("applicationRefNum") %>
+	<%= inputTag("baseProductSeq") %>
+	<%= inputTag("quotationRefGuid") %>
+	<%= inputTag("signatureStatus") %>
+	<%= inputTag("baseAgentId") %>
+	<%= inputTag("uwDecisionCd") %>
+	<%= inputTag("isBackdatedFl") %>
+	<%= inputTag("quotationDt") %>
+	<%= inputTag("policyCommencementDt") %>
+</div>

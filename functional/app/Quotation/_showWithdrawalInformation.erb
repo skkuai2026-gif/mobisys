@@ -1,0 +1,45 @@
+      <% @withdraws.each do |withdraw| %>
+        <%next if withdraw.removed && withdraw.removed != "" %>
+        <%= renderObject(withdraw, @quotation) %>
+        <div name='<%= getObjectMapping(withdraws) %>' >
+          <%= renderHiddenField('removed', withdraw.removed, 'removed', withdraw) %>
+        
+          <fieldset class='ui-grid-f adjustWidth'>
+            <% if @facetData[:renderPolicyyearfrom] %> 
+              <div class="ui-block-a" name="policyYearFrom" style="width: 20%;">
+                <%= renderCountField('policyYearFrom', withdraw.policyYearFrom, nil, withdraw, ' maxlength="3" onchange="calculateAgeFrom(\''+getObjectMapping(withdraw)+'[policyYearFrom]\');"' ) %>
+              </div>
+            <% end %>  
+            <% if @facetData[:renderAgefrom] %>
+              <div class="ui-block-b" name = "ageFrom" style="width: 20%;"> 
+                <%= renderCountField('ageFrom', withdraw.ageFrom, nil, withdraw, ' maxlength="3" onchange=calculatePolicyFrom(\''+getObjectMapping(withdraw)+'[ageFrom]\')') %>
+              </div>
+            <% end %>
+            <% if @facetData[:renderPolicyyearto] %>
+              <div class="ui-block-c" name = "policyYearTo" style="width: 20%;">
+                <%= renderCountField('policyYearTo', withdraw.policyYearTo, nil, withdraw, ' maxlength="3" onchange=calculateAgeTo(\''+getObjectMapping(withdraw)+'[policyYearTo]\');' ) %>
+              </div>
+            <% end %>  
+            <% if @facetData[:renderAgeto] %>
+              <div class="ui-block-d" name = "ageTo" >
+                <%= renderCountField('ageTo', withdraw.ageTo, nil, withdraw, ' maxlength="3" onchange=calculatePolicyTo(\''+getObjectMapping(withdraw)+'[ageTo]\')') %>
+              </div>
+            <% end %>  
+            <% if @facetData[:renderWithdrawalamount] %>
+              <div class="ui-block-e" name ="withdrawalAmount" style="width: 20%;">
+                <%= renderAmountField('withdrawalAmount', withdraw.withdrawalAmount, nil, withdraw, 'maxlength="20"') %>
+                <%=attachMask("#{getObjectMapping(withdraw)}[withdrawalAmount]") %> 
+              </div>
+            <% end %>  
+            <% if @facetData[:renderFrequencyval] %>
+              <div class="ui-block-f" name = "frequencyVal" style="width: 20%;">
+                <%= renderCountField('frequencyVal', withdraw.frequencyVal, nil, withdraw, 'maxlength="3"') %>
+              </div>
+            <% end %>  
+            <div class="ui-block-g" >
+              <a href="javascript:removeWithdraw('<%= getObjectMapping(withdraw) %>');"> <img src="/public/images/SalesIllustration/closebutton.png"> </a>
+            </div>
+          </fieldset>
+        </div>
+      <% end %> 
+      

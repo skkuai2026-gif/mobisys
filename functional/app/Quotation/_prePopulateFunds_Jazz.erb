@@ -1,0 +1,36 @@
+<%
+@baseProduct.QuotationProductInvestmentFundList.each_with_index do |fund, index|
+    gridID = "grid_#{index}_#{@gridID}"
+%>
+    <tr class='add-tabular-row'>
+    <%if $rhoconfig[:application_view_mode] == 'mobile' %> 
+        <td style='display: none'>
+    <%end%>
+    <%= modelTagStart(gridID, fund, @baseProduct) %>
+    <%if $rhoconfig[:application_view_mode] == 'mobile' %> 
+        </td>
+    <%end%>
+        <% 
+        metaDataObject = 'com.c2lbiz.symbiosys.insurance.businesscommon.dataobjects.policy.PolicyProductInvestmentFundDO'
+        @columns.each do |column|
+            metaDataCd = metaDataObject + "." + column
+            if $companyFieldMetaDataCache.include?(metaDataCd.to_sym)
+                visibility = nil
+                style = ""
+
+                if $uiMetaDataCache.has_key?("#{@currentTagObject.class.name}DO.#{column}".to_sym)
+                    uiMetaDataDOList = $uiMetaDataCache["#{@currentTagObject.class.name}DO.#{column}".to_sym]
+
+                    ui = MobiSys::UIMetaData.getUiMetadataPropDO("VISIBILITY", uiMetaDataDOList, @currentApplicableContexts)
+                    visibility = (ui == nil ? true : (ui.propertyValue.to_s == "NO" ? false : true))
+                end
+                style = "style='display:none !important;'" unless visibility
+        %>
+                <td <%= style %>><%= inputTag(column) %></td>
+        <%
+            end
+        end
+        %>
+    <% modelTagEnd %>
+    </tr>
+<% end %>

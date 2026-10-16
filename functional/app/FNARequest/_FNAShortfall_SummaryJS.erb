@@ -1,0 +1,186 @@
+<script type="text/javascript">
+  function tabSetup(){
+   $('label[for="<%=getObjectMapping(@fnaRequest)%>[inflationRate]"]').css("top", "-10px");
+   $('label[for="<%=getObjectMapping(@fnaRequest)%>[returnRate]"]').css("top", "-10px");
+
+   $('label[for="TOTAL_CAPITAL_NEED_AFTER_DEATH"]').css("top", "-10px");
+   $('label[for="TOTALCURRCAPITALRESERVED"]').css("top", "-10px");
+   $('label[for="SHORTFALL_CURR_LIFEPROTECTION"]').css("top", "-10px");
+ 
+   $('label[for="EFV"]').css("top", "-10px");
+   $('label[for="RES_EDU_FUND"]').css("top", "-10px");
+   $('label[for="SHORTFALL_CURR_LIFEPROTECTION"]').css("top", "-10px");
+
+
+   $('label[for="TOTALCAPITALNEED"]').css("top", "-10px");
+   $('label[for="TOTAL_CURRCAPITAL_RESERVED"]').css("top", "-10px");
+   $('label[for="SHORTFALL_CURR_LIFEPROTECTION"]').css("top", "-10px");
+   $('label[for="SHORTFALL_CHILD_EDUCATION"]').css("top", "-10px");
+
+
+
+   $('label[for="hincomeNeededAmt"]').css("top", "-10px");
+   $('label[for="hincomeCoveredAmt"]').css("top", "-10px");
+   $('label[for="HINCOME_SHORTFALL_RISK_PROT_NEEDS"]').css("top", "-10px");
+
+   $('label[for="hinsuranceNeededAmt"]').css("top", "-10px");
+   $('label[for="hinsuranceCoveredAmt"]').css("top", "-10px");
+   $('label[for="HINSURANCE_SHORTFALL_RISK_PROT_NEEDS"]').css("top", "-10px");
+   
+
+   $('label[for="sfbNeededAmt"]').css("top", "-10px");
+   $('label[for="sfbCoveredAmt"]').css("top", "-10px");
+   $('label[for="SFB_SHORTFALL_RISK_PROT_NEEDS"]').css("top", "-10px");  
+
+   $('label[for="ciInsuranceNeededAmt"]').css("top", "-10px");
+   $('label[for="ciInsuranceCoveredAmt"]').css("top", "-10px");
+   $('label[for="CIINSURANCE_SHORTFALL_RISK_PROT_NEEDS"]').css("top", "-10px");  
+
+   $('label[for="addInsuranceNeededAmt"]').css("top", "-10px");
+   $('label[for="addInsuranceCoveredAmt"]').css("top", "-10px");
+   $('label[for="ADDINSURANCE_SHORTFALL_RISK_PROT_NEEDS"]').css("top", "-10px");
+
+   $('label[for="TotRetirementNeedAmt"]').css("top", "-10px");
+   $('label[for="PROJECTED_MPF"]').css("top", "-10px");
+   $('label[for="TOTAL_RET_FUND_RES"]').css("top", "-10px");
+   $('label[for="SHORTFALL_RISK_PROT_NEEDS"]').css("top", "-10px");
+
+   $('label[for="CURRENT_SHORTFALL_SUMMARY"]').css("top", "-10px");
+   $('label[for="SHORTFALL_OTHER_TARGET_SAVING"]').css("top", "-10px");
+   $('label[for="LUMP_SUM_SHORTFALL_SUMMARY"]').css("top", "-10px");
+
+
+
+         <% if @fnaRequest.statusCd.to_s == "FNASIGNED" || @fnaRequest.statusCd.to_s == "FNASUBMIT" || @fnaRequest.statusCd.to_s == "SYNCDONE" %>
+                setReadOnly($('input[type="text"]'), true);
+                setReadOnly($('input[type="tel"]'), true);
+                setReadOnly($('input[type="num"]'), true);
+                setReadOnly($('input[type="email"]'), true);
+                $('select').selectmenu('disable').trigger("refresh");
+                $('input[type="radio"]').checkboxradio('disable').trigger("refresh");
+                $('input[type="checkbox"]').checkboxradio('disable').trigger("refresh");
+                $('input[type="button"]').off('click');
+                $('input[type="button"]').button('disable').trigger("refresh");
+                $('a[href="#clear"]').hide();
+                <% end %>
+        
+ 
+
+   }
+
+
+
+    if ($('input[name="TOTAL_CAPITAL_NEED_AFTER_DEATH"]').val()==""){
+        $('input[name="TOTAL_CAPITAL_NEED_AFTER_DEATH"]').val("0");
+    }
+
+    if ($('input[name="SHORTFALL_CURR_LIFEPROTECTION"]').val()==""){
+        $('input[name="SHORTFALL_CURR_LIFEPROTECTION"]').val("0");
+    }
+
+    function numbersonly(evt){
+      var charCode = (evt.which) ? evt.which : event.keyCode
+      if (charCode > 31 && (charCode < 48 || charCode > 57))
+      return false;
+      return true;
+    }
+
+     $(document).ready(function() {
+      $('#nextpre').show();
+      tabExchange($('.active-btn').attr("data-url"));
+      $('#nextTab').removeClass("ui-state-disabled");
+      MyPageData = {};
+      MyPageData.getData = ($('#FNAShortFallForm').serialize());
+    });
+
+  function submitForm(){
+      //Used to trim all the input fields before save
+      //alert("767686");
+      <% if @fnaRequest.statusCd.to_s == "FNASIGNED" || @fnaRequest.statusCd.to_s == "FNASUBMIT" || @fnaRequest.statusCd.to_s == "SYNCDONE"  %>
+        <% else %>
+       var initialFNARetirementNeedForm = "";
+        $(':input').each(function(){
+            $(this).val($.trim($(this).val()))
+        });
+
+         if($('#FNAShortFallForm').serialize() != (MyPageData.getData)) {
+            $.ajax({                                    
+                url: "/app/FNARequest/submitFNAShortFallSummary",
+                method: 'POST',
+                async: false,
+                data: $('#FNAShortFallForm').serialize(),
+                    headers: {
+                        'Transition-Enabled': false
+                    },
+                    success: function(data) {
+                        
+                    }
+            });
+        }
+        <% end %>
+    }
+
+
+
+  function openPDF()
+  {
+    $.ajax({                                    
+      url: "/app/FNARequest/openPDF",
+      async: false,
+      success: function(data)
+      {
+        if(data == "error")
+        {
+          alert("Cannot Open PDF");
+        }
+      }
+    });
+  }
+
+  function changeTab(clickObject) {
+      
+      submitForm();
+      var dataURL = clickObject.data("url");
+      //Append additional data params
+      if (clickObject.data("addl-params-key")) {
+          requestData = $.extend(requestData, additionalData[clickObject.data("addl-params-key")]);
+      
+      }
+      /*Load tab content start*/
+      $.ajax({ 
+          url: "/app/FNARequest/"+dataURL,
+          data: {'id':'<%= @fnaRequest.object.to_s %>'},
+          async: false,
+          headers: {
+              'Transition-Enabled': false
+          },
+          success: function(data) {
+              
+              $("#tabDetailsContainer").html(data);
+              $("#tabDetailsContainer").trigger('create');
+              tabSetup();
+              $(document).ready(function(){
+                  $('.scrollTopButton').click(function() {
+                      $("html, body").animate({ scrollTop: 0 }, "slow");
+                  });
+
+                  $('.expandButton').hide();
+
+                  $('.collapseButton').click(function() {
+                      $(this).parents(".legend").siblings(".panelContent").hide();
+                      $(this).hide();
+                      $(this).siblings('.expandButton').show();
+                  });
+
+                  $('.expandButton').click(function() {
+                      $(this).parents(".legend").siblings(".panelContent").show();
+                      $(this).hide();
+                      $(this).siblings('.collapseButton').show();
+                  });
+              });
+              //getTabErrors();
+          }
+      });
+      /*Load tab content end*/
+  }
+</script>

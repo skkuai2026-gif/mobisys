@@ -1,0 +1,433 @@
+<script src="/public/js/jquery.serialize-hash.js" type="text/javascript"></script>
+<script>
+var myHash = {}; // New object
+var riderCount = <%= @builtInRiderArray.size.to_i + @newriders.size.to_i + 200 %>;
+
+function removeSupplementNames(supplementLife){
+	var sup = supplementLife.concat("[firstname]")
+	supplementaryName = $('input[name="'+sup+'"]').val();
+	$("select[name*='insuredPartyRefGuid'] > option").each(function(){
+		if(this.value == supplementaryName){
+			$(this).remove();
+		}
+	});
+}
+
+
+function updateSupplementaryNameList(fieldName){
+	fieldNameValue = $("select[name='"+fieldName+"']").val();
+	supplimentaryLife = fieldName.replace("partyRoleCd", "insuredPartyRefGuid");
+	rider = fieldName.replace("partyRoleCd", "productSeq");
+	productTerm = fieldName.replace("partyRoleCd", "productTerm");
+	premiumPayingTerm = fieldName.replace("partyRoleCd", "premiumPayingTerm");
+	planOption = fieldName.replace("partyRoleCd", "productPlanOptionCd");
+	// $("select[name='"+rider+"']").val('');
+	// $("select[name='"+rider+"']").selectmenu("refresh", true);
+	// $("select[name='"+planOption+"']").val('');
+	// $("select[name='"+planOption+"']").selectmenu("refresh", true);
+	// $("input[name='"+productTerm+"']").val('');
+	// $("input[name='"+premiumPayingTerm+"']").val('');
+	if (fieldNameValue == 'SUPPLEMENTARY') {
+		createSupplementaryDropdown(fieldName);
+		$('select[name="'+supplimentaryLife+'"]').selectmenu('enable');
+		$("span[id='"+supplimentaryLife+"']").show();
+	}
+	else{
+		$('select[name="'+supplimentaryLife+'"]').val('');
+		$('select[name="'+supplimentaryLife+'"]').selectmenu("refresh", true);
+		$('select[name="'+supplimentaryLife+'"]').selectmenu('disable');
+		$("span[id='"+supplimentaryLife+"']").hide();
+	}
+}
+
+
+function createSupplementaryDropdown(fieldName){  
+	insuredPartyRefGuid = fieldName.replace("partyRoleCd", "insuredPartyRefGuid");
+	$.ajax({
+		url: "/app/Quotation/filterParty",
+		data: {
+			'form': $('#quotationForm').serializeHash()
+		},
+		success: function(data){
+			create = '<select id= "'+insuredPartyRefGuid+'" name="'+insuredPartyRefGuid+'" onchange="getRiderExtraDO(\''+insuredPartyRefGuid+'\');">';  
+			create += data;
+			create += '</select>';
+			$('span[id="'+insuredPartyRefGuid+'"]').html(create);
+			$('span[id="'+insuredPartyRefGuid+'"]').trigger('create');
+		}
+	});
+}
+
+
+function filterPlanOption(fieldName){
+	$('select[name="<%=getObjectMapping(@baseProduct)%>[productId]"]').selectmenu('enable');
+	var productObj = $("select[name='"+fieldName+"']").val();
+	var productSeqSelectList = fieldName.replace("productSeq","productPlanOptionCd")
+	var productId = fieldName.replace("productSeq","productId")
+	var premiumPayingTerm = fieldName.replace("productSeq", "premiumPayingTerm")
+	var productTerm = fieldName.replace("productSeq", "productTerm")
+	linkedFl = fieldName.replace("productSeq", "linkedFl")
+	parentproductSeq = fieldName.replace("productSeq", "parentproductSeq")
+	var baseProductTerm = $('input[name="<%=getObjectMapping(@baseProduct)%>[productTerm]"]').val();
+	var basePremiumPayingTerm = $('select[name="<%=getObjectMapping(@baseProduct)%>[premiumPayingTerm]"]').val();
+	var productPlanOptionCd = $('select[name="'+productSeqSelectList+'"]').val();
+	$('select[name="<%=getObjectMapping(@baseProduct)%>[productId]"]').selectmenu('enable');
+	$.ajax({
+		url: "/app/Quotation/filterPlanOption",
+		data: {'productObj':productObj, 'productPlanOptionCd':productPlanOptionCd, 'form': $('#quotationForm').serializeHash()},
+		async: false,
+		success: function(data){
+			var $response=$(data);
+			dataValue = $response.find('.hiddenInput').text();
+			termAsPlan = $response.find('.termAsPlan').text();
+			pptAsPlan = $response.find('.pptAsPlan').text();
+			riderSAFl = $response.find('.flagSA').text();
+			linkedFl = $response.find('.linkedFl').text();
+			parentproductSeq = $response.find('.parentproductSeq').text();
+			data = data.replace("<div>","");
+			data = data.replace("</div>","");
+
+			create = '<select id= "'+productSeqSelectList+'" name="'+productSeqSelectList+'" >';
+			create += data;
+			create += '</select>';
+			$('span[name="'+productSeqSelectList+'"]').html(create);
+			$('span[name="'+productSeqSelectList+'"]').trigger('create');
+			$('input[name="'+productId+'"]').val(dataValue);
+
+			if (!isPlanOptionsExists(data)) /*(data.length <= 248)*/{
+				$('select[name="'+productSeqSelectList+'"]').val('');
+				$('select[name="'+productSeqSelectList+'"]').selectmenu("refresh", true);
+				setReadOnly($('select[name="'+productSeqSelectList+'"]'), true);
+				$('select[name="'+productSeqSelectList+'"]').selectmenu('disable');
+			}
+
+			if (termAsPlan){
+				$('input[name="'+productTerm+'"]').val(baseProductTerm); 
+				setReadOnly($("input[name='"+productTerm+"']"), true);
+			}
+			if (pptAsPlan){
+				$('input[name="'+premiumPayingTerm+'"]').val(basePremiumPayingTerm); 
+				setReadOnly($("input[name='"+premiumPayingTerm+"']"), true);
+			}
+			filterSAFlDetails(fieldName,productObj,riderSAFl);
+			$('input[name="'+linkedFl+'"]').val(linkedFl)
+			$('input[name="'+parentproductSeq+'"]').val(parentproductSeq)
+		}
+	});
+}
+
+
+function isPlanOptionsExists(str){
+	findStr = "option";
+	lastIndex = 0;
+	count = 0;
+
+	while(lastIndex != -1){
+		lastIndex = str.indexOf(findStr, lastIndex);
+		if( lastIndex != -1){
+			count++;
+			lastIndex += findStr.length
+		}
+	}
+	return (count > 2)
+}
+
+
+function setPPTvalue(fieldName, term){}
+
+function filterSAFlDetails(fieldName,fieldNameValue,riderSAFl){   
+	key = fieldNameValue;
+
+	baseSumAssured = fieldName.replace("productSeq", "baseSumAssured");
+	modalPremium = fieldName.replace("productSeq", "modalPremium");
+	baseAnnualPremium = fieldName.replace("productSeq", "baseAnnualPremium");
+
+	if (riderSAFl == 'PREMIUM')
+    {
+        setReadOnly($("input[name='"+baseSumAssured+"']"), true);
+        setReadOnly($("input[name='"+baseAnnualPremium+"']"), true);
+        setReadOnly($("input[name='"+modalPremium+"']"), false);
+    }
+    if (riderSAFl == 'SA')
+    {
+        setReadOnly($("input[name='"+baseSumAssured+"']"), false);
+        setReadOnly($("input[name='"+baseAnnualPremium+"']"), true);
+        setReadOnly($("input[name='"+modalPremium+"']"), true); 
+    }
+    if (riderSAFl == 'DUAL')
+    {
+        setReadOnly($("input[name='"+baseSumAssured+"']"), false);
+        setReadOnly($("input[name='"+baseAnnualPremium+"']"), false);
+        setReadOnly($("input[name='"+modalPremium+"']"), true); 
+    }
+    if(riderSAFl == 'ANNUALPREMIUM')
+    {
+        setReadOnly($("input[name='"+baseSumAssured+"']"), true);
+        setReadOnly($("input[name='"+baseAnnualPremium+"']"), false);
+        setReadOnly($("input[name='"+modalPremium+"']"), true); 
+    }
+    if(riderSAFl == 'COMPUTEDSA')
+    {
+        setReadOnly($("input[name='"+baseSumAssured+"']"), false);
+        setReadOnly($("input[name='"+baseAnnualPremium+"']"), false);
+        setReadOnly($("input[name='"+modalPremium+"']"), false); 
+    }
+    if((riderSAFl == 'MONTHLYINCOME') || (riderSAFl == 'ANNUALINCOME'))
+    {
+        setReadOnly($("input[name='"+baseSumAssured+"']"), true);
+        setReadOnly($("input[name='"+baseAnnualPremium+"']"), true);
+        setReadOnly($("input[name='"+modalPremium+"']"), true); 
+    }
+}   
+
+
+function removeRider(rider){
+	$('<div>').simpledialog2({
+		mode: 'button',
+		style: "width: 629px",
+		buttonPrompt: '<%= getLabelValue("DELETE_CONFIRMATION", ["RIDER"])%>',
+		buttons : {
+			'<%= getLabelValue("OK")%>': {
+				click: function () {
+					$('div[name="'+rider+'"]').hide();
+					$('input[name="'+rider+'[removed]"]').val('YES');
+				}
+			},
+			'<%= getLabelValue("CANCEL")%>': {
+				click: function () { 
+				},
+				icon: "delete",
+				theme: "c"
+			}
+		}
+	})
+}
+
+
+function addRider(){
+	quotationObjectName = '<%= getObjectMapping(@quotation)%>'
+	paymentTypeCd = $("select[name='<%= getObjectMapping(@baseProduct)%>[paymentTypeCd]']").val();    
+	$.ajax({
+		url: "/app/Quotation/addRider",
+		data: {
+			'quotationObject': '<%= @quotation.object.to_s %>', 
+			'riderObjects': riderCount, 
+			'quotationObjectName':quotationObjectName, 
+			'baseProductProductSeq':'<%= @baseProduct.productSeq %>', 
+			'baseProductProductId':'<%= @baseProduct.productId %>', 
+			'paymentTypeCd':paymentTypeCd, 
+			'productPlanOptionCd':'<%= @baseProduct.productPlanOptionCd %>', 
+			'form': $('#quotationForm').serializeHash()
+		},
+		success: function(data) {
+			riderCount = riderCount + 1;
+			$('div[name="riderDetails"]').append(data);
+
+			$('div[name="riderDetails"]').trigger('create');  
+			$('select[name*="insuredPartyRefGuid"]').each( function(){
+				id = this.id;
+				partyRoleCd = id.replace("insuredPartyRefGuid", "partyRoleCd")
+				partyRoleCdValue = $("select[name='"+partyRoleCd+"']").val();
+				if ((this.value == "") && (partyRoleCdValue != "SUPPLEMENTARY"))
+				{
+					$(this).selectmenu('disable');
+				}
+			}); 
+			// methodName = "attachInputMasks" + riderCount+"()"
+			// eval(methodName)
+		}
+	});
+}
+
+
+function refreshRiderSection(rider){
+	$('select[name="<%=getObjectMapping(@baseProduct)%>[productFamilyCd]"]').selectmenu('enable');
+	$('select[name="<%=getObjectMapping(@baseProduct)%>[productPlanOptionCd]"]').selectmenu('enable');
+	$('select[name="<%=getObjectMapping(@baseProduct)%>[productId]"]').selectmenu('enable');
+
+	if ($('select[name="'+rider+'[productSeq]"]').val() != "") {
+		$('input[name="'+rider+'[removed]"]').val('');
+	}
+	else {
+		$('input[name="'+rider+'[removed]"]').val('YES');
+	}
+	
+	$.ajax({
+		url: "/app/Quotation/refreshRiderSection",
+		method: 'POST',
+		data: $('#quotationForm').serialize(),
+		headers: {
+			'Transition-Enabled': false
+		},
+		success: function(data) {
+			$('div[name="riderInformation"]').html(data);
+			$('div[name="riderInformation"]').trigger('create');
+
+			$('select[name="<%=getObjectMapping(@baseProduct)%>[productFamilyCd]"]').selectmenu('disable');
+			$('select[name="<%=getObjectMapping(@baseProduct)%>[productPlanOptionCd]"]').selectmenu('disable');
+			$('select[name="<%=getObjectMapping(@baseProduct)%>[productId]"]').selectmenu('disable');
+			
+
+			$(document).ready(function(){
+				$('.scrollTopButton').click(function() {
+					$("html, body").animate({ scrollTop: 0 }, "slow");
+				});
+
+				$('.expandButton').hide();
+
+				$('.collapseButton').click(function() {
+					$(this).parents(".legend").siblings(".panelContent").hide();
+					$(this).hide();
+					$(this).siblings('.expandButton').show();
+				});
+
+				$('.expandButton').click(function() {
+					$(this).parents(".legend").siblings(".panelContent").show();
+					$(this).hide();
+					$(this).siblings('.collapseButton').show();
+				});
+			});
+		}
+	});
+}
+
+
+function clearValues(fieldName){
+	var premiumPayingTerm = fieldName.replace("productSeq", "premiumPayingTerm");
+	var productTerm = fieldName.replace("productSeq", "productTerm");
+	var baseSumAssured = fieldName.replace("productSeq", "baseSumAssured");
+	var modalPremium = fieldName.replace("productSeq", "modalPremium");
+	$("input[name='"+premiumPayingTerm+"']").val('');
+	$("input[name='"+productTerm+"']").val('');
+	$("input[name='"+baseSumAssured+"']").val('');
+	$("input[name='"+modalPremium+"']").val('');
+}
+
+
+function refreshPrePolulatedRider(){
+	$('select[name="<%=getObjectMapping(@baseProduct)%>[productFamilyCd]"]').selectmenu('enable');
+	$('select[name="<%=getObjectMapping(@baseProduct)%>[productPlanOptionCd]"]').selectmenu('enable');
+	$('select[name="<%=getObjectMapping(@baseProduct)%>[productId]"]').selectmenu('enable');
+	<% @newriders.each do |rider, count|%>
+	    <% if @riderDisableField[rider.object] == 'YES' %>
+	            $('input[name="<%= getObjectMapping(rider)%>[selected]"]').checkboxradio().checkboxradio('enable');
+	    <% end %>
+    <% end %>
+	$.ajax({
+		url: "/app/Quotation/refreshPrePolulatedRider",
+		method: 'POST',
+		data: $('#quotationForm').serialize(),
+		async: false,
+		success: function(data){
+			$('div[name="riderDetailsDiv"]').html(data);
+			$('div[name="riderDetailsDiv"]').trigger('create');
+			<% if @riderAutoPopulationReqFlag == "YES" %>
+			showDialog("", "Rider details reset with applicable riders and their default values.", 'warning', 0, 'capture');
+			<% end %>
+
+			$('select[name="<%=getObjectMapping(@baseProduct)%>[productFamilyCd]"]').selectmenu('disable');
+			$('select[name="<%=getObjectMapping(@baseProduct)%>[productPlanOptionCd]"]').selectmenu('disable');
+			$('select[name="<%=getObjectMapping(@baseProduct)%>[productId]"]').selectmenu('disable');
+
+			$(document).ready(function(){
+				$('.scrollTopButton').click(function() {
+					$("html, body").animate({ scrollTop: 0 }, "slow");
+				});
+
+				$('.expandButton').hide();
+
+				$('.collapseButton').click(function() {
+					$(this).parents(".legend").siblings(".panelContent").hide();
+					$(this).hide();
+					$(this).siblings('.expandButton').show();
+				});
+
+				$('.expandButton').click(function() {
+					$(this).parents(".legend").siblings(".panelContent").show();
+					$(this).hide();
+					$(this).siblings('.collapseButton').show();
+				});
+			});
+		}
+	});
+}
+
+
+$(document).ready(function(){
+	$('input[name*="[productTerm]"]').change( function(){
+		if (isNaN(this.value))
+		{
+			showDialog("", "<%= getLabelValue('VALID_PROD_TERM_RIDER')%>", 'warning', 0, 'capture');
+			this.value = this.value.replace(/[^0-9.]/g, '');  
+		}
+	}); 
+
+	$('input[name*="[premiumPayingTerm]"]').change( function(){
+		if (isNaN(this.value))
+		{
+			showDialog("", "<%= getLabelValue('VALID_PPTERM')%>", 'warning', 0, 'capture');
+			this.value = this.value.replace(/[^0-9.]/g, '');  
+		}
+	}); 
+
+	$('input[name*="[modalPremium]"]').change( function(){
+		if (isNaN(this.value))
+		{
+			showDialog("", "<%= getLabelValue('VALID_MODAL_PRE_RIDER')%>", 'warning', 0, 'capture');
+			this.value = this.value.replace(/[^0-9.]/g, '');  
+		}
+	}); 
+
+	$("#addRiderButton").click(function(){
+		addRider();
+	});
+
+	$('select[name*="insuredPartyRefGuid"]').each( function(){
+        id = this.id;
+        partyRoleCd = id.replace("insuredPartyRefGuid", "partyRoleCd")
+        partyRoleCdValue = $("select[name='"+partyRoleCd+"']").val();
+        if ((this.value == "") && (partyRoleCdValue != "SUPPLEMENTARY"))
+        {
+        	$(this).selectmenu().selectmenu('disable');
+        	$(this).hide();
+        }
+        else
+        {
+        	$(this).selectmenu().selectmenu('enable');
+        	$(this).show();
+        }
+	}); 
+
+	//Mark mandatory fields based on Validation Metadata
+	<% if @newriders != nil %>
+		<% @newriders.each_with_index do |rider, count|%>
+			filterSAFlDetails('<%=getObjectMapping(rider)%>[productSeq]', '','<%= @premiumSAFlriders[rider.productSeq.to_s] %>');
+			<% 
+			if @mandatoryFields
+					if @mandatoryFields[rider]
+							@mandatoryFields[rider].each do |field| 
+			%>
+							$("label[for='<%=getObjectMapping(rider)%>[<%= field %>]']").append('<label for=" *" class="mandatory1">&nbsp;*</label>');
+			<% 
+							end
+					end
+			end
+			%>
+
+			<% 
+			if @newRiderFields != nil && @newRiderFields[rider.productSeq.to_i]
+				@newRiderFields[rider.productSeq.to_i].split(",").each do |readonlyField| %>
+					setReadOnly($("input[name='<%= getObjectMapping(rider) %>[<%= readonlyField %>]']"), true);
+					$('select[name="<%=getObjectMapping(rider)%>[<%= readonlyField %>]"]').selectmenu().selectmenu('disable');
+				<% end %>
+			<% end %>
+
+			<% if rider.partyRoleCd!="SUPPLEMENTARY" %>
+				($("span[id='<%= getObjectMapping(rider) %>[insuredPartyRefGuid]']")).hide();
+			<% end %>
+		<% end %>
+	<% end %>
+
+
+});
+</script>

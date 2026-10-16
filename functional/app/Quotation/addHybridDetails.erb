@@ -1,0 +1,74 @@
+<fieldset>
+
+  <div data-role="fieldcontain">
+    <%= renderLabel('premiumGuarantees','PREMIUMGUARANTEES', nil, @baseQuotationProduct)   %>
+    <%= renderCountField('premiumGuarantees', @baseQuotationProduct.premiumGuarantees,'Premium Guarantees', @baseQuotationProduct) %>
+  </div>
+
+  <fieldset class="ui-grid-c">
+    <strong>
+      <div class="ui-block-a"> </div>
+      <div class="ui-block-b"> <%= renderLabel('premiumSplit','PREMIUMSPLIT','riderHeader') %> </div>
+      <div class="ui-block-c"> <%= renderLabel('sumAssured','SUMASSURED','riderHeader') %> </div>
+      <div class="ui-block-d"> <%= renderLabel('premium','PREMIUM','riderHeader') %> </div>
+    </strong>
+  </fieldset>
+
+  <% @quotationProductList.each do |quotationProduct| %>
+    
+    <%= renderObject(quotationProduct, @quotation) %>
+    <%= renderHiddenField('productId', quotationProduct.productId, 'Product Id', quotationProduct) %>
+    <%= renderHiddenField('productTypeCd', quotationProduct.productTypeCd, 'Product Type Cd', quotationProduct) %>
+    <%= renderHiddenField('selected', quotationProduct.selected, 'Selected', quotationProduct) %>
+    <%= renderHiddenField('planCode', quotationProduct.planCode, 'Plan code', quotationProduct) %>
+    
+    <fieldset class="ui-grid-c">
+        <div class="ui-block-a collateraldiv"> 
+          <ul data-role="listview" >
+            <li class="collateral">
+              <a href="#" name="<%=quotationProduct.planCode%>_COLLATERAL">
+                <script>
+                  $('a[name="<%=quotationProduct.planCode%>_COLLATERAL"]').click(function () {  
+                    $.get("/app/Collateral/showProductCollateral?planCode=<%= quotationProduct.planCode %>",function(data) {});
+                  }); 
+                </script>                      
+                <%= renderLabel('planCode',quotationProduct.planCode+"LONG", nil, quotationProduct) %>                      
+              </a>
+              
+            </li>
+          </ul>
+        </div>
+
+        <div class="ui-block-b">  
+        <% if quotationProduct.premiumSplit != nil %>
+          <%= renderCountField('premiumSplit', quotationProduct.premiumSplit, 'Premium Split', quotationProduct) %>
+        <% end %>
+        </div>
+        <div class="ui-block-c"> 
+          <%= renderAmountField('baseSumAssured', quotationProduct.baseSumAssured, 'Sum Assured', quotationProduct) %> 
+          <script>
+          function updateHybridSA<%=quotationProduct.planCode%>(sa)
+          {
+            $('input[name="<%= getObjectMapping(quotationProduct) %>[baseSumAssured]"]').val(sa);
+          }
+          </script>
+        </div>
+        <div class="ui-block-d"> 
+          <%= renderAmountField('modalPremium', quotationProduct.modalPremium, 'Premium', quotationProduct) %> 
+          <script>
+          function updateHybridPremium<%=quotationProduct.planCode%>(premium)
+          {
+            $('input[name="<%= getObjectMapping(quotationProduct) %>[modalPremium]"]').val(premium);
+          }
+          </script>
+        </div>
+    </fieldset>
+    
+    <script>
+      setReadOnly($("input[name='<%=getObjectMapping(quotationProduct) %>[baseSumAssured]']"), true);
+      setReadOnly($("input[name='<%=getObjectMapping(quotationProduct) %>[modalPremium]']"), true);
+    </script>
+
+  <% end %>
+  
+</fieldset>

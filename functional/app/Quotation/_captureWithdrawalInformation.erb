@@ -1,0 +1,128 @@
+<div name = 'withdrawinformationdiv'>
+    <div class='illustrationdisplay' name ='withdrawinformation'>
+        <div class="legend">
+            <label class="strongLabel">
+                <%= getLabelValue('withdrawalDetails') %>
+                <a href="#" class="scrollTopButton ui-icon-carat-u ui-btn-icon-notext ui-alt-icon ui-btn-inline"></a>
+                <a href="#" class="expandButton ui-icon-plus ui-btn-icon-notext ui-alt-icon ui-btn-inline"/></a>
+                <a href="#" class="collapseButton ui-icon-minus ui-btn-icon-notext ui-alt-icon ui-btn-inline"/></a>
+            </label>
+        </div>
+        <div class="panelContent">
+            <% if @facetData[:renderWithdrawalfl] %>
+                <div data-role="dualfieldcontain">
+                    <div class ="half">
+                        <%= renderLabel('withdrawalFl', 'withdrawalFl', nil, @quotation)    %>
+                        <%= renderRadioButton('withdrawalFl', @quotation.withdrawalFl, 'withdrawalYes', 'YES', @quotation) %>
+                        <%= renderLabel('withdrawalYes', 'YES', 'radioWidth', nil)   %>
+                        <%= renderRadioButton('withdrawalFl', @quotation.withdrawalFl, 'withdrawalNo', 'NO', @quotation )%>
+                        <%= renderLabel('withdrawalNo', 'NO', 'radioWidth', nil)   %>
+                    </div>
+                    <div class="half">
+                    </div>
+                </div>
+            <% end %>
+
+            <div name = "withdrawalFl">
+                <div data-role="dualfieldcontain">
+                    <% if @facetData[:renderSolvertypecd] %>
+                        <div class ="half">
+                            <%= renderLabel('solverTypeCd', 'withdrawalTypeCd', nil, @quotation)    %>
+                            <%= getLookup('WITHDRAWALTYPE','solverTypeCd', @quotation.solverTypeCd, @quotation, nil) %>
+                        </div>
+                    <% end %>
+                    <% if @facetData[:renderWithdrawalratetypecd] %>
+                        <div class="half">
+                            <%= renderLabel('withdrawalRateTypeCd', 'withdrawalRateTypeCd', nil, @quotation)    %>
+                            <%= getLookup('WITHDRAWALRATETYPE', 'withdrawalRateTypeCd', @quotation.withdrawalRateTypeCd, @quotation, nil) %>
+                        </div>
+                    <% end %>
+                </div>
+            </div>
+
+            <% if @facetData[:renderPayingYears] %>
+                <div name = "payingYears">
+                    <div data-role="dualfieldcontain">
+                        <div class="half">
+                            <%= renderLabel('payingYears', 'payingYears', nil, @quotation)    %>
+                            <%= renderCountField('payingYears', @quotation.payingYears, nil, @quotation, ' maxlength="3"' ) %>
+                        </div>
+                    </div>
+                </div>
+            <% end %>
+
+            <hr class="horizontalline"/>
+
+            <div name="withDrawalList">          
+                <div class='ui-grid-a' style="padding-right: 1em; padding-left: 1em;">
+                    <div class="ui-block-a" style="width:64%;">
+                        <div class="ui-grid-c">
+                            <div class="ui-block-a"> 
+                                <% if @facetData[:renderPolicyyearfrom] %> 
+                                    <b><%= getLabelValue('policyYearFrom') %></b>
+                                <% end %>
+                            </div>
+                            <div class="ui-block-b"> 
+                                <% if @facetData[:renderAgefrom] %>
+                                    <b><%= getLabelValue('ageFrom') %></b>
+                                <% end %>
+                            </div>
+                            <div class="ui-block-c"> 
+                                <% if @facetData[:renderPolicyyearto] %>
+                                    <b><%= getLabelValue('policyYearTo') %></b>
+                                <% end %>
+                            </div>
+                            <div class="ui-block-d"> 
+                                <% if @facetData[:renderAgeto] %>
+                                    <b><%= getLabelValue('ageTo') %></b>
+                                <% end %>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="ui-block-b" style="width:36%;">
+                        <div class="ui-grid-b">
+                            <div class="ui-block-a" style="width:45%;"> 
+                                <% if @facetData[:renderWithdrawalamount] %>
+                                    <b><%= getLabelValue('amount') %></b>
+                                <% end %>
+                            </div>
+                            <div class="ui-block-b" style="width:45%;"> 
+                                <% if @facetData[:renderFrequencyval] %>
+                                    <b><%= getLabelValue('frequencyVal') %></b>
+                                <% end %>
+                            </div>
+                            <div class="ui-block-c" style="width:10%;"> 
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <hr class="horizontalline"/>
+                <%if @withdraws != nil %>
+                <ul data-role="listview" id="withdrawalsList" data-inset="true" style="width: 98%;">
+                    <% @withdraw_form = "" %>
+                    <% @withdraws.each do |withdraw| %>
+                    <%  @withdrawCount += 1 
+                        @withdraw_form << addWithdraw(withdraw, @quotation, @withdrawCount, getObjectMapping(@quotation))
+                    %>
+                    <% end %>
+                    <%= @withdraw_form %>
+                </ul>
+                <% end %>
+
+                <div style="margin-top: 1%;">
+                    <div class="ui-grid-d">
+                        <div class="ui-block-a"></div>
+                        <div class="ui-block-b"></div>
+                        <div class="ui-block-c"><a href="#" data-role="button" class="addWithdrawButton"> <%= getLabelValue('ADDWITHDRAWAL') %></a></div>
+                        <div class="ui-block-d"></div>                
+                        <div class="ui-block-e"></div>                
+                    </div>
+                </div>
+
+                <hr class="horizontalline"/>
+
+            </div>
+        </div>
+    </div>
+</div>
+<%= render :partial => "captureWithdrawalInformationJS" %>

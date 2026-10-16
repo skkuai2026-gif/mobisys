@@ -1,0 +1,61 @@
+<div id="summaryPopUp" style="background-color: #f4f4f4;min-height:0px;">
+	<div style="width: 100%; display: table;">
+		<div style="display: table-row;padding-top: 1%;">
+			<div class="summary-fields depature-date">
+				<div class="field-label"><%= getLabelValue('DEPARTURE FROM') %> INDIA</div>
+				<div class="field-value"><%= getScreenDate(@quotation.startDt)%></div>
+			</div>
+			<div class="summary-fields return-date">
+				<div class="field-label"><%= getLabelValue('RETURN TO') %> INDIA</div>
+				<div class="field-value"><%= getScreenDate(@quotation.endDt)%></div>
+			</div>
+		</div>
+		<div style="display: table-row">
+			<div class="summary-fields destination">
+				<div class="field-label"><%= getLabelValue('travelGeographyCd') %></div>
+				<div class="field-value"><%= @quotation.travelGeographyCd %></div>
+			</div>
+			<div class="summary-fields travellers">
+				<div class="field-label"><%= getLabelValue('TRAVELLERS') %></div>
+				<div class="field-value"><%= "#{@quotation.numberOfAdult} Adult" if @quotation.numberOfAdult.to_i > 0 %> <%= "#{@quotation.numberOfChildren} Children" if @quotation.numberOfChildren.to_i > 0 %></div>
+			</div>
+		</div>
+ 	</div>
+	<table data-role="table" id="temp-table" data-mode="reflow" class="ui-responsive table-stroke">
+		<thead>
+			<tr>
+				<th><%= getLabelValue('productID') %></th>
+				<th><%= getLabelValue('planOptionCd') %></th>
+				<th style="text-align: right;"><%= getLabelValue('sumAssured') %></th>
+				<th style="text-align: right;"><%= getLabelValue('modalPremium') %></th>
+			</tr>
+		</thead>
+		<tbody>
+			<% @summaryTable.each do |row| %>
+				<tr>
+					<td><%= row[:product] %></td>
+					<td><%= row[:plan] %></td>
+					<td style="text-align: right;"><%= row[:sum_assured] %></td>
+					<td style="text-align: right;"><%= row[:modal_premium] %></td>
+				</tr>
+			<% end %>
+			<tr>
+				<th colspan="3" class="text-right"><%= getLabelValue('totalModalPremium') %></th>
+				<td style="text-align: right;"><%=@totalModalPremium%></td>
+			</tr>
+		</tbody>
+	</table>
+	<style type="text/css">
+		.main-content-full {
+			left: 0px !important;
+			bottom: 0px;
+		}
+	</style>
+	<div class='footer-bg'>
+		<% noOfButtons = @summaryButtons.size %> 
+		<input type="hidden" id="footerDivision" value="<%=(100.00/noOfButtons - 0.25).to_s+'%'%>" >
+		<% @summaryButtons.each do |single_button| %>
+			<%= single_button %>
+		<% end %>
+	</div>
+</div>

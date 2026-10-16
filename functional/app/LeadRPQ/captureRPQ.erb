@@ -1,0 +1,636 @@
+<div data-role="page" data-url="<%= Rho::RhoConfig.start_path %>/">
+	<link rel="stylesheet" href="/public/css/Eapp/c2l_EAPP.css">
+	<link rel="stylesheet" href="/public/css/jquery.signaturepad.css">
+	
+	<script type="text/javascript" src="/public/js/jquery.signaturepad.js"></script>
+	<script type="text/javascript" src="/public/js/json2.min.js"></script>
+	<script type="text/javascript" src="/public/js/Eapp/c2l_EAPP.js"></script>
+	<style type="text/css">
+	body {
+	  font-family: 'montserratregular';
+	}
+
+	#header {
+	    background-color:#FFF;
+	    background-repeat: repeat-x;
+	    border-radius: 0px;
+	    box-shadow: 0 0 0 rgba(255, 255, 255, 0.15) inset, 0 0 0 rgba(0, 0, 0, 0.075);
+	    height: 4em;
+	    border-bottom: none !important;
+	    color: #282828 !important;
+	}
+
+	#header > img {
+	    margin: 0.5em 0 0 1em;
+	    width: 8%;
+	}
+
+	#header a img {
+	    margin: 0.9em;
+	}
+
+	#header h1 {
+	    font-size: 1.5em;
+	    padding: 0.7em 0;
+	}
+	.headerRightButtons {
+		padding-right: 4em;
+	}
+	#errordiv {
+		position: absolute;
+		right: 0;
+		top: 0;
+	}
+
+	.sigNav {
+		width: 751px;
+	}
+
+	.ui-checkbox {
+		width: 100% !important;
+	}
+
+	.ui-input-text{
+		border: none !important;
+		font-size: 13px;
+	}
+
+	.readonly {
+		background-color:#c1c1c1 !important;
+		opacity: 0.5;
+	}
+
+	/*------------FONT ICON--------------*/
+	@font-face {
+	  font-family: 'icomoon';
+	  src:
+	    url('/public/jazz/css/fonts/icomoon.ttf?xux7f5') format('truetype'),
+	    url('/public/jazz/css/fonts/icomoon.woff?xux7f5') format('woff'),
+	    url('/public/jazz/css/fonts/icomoon.svg?xux7f5#icomoon') format('svg');
+	  font-weight: normal;
+	  font-style: normal;
+	}
+
+	[class^="icon-"], [class*=" icon-"] {
+	  /* use !important to prevent issues with browser extensions that change fonts */
+	  font-family: 'icomoon';
+	  speak: none;
+	  font-style: normal;
+	  font-weight: normal;
+	  font-variant: normal;
+	  text-transform: none;
+	  line-height: 1;
+
+	  /* Better Font Rendering =========== */
+	  -webkit-font-smoothing: antialiased;
+	  -moz-osx-font-smoothing: grayscale;
+	}
+
+	/*FONT CSS*/
+	@font-face {
+	  font-family: 'montserratregular';
+	  src: url('/public/jazz/css/fonts/montserrat-regular.eot');
+	  src: url('/public/jazz/css/fonts/montserrat-regular.eot?#iefix') format('embedded-opentype'), url('/public/jazz/css/fonts/montserrat-regular.woff2') format('woff2'), url('/public/jazz/css/fonts/montserrat-regular.woff') format('woff'), url('/public/jazz/css/fonts/montserrat-regular.ttf') format('truetype'), url('/public/jazz/css/fonts/montserrat-regular.svg#ubunturegular') format('svg');
+	  font-weight: 400;
+	  font-style: normal;
+	}
+	@font-face {
+	  font-family: 'montserratbold';
+	  src: url('/public/jazz/css/fonts/montserrat-bold.eot');
+	  src: url('/public/jazz/css/fonts/montserrat-bold.eot?#iefix') format('embedded-opentype'), url('/public/jazz/css/fonts/montserrat-bold.woff2') format('woff2'), url('/public/jazz/css/fonts/montserrat-bold.woff') format('woff'), url('/public/jazz/css/fonts/montserrat-bold.ttf') format('truetype'), url('fonts/montserrat-bold.svg#ubuntubold') format('svg');
+	  font-weight: 700;
+	  font-style: normal;
+	}
+	@font-face {
+	  font-family: 'montserratlight';
+	  src: url('/public/jazz/css/fonts/montserrat-light.woff2') format('woff2'), url('/public/jazz/css/fonts/montserrat-light.woff') format('woff');
+	  font-weight: normal;
+	  font-style: normal;
+	}
+
+	.icon-arrow-back:before {
+	  content: "\e906";
+	}
+
+	.btn-back {
+	    float: left;
+	    font-size: 12px !important;
+	    left: 20px !important;
+	    text-align: left;
+	    width: 100px;
+	    top: 28px !important;
+	    color: #333 !important;
+	}
+
+	.btn-back i{
+        float: left;
+        font-size: 20px;
+        margin-right: 5px;
+        margin-top: -3px;
+    }
+
+    .ui-content {
+    	/*padding: 0em;*/
+    	font-family: 'montserratregular';
+    	background: #af4623;
+    	font-size: 13px !important;
+    }
+
+    .strongLabel {
+    	color: #6b311b;
+    	font-family: 'montserratregular';
+    }
+
+    .legend {
+    	border-bottom: 3px solid #6b311b;
+    	font-family: 'montserratregular';
+    }
+    .ui-btn, .ui-input-text{
+    	font-family: 'montserratregular';
+    	font-size: 13px !important;		
+    }
+
+    input.ui-input-text, 
+	textarea.ui-input-text {
+		background-image: none;
+		display: inline-block;
+		font-size: 13px !important;
+		line-height: 1.4;
+		padding: 0.4em;
+		width: 60%;
+		border: 0px !important;
+		box-shadow: none;
+		-webkit-border-radius: 0px;
+		border-radius: 0px;
+	}
+
+	.illustrationdisplay {
+		box-shadow: none !important;
+	}
+
+
+	.ui-checkbox {
+	  float: left;
+	  margin: 0;
+	}
+	.ui-checkbox label {
+	  background: transparent !important;
+	  border: 0 !important;
+	  /*color: #8e8e8e !important;*/
+	  font-size: 13px !important;
+	  /*padding-bottom: 20px;*/
+	}
+	.ui-checkbox input {
+	  display: none;
+	}
+	.ui-checkbox label {
+	  text-shadow: none !important;
+	}
+	.ui-checkbox .ui-checkbox-off::after,
+	.ui-checkbox .ui-btn.ui-checkbox-on::after {
+	  border-radius: 0;
+	  -webkit-border-radius: 0;
+	  -ms-border-radius: 0;
+	  background: transparent !important;
+	  border: 1px solid #a9a9a9 !important;
+	}
+	.ui-checkbox .ui-btn.ui-checkbox-on::after {
+	  content: "\e93c";
+	  font-family: 'icomoon';
+	  text-shadow: none;
+	  color: #666666;
+	  font-size: 11px;
+	  line-height: 18px;
+	  text-align: center;
+	}
+	.ui-checkbox .ui-btn-icon-left::after {
+	  left: 0;
+	}
+	.ui-checkbox .ui-btn-icon-left {
+	  padding-left: 30px;
+	}
+	</style>
+
+
+	<div data-role="header" id="header" data-position="inline">
+		<a href="/app/FNARequest/search" rel="external" data-direction="reverse" data-role="none" class="btn-back">
+			<i class='icon-arrow-back'></i><%=getLabelValue('BACK')%>
+			<!-- <img src="/public/images/SalesIllustration/icon_BackArrow-Red.png" width="70%"> -->
+		</a>
+
+		<h1 style="margin:0 30%";><%= getLabelValue('RPQ') %></h1>
+		<div class="ui-btn-right">
+			<div class="headerRightButtons">
+				<% if @leadRPQ.rpqScore.to_i > 0 %>
+					<a href="#" name="save" data-role="button" style="min-width:100px;">
+						<%= getLabelValue('SAVEVALIDATE')%>
+					</a>
+
+					<% if @extendFl %>
+						<a href="<%= url_for :action => :extendExpiryDt, :id => @leadRPQ.object %>?capture" rel="external"><%= getLabelValue('EXTEND') %></a>
+					<% elsif $total_error.has_key?('LeadRPQ') && $total_error['LeadRPQ'].empty? %>
+						<% if @str == ""%>
+							<a href="<%= url_for :controller => :Quotation, :action => :newCaptureIllustration %>?rpqId=<%=@leadRPQ.rpqId%>&insuranceTypeCd=LIFE&selectedProductId=<%= @selectedProductId%>" data-role="button" rel="external"><%= getLabelValue('CAPTUREILLUSTRATION')%></a>
+						<%else%>
+							<a href="<%= url_for :controller => :Quotation, :action => :newCaptureIllustration %>?fnaId=<%= @str %>" data-role="button" rel="external"><%= getLabelValue('CAPTUREILLUSTRATION')%></a>
+						<%end%>
+					<% end %>
+				<% else %>
+					<a href="#" name="save" data-role="button" style="min-width:100px;">
+						<%= getLabelValue('EVALUATE')%>
+					</a>
+				<% end %>
+
+				<span id='errordiv' style="display:none"> 
+					<a href="#" name="error_dialog" id="error_dialog" style="min-width:100px; bottom: 10px;">
+						<img src="/public/images/SalesIllustration/error_list.png">
+					</a>
+				</span>
+			</div>
+		</div>
+	</div>
+
+
+	<div data-role="content" id="capture" style="-webkit-transform: none;">
+		<div id='totalErrorDiv' style="display:none">
+			<% if !$total_error.empty? %>
+				<%= renderErrorList($total_error) %>
+			<% end %>
+		</div>
+
+		<form method="POST" action="<%= url_for :action => :executeSubmit %>" name="rpqResponseForm" id="rpqResponseForm">
+			<%= renderObject(@leadRPQ) %>
+
+			<%= renderHiddenField('rpqId', @leadRPQ.rpqId, 'rpqId', @leadRPQ) %>
+			<%= renderHiddenField('fnaId', @leadRPQ.fnaId, 'fnaId', @leadRPQ) %>
+			<%= renderHiddenField('leadId', @leadRPQ.leadId, 'leadId', @leadRPQ) %>
+			<%= renderHiddenField('fromTime', @leadRPQ.fromTime, 'fromTime', @leadRPQ) %>
+			<%= renderHiddenField('toTime', @leadRPQ.toTime, 'toTime', @leadRPQ) %>
+			<%= renderHiddenField('natureOfDuty', @leadRPQ.natureOfDuty, 'natureOfDuty', @leadRPQ) %>
+			<%= renderHiddenField('leadSource', @leadRPQ.leadSource, 'leadSource', @leadRPQ) %>
+			<%= renderHiddenField('leadSourceOther', @leadRPQ.leadSourceOther, 'leadSourceOther', @leadRPQ) %>
+
+			<div class="illustrationdisplay">
+				<div class="legend">
+					<label class="strongLabel">
+						<%= getLabelValue('PERSONALINFORMATION') %>
+						<a href="#" class="expandButton ui-icon-plus ui-btn-icon-notext ui-alt-icon ui-btn-inline"/></a>
+						<a href="#" class="collapseButton ui-icon-minus ui-btn-icon-notext ui-alt-icon ui-btn-inline"/></a>
+					</label>
+				</div>
+
+				<div class="panelContent">
+					<div data-role="dualfieldcontain">
+						<div class="half">
+							<%= renderLabel('title', 'title', nil, @leadRPQ) %>
+							<%= getLookup('TITLE', 'title', @leadRPQ.title, @leadRPQ) %> 
+						</div>
+					</div>
+
+					<div data-role="dualfieldcontain">
+						<div class="half">
+							<%= renderLabel('firstname', 'firstName', 'mandatory', @leadRPQ)   %>
+							<%= renderInputField('firstname', @leadRPQ.firstname, 'FirstName', @leadRPQ, ' maxlength="30"') %>
+						</div>
+						<div class ="half">
+							<%= renderLabel('middlename', 'middleName', nil, @leadRPQ)   %>
+							<%= renderInputField('middlename', @leadRPQ.middlename, 'MiddleName', @leadRPQ, ' maxlength="30"') %>
+						</div>
+					</div>
+
+					<div data-role="dualfieldcontain">
+						<div class="half">
+							<%= renderLabel('lastname', 'lastName', 'mandatory', @leadRPQ)   %>
+							<%= renderInputField('lastname', @leadRPQ.lastname, 'LastName', @leadRPQ, ' maxlength="30"') %>
+						</div>
+					</div>
+
+			        <div data-role="dualfieldcontain">
+			        	<div class="half">
+			        		<%= renderLabel('genderCd', 'genderCd', nil, @leadRPQ)    %>
+			        		<%= renderRadioButton('genderCd', @leadRPQ.genderCd, "#{getObjectMapping(@leadRPQ)}_male", 'MALE', @leadRPQ) %>
+			        		<%= renderLabel("#{getObjectMapping(@leadRPQ)}_male", 'Male', 'radioWidth', nil)   %>
+			        		<%= renderRadioButton('genderCd', @leadRPQ.genderCd, "#{getObjectMapping(@leadRPQ)}_female", 'FEMALE', @leadRPQ) %>
+			        		<%= renderLabel("#{getObjectMapping(@leadRPQ)}_female", 'Female', 'radioWidth', nil)   %>     
+			        	</div>
+			        	<div class="half">
+			        		<%= renderLabel('maritalStatus', 'maritalStatusCd', nil, @leadRPQ) %> 
+			        		<%= getLookup('MARITALSTATUS', 'maritalStatus', @leadRPQ.maritalStatus, @leadRPQ)   %> 
+			        	</div>
+			        </div>
+
+			        <div data-role="dualfieldcontain">
+			        	<div class="half">
+			        		<%= renderLabel('dob', 'birthDt', nil, @leadRPQ)   %>
+			        		<%= renderDateField('dob', @leadRPQ.dob, 'Date Of Birth', @leadRPQ) %>
+			        	</div>
+			        	<div class="half">
+			        		<%= renderLabel('age', 'age', nil, @leadRPQ) %>
+			        		<%= renderCountField('age', @leadRPQ.age, '', @leadRPQ) %>
+			        		<%= renderLabel('age','YEAR') %>
+			        	</div>
+			        </div>
+
+			        <div data-role="dualfieldcontain">
+			        	<div class="half">
+			        		<%= renderLabel('occupationCd', 'occupationTypeCd', nil, @leadRPQ) %> 
+			        		<%= getLookup('OCCUPATIONTYPE', 'occupationCd', @leadRPQ.occupationCd, @leadRPQ) %>
+			        	</div>
+			        	<div class="half">
+			        		<%= renderLabel('incomeGroup', 'income', nil, @leadRPQ) %>
+			        		<%= getLookup('INCOMEGROUP', 'incomeGroup', @leadRPQ.incomeGroup, @leadRPQ)   %>
+			        	</div>
+			        </div>
+
+			        <div data-role="dualfieldcontain">
+			        	<div class ="half">
+			        		<%= renderLabel('nationality', 'citizenshipCd', nil, @leadRPQ) %>
+			        		<%= getLookup('CITIZENSHIP', 'nationality', @leadRPQ.nationality, @leadRPQ)   %>
+			        	</div>
+			        </div>
+		        </div>
+			</div>
+
+
+			<div class="illustrationdisplay">
+				<div class="legend">
+					<label class="strongLabel">
+						<%= getLabelValue('CONTACTINFORMATION') %>
+						<a href="#" class="scrollTopButton ui-icon-carat-u ui-btn-icon-notext ui-alt-icon ui-btn-inline"></a>
+						<a href="#" class="expandButton ui-icon-plus ui-btn-icon-notext ui-alt-icon ui-btn-inline"/></a>
+						<a href="#" class="collapseButton ui-icon-minus ui-btn-icon-notext ui-alt-icon ui-btn-inline"/></a>
+					</label>
+				</div>
+
+				<div class="panelContent">
+					<div data-role="dualfieldcontain">
+						<div class ="half">
+				     		<%= renderLabel('residence', 'contactResi', nil, @leadRPQ) %> 
+				     		<%= renderTelephoneField('residenceAreaCode', @leadRPQ.residenceAreaCode, 'Residence Area Code', @leadRPQ, 'style="width: 9%;" maxlength="3"') %>
+				     		<%= renderTelephoneField('residenceCountryCode', @leadRPQ.residenceCountryCode, 'Residence Country Code', @leadRPQ, 'style="width: 9%;" maxlength="3"') %>
+				     		<%= renderTelephoneField('residenceNumber', @leadRPQ.residenceNumber, 'Residence Number', @leadRPQ, 'style="width: 37%;" maxlength="15"') %>
+				     	</div>
+				     	<div class ="half">
+				     		<%= renderLabel('office', 'contactOffice', nil, @leadRPQ) %> 
+				     		<%= renderTelephoneField('officeAreaCode', @leadRPQ.officeAreaCode, 'Office Area Code', @leadRPQ, 'style="width: 9%;" maxlength="3"') %>
+				     		<%= renderTelephoneField('officeCountryCode', @leadRPQ.officeCountryCode, 'Office Country Code', @leadRPQ, 'style="width: 9%;" maxlength="3"') %>
+				     		<%= renderTelephoneField('officeNumber', @leadRPQ.officeNumber, 'Office Number', @leadRPQ, 'style="width: 37%;" maxlength="15"') %> 
+				     	</div>
+					</div>
+
+					<div data-role="dualfieldcontain">
+				     	<div class ="half">
+				     		<%= renderLabel('mobile', 'contactMobile', nil, @leadRPQ) %> 
+				     		<%= renderTelephoneField('mobileAreaCode', @leadRPQ.mobileAreaCode, 'Mobile Area Code', @leadRPQ, 'style="width: 9%;" maxlength="3"') %>
+				     		<%= renderTelephoneField('mobileCountryCode', @leadRPQ.mobileCountryCode, 'Mobile Country Code', @leadRPQ, 'style="width: 9%;" maxlength="3"') %>
+				     		<%= renderTelephoneField('mobileNumber', @leadRPQ.mobileNumber, 'Mobile Number', @leadRPQ, 'style="width: 37%;" maxlength="15"') %>
+				     	</div>
+						<div class="half">
+							<%= renderLabel('emailAddress', 'emailID', nil, @leadRPQ)   %>
+							<%= renderEmailField('emailAddress', @leadRPQ.emailAddress, 'Email address', @leadRPQ, "maxlength='30'") %>
+						</div>
+					</div>
+				</div>
+			</div>
+
+
+			<div class="illustrationdisplay">
+				<div class="legend">
+					<label class="strongLabel">
+						<%= getLabelValue('ADDRESSINFORMATION') %>
+						<a href="#" class="scrollTopButton ui-icon-carat-u ui-btn-icon-notext ui-alt-icon ui-btn-inline"></a>
+						<a href="#" class="expandButton ui-icon-plus ui-btn-icon-notext ui-alt-icon ui-btn-inline"></a>
+						<a href="#" class="collapseButton ui-icon-minus ui-btn-icon-notext ui-alt-icon ui-btn-inline"></a>
+					</label>
+				</div>
+
+				<div class="panelContent">
+					<div data-role="dualfieldcontain">
+						<%= renderLabel('address1', 'addressLine1', nil, @leadRPQ, ' style="width:13.8%" ')   %>
+						<%= renderInputField('address1', @leadRPQ.address1, 'Address 1', @leadRPQ, ' maxlength="120" style="width:79.4%" ') %>
+					</div>
+
+					<div data-role="dualfieldcontain">
+						<%= renderLabel('address2', 'addressLine2', nil, @leadRPQ, ' style="width:13.8%" ')   %>
+						<%= renderInputField('address2', @leadRPQ.address2, 'Address 2', @leadRPQ, ' maxlength="120" style="width:79.4%" ') %>
+					</div>
+
+					<div data-role="dualfieldcontain">
+						<%= renderLabel('address3', 'addressLine3', nil, @leadRPQ, ' style="width:13.8%" ')   %>
+						<%= renderInputField('address3', @leadRPQ.address3, 'Address 3', @leadRPQ, ' maxlength="120" style="width:79.4%" ') %>
+					</div>
+
+					<div data-role="dualfieldcontain">
+						<%= renderLabel('address4', 'addressLine4', nil, @leadRPQ, ' style="width:13.8%" ')   %>
+						<%= renderInputField('address4', @leadRPQ.address4, 'Address 4', @leadRPQ, ' maxlength="120" style="width:79.4%" ') %>
+					</div>
+
+					<div data-role="dualfieldcontain">
+						<div class="half">
+							<%= renderLabel('country', 'countryCd', nil, @leadRPQ)   %>
+							<%= getLookup('COUNTRY','country', @leadRPQ.country, @leadRPQ) %>
+						</div>
+						<div class="half">
+							<%= renderLabel('pincode', 'pinCode', nil, @leadRPQ)   %>
+							<%= renderInputField('pincode', @leadRPQ.pincode, 'Pincode', @leadRPQ, 'maxlength="6"') %>
+						</div>
+					</div>
+
+					<div data-role="dualfieldcontain">
+						<div class="half">
+							<%= renderLabel('state', 'stateCd', nil, @leadRPQ)   %>
+							<span class="districtLookUpData" name="districtLookUpData">
+						  		<% if @districtLookUps.empty? %>
+						  			<%= renderInputField('state', @leadRPQ.state, 'District', @leadRPQ, ' maxlength="30"') %>
+					  			<% else %>
+						  			<%= getLookup('DYNAMICLOOKUP','state', @leadRPQ.state, @leadRPQ , @districtLookUps) %>
+					  			<% end %>
+					  		</span>
+						</div>
+						<div class="half">
+							<%= renderLabel('city', 'cityCd', nil, @leadRPQ)   %>
+							<span class="cityLookUpData" name="cityLookUpData">
+						  		<% if @cityLookUps.empty? %>
+						  			<%= renderInputField('city', @leadRPQ.city, 'City', @leadRPQ, ' maxlength="30"') %>
+					  			<% else %>
+									<%= getLookup('DYNAMICLOOKUP','city', @leadRPQ.city, @leadRPQ, @cityLookUps) %>
+					  			<% end %>
+						  	</span>
+						</div>
+					</div>
+				</div>	
+			</div>
+
+
+			<div class="illustrationdisplay">
+				<div class="legend">
+					<label class="strongLabel">
+						<%= getLabelValue('RPQANALYSIS') %>
+						<a href="#" class="scrollTopButton ui-icon-carat-u ui-btn-icon-notext ui-alt-icon ui-btn-inline"></a>
+						<a href="#" class="expandButton ui-icon-plus ui-btn-icon-notext ui-alt-icon ui-btn-inline"></a>
+						<a href="#" class="collapseButton ui-icon-minus ui-btn-icon-notext ui-alt-icon ui-btn-inline"></a>
+					</label>
+				</div>
+
+				<div class="panelContent"><br/>
+ 					<% total_score = 0 %>
+					<% @questionKeys.each_with_index do |labelKey, i| %>
+				 		<div class="ui-grid-a">
+				 			<div class="ui-block-a" style="width : 100%"><%= getLabelValue(labelKey) %></div>
+				 			<div class="ui-block-a">
+				 				<% resp = nil %>
+				 				<% if !@saved_response.nil? %>
+				 					<% resp = @saved_response.select{|resp| resp.question.include? labelKey.to_s }.map{ |only_resp| only_resp.score } unless @saved_response.nil? %>
+				 				<% end %>
+				 				<% if resp.to_s != "" %>
+				 					<%= getQuestionnaireCheckbox(labelKey.to_s, labelKey.to_s, resp, nil, nil, nil) %>
+				 				<% else %>
+				 					<%= getQuestionnaireCheckbox(labelKey.to_s, labelKey, nil, nil, nil, nil) %>
+				 				<% end %>
+				 			</div> 
+				 			<% qscore = resp.inject(0) {|sum, i|  sum + i.to_i } unless resp.to_s=="" %>
+				 			<% total_score = total_score + qscore.to_i  %>
+				 		</div><br/>
+			 		<% end %>
+				</div>
+			</div>
+
+
+			<% if @leadRPQ.rpqScore.to_i > 0 %>
+				<div class="illustrationdisplay">
+					<div class="legend">
+						<label class="strongLabel">
+							<%= getLabelValue('RPQEVALUATIONDIV') %>
+							<a href="#" class="scrollTopButton ui-icon-carat-u ui-btn-icon-notext ui-alt-icon ui-btn-inline"></a>
+							<a href="#" class="expandButton ui-icon-plus ui-btn-icon-notext ui-alt-icon ui-btn-inline"></a>
+							<a href="#" class="collapseButton ui-icon-minus ui-btn-icon-notext ui-alt-icon ui-btn-inline"></a>
+						</label>
+					</div>
+
+					<% @lookupvalue = Lookupvalue.find_by_sql("SELECT * from Lookupvalue where VALUEFROM <= '#{total_score}' AND  VALUETO >= '#{total_score}' AND KEY = 'RPQ_RESULT'").first %>
+					<% if @lookupvalue.cd == "CONSERVATIVE" %>
+						<% productRisk = "Low" %>
+					<% elsif @lookupvalue.cd == "BALANCED" %>
+						<% productRisk = "Medium" %>
+					<% else %>
+						<% productRisk = "High" %>
+					<% end %>
+
+					<div class="panelContent"><br/>
+						<div class="ui-grid-d">
+							<div class="ui-block-a"><b><%= getLabelValue('TOTALRPQSCORE') %></b></div>
+							<div class="ui-block-b" style="text-align: center;"><b>:</b></div>
+							<div class="ui-block-c"><%= total_score %></div>
+						</div><br/>
+						<div class="ui-grid-d">
+							<div class="ui-block-a"><b><%= getLabelValue('RISKLEVEL') %></b></div>
+							<div class="ui-block-b" style="text-align: center;"><b>:</b></div>
+							<div class="ui-block-c"><%= @lookupvalue.cd.capitalize %></div>
+						</div><br/>
+						<div class="ui-grid-d">		
+							<div class="ui-block-a"><b><%= getLabelValue('SUITABLEPRODUCTRISK') %></b></div>
+							<div class="ui-block-b" style="text-align: center;"><b>:</b></div>
+							<div class="ui-block-c"><%= productRisk %></div>
+						</div><br/>
+						<div class="ui-grid-d">		
+							<div class="ui-block-a"><b><%= getLabelValue('INVESTORRISKPROFILE') %></b></div>
+							<div class="ui-block-b" style="text-align: center;"><b>:</b></div>
+							<div class="ui-block-c"><%= getLabelValue(@lookupvalue.desc) %></div>
+						</div><br/>
+					</div>
+				</div>
+
+
+				<div class="illustrationdisplay">
+					<div class="legend">
+						<label class="strongLabel">
+							<%= getLabelValue('Candidate Statement of Understanding and Policyholders') %>
+							<a href="#" class="scrollTopButton ui-icon-carat-u ui-btn-icon-notext ui-alt-icon ui-btn-inline"></a>
+							<a href="#" class="expandButton ui-icon-plus ui-btn-icon-notext ui-alt-icon ui-btn-inline"></a>
+							<a href="#" class="collapseButton ui-icon-minus ui-btn-icon-notext ui-alt-icon ui-btn-inline"></a>
+						</label>
+					</div>
+
+					<div class="panelContent"><br/>
+						<% if @application.value == "en" %>
+							<div style="width: 98%;">
+								<p>I acknowledge that C2LBIZ may recommend specific funds suited to my risk profile. If I choose funds with higher risk profile than recommended, I hereby agree that it will be my own responsibility and risk.</p>
+								<br>
+								<p>I understand that suggestions and recomendations provided by C2LBIZ are based on information/data that I provided, and are designed to help me assess my investment needs according to my risk profile.</p>
+								<br>
+								<p>I fully understand that suggestions and recommendations provided by C2LBIZ are general suggestion based on my current risk profile and only intended for reference use only, therefore cannot be considered as a contract or agreement which binds both C2LBIZ and myself.</p>
+								<br>
+								<p>I hereby authorize C2LBIZ to use and exchange information about me as necessary to the conduct of performing investment-related services on my behalf, and the release of this information to its affiliates and subsidiaries only where services extend to savings and insurance planning.</p>
+							</div>
+						<% else %>
+							<div style="width: 98%;">
+								<p>Saya memahami bahwa C2LBIZ telah merekomendasikan jenis investasi sesuai dengan profil risiko Saya. Jika Saya memilih jenis investasi dengan profil risiko yang lebih tinggi dari yang direkomendasikan, Saya setuju bahwa hal tersebut sepenuhnya menjadi tanggung jawab dan risiko Saya sendiri.</p>
+								<br>
+								<p>Saya mengerti bahwa saran dan rekomendasi yang diberikan C2LBIZ didasarkan atas informasi/data yang Saya berikan yang dirancang untuk membantu Saya menilai kebutuhan investasi yang sesuai dengan profil risiko Saya.</p>
+								<br>
+								<p>Saya sepenuhnya mengerti bahwa saran dan rekomendasi yang diberikan C2LBIZ adalah saran umum berdasarkan profil risiko Saya saat ini dan dimaksudkan hanya keperluan referensi saja, karenanya tidak dapat ditafsirkan atau dianggap sebagai suatu kontrak atau perjanjian yang mengikat antara Saya dengan C2LBIZ.</p>
+								<br>
+								<p>Saya setuju untuk memberi kuasa kepada C2LBIZ untuk menggunakan dan mempertukarkan informasi pribadi Saya yang diperlukan untuk melakukan layanan terkait investasi atas nama Saya, dan mendistribusikan informasi ini kepada pihak-pihak terkait perencanaan asuransi dan keuangan.</p>
+							</div>
+	              		<% end %> 
+					</div>
+				</div>
+
+
+				<div class="illustrationdisplay">
+					<div class="legend">
+						<label class="strongLabel">
+							<%= getLabelValue('signature') %>
+							<a href="#" class="scrollTopButton ui-icon-carat-u ui-btn-icon-notext ui-alt-icon ui-btn-inline"></a>
+							<a href="#" class="expandButton ui-icon-plus ui-btn-icon-notext ui-alt-icon ui-btn-inline"></a>
+							<a href="#" class="collapseButton ui-icon-minus ui-btn-icon-notext ui-alt-icon ui-btn-inline"></a>
+						</label>
+					</div>
+
+					<div class="panelContent"><br/>
+						<div class="ui-grid-c">
+							<div class="ui-block-a"><%= getLabelValue('agentSignature') %></div>
+							<div class="ui-block-a">
+								<%= renderSignatureInlineField('agentSignatureCd', @leadRPQ,returnAppHeightWeight('screen_width', 0.55), returnAppHeightWeight('screen_height', 0.30)) %>
+							</div>
+							<div class="ui-block-b"></div>
+							<div class="ui-block-c"></div>
+							<div class="ui-block-d"></div>
+						</div>
+
+						<div data-role="dualfieldcontain">
+							<div class="half" style="width: 30%;">
+								<%= renderLabel('agentSignatureDt', 'signatureDt', nil, @leadRPQ) %>
+								<%= renderDateField('agentSignatureDt', @leadRPQ.agentSignatureDt, 'agentSignatureDt', @leadRPQ) %>
+							</div>
+						</div>
+						<hr style="width: 98%; margin-left: 0;">
+
+
+						<div class="ui-grid-c">
+							<div class="ui-block-a"><%= getLabelValue('applicantSignature') %></div>
+							<div class="ui-block-a">
+								<%= renderSignatureInlineField('signatureCd', @leadRPQ,returnAppHeightWeight('screen_width', 0.55), returnAppHeightWeight('screen_height', 0.30)) %>
+							</div>
+							<div class="ui-block-b"></div>
+							<div class="ui-block-c"></div>
+							<div class="ui-block-d"></div>
+						</div>
+
+						<div data-role="dualfieldcontain">
+							<div class="half" style="width: 30%;">
+								<%= renderLabel('signatureDt', 'signatureDt', nil, @leadRPQ) %>
+								<%= renderDateField('signatureDt', @leadRPQ.signatureDt, 'signatureDt', @leadRPQ) %>
+							</div>
+						</div>
+					</div>
+				</div>
+			<% end %>
+			<div style="display: none;">
+				<input type="hidden" name="str" id="str" value='<%= @str %>'/>
+				<input type="hidden" name="selectedProductId" id="selectedProductId" value='<%= @selectedProductId %>'/>
+			</div>
+		</form>
+	</div>
+</div>
+<%= render(:file => 'LeadRPQ/captureRPQJS.erb')%>

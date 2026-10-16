@@ -1,0 +1,1 @@
+generator.usesPermissions << 'android.permission.USE_FINGERPRINT'

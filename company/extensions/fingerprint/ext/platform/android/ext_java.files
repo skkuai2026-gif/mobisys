@@ -1,0 +1,10 @@
+ext/platform/android/generated/src/com/rho/fingerprint/FingerprintBase.java
+ext/platform/android/generated/src/com/rho/fingerprint/FingerprintFactorySingleton.java
+ext/platform/android/generated/src/com/rho/fingerprint/FingerprintSingletonBase.java
+ext/platform/android/generated/src/com/rho/fingerprint/IFingerprint.java
+ext/platform/android/generated/src/com/rho/fingerprint/IFingerprintFactory.java
+ext/platform/android/generated/src/com/rho/fingerprint/IFingerprintSingleton.java
+ext/platform/android/src/com/rho/fingerprint/Fingerprint.java
+ext/platform/android/src/com/rho/fingerprint/FingerprintFactory.java
+ext/platform/android/src/com/rho/fingerprint/FingerprintSingleton.java
+ext/platform/android/src/com/rho/fingerprint/FingerprintHandler.java

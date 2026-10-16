@@ -1,0 +1,10 @@
+source_name|attrib|object|value
+SyncCategory|categoryCd|2|PRIMARYDATA
+SyncCategory|subCategoryCd|2|MASTER
+SyncCategory|enabled|2|OFF
+SyncCategory|categoryCd|4|SECONDARYDATA
+SyncCategory|subCategoryCd|4|USERTRANSACTIONS
+SyncCategory|enabled|4|OFF
+SyncCategory|categoryCd|5|SECONDARYDATA
+SyncCategory|subCategoryCd|5|COLLATERAL
+SyncCategory|enabled|5|OFF

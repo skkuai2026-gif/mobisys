@@ -1,0 +1,360 @@
+<%= renderHiddenField('roleCd', @quotationParty.roleCd, 'roleCd', @quotationParty) %>
+<% if @facetData[:renderProposerlasame] %>
+    <div data-role="dualfieldcontain">
+        <div class="half" style="width: 86%;">
+            <%= renderRadioButton('proposerLASame', @quotation.proposerLASame, "#{getObjectMapping(@quotation)}[CopyFromInsured]", 'COPYFROMINSURED', @quotation) %>
+            <%= renderLabel("#{getObjectMapping(@quotation)}[CopyFromInsured]", 'SAMEASPROPOSER','headermode')   %>
+            <%= renderRadioButton('proposerLASame', @quotation.proposerLASame, "#{getObjectMapping(@quotation)}[other]", 'OTHER', @quotation) %>
+            <%= renderLabel("#{getObjectMapping(@quotation)}[other]", 'DIFFERENTFROMPROPOSER','headermode')   %>
+        </div>
+    </div>
+<% end %>
+
+
+<div name="<%= getObjectMapping(@quotationParty)%>applicantDetails" >
+    <div name="<%= getObjectMapping(@quotationParty)%>corporateDetails">
+        <% if @facetData[:renderCorporatePanel] %>
+            <div data-role="dualfieldcontain">
+                <% if @facetData[:renderPartytypecd] %>
+                    <div class ="half">
+                        <%= renderLabel('partyTypeCd', 'proposerPartyTypeCd', '', @quotationParty) %> 
+                        <%= getLookup('PARTYTYPE', 'partyTypeCd', @quotationParty.partyTypeCd, @quotationParty, nil)   %>
+                    </div>
+                <% end %>
+            </div>
+            <div data-role="dualfieldcontain">  
+                <% if @facetData[:renderCorporatename1] %>
+                    <div class ="half" name = '<%= getObjectMapping(@quotationParty)%>corporateName'>
+                        <%= renderLabel('corporateName', 'corporateName', nil, @quotationParty)   %>
+                        <%= renderInputField('corporateName', @quotationParty.corporateName, 'corporateName', @quotationParty, " maxlength='30'") %>
+                    </div>
+                <% end %>
+                <% if @facetData[:renderCorporatename2] %>
+                    <div class ="half" name = '<%= getObjectMapping(@quotationParty)%>corporateName'>
+                        <%= renderLabel('corporateName2', 'corporateName', nil, @quotationParty)   %>
+                        <%= renderInputField('corporateName2', @quotationParty.corporateName2, 'corporateName2', @quotationParty, " maxlength='30'") %>
+                    </div>
+                <% end %>
+            </div>
+        <% end %>
+    </div>
+    <div name="<%= getObjectMapping(@quotationParty)%>individualDetails">
+        <% if !@facetData[:renderMiddlenamePanel] %>
+            <% if @facetData[:renderTitlecd] %>
+                <div data-role="dualfieldcontain">            
+                    <div class="half"> 
+                        <%= renderLabel('title', 'title', '', @quotationParty) %> 
+                        <%= getLookup('TITLE', 'title', @quotationParty.title, @quotationParty, nil)   %> 
+                    </div>
+                    <div class="half"> 
+                    </div>
+                </div> 
+            <% end %>
+
+            <div data-role="dualfieldcontain">            
+                <div class="half"> 
+                    <% if @facetData[:renderMultiLanguagePanel] %>
+                        <%= renderLabel('language', 'language1', 'languageLabel', @quotationParty)%>
+                    <% end %> 
+                </div>
+                <div class="half"> 
+                </div>
+            </div> 
+
+            <div data-role="dualfieldcontain">
+                <% if @facetData[:renderFirstname1] %> 
+                    <div class="half">
+                        <%= renderLabel('firstname', 'firstname', nil, @quotationParty)   %>
+                        <%= renderInputField('firstname', @quotationParty.firstname, 'firstname', @quotationParty, "maxlength='30'") %>
+                    </div>
+                <% end %>
+                <% if @facetData[:renderLastname1] %>
+                    <div class="half"> 
+                        <%= renderLabel('lastname', 'lastName', '', @quotationParty)   %>
+                        <%= renderInputField('lastname', @quotationParty.lastname, 'lastName', @quotationParty, ' maxlength="30" style="width:47%"') %>
+                       
+                    </div>
+                <% end %>
+            </div>
+
+            <div data-role="dualfieldcontain">
+                <% if @facetData[:renderExtensionname1] %>
+                    <div class ="half">
+                        <%= renderLabel('extensionName1', 'suffix', nil, @quotationParty) %>
+                        <%= renderInputField('extensionName', @quotationParty.extensionName, 'extensionName', @quotationParty, ' maxlength="30"') %>
+                    </div>
+                <% end %>
+            </div>
+
+            <% if @facetData[:renderMultiLanguagePanel] %>
+                <div data-role="dualfieldcontain">            
+                    <div class="half"> 
+                        <% if @facetData[:renderMultiLanguagePanel] %>
+                            <%= renderLabel('language', 'language2', 'languageLabel', @quotationParty)%>
+                        <% end %> 
+                    </div>
+                    <div class="half"> 
+                    </div>
+                </div> 
+                <div data-role="dualfieldcontain">
+                    <% if @facetData[:renderFirstname2] %>        
+                        <div class="half">
+                            <%= renderLabel('firstname2', 'firstname', nil, @quotationParty) %>
+                            <%= renderInputField('firstname2', @quotationParty.firstname2, 'firstname2', @quotationParty, "maxlength='30'") %>
+                        </div>
+                    <% end %>
+                    <% if @facetData[:renderLastname2]  %>
+                        <div class="half"> 
+                            <%= renderLabel('lastname2', 'lastName', '', @quotationParty)   %>
+                            <%= renderInputField('lastname2', @quotationParty.lastname2, 'lastName', @quotationParty, ' maxlength="30" style="width:47%"') %>
+                        </div>
+                    <% end %>
+                </div>
+                <div data-role="dualfieldcontain">
+                    <% if @facetData[:renderExtensionname2] %>
+                        <div class ="half">
+                            <%= renderLabel('extensionName2', 'suffix', nil, @quotationParty) %>
+                            <%= renderInputField('extensionName2', @quotationParty.extensionName2, 'extensionName', @quotationParty, ' maxlength="30"') %>
+                        </div>
+                    <% end %>
+                </div>
+            <% end %>
+
+        <% elsif @facetData[:renderMiddlenamePanel] %>
+            <% if @facetData[:renderTitlecd] %>
+                <div data-role="dualfieldcontain">            
+                    <div class="half"> 
+                        <%= renderLabel('title', 'title', '', @quotationParty) %> 
+                        <%= getLookup('TITLE', 'title', @quotationParty.title, @quotationParty, nil)   %> 
+                    </div>
+                    <div class="half">
+                    </div>
+                </div> 
+            <% end %>
+
+            <% if @facetData[:renderMultiLanguagePanel] %>
+                <div data-role="dualfieldcontain">            
+                    <div class="half"> 
+                        <%= renderLabel('language', 'language1', 'languageLabel', @quotationParty)%>
+                    </div>
+                    <div class="half"> 
+                    </div>
+                </div> 
+            <% end %> 
+            <div data-role="dualfieldcontain">
+                <% if @facetData[:renderFirstname1] %>           
+                    <div class="half">
+                        <%= renderLabel('firstname', 'firstname', nil, @quotationParty)   %>
+                        <%= renderInputField('firstname', @quotationParty.firstname, 'firstname', @quotationParty, "maxlength='30'") %>
+                    </div>
+                <% end %>
+                <% if @facetData[:renderMiddlename1] %>
+                    <div class="half">
+                        <%= renderLabel('middlename', 'middleName', nil, @quotationParty)   %>
+                        <%= renderInputField('middlename', @quotationParty.middlename, 'middleName', @quotationParty, ' maxlength="30" style="width:47%"') %>
+                    </div>
+                <% end %>
+            </div>
+
+            <% if @facetData[:renderLastname1] || @facetData[:renderExtensionname1] %>
+                <div data-role="dualfieldcontain"> 
+                    <% if @facetData[:renderLastname1] %>           
+                        <div class="half">
+                            <%= renderLabel('lastname', 'lastName', '', @quotationParty)   %>
+                            <%= renderInputField('lastname', @quotationParty.lastname, 'lastName', @quotationParty, ' maxlength="30"') %>
+                        </div>
+                    <% end %>
+                    
+                    <% if @facetData[:renderExtensionname1] %>
+                        <div class ="half">
+                            <%= renderLabel('extensionName1', 'suffix', nil, @quotationParty) %>
+                            <%= renderInputField('extensionName', @quotationParty.extensionName, 'extensionName', @quotationParty, ' maxlength="30"') %>
+                        </div>
+                    <% end %>
+                </div>
+            <% end %>
+
+            <% if @facetData[:renderMultiLanguagePanel] %>
+                <div data-role="dualfieldcontain">            
+                    <div class="half"> 
+                        <%= renderLabel('language', 'language2', 'languageLabel', @quotationParty)%>
+                    </div>
+                    <div class="half"> 
+                    </div>
+                </div> 
+                <div data-role="dualfieldcontain">
+                    <% if @facetData[:renderFirstname2] %>            
+                        <div class="half">
+                            <%= renderLabel('firstname2', 'firstname', nil, @quotationParty)   %>
+                            <%= renderInputField('firstname2', @quotationParty.firstname2, 'firstname', @quotationParty, "maxlength='30'") %>
+                        </div>
+                    <% end %>
+                    <% if @facetData[:renderMiddlename2] %>
+                        <div class="half">
+                            <%= renderLabel('middlename2', 'middleName', nil, @quotationParty)   %>
+                            <%= renderInputField('middlename2', @quotationParty.middlename2, 'middleName', @quotationParty, ' maxlength="30" style="width:47%"') %>
+                        </div>
+                    <% end %>
+                </div>
+
+                <% if @facetData[:renderLastname2] || @facetData[:renderExtensionname2] %>
+                    <div data-role="dualfieldcontain">     
+                        <% if @facetData[:renderLastname2] %>       
+                            <div class="half">
+                                <%= renderLabel('lastname2', 'lastName', '', @quotationParty)   %>
+                                <%= renderInputField('lastname2', @quotationParty.lastname2, 'lastName', @quotationParty, ' maxlength="30"') %>
+                            </div>
+                        <% end %>
+                        <% if @facetData[:renderExtensionname2] %>
+                            <div class ="half">
+                                <%= renderLabel('extensionName2', 'suffix', nil, @quotationParty) %>
+                                <%= renderInputField('extensionName2', @quotationParty.extensionName, 'extensionName', @quotationParty, ' maxlength="30"') %>
+                            </div>
+                        <% end %>
+                    </div>
+                <% end %>
+            <% end %>
+        <% end %>
+
+        <div data-role="dualfieldcontain">  
+            <% if @facetData[:renderBirthdt] %>  
+                <div class="half"> 
+                    <%= renderLabel('dob', 'dob', '', @quotationParty)   %>
+                    <%= renderDateField('dob', @quotationParty.dob, 'Date Of Birth', @quotationParty) %>
+                </div>
+            <% end %>
+            <% if @facetData[:renderAge] %>
+                <div class="half">
+                    <%= renderLabel('age', 'age', '' , @quotationParty)   %>
+                    <%= renderCountField('age', @quotationParty.age, 'age', @quotationParty)  %> <%= renderLabel('age','YEAR')   %>
+                </div>
+            <% end %>
+        </div> 
+
+        <div data-role="dualfieldcontain">
+            <% if @facetData[:renderGendercd] %>
+                <div class="half">
+                    <%= renderLabel('genderCd', 'genderCd', '', @quotationParty) %>
+                    <%= renderRadioButton('genderCd', @quotationParty.genderCd,"#{getObjectMapping(@quotationParty)}male", 'MALE', @quotationParty) %>
+                    <%= renderLabel("#{getObjectMapping(@quotationParty)}male", 'Male','radioWidth')   %>
+                    <%= renderRadioButton('genderCd', @quotationParty.genderCd, "#{getObjectMapping(@quotationParty)}female", 'FEMALE', @quotationParty) %>
+                    <%= renderLabel("#{getObjectMapping(@quotationParty)}female", 'Female','radioWidth')   %> 
+                </div>
+            <% end %>
+
+            <% if @facetData[:renderRelationcd] %>
+                <div class="half">
+                    <% if @quotationParty.roleCd == "PRIMARY" %>
+                        <%= renderLabel('relationCd', 'primaryRelationCd', '', @quotationParty) %> 
+                    <% elsif @quotationParty.roleCd == "PROPOSER" %>
+                        <%= renderLabel('relationCd', 'proposerRelation', '', @quotationParty) %> 
+                    <% else %>
+                        <%= renderLabel('relationCd', 'relationCd', '', @quotationParty) %> 
+                    <% end %>
+                    <%= getLookup('PARTYRELATION', 'relationCd', @quotationParty.relationCd, @quotationParty)   %>
+                </div>
+            <% end %>
+        </div>
+
+        <% if @facetData[:renderOccupationPanel] %>
+            <div data-role="dualfieldcontain">
+                <% if @facetData[:renderIndustrycd] %>
+                    <div class="half">
+                        <%= renderLabel('industryCd', 'industryCd','', @quotationParty) %>
+                        <%= getLookup('INDUSTRY','industryCd', @quotationParty.industryCd, @quotationParty) %>
+                    </div> 
+                <% end %> 
+                <% if @facetData[:renderNatureofduty] %>
+                    <div class="half">
+                        <%= renderLabel('natureOfDuty', 'natureOfDuty','', @quotationParty) %>
+                        <span name ='<%= getObjectMapping(@quotationParty)%>[industryCd]'>
+                            <%= getLookup('DYNAMICLOOKUP','natureOfDuty',@quotationParty.natureOfDuty, @quotationParty,@natureOfDutyLookups[@quotationParty.object.to_sym]) %>
+                        </span>
+                    </div>
+                <% end %>           
+            </div>
+        <% end %>
+
+        <div data-role="dualfieldcontain">
+            <% if @facetData[:renderOccupationPanel] %>
+                <% if @facetData[:renderOccupationclass] %>
+                    <div class="half">
+                        <%= renderLabel('occupationCd', 'occupationCd', '', @quotationParty) %> 
+                        <span name='<%= getObjectMapping(@quotationParty)%>[natureOfDuty]'>
+                            <%= getLookup('DYNAMICLOOKUP', 'occupationCd', @quotationParty.occupationCd, @quotationParty,  @occupationClassLookups[@quotationParty.object.to_sym]) %> 
+                        </span>
+                    </div>  
+                <% end %>
+            <% end %>  
+            <% if @facetData[:renderSmokerPanel] %>
+                <% if @facetData[:renderSmoker] %>
+                    <div class="half">
+                        <%= renderLabel('smoker', 'smoker', '', @quotationParty)    %>
+                        <%= renderRadioButton('smoker', @quotationParty.smoker, "#{getObjectMapping(@quotationParty)}_smokerYes", 'YES', @quotationParty) %>
+                        <%= renderLabel("#{getObjectMapping(@quotationParty)}_smokerYes", 'YES','radioWidth')   %>
+                        <%= renderRadioButton('smoker', @quotationParty.smoker, "#{getObjectMapping(@quotationParty)}_smokerNo", 'NO', @quotationParty) %>
+                        <%= renderLabel("#{getObjectMapping(@quotationParty)}_smokerNo", 'NO','radioWidth')   %>
+                    </div> 
+                <% end %>
+            <% end %>  
+        </div>
+
+        <% if @facetData[:renderNsapPanel] %>
+            <% if @facetData[:renderNsap] %>
+                <div data-role="dualfieldcontain">
+                    <div class="half">
+                        <%= renderLabel('nsap', 'nsap', '', @quotationParty)    %>
+                        <%= renderRadioButton('nsap', @quotationParty.nsap, "#{getObjectMapping(@quotationParty)}[nsapYes]", 'YES', @quotationParty) %>
+                        <%= renderLabel("#{getObjectMapping(@quotationParty)}[nsapYes]", 'YES','radioWidth')   %>
+                        <%= renderRadioButton('nsap', @quotationParty.nsap, "#{getObjectMapping(@quotationParty)}[nsapNo]", 'NO', @quotationParty) %>
+                        <%= renderLabel("#{getObjectMapping(@quotationParty)}[nsapNo]", 'NO','radioWidth')   %>
+                    </div>  
+                    <div class="half">
+                    </div>   
+                </div>
+            <% end %>
+        <% end %>
+        <% if @facetData[:renderCoverageLocPanel] %>
+            <div data-role="dualfieldcontain">
+                <% if @facetData[:renderCoveragecountrycd] %>
+                    <div class="half">
+                        <%= renderLabel('coverageCountryCd', 'coverageCountryCd', '', @quotationParty) %>
+                        <%= getLookup('COVERAGECOUNTRY', 'coverageCountryCd', @quotationParty.coverageCountryCd, @quotationParty) %> 
+                    </div>  
+                <% end %>
+                <% if @facetData[:renderCoveragecitycd] %>
+                    <div class="half">
+                    <%= renderLabel('coverageCityCd', 'coverageCityCd', '', @quotationParty) %> 
+                    <%= getLookup('COVERAGECITY', 'coverageCityCd', @quotationParty.coverageCityCd, @quotationParty) %> 
+                    </div>
+                <% end %>
+            </div>
+        <% end %>
+    </div>
+
+    <div name="<%= getObjectMapping(@quotationParty)%>contactDetails">
+        <% if @facetData[:renderContactnum] || @facetData[:renderEmailaddress] %>
+            <div data-role="dualfieldcontain">
+                <% if @facetData[:renderContactnum] %>
+                    <div class="half">
+                        <%= renderLabel('contactNum', 'proposerMobileNum', nil , @quotationParty)   %>
+                        <% if @facetData[:renderCountryCd] %>
+                          <%= renderTelephoneField('countryCd', @quotationParty.countryCd,"Country Code", @quotationParty, 'style="width: 18%;" maxlength="4" placeholder="'+getLabelValue('countryCd')+'"')%>
+                        <% end %>
+                        <% if @facetData[:renderContactnum] %>
+                          <%= renderTelephoneField('contactNum', @quotationParty.contactNum, 'Mobile No', @quotationParty, 'style="width: 40%;" maxlength="10" placeholder="'+getLabelValue('contactNum')+'"') %>
+                        <% end %>
+                    </div>
+
+                <% end %> 
+                <% if @facetData[:renderEmailaddress] %>
+                    <div class="half"> 
+                        <%= renderLabel('emailAddress','emailID', nil , @quotationParty)   %>
+                        <%= renderEmailField('emailAddress', @quotationParty.emailAddress, 'emailAddress', @quotationParty, "maxlength='50'") %>
+                    </div>
+                <% end %>  
+            </div>
+        <% end %>
+    </div>
+</div>
+<%= render :partial => "capturePartyDetailsJS"  %>  

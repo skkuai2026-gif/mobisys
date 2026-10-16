@@ -1,0 +1,40 @@
+<%= pageTagStart('e-application','Symbiosys - E-Application') %>
+	<%
+	additionalOptionsFl = false
+	if ($currentProduct && @baseProduct && $rhoconfig[:tab_based_product_selection]) || !$rhoconfig[:tab_based_product_selection]
+		additionalOptionsFl = true
+	end
+	%>
+	<%  modelFileName = (@policy.proposalNum.to_s != "" ? "#{@policy.proposalNum}_Policy_Logs" : "" ) %>
+	<%= headerTag("EAPP","add",@policy.proposalNum,@backLink,"#{@quickLinkLabels}","#{@quickLinkActions}",modelFileName) %>
+	<%= formTagStart("EAPPProposal","/app/Policy/executeSave",@policy.object) %>
+		<%= tabbarTagStart(@tabName, @tabLabel, @tabImages,false) %>
+			<%= modelTagStart("policy", @policy) %>
+				<% @policyPckg = 'com.c2lbiz.symbiosys.insurance.businesscommon.dataobjects.policy' %>
+				<% if @policy.insuranceTypeCd.to_s == 'AUTO' %>
+					<%= render :partial => "NBProposalEntryAuto_Jazz" %>
+		        <% elsif @policy.insuranceTypeCd.to_s == 'TRAVEL' %>
+					<%= render :partial => "NBProposalEntryTravel_Jazz" %>
+		        <% elsif @policy.insuranceTypeCd.to_s == 'HEALTH' %>
+					<%= render :partial => "NBProposalEntryHealth_Jazz" %>
+		        <% else %>
+					<%= render :partial => "NBProposalEntryLife_Jazz" %>
+		        <% end %>
+				<div style="display: none;">
+					<%= inputTag("visitedTabs") %>
+					<%= inputTag("policyNum") %>
+					<%= inputTag("quotationRefGuid") %>
+					<%= inputTag("uwDecisionCd") %>
+					<%= inputTag("insuranceTypeCd") %>
+					<input type="hidden" id="statusCd" value='<%= @policy.statusCd %>'/>
+					<input type="hidden" id="counterOfferDecisionCd" value='<%= @policy.counterOfferDecisionCd %>'/>
+				</div>
+			<% modelTagEnd %>
+		<%= tabbarTagEnd %>
+		<input type="hidden" id="additionalOptionsFl" value='<%= additionalOptionsFl %>'/>
+		<div data-role="popup" id="summaryPopUp" data-theme="a" class="ui-corner-all popup-wrapper"></div>
+	<%= formTagEnd %>
+<%= pageTagEnd %>
+<%#= render :partial => "NBProposalEntryCompleteJS" %>
+
+<script type="text/javascript" charset="utf-8" src="/app/Policy/NBProposalEntryComplete.js"></script>

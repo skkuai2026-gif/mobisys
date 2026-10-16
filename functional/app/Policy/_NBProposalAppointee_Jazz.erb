@@ -1,0 +1,44 @@
+<%= panelTagStart(false) %>
+	<%= modelTagStart('appointeePolicyPartyRole', @appointeePolicyPartyRole, @policy)%>
+		<div style="display: none;">
+			<%= inputTag("roleCd") %>
+			<%= inputTag("refGuid") %>
+		</div>
+	<% modelTagEnd %>
+
+	<%= modelTagStart('appointeeParty', @appointeeParty, @policy) %>
+		<%
+			partyPckg = 'PolicyAppointeeDO'
+			@tagName = 'appointeeParty'
+		%>
+		<%= render(:partial => 'NBPartyRender_Jazz', :locals => { :facetkeyprefix => 'APPOINTEE', :partyPckg => partyPckg, :party => @appointeeParty }) %>
+
+		<% if @renderPolicyAppointeeNationalityPanel %>
+			<%= render(:partial => 'NBPartyNationality_Jazz', :locals => {:partyPckg => partyPckg, :party => @appointeeParty}) %>
+		<% end %>
+
+		<% @appointeePartyHomeAddress      = @appointeeParty.getPartyAddress("RESIDENTIAL", true) %>  
+		<% @appointeePartyPermanentAddress = @appointeeParty.getPartyAddress("PERMANENT", true) %>
+		<% @appointeePartyBusinessAddress  = @appointeeParty.getPartyAddress("OFFICE", true) %>
+
+		<%= render(:partial => 'NBPartyAddress_Jazz', :locals => {:partyPckg => partyPckg, :party => @appointeeParty, :party_res_address => @appointeePartyHomeAddress, :party_per_address => @appointeePartyPermanentAddress, :party_office_address => @appointeePartyBusinessAddress, :resTagId => "appointeePartyAddressHome", :ofcTagId => "appointeePartyAddressOffice", :perTagId => "appointeePartyAddressPermanent", :renderHomeAddressPanel => @renderPolicyAppointeeHomeAddressPanel, :renderPermanentAddressPanel => @renderPolicyAppointeePermanentAddressPanel, :renderOfficeAddressPanel => @renderPolicyAppointeeOfficeAddressPanel}) %>
+
+		<% if @renderPolicyAppointeeContactPanel %>  
+			<% @appointeeContactHome   = @appointeeParty.getPartyContact("RESIDENTIAL", true) %>
+			<% @appointeeContactOffice = @appointeeParty.getPartyContact("OFFICE", true) %>
+			<% @appointeeContactMobile = @appointeeParty.getPartyContact("MOBILE", true) %>
+			<% @appointeeEmail         = @appointeeParty.getPartyEmail(true) %>        
+
+ 			<%= render(:partial => 'NBPartyContact_Jazz', :locals => {:partyPckg => partyPckg, :party => @appointeeParty, :party_resi_contact => @appointeeContactHome, :party_off_contact => @appointeeContactOffice, :party_mob_contact => @appointeeContactMobile, :resiTagId => 'appointeePartyContactResidential', :offTagId => 'appointeePartyContactOffice', :mobTagId => 'appointeePartyContactMobile', :emailModelId => 'appointeePartyEmail', :partyEmailObject => @appointeeEmail }) %>
+ 		<% end %>
+
+		<div style="display: none;">
+			<%= inputTag("roleCd") %>
+		</div>
+	<% modelTagEnd %>
+<%= panelTagEnd %>
+
+<%= setupFilterUsingFieldTargetValueMap('TitleGender', false, @tagName) %>
+<%= setupFilterUsingFieldTargetValueMap('CoverageCountryCity', true, @tagName) %>
+<%= setupFilterUsingFieldTargetValueMap('RelationGender', true, @tagName) %>
+<%= setupFilterUsingFieldTargetValueMap('CITIZENSHIPRACE', true, @tagName) %>

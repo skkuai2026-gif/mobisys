@@ -1,0 +1,22 @@
+<% riderPackage = 'com.c2lbiz.symbiosys.insurance.businesscommon.dataobjects.policy.PolicyRiderDO' %>
+<% if @policy.insuranceTypeCd == 'TRAVEL'%>
+	<%= fieldDataEntryGridTagStart('riderDetails', riderPackage, 'selected,productLongName,productPlanOptionCd,baseSumAssured,modalPremium', riders, @policy, riderLabelObject,'',riderObjects,'isObjectSelected',false,false,false,false,false, riderHeader,'','5,30,16,15,15,7,7,5','',true,false,false,'insuredPartyRefGuid,productSeq,partyRoleCd,productFamilyCd,productId,productTypeCd,productVersion,builtInRiderFl,premiumSAFl,readOnlyFields,riderDisableField,sortOrder,insuredNames,impactedFields,parentproductSeq,productTerm,premiumPayingTerm,applicablePlanOptions,combinedEntryAge',true) %>
+<% else %>
+	<%= fieldDataEntryGridTagStart('riderDetails', riderPackage, 'selected,productLongName,productPlanOptionCd,baseSumAssured,modalPremium,productTerm,premiumPayingTerm,baseAnnualPremium', riders, @policy, riderLabelObject,'',riderObjects,'isObjectSelected',false,false,false,false,false, riderHeader,'','5,30,16,15,15,7,7,5','',true,false,false,'insuredPartyRefGuid,productSeq,partyRoleCd,productFamilyCd,productId,productTypeCd,productVersion,builtInRiderFl,premiumSAFl,readOnlyFields,riderDisableField,sortOrder,insuredNames,impactedFields,parentproductSeq,applicablePlanOptions,combinedEntryAge',true) %>
+<% end %>
+
+<%= fieldDataEntryGridTagEnd('riderDetails', riders, '',false,false,false) %>
+
+<% riders.each do |rider| %>
+	<% riderProductExtras = @riderLoadingHash[rider.object] %>
+	<% if riderProductExtras && !riderProductExtras.empty? %>
+		<div id="riderLoadingDiv-<%=rider.guid%>" style="display: none;" data-options = '{"mode":"blank", "blankContent":true, "blankContentAdopt":true, "headerClose":false}'>
+			<input type="hidden" name="hiddenRiderGuid" value='<%= rider.guid %>'>
+			<div class="headingPopup"><%= "#{riderHeader} - #{getLabelValue(rider.productLongName)}"%></div>
+			<div class="popup-close-cust">
+				<a href="#" rel='close' class="icon-close"></a>
+			</div>
+			<%= render :partial => "NBAutoRiderExtra_Jazz" , :locals => {:riderProductExtras => riderProductExtras, :rider => rider, :riderExtraLabelObject => riderExtraLabelObject} %>
+		</div>
+	<% end %>
+<% end %>

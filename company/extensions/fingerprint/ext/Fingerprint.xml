@@ -1,0 +1,52 @@
+<?xml version = "1.0"?>
+<?xml-stylesheet type="text/xsl" href="pb_help.xsl"?>
+<API>
+	<MODULE name="Fingerprint" parent="Rho">
+		<HELP_OVERVIEW>API to authenticate using fingerprint sensor</HELP_OVERVIEW>
+		<MORE_HELP>
+			API works for only Android and iOS platforms. Include 'fingerprint' in the extensions property of build.yml to use the extension.
+			Can be called using
+				Rho::Fingerprint.enableFingerprintScan(CallBackHandler callback)
+		</MORE_HELP>
+
+		<TEMPLATES>
+			<DEFAULT_INSTANCE/>
+			<PROPERTY_BAG/>
+		</TEMPLATES>
+
+		<PROPERTIES >
+			<DESC>list of properties supported by instance of object</DESC>
+			<PROPERTY name="simpleStringProperty" type="STRING" usePropertyBag="accessorsViaPropertyBag" >
+				<DESC>simple string property</DESC>
+			</PROPERTY>
+		</PROPERTIES>
+
+		<METHODS>
+			<METHOD name="enumerate" access="STATIC" hasCallback="optional">
+				<RETURN type="ARRAY">
+					<DESC>Array of Fingerprint objects</DESC>
+					<PARAM type="SELF_INSTANCE"/>
+				</RETURN>
+			</METHOD>
+
+			<METHOD name="enableFingerprintScan" hasCallback="optional">
+				<DESC>Attach event listener to fingerprint sensor for authentication</DESC>
+				<CALLBACK type="HASH">
+					<DESC>
+						authStatus returns boolean value stating the result of authentication. 
+						statusMessage provides verbose message stating the result of authentication.
+					</DESC>
+					<PARAMS>
+						<PARAM name="authStatus" type="STRING"/>
+						<PARAM name="statusMessage" type="STRING"/>
+					</PARAMS>
+				</CALLBACK>
+			</METHOD>
+		</METHODS>
+
+		<USER_OVERVIEW></USER_OVERVIEW>
+
+		<VER_INTRODUCED>1.0.0</VER_INTRODUCED>
+		<PLATFORM>Android,iOS</PLATFORM>
+	</MODULE>
+</API>

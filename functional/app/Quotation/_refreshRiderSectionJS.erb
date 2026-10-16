@@ -1,0 +1,41 @@
+<script type="text/javascript">
+	$(document).ready(function () {
+		<% if @newriders != nil %>
+    		<% @newriders.each_with_index do |rider, count|%>
+		 		$('select[name*="insuredPartyRefGuid"]').each( function(){
+			        id = this.id;
+			        partyRoleCd = id.replace("insuredPartyRefGuid", "partyRoleCd")
+			        partyRoleCdValue = $("select[name='"+partyRoleCd+"']").val();
+			        if ((this.value == "") && (partyRoleCdValue != "SUPPLEMENTARY"))
+			        {
+			        	$(this).selectmenu().selectmenu('disable');
+			        }
+			    }); 
+
+		 		filterSAFlDetails('<%=getObjectMapping(rider)%>[productSeq]', '','<%= @premiumSAFlriders[rider.productSeq.to_s] %>');
+			    //Mark fields mandatory based on Validation Metadata
+			    <% 
+			    if @mandatoryFields
+			        if @mandatoryFields[rider]
+			            @mandatoryFields[rider].each do |field| 
+			    %>
+			            $("label[for='<%=getObjectMapping(rider)%>[<%= field %>]']").append('<label for=" *" class="mandatory1">&nbsp;*</label>');
+			    <% 
+			            end
+			        end
+			      
+			    end
+			    %>
+
+			    <% 
+				if @newRiderFields != nil && @newRiderFields[rider.productSeq.to_i]
+					@newRiderFields[rider.productSeq.to_i].split(",").each do |readonlyField| %>
+						setReadOnly($("input[name='<%= getObjectMapping(rider) %>[<%= readonlyField %>]']"), true);
+						$('select[name="<%=getObjectMapping(rider)%>[<%= readonlyField %>]"]').selectmenu().selectmenu('disable');
+					<% end %>
+				<% end %>
+			
+		 	<% end %>
+		<% end %>
+	})
+</script>

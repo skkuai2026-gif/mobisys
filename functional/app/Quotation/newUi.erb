@@ -1,0 +1,99 @@
+<div data-role="page">
+    <link rel="stylesheet" href="/public/css/Eapp/c2l_EAPP.css">
+    <style type="text/css">
+    	.legend {
+			width: 100%;
+		}
+		.illustrationdisplay {
+			padding: 1% 1% 1% 1%;
+			width: 100%;
+		}
+    </style>
+
+	<div data-role="header" id="header" data-position="inline">
+		<a href="#" onclick="location.href='<%= url_for :action => :illustration1, :id=>$quotationIO.baseDO.object %>';" rel="external" data-direction="reverse" data-role="none">
+            <img src="/public/images/SalesIllustration/icon_BackArrow-Red.png">
+        </a>
+        <h1 style="margin:0 20%";><%= MobiSys::CommonUtil.replacePlaceHolders(LabelValue.getLabel('BENEFITILLUSTRATION', $quotationIO.outputPreferencesDO.languageCd.downcase),[$quotationIO.baseDO.quotationRefNum.to_s])%></h1>
+    </div>
+
+	<div data-role="content">
+	<%
+	counter = 1
+	limit = 1000
+	$quotationIO.htmlContent.each_pair do |pageNumber, page|
+		if counter <= limit 
+	%>
+		<!--page <%=counter%> start-->
+		<div class="legend">
+	        <label class="strongLabel">
+				<% if page["name"].to_s != "" %>
+					<%= getLabelValue("#{page["name"]}") %>
+				<% else %>
+					<%= LabelValue.getLabel("Page", $quotationIO.outputPreferencesDO.languageCd.downcase) + " #{pageNumber}" %>
+				<% end %>
+	            <a href="#" class="scrollTopButton ui-icon-carat-u ui-btn-icon-notext ui-alt-icon ui-btn-inline"></a>
+	            <a href="#" class="expandButton ui-icon-plus ui-btn-icon-notext ui-alt-icon ui-btn-inline" name="<%="#{pageNumber}"%>"/></a>
+	            <a href="#" class="collapseButton ui-icon-minus ui-btn-icon-notext ui-alt-icon ui-btn-inline" name="<%="#{pageNumber}"%>"/></a>
+	        </label>
+	    </div>
+		<div class="panelContent" name="<%="#{pageNumber}"%>">
+			<div class="illustrationdisplay" name="<%="#{pageNumber}"%>">
+				<%= page["content"] %>
+			</div>
+		</div>
+		<!--page <%=counter%> end-->
+	<% 
+		end
+		counter += 1
+	end
+	%>
+
+	<script type="text/javascript">
+		$(document).ready(function(){
+			$('.scrollTopButton').click(function() {
+				$("html, body").animate({ scrollTop: 0 }, "slow");
+			});
+
+			$('.expandButton').hide();
+
+			$('.collapseButton').click(function() {
+				$(".panelContent[name='"+$(this).attr('name')+"']").hide();
+				$(this).hide();
+				$(this).siblings('.expandButton').show();
+			});
+
+			$('.expandButton').click(function() {
+				$(".panelContent[name='"+$(this).attr('name')+"']").show();
+				$(this).hide();
+				$(this).siblings('.collapseButton').show();
+			});
+		});
+		$(document).unbind('keydown').bind('keydown', function (event) {
+            var doPrevent = false;
+            if (event.keyCode === 8) {
+                var d = event.srcElement || event.target;
+                if ((d.tagName.toUpperCase() === 'INPUT' && (
+                         d.type.toUpperCase() === 'TEXT' ||
+                         d.type.toUpperCase() === 'PASSWORD' || 
+                         d.type.toUpperCase() === 'FILE' || 
+                         d.type.toUpperCase() === 'SEARCH' || 
+                         d.type.toUpperCase() === 'EMAIL' || 
+                         d.type.toUpperCase() === 'NUMBER' || 
+                         d.type.toUpperCase() === 'DATE' )
+                     ) || 
+                     d.tagName.toUpperCase() === 'TEXTAREA') {
+                    doPrevent = d.readOnly || d.disabled;
+                }
+                else {
+                    doPrevent = true;
+                }
+            }
+
+            if (doPrevent) {
+                event.preventDefault();
+            }
+        });
+	</script>
+	</div>  
+</div>

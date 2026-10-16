@@ -1,0 +1,27 @@
+<%= renderObject(@policy)%>
+<% count = 1 %>
+<div id="requirements-info" style="margin-top:20px;">
+  	<div data-role="navbar" style="height:40px" class="ui-navbar ui-navbar-noicons" role="navigation" data-grid="e">
+    	<ul>
+            <%
+            @policy.PolicyPartyRoleList.each do |policyPartyRole|
+                if policyPartyRole.roleCd != "NOMINEE" && policyPartyRole.roleCd != "APPOINTEE"
+                    party = @policy.getPartyByGuid(policyPartyRole.refGuid)
+                    label = party.getEntityDesc
+                    label.gsub!(getLabelValue(party.roleCd.to_s), getLabelValue(policyPartyRole.roleCd.to_s)) if policyPartyRole.partySameAsCd.to_s != ""
+            %>
+            <li name="life<%= count %>Li" style="margin-right:5px">
+                <a href="#" class="ui-btn-active unselectedTab" data-url="getLifeRequirements" data-id="<%= policyPartyRole.object.to_s %>">
+                    <span class=""><%= label %></span>
+                </a>
+            </li>
+            <%
+                    count+= 1
+                end
+            end
+            %>
+		</ul>    
+  	</div>
+</div>
+<div id="requirement-container"></div>
+<%= render :partial => "captureRequirementsJS" %>

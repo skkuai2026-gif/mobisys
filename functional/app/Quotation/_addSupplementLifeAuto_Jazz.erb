@@ -1,0 +1,20 @@
+<% panelHeader = "#{getLabelValue('driverDetails')}" %>
+<%= subPanelTagStart("#{panelHeader} #{@displayCount.to_i}", true) %>
+    <div class='add-section'>
+        <% gridID = "grid_#{@supplementCurrentLifeCount}_supplementaryQuotationParty" %>
+        <%= modelTagStart(gridID, @quotationParty, @quotation,@supplementCurrentLifeCount) %>
+            <% partyPckg = 'PolicySupplementaryLifeDO' %>
+            <i class='close-add-section icon-close' onClick='javascript:catchevent(this);' id='<%=gridID%>_removed'></i>
+            <%= prdFieldDataTag("#{partyPckg}",'partySameAsCd','') %>
+            <span class="displayDriver">
+                <%= prdFieldDataTag("#{partyPckg}","dob,age" , '' , 'birthDt,age') %>
+
+                <%= prdFieldDataTag("#{partyPckg}","genderCd,maritalStatus,contactNum,emailAddress") %>
+            </span>
+            
+            <div style="display: none;">
+                <%= inputTag("roleCd") %>
+            </div>
+        <% modelTagEnd %>
+    </div>
+<%= subPanelTagEnd %>

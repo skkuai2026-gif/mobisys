@@ -1,0 +1,30 @@
+<form method="POST" action="<%= url_for :action => :submitPlanDetails %>" name="planForm" id="planForm">
+	<!-- Rendering of objects (Has to be defined inside form tag to be considered)Start -->
+	<%= renderObject(@policy) %>
+	<%= renderObject(@policyProduct, @policy) %>
+	<!-- Rendering of objects End -->
+
+
+	<div class="illustrationdisplay">
+		<%= render :partial => "captureBasicPlanDetails" %>
+	</div>
+
+	<% if @facetData[:renderInitialTopupPanel] ||  @facetData[:renderRegularTopupPanel] %> 	
+		<div class="illustrationdisplay">
+			<%= render :partial => "captureTopupDetails" %>
+		</div>
+	<% end %>
+
+	<% if @facetData[:renderFundsPanel] %>
+		<div class="illustrationdisplay">
+		  	<%= render :partial => "captureFundDetails" %>
+		</div>
+	<% end %>
+
+	<% if @showRider %>
+		<div class="illustrationdisplay" name="riderDetailsDiv">
+		  	<%= render :partial => "captureRiderDetails" %>
+		</div>
+	<% end %>
+</form>
+<%= render :partial => "capturePlanDetailsJS" %> 

@@ -1,0 +1,6 @@
+<%
+require 'CommonModules/mobisysbrowserhelper'
+if @selectLookup 
+	@selectLookup.each do|lookup|
+%><%= (lookup.desc) %><% end %>
+<% end %>

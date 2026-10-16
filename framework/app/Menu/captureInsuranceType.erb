@@ -1,0 +1,41 @@
+<%= pageTagStart('dashboard','Symbiosys') %>
+    <!--HEADER-->
+    <%= headerTag("Insurance Type", "home") %>
+    <!--/HEADER-->
+    <!--MAIN CONTENT-->
+    <div data-role="main" class="ui-content">
+        <%= menuTag(@actionModule) %>
+
+        <div class="main-content-wrapper overflow-auto insuranceTypeWrapper">
+            <div class="insuranceTypeGrid">
+                <div class="ui-grid-a">
+                    <a href="<%=@url%>LIFE" data-transition="slide" rel='external' class="ui-block-a">
+                        <div class="insurance-type-details">
+                            <div class="icon-bg"><img src="/public/jazz/images/lifeInsurance.png" alt="lifeInsurance" title="lifeInsurance"></i></div>
+                            <div class="icon-text">Life</div>
+                        </div>
+                    </a>
+                    <a href='<%=@url%>TRAVEL' data-transition="slide" rel='external' class="ui-block-a">
+                        <div class="insurance-type-details">
+                            <div class="icon-bg"> <img src="/public/jazz/images/travelInsurance.png" alt="travelInsurance" title="travelInsurance"></i></div>
+                            <div class="icon-text">Travel</div>
+                        </div>
+                    </a>
+                    
+                </div>
+            </div>
+            <div class="insuranceTypeGrid">
+                <div class="ui-grid-a">
+                    <a href="<%=@url%>AUTO" data-transition="slide" rel='external' class="ui-block-a">
+                        <div class="insurance-type-details">
+                            <div class="icon-bg"><img src="/public/jazz/images/autoInsurance.png" alt="autoInsurance" title="autoInsurance"></i></div>
+                            <div class="icon-text">Auto</div>
+                        </div>
+                    </a>
+                    
+                </div>
+            </div>
+        </div>
+        <!--/MAIN CONTENT-->
+    </div>
+<%= pageTagEnd %>

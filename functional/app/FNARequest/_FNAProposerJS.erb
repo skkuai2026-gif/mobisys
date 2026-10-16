@@ -1,0 +1,610 @@
+<script type="text/javascript">
+
+	var initialFnaInputForm = "";
+
+	function checkEmailFormat(value){
+		returnValue = true;
+        if (value != "") {
+            emailPattern=new RegExp("[A-Za-z0-9._-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,4}");
+            returnValue = emailPattern.test(value); 
+        }
+        return returnValue;
+	} 
+
+	function tabSetup(){
+
+		$("input[type= 'checkbox']").each(
+			function(i, j){
+				if($(j).is(":checked") == false){
+					if($(j).parent().parent().next().children().length != 0){
+						$(j).parent().parent().next().children().prop('disabled', true);
+					}
+					else{
+						$(j).parent().parent().next().children().prop('disabled', false);
+					}
+				}
+		});
+
+		$("input").change(function(){
+           var entityType = $(this).attr("data-entityType");
+           validateField(this, "en", entityType);
+		});
+
+		<% if @fnaRequest.statusCd.to_s == "FNAPENDING" %>
+			$('[id="<%=getObjectMapping(@fnaRequest)%>[nonDisclosureofAssets]_canvas"]').css("background-color","#ffffff");
+        <% end %>
+
+        <% if @fnaRequest.statusCd.to_s == "FNASIGNED" || @fnaRequest.statusCd.to_s == "FNASUBMIT" || @fnaRequest.statusCd.to_s == "SYNCDONE" %>
+            setReadOnly($('input[type="text"]'), true);
+            setReadOnly($('input[type="tel"]'), true);
+            setReadOnly($('input[type="num"]'), true);
+            setReadOnly($('input[type="email"]'), true);
+            $('select').selectmenu('disable').trigger("refresh");
+            $('input[type="radio"]').checkboxradio('disable').trigger("refresh");
+            $('input[type="checkbox"]').checkboxradio('disable').trigger("refresh");
+            $('input[type="button"]').off('click');
+            $('input[type="button"]').button('disable').trigger("refresh");
+            $('.datepickerimg').hide();
+            $('label[for="<%=getObjectMapping(@fnaProposer)%>[lastName1]"]').css("top", "-10px");
+            $('label[for="<%=getObjectMapping(@fnaProposer)%>[firstName1]"]').css("top", "-10px");
+            $('label[for="<%=getObjectMapping(@fnaProposer)%>[mobileNum]"]').css("top", "-10px");
+            $('label[for="<%=getObjectMapping(@fnaProposer)%>[emailAddress]"]').css("top", "-10px");
+            $('label[for="<%=getObjectMapping(@fnaProposer)%>[birthDt]"]').css("top", "-10px");
+            $('label[for="<%=getObjectMapping(@fnaProposer)%>[age]"]').css("top", "-10px");
+            $('label[for="<%=getObjectMapping(@fnaProposer)%>[occupationCd]"]').css("top", "-10px");
+            $('label[for="<%=getObjectMapping(@fnaProposer)%>[addressLine1Lang1]"]').css("top", "-10px");
+            $('label[for="<%=getObjectMapping(@fnaProposer)%>[addressLine6Lang1]"]').css("top", "-10px");
+            $('label[for="<%=getObjectMapping(@fnaProposer)%>[addressLine2Lang1]"]').css("top", "-10px");
+            $('label[for="<%=getObjectMapping(@fnaProposer)%>[addressLine3Lang1]"]').css("top", "-10px");
+            $('label[for="<%=getObjectMapping(@fnaProposer)%>[addressLine4Lang1]"]').css("top", "-10px");
+            $('label[for="<%=getObjectMapping(@fnaProposer)%>[countryCd]"]').css("top", "-10px");
+            $('canvas[id="FNARequest[nonDisclosureofAssets]_canvas"]').css('pointer-events','none');
+            $('[id="<%=getObjectMapping(@fnaRequest)%>[nonDisclosureofAssets]_canvas"]').css("background-color","grey");
+        <% end %>
+        
+
+
+		expDate();
+	 
+		if ($('input[name="<%=getObjectMapping(@fnaProposer)%>[age]"]').val()!='')
+		{
+			$('label[for="<%=getObjectMapping(@fnaProposer)%>[age]"]').css("top", "-10px");
+			$('label[for="<%=getObjectMapping(@fnaProposer)%>[age]"]').css("font-size", "14px");
+		}
+		if ($('input[name="<%=getObjectMapping(@fnaProposer)%>[birthDt]"]').val()!=''){
+			$('label[for="<%=getObjectMapping(@fnaProposer)%>[birthDt]"]').css("top", "-10px");
+			$('label[for="<%=getObjectMapping(@fnaProposer)%>[birthDt]"]').css("font-size", "14px");
+		}
+
+		// for smart search
+		// if ($("input[id='<%#= getObjectMapping(@fnaProposer) %>[occupationCd]']").val()!=""){
+		//   $("#smartSearchList").hide()
+		// }
+		// if ($("input[id='<%#= getObjectMapping(@fnaProposer) %>[occupationCd]']").val()==null){
+		//   $("#smartSearchList").hide()
+		// }
+
+		if ($('.FNA_IS_REGULAR_INCOME').find('input[type="radio"]').first().is(":checked")){
+			$('.FNA_IS_REGULAR_INCOME').find('input[type="tel"]').removeAttr('disabled');
+		}
+		else{
+			$('.FNA_IS_REGULAR_INCOME').find('input[type="tel"]').val('');
+			$('.FNA_IS_REGULAR_INCOME').find('input[type="tel"]').prop('disabled', true);
+			$('.FNA_IS_REGULAR_INCOME').find('input[type="tel"]').prop('disabled','true');
+		}
+
+
+		if ($('.FNA_IS_REGULAR_INCOME').find('input[type="radio"]').is(":checked") && ($('.FNA_AMOUNT_OF_LIQUID_ASSETS').find('input[type="checkbox"]').is(':checked') || $('.FNA_LIQUID_ASSETS_TOTAL').find('input[id*="fnaQuestionLookupDataCd"]').val() != '' )){
+			$("canvas[id='FNARequest[addtnField1Str]_canvas']").hide();
+			$('a[href="#clear"]').hide();
+			$('.sigPad').hide();
+			$('.clearButton').trigger('click');
+			$('[id="<%=getObjectMapping(@fnaRequest)%>[witnessSignature]"]').val("");
+			$('[id="<%=getObjectMapping(@fnaRequest)%>[nonDisclosureofAssets]"]').val("");
+			$('input[id= "<%=getObjectMapping(@fnaRequest)%>[nonDisclosureofAssets]_canvas"]').val("");
+		}
+		else{
+			$("canvas[id='FNARequest[addtnField1Str]_canvas']").show();
+			$('a[href="#clear"]').show();
+			$('.sigPad').show();
+		}		
+	}  // end of tabSetup
+
+
+
+
+     //Tejashree:24-08-2017 for focus of radio button
+       $("input[type='radio']").click(function(){
+         $(this).focus();
+       });
+
+        $("input[type='checkbox']").click(function(){
+         $(this).focus();
+       });
+
+
+
+// code for deleting "." from input field
+ 	// $('input[id="FNARequest[FNAParty][0][FNAQuestionResponse][5][fnaQuestionLookupDataCd]"]').keyup(function(){
+	// // alert($(this).val());
+	// 	// alert($(this).val().conatains("."));
+	// 	var num = $(this).val();
+	// 	var str = num.toString();
+	// 	var lastDigit = str.charAt(str.length-1);
+	// 	var charCode = (lastDigit.which) ? lastDigit.which : event.keyCode
+	// 	if (charCode == 110){
+	// 		var deletingDot = $(this).val().slice(0,-1);
+	// 		$('input[id="FNARequest[FNAParty][0][FNAQuestionResponse][5][fnaQuestionLookupDataCd]"]').val(deletingDot);
+	// 	}
+	// })
+	
+	$('[id="<%=getObjectMapping(@fnaRequest)%>[nonDisclosureofAssets]_clearButton"]').click(function(){
+		$('[id="<%=getObjectMapping(@fnaRequest)%>[nonDisclosureofAssets]_canvas"]').css("background-color","");
+		$('[id="<%=getObjectMapping(@fnaRequest)%>[witnessSignature]"]').val("");
+	})
+
+	$('.amountField').change(function (){
+		if ( isNaN($('.amountField').val()) || ($('.amountField').val()) < 0 ) {
+			$('.amountField').val('');
+
+          	var dialogContent = '<span>'+"<%= getLabelValue('ERR_CONTACT') %>"+'</span>';
+            $("#policyNo-validation-div").html("").html(dialogContent).trigger('create');
+            if (typeof $.mobile.sdCurrentDialog === 'undefined') {
+            $("<div>").simpledialog2({
+                mode : 'blank',
+                blankContent : $("#policyNo-validation-div").html() +"<a rel='close' data-role='button' href='#' style='margin-top: 2%;'>" + '<%= getLabelValue("MESSAGE_CLOSE") %>' + "</a>"
+                });
+            }
+			// showDialog("", "<%#= getLabelValue('ERR_CONTACT') %>", 'warning', 0, 'capture');
+			$('.amountField').focus();
+		}
+	});
+
+	$('input[id="FNARequest[FNAParty][0][FNAQuestionResponse][5][fnaQuestionLookupDataCd]"]').change(function (){
+		if ( isNaN($('input[id="FNARequest[FNAParty][0][FNAQuestionResponse][5][fnaQuestionLookupDataCd]"]').val()) || ($('input[id="FNARequest[FNAParty][0][FNAQuestionResponse][5][fnaQuestionLookupDataCd]"]').val()) < 0 ) {
+			$('input[id="FNARequest[FNAParty][0][FNAQuestionResponse][5][fnaQuestionLookupDataCd]"]').val(null);
+
+          	var dialogContent = '<span>'+"<%= getLabelValue('ERR_CONTACT') %>"+'</span>';
+            $("#policyNo-validation-div").html("").html(dialogContent).trigger('create');
+            if (typeof $.mobile.sdCurrentDialog === 'undefined') {
+            $("<div>").simpledialog2({
+                mode : 'blank',
+                blankContent : $("#policyNo-validation-div").html() +"<a rel='close' data-role='button' href='#' style='margin-top: 2%;'>" + '<%= getLabelValue("MESSAGE_CLOSE") %>' + "</a>"
+                });
+            }
+			// showDialog("", "<%#= getLabelValue('ERR_CONTACT') %>", 'warning', 0, 'capture');
+			$('input[id="FNARequest[FNAParty][0][FNAQuestionResponse][5][fnaQuestionLookupDataCd]"]').focus();
+		}
+		else{
+			if ($(this).val() != ""){
+				var num = $(this).val();
+				var nuberRound = Math.round(num);
+				$('input[id="FNARequest[FNAParty][0][FNAQuestionResponse][5][fnaQuestionLookupDataCd]"]').val(nuberRound);
+			}	
+		}
+	});
+
+	function expDate(){
+		if ($('input[name="<%=getObjectMapping(@fnaRequest)%>[consentFl]"]').is(':checked')){
+			$('#fna_exp_date').hide();
+			// $('input[name="<%=getObjectMapping(@fnaRequest)%>[consentFl]"]').val("YES");
+		}
+		if (!$('input[name="<%=getObjectMapping(@fnaRequest)%>[consentFl]"]').is(':checked')){
+			$('#fna_exp_date').show();
+			// $('input[name="<%=getObjectMapping(@fnaRequest)%>[consentFl]"]').val("NO");
+		}          
+	}
+
+	function checkifnumbers(valueOfContact){
+		var value = valueOfContact.value;
+		var bool = isNaN(value);
+		if ( isNaN(value) || (value) < 0 ){
+			$('input[name="<%=getObjectMapping(@fnaProposer)%>[mobileNum]"]').val('');
+
+	        var dialogContent = '<span>'+"<%= getLabelValue('ERR_CONTACT') %>"+'</span>';
+	        $("#policyNo-validation-div").html("").html(dialogContent).trigger('create');
+	        if (typeof $.mobile.sdCurrentDialog === 'undefined') {
+	            $("<div>").simpledialog2({
+	                mode : 'blank',
+	                blankContent : $("#policyNo-validation-div").html() +"<a rel='close' data-role='button' href='#' style='margin-top: 2%;'>" + '<%= getLabelValue("MESSAGE_CLOSE") %>' + "</a>"
+	                });
+	            }
+	        $('input[name="<%=getObjectMapping(@fnaProposer)%>[mobileNum]"]').focus();
+			// showDialog("", "<%#= getLabelValue('ERR_CONTACT') %>", 'warning', 0, 'capture');
+		}
+	}
+
+	function numbersonly(evt){
+		var charCode = (evt.which) ? evt.which : event.keyCode
+		if (charCode > 31 && (charCode < 48 || charCode > 57))
+			return false;
+		return true;
+	}
+
+	function getAgeMethod(object){
+		
+		var birthDt = object.value;
+
+		$.ajax({                                    
+			url: "/app/FNARequest/getAge",
+			method: 'POST',
+			async: false,
+			data: {'birthDt': birthDt},
+			headers: {
+					'Transition-Enabled': false
+			},
+			success: function(data) {
+				console.log("data: " + data);
+	            ageParts = data.split("|");
+	            var age = ageParts[0].replace(/"/g,"");
+
+				if (age<0){
+		          	var dialogContent = '<span>'+"<%= getLabelValue('ERR_DOB') %>"+'</span>';
+		            $("#policyNo-validation-div").html("").html(dialogContent).trigger('create');
+		            if (typeof $.mobile.sdCurrentDialog === 'undefined') {
+		            $("<div>").simpledialog2({
+		                mode : 'blank',
+		                blankContent : $("#policyNo-validation-div").html() +"<a rel='close' data-role='button' href='#' style='margin-top: 2%;'>" + '<%= getLabelValue("MESSAGE_CLOSE") %>' + "</a>"
+		                });
+		            }
+					// showDialog("", "<%#= getLabelValue('ERR_DOB') %>", 'warning', 0, 'capture');
+					$("input[id='<%= getObjectMapping(@fnaProposer) %>[age]']").val(null);
+					$("input[id='<%= getObjectMapping(@fnaProposer) %>[birthDt]']").val(null);
+				} else if(age<18){
+		          	var dialogContent = '<span>'+"<%= getLabelValue('ERR_AGE_MORETHAN_18') %>"+'</span>';
+		            $("#policyNo-validation-div").html("").html(dialogContent).trigger('create');
+		            if (typeof $.mobile.sdCurrentDialog === 'undefined') {
+		            $("<div>").simpledialog2({
+		                mode : 'blank',
+		                blankContent : $("#policyNo-validation-div").html() +"<a rel='close' data-role='button' href='#' style='margin-top: 2%;'>" + '<%= getLabelValue("MESSAGE_CLOSE") %>' + "</a>"
+		                });
+		            }
+					// showDialog("", "<%#= getLabelValue('ERR_AGE_MORETHAN_18') %>", 'warning', 0, 'capture');
+					$("input[id='<%= getObjectMapping(@fnaProposer) %>[age]']").val(null);
+					$("input[id='<%= getObjectMapping(@fnaProposer) %>[birthDt]']").val(null);
+
+				} else{
+					$("input[id='<%= getObjectMapping(@fnaProposer) %>[age]']").val(age);
+					$('label[for="<%=getObjectMapping(@fnaProposer)%>[age]"]').css("top", "-10px");
+					$('label[for="<%=getObjectMapping(@fnaProposer)%>[age]"]').css("font-size", "14px");
+					$('label[for="<%=getObjectMapping(@fnaProposer)%>[birthDt]"]').css("top", "-10px");
+					$('label[for="<%=getObjectMapping(@fnaProposer)%>[birthDt]"]').css("font-size", "14px");
+				}
+			}
+	});
+
+	}
+	// Smart Search
+	// function showFilteredList(element){
+	//     var searchText = $(element).val();
+	//     var searchList = $(element).parent().parent().children('ul');
+	//     var searchItems = $(searchList).children("li");
+	//     $(searchList).show();
+	//     $(searchItems).show();
+	//     if(searchText.length == 0){ 
+	//         $(searchItems).removeClass("ui-screen-hidden");
+	//         $(searchItems).css({"display": "block"});
+	//     }
+	//     else{
+	//         $(searchItems).addClass("ui-screen-hidden");
+	//         $(searchItems).css({"display": "none"});
+	//         var lists = $(searchList).children().find('span')
+	//         $(lists).map(function(){
+	//           var occStr = $(this).html();
+	//           // if(occStr.toLowerCase().indexOf(searchText.toLowerCase()) == 0){
+	//           //   $(searchList).children("li[data-desc= '"+occStr+"']").show();
+	//           // }
+	//           var occStrArr = $(this).html().split(" ");
+	//           for(i=0; i< occStrArr.length; i++){
+	//               if(occStrArr[i].toLowerCase().indexOf(searchText.toLowerCase()) == 0){
+	//                   $(searchList).children("li[data-desc= '"+occStr+"']").show();
+	//                   break ;
+	//               }
+	//           }
+	//         });
+	//     }  
+	// }
+
+	// for smart search start
+	// function changeColor(rowElement){
+	//     // alert("changeColor");
+	//     $(rowElement).css("background-color","#f9e6b3");
+	// }    
+
+	// function filterList(rowElement){
+	//   var occupationtext = $(rowElement).children('span').text();
+	//   var occupationtextField = $(rowElement).attr("data-pointer");
+	//   $("input[name= '"+occupationtextField+"']").val(occupationtext);
+
+	//   $(rowElement).parent().hide();
+	//       $(rowElement).css("background-color","#f7f7f7");
+					
+	//         // filterOccupationClass(occupationtextField);
+	// } 
+
+	// function deleteOccupation(){
+	//   $("input[name='<%#= getObjectMapping(@fnaProposer) %>[occupationCd]']").val(null);
+	// }
+
+	function submitForm(){
+		//Used to trim all the input fields before save
+		$(':input').each(function(){
+				$(this).val($.trim($(this).val()))
+		});
+
+		if ($('input[id= "<%=getObjectMapping(@fnaRequest)%>[nonDisclosureofAssets]"]').val() != ""){
+			// console.log("Sign is present")
+			var sigImg = $('canvas[id= "<%=getObjectMapping(@fnaRequest)%>[nonDisclosureofAssets]_canvas"]').get(0).toDataURL();
+			// console.log("sigImg " + sigImg );
+			$("input[id='<%=getObjectMapping(@fnaRequest)%>[witnessSignature]']").val(sigImg);
+		}
+		else{
+			// console.log("Sign is absent")
+			$("input[id='<%=getObjectMapping(@fnaRequest)%>[witnessSignature]']").val("");
+		}
+
+	
+		// if(initialFnaInputForm != $('#fnaInputForm').serialize()) {
+		// Ashwini:24-07-2017: Submit Basic details every time to trigger the validations
+		<% if @fnaRequest.statusCd == "FNAPENDING" %>
+			$.ajax({                                    
+					url: "/app/FNARequest/submitBasicDetails",
+					method: 'POST',
+					async: false,
+					data: $('#fnaInputForm').serialize(),
+					headers: {
+							'Transition-Enabled': false
+					},
+					success: function(data) {
+					   var taberrors = data;
+                       errorsData = taberrors.split("|");
+                       errorsExist = errorsData[0];
+                       warningsExist = errorsData[1];
+                       warnings = errorsData[2]; 
+                       $("input[name='<%= getObjectMapping(@fnaRequest) %>[addtnField3Str]']").val(errorsExist); 
+                       $("input[name='<%= getObjectMapping(@fnaRequest) %>[addtnField4Str]']").val(warningsExist); 
+                        var errorData = "";
+                        $.each($.parseJSON(warnings), function(fieldName, errorMessage) {
+                            $.each(errorMessage, function(errIndex, message) {
+                                $.each(message, function(Index, msg) {
+                                    errorData += "<div><br>" + msg + "</div>";
+                             });
+                         });
+                      });
+                        $("div[id= 'error-container']").html(errorData);
+                        $("input[name='<%= getObjectMapping(@fnaRequest) %>[addtnField5Str]']").val(errorData);;
+                        // console.log("errorData" +errorData);
+                        if (warningsExist == "true") {
+	                        $("<div>").simpledialog2({
+	                          	mode: 'blank',
+	                          	blankContent: $("#error-container").html() +"<a rel='close' data-role='button' href='#' style='margin-top: 2%;'>" + '<%= getLabelValue("MESSAGE_OK") %>' + "</a>"
+	                      	});
+	                    }
+	                        
+                    $("a#submit").hide();
+					}
+			});
+	  	// }
+	  	<% end %>
+	}
+
+	//Ashwini 04-10-2017: Alert message on first check/uncheck of radio button 
+	var q3Value = '<%=$flagQ3%>';
+	var resetQ3value =  '<%=$flagQ3New%>';
+    var currentQ3value = '<%=$lookupdataCdQ3%>'
+	$('.FNA_POLICY_TARGET_HORIZON').find('input[type="radio"]').change(function(){
+			var updatedQ3Value = $('.FNA_POLICY_TARGET_HORIZON').find('input[type="radio"]:checked').val();
+			if (q3Value == "true" && resetQ3value =="true" && currentQ3value!=updatedQ3Value){
+				showDialog("", "<%= getLabelValue('ADVISORY_MESSAGE_Q3') %>", 'warning', 0, 'capture');
+				q3Value = "false";
+ 				$.ajax({                                    
+            url: "/app/FNARequest/checkQ3",
+            method: 'POST',
+            async: false,
+            success: function(data) {
+                
+            }
+        });
+    }			
+	});
+
+	$(document).ready(function() {
+
+		$('#nextpre').show();
+		tabExchange($('.active-btn').attr("data-url"));
+        $('#nextTab').removeClass("ui-state-disabled");
+		
+		// Ashwini 02-08-2017 : Hide E-signature Tab if chamges are made in Basic Into tab 
+		$('#fnaInputForm').on('keyup change', 'input, select, textarea', function(){
+   		 	$("#fnaInputForm").data("changed",true)
+   		 	$("#icon-arrow").hide();
+    	 	$("#esignature").hide();
+    	 	$("#changeStatusCd").val("true");
+		});
+		
+		initialFnaInputForm = $('#fnaInputForm').serialize();
+
+		$("a#inline").click(function(){
+	        $('.mask').fadeIn();
+		});
+
+		$("a#inline").fancybox({
+			'hideOnContentClick': true
+		});
+
+		$("a#inline").fancybox({
+			autoSize : false,
+			height : '95% !important',
+			width : '95% !important',
+		});
+
+		$('input[id="<%=getObjectMapping(@fnaProposer)%>[emailAddress]"]').keyup(function(){
+				this.value = this.value.replace(/\s/g,"");
+		})
+		
+
+		//Ashwini:15-05-2017: email format validation
+		$('input[name="<%=getObjectMapping(@fnaProposer)%>[emailAddress]"]').change( function(){
+			if(!checkEmailFormat(this.value)) {
+	          	var dialogContent = '<span>'+"<%= getLabelValue('ERR_INVALID_EMAIL') %>"+'</span>';
+	            $("#policyNo-validation-div").html("").html(dialogContent).trigger('create');
+	            if (typeof $.mobile.sdCurrentDialog === 'undefined') {
+	            $("<div>").simpledialog2({
+	                mode : 'blank',
+	                blankContent : $("#policyNo-validation-div").html() +"<a rel='close' data-role='button' href='#' style='margin-top: 2%;'>" + '<%= getLabelValue("MESSAGE_CLOSE") %>' + "</a>"
+	                });
+	            }
+				// showDialog("", "<%#= getLabelValue('ERR_INVALID_EMAIL') %>", 'warning', 0, 'capture');
+				$(this).val('');
+				$(this).focus();
+			} 
+		});
+
+		// For sign to save in Json format
+		// $('.sigPad').signaturePad({drawOnly:true});
+		var output = $('.sigPad input').val().replace(/'/g,'"');
+        // console.log(output);
+        input = $('.sigPad').signaturePad({drawOnly:true,output:".output_old",
+            onDrawEnd:function(){
+                var string = input.getSignatureString().replace(/\"/g,"'");
+                // console.log(string)
+                $('.sigPad input').val(string);
+            }});
+        if(output!="")
+        input.regenerate(output);
+        $('.sigPad a[href="#clear"]').click(function(){
+            $('.sigPad input').val("");
+        });
+	});
+	
+	
+	$('.FNA_LIQUID_ASSETS_TOTAL').find('input[type="tel"]').change(function(){
+		if (isNaN(this.value) || (this.value) < 0){
+			$('.FNA_LIQUID_ASSETS_TOTAL').find('input[type="tel"]').val("");
+
+			var dialogContent = '<span>'+"<%= getLabelValue('ERR_CONTACT') %>"+'</span>';
+            $("#policyNo-validation-div").html("").html(dialogContent).trigger('create');
+            if (typeof $.mobile.sdCurrentDialog === 'undefined') {
+            $("<div>").simpledialog2({
+                mode : 'blank',
+                blankContent : $("#policyNo-validation-div").html() +"<a rel='close' data-role='button' href='#' style='margin-top: 2%;'>" + '<%= getLabelValue("MESSAGE_CLOSE") %>' + "</a>"
+                });
+            }
+		}
+	})
+
+$('.FNA_LIQUID_ASSETS_TOTAL').find('input[type="tel"]').on('focusout touchleave touchcancel',function(event){
+		if (isNaN(this.value) || (this.value) < 0){
+			$('.FNA_LIQUID_ASSETS_TOTAL').find('input[type="tel"]').val("");
+
+			var dialogContent = '<span>'+"<%= getLabelValue('ERR_CONTACT') %>"+'</span>';
+            $("#policyNo-validation-div").html("").html(dialogContent).trigger('create');
+            if (typeof $.mobile.sdCurrentDialog === 'undefined') {
+            $("<div>").simpledialog2({
+                mode : 'blank',
+                blankContent : $("#policyNo-validation-div").html() +"<a rel='close' data-role='button' href='#' style='margin-top: 2%;'>" + '<%= getLabelValue("MESSAGE_CLOSE") %>' + "</a>"
+                });
+            }
+		}
+	
+});
+
+
+
+
+
+	$('.FNA_IS_REGULAR_INCOME').find('input[type="radio"]').change(function(){
+		if ($('.FNA_IS_REGULAR_INCOME').find('input[type="radio"]').is(":checked") && ($('.FNA_AMOUNT_OF_LIQUID_ASSETS').find('input[type="checkbox"]').is(':checked') || $('.FNA_LIQUID_ASSETS_TOTAL').find('input[id*="fnaQuestionLookupDataCd"]').val() != '' )){
+			$("canvas[id='FNARequest[addtnField1Str]_canvas']").hide();
+			$('a[href="#clear"]').hide();
+			$('.sigPad').hide();
+			$('.clearButton').trigger('click');
+			$('[id="<%=getObjectMapping(@fnaRequest)%>[witnessSignature]"]').val("");
+			$('[id="<%=getObjectMapping(@fnaRequest)%>[nonDisclosureofAssets]"]').val("");
+			$('input[id= "<%=getObjectMapping(@fnaRequest)%>[nonDisclosureofAssets]_canvas"]').val("");
+		}
+		else{
+			$("canvas[id='FNARequest[addtnField1Str]_canvas']").show();
+			$('a[href="#clear"]').show();
+			$('.sigPad').show();
+		}
+
+		if ($('.FNA_IS_REGULAR_INCOME').find('input[type="radio"]').first().is(":checked")){
+			$('.FNA_IS_REGULAR_INCOME').find('input[type="tel"]').removeAttr('disabled');
+		}
+		else{
+			$('.FNA_IS_REGULAR_INCOME').find('input[type="tel"]').val('');
+			$('.FNA_IS_REGULAR_INCOME').find('input[type="tel"]').prop('disabled', true);
+			$('.FNA_IS_REGULAR_INCOME').find('input[type="tel"]').prop('disabled','true');
+		}
+	})
+
+	$('.FNA_AMOUNT_OF_LIQUID_ASSETS').find('input[type="checkbox"]').change(function(){
+		if ($('.FNA_IS_REGULAR_INCOME').find('input[type="radio"]').is(":checked") && ($('.FNA_AMOUNT_OF_LIQUID_ASSETS').find('input[type="checkbox"]').is(':checked') || $('.FNA_LIQUID_ASSETS_TOTAL').find('input[id*="fnaQuestionLookupDataCd"]').val() != '' )){
+			$("canvas[id='FNARequest[addtnField1Str]_canvas']").hide();
+			$('a[href="#clear"]').hide();
+			$('.sigPad').hide();
+			$('.clearButton').trigger('click');
+			$('[id="<%=getObjectMapping(@fnaRequest)%>[witnessSignature]"]').val("");
+			$('[id="<%=getObjectMapping(@fnaRequest)%>[nonDisclosureofAssets]"]').val("");
+			$('input[id= "<%=getObjectMapping(@fnaRequest)%>[nonDisclosureofAssets]_canvas"]').val("");
+		}
+		else{
+			$("canvas[id='FNARequest[addtnField1Str]_canvas']").show();
+			$('a[href="#clear"]').show();
+			$('.sigPad').show();
+		}
+	})
+
+	$('.FNA_LIQUID_ASSETS_TOTAL').find('input[id*="fnaQuestionLookupDataCd"]').change(function(){
+		if ($('.FNA_IS_REGULAR_INCOME').find('input[type="radio"]').is(":checked") && ($('.FNA_AMOUNT_OF_LIQUID_ASSETS').find('input[type="checkbox"]').is(':checked') || $('.FNA_LIQUID_ASSETS_TOTAL').find('input[id*="fnaQuestionLookupDataCd"]').val() != '' )){
+			$("canvas[id='FNARequest[addtnField1Str]_canvas']").hide();
+			$('a[href="#clear"]').hide();
+			$('.sigPad').hide();
+			$('.clearButton').trigger('click');
+			$('[id="<%=getObjectMapping(@fnaRequest)%>[witnessSignature]"]').val("");
+			$('[id="<%=getObjectMapping(@fnaRequest)%>[nonDisclosureofAssets]"]').val("");
+			$('input[id= "<%=getObjectMapping(@fnaRequest)%>[nonDisclosureofAssets]_canvas"]').val("");
+		}
+		else{
+			$("canvas[id='FNARequest[addtnField1Str]_canvas']").show();
+			$('a[href="#clear"]').show();
+			$('.sigPad').show();
+		}
+	})
+
+	//Ashwini:21-08-2017:Family name cannot be cleared/left blank once FNA is saved
+		$(function() {
+			  $('input[name="<%=getObjectMapping(@fnaProposer)%>[lastName1]"]').on("blur", function() {
+			    if ($(this).val() == "") {
+			      $(this).val(this.defaultValue);
+			      var dialogContent = '<span>'+"<%= getLabelValue('ERR_FAMILY_NAME_MANDATORY') %>"+'</span>';
+	          $("#singleErrorDiv").html("").html(dialogContent).trigger('create');
+			      if (typeof $.mobile.sdCurrentDialog === 'undefined') {
+	            $("<div>").simpledialog2({
+	                mode : 'blank',
+	                blankContent : $("#singleErrorDiv").html() +"<a rel='close' data-role='button' href='#' style='margin-top: 2%;'>" + '<%= getLabelValue("MESSAGE_CLOSE") %>' + "</a>"
+	                });
+	            }
+			    }
+      });   
+    }); 
+
+	//Ashwini:21-08-2017:Contact number cannot be cleared/left blank once FNA is saved
+    $(function() {
+			  $('input[name="<%=getObjectMapping(@fnaProposer)%>[mobileNum]"]').on("blur", function() {
+			    if ($(this).val() == "") {
+			      $(this).val(this.defaultValue);
+			      var dialogContent = '<span>'+"<%= getLabelValue('ERR_CONTACT_NUMBER_MANDATORY') %>"+'</span>';
+	          $("#singleErrorDiv").html("").html(dialogContent).trigger('create');
+			      if (typeof $.mobile.sdCurrentDialog === 'undefined') {
+	            $("<div>").simpledialog2({
+	                mode : 'blank',
+	                blankContent : $("#singleErrorDiv").html() +"<a rel='close' data-role='button' href='#' style='margin-top: 2%;'>" + '<%= getLabelValue("MESSAGE_CLOSE") %>' + "</a>"
+	                });
+	            }
+			    }
+ 		  }); 
+	  });
+
+</script>

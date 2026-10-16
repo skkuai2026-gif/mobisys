@@ -1,0 +1,58 @@
+
+  <div class= "fna-target-need-parent">
+    <%= renderObject(@fnaOtherTargetNeed, @fnaRequest) %>
+    <%= renderHiddenField('guid', @fnaOtherTargetNeed.guid, 'guid', @fnaOtherTargetNeed) %>
+    <%= renderHiddenField('object', @fnaOtherTargetNeed.object, 'object', @fnaOtherTargetNeed) %>  
+    <div id = '<%= getObjectMapping(@fnaOtherTargetNeed) %>'>
+        <fieldset style= 'margin-left: 97%;'>
+             <input type="button" data-inline="true" data-icon="delete" data-iconpos="notext" onclick="removeRider('<%= getObjectMapping(@fnaOtherTargetNeed) %>');">
+          </fieldset>
+
+        <div data-role="dualfieldcontain" class="ui-dual-field-contain ui-body ui-br">
+          <div class="third">
+            <div class="group">
+              <%= renderInputField('objective', @fnaOtherTargetNeed.objective ,'objective', @fnaOtherTargetNeed, ' maxlength="150" pattern="^/\A[a-zA-Z]+(?: [a-zA-Z]+)?\z/" class="material-input goalValue"') %>
+              <%= renderLabel('objective', 'OBJECTIVE', 'mandatory material-label', @fnaOtherTargetNeed) %>
+            </div>
+          </div>
+          <div class="third">
+            <div class="group">
+              <%= renderNumericField('targetSavingAmt', thosandSeperator(@fnaOtherTargetNeed.targetSavingAmt.to_s),'targetSavingAmt', @fnaOtherTargetNeed, ' maxlength="10" pattern="/([^\s])" onkeypress="return numbersonly(event)"  onchange="return checkifNum(this.value, this.id)" class="material-input targetvalue"') %>
+              <%= renderLabel('targetSavingAmt', 'TARGET_SAVING_AMT', 'mandatory material-label', @fnaOtherTargetNeed) %>
+              <%= attachMask("#{getObjectMapping(@fnaOtherTargetNeed)}[targetSavingAmt]") %>
+            </div>
+          </div>
+          <div class="third">
+            <div class="group">
+                <%= renderNumericField('savingsPeriod', thosandSeperator(@fnaOtherTargetNeed.savingsPeriod.to_s) ,'savingsPeriod', @fnaOtherTargetNeed, ' maxlength="3" pattern="/([^\s])" onkeypress="return numbersonly(event)" onchange="return periodValuecheck(this.value, this.id)" class="material-input targetvalue"') %>
+              <%= renderLabel('savingsPeriod', 'SAVING_PERIOD_OTHER_TARGET', 'mandatory material-label', @fnaOtherTargetNeed) %>
+              <%= attachMask("#{getObjectMapping(@fnaOtherTargetNeed)}[savingsPeriod]") %>
+            </div>
+          </div>
+        </div>
+        <div data-role="dualfieldcontain" class="ui-dual-field-contain ui-body ui-br">
+          <div class="third">
+            <div class="group">
+              <%= renderNumericField('monthlySavingsReqdAmt', thosandSeperator(@fnaOtherTargetNeed.monthlySavingsReqdAmt.to_s) ,'monthlySavingsReqdAmt', @fnaOtherTargetNeed, ' maxlength="10" pattern="/([^\s])" class="material-input ansvalue" readonly="true" tabindex="-1" style="background-color: #c8c8c8 !important;margin-top:7px !important;"') %>
+              <%= renderLabel('monthlySavingsReqdAmt', 'MONTHLY_SAVINGS_REQD', 'mandatory material-label', @fnaOtherTargetNeed) %>
+              <%= attachMask("#{getObjectMapping(@fnaOtherTargetNeed)}[monthlySavingsReqdAmt]") %>
+            </div>
+          </div>
+          <div class="third">
+            <div class="group">
+              <%= renderNumericField('lumsumReqdAmt', thosandSeperator(@fnaOtherTargetNeed.lumsumReqdAmt.to_s) ,'lumsumReqdAmt', @fnaOtherTargetNeed, ' maxlength="10" pattern="/([^\s])" class="material-input ansvalue" tabindex="-1" readonly="true" style="background-color: #c8c8c8 !important;margin-top:7px !important;"') %>
+              <%= renderLabel('lumsumReqdAmt', 'LUMPSUM_INV_REQD', 'mandatory material-label', @fnaOtherTargetNeed) %>
+              <%= attachMask("#{getObjectMapping(@fnaOtherTargetNeed)}[lumsumReqdAmt]") %>
+            </div>
+          </div>
+        </div>
+    </div>
+    <br>
+    <hr class="style2">
+    <br>
+    <style type="text/css">
+      hr.style2 {
+         border-top: 3px double #8c8b8b;
+       }
+    </style>
+  </div>    

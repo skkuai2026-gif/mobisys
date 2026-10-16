@@ -1,0 +1,452 @@
+
+<!-- benefit pages for each base product -->          
+<% 
+  @quotation.QuotationProductList.each do |quotationProduct|
+    currentProduct = @productHash[quotationProduct.productId] 
+    if currentProduct != nil && quotationProduct.productTypeCd == "PLAN" && currentProduct.productId == @productId
+    %>
+      <div data-role="page" id="basebenefit_<%=quotationProduct.productId%>">
+      
+        <div data-role="header" data-position="inline">
+          <h1><%= getLabelValue('BASEBENEFITS') %> - <%= getLabelValue(quotationProduct.planCode+"LONG") %> </h1>
+          <a href="<%= url_for :action => :illustration, :id=>@quotation.object%>" class="ui-btn-left" data-direction="reverse">
+            <%= getLabelValue('BACK')   %>
+          </a>
+        </div>
+        
+        <div data-role="content">
+          <div data-role="table" class="illustrationdisplay">
+            <% if @illustrationCollateral != nil %>
+            <div style="width: 100%; height:310px">
+                <div class="illustrationimage">
+                  
+                    <img src="<%=@illustrationCollateral.fileName%>" height=300px width=100%>
+                  
+                </div>
+                <div class="illustrationimage">
+                  <%
+                    if @stylesList != nil
+                      @stylesList.each_with_index do |style, index| %>
+                        <DIV class="illustrationimagetext" STYLE="<%=style%>">
+                            <%= @valuesList[index] %>
+                        </DIV>
+                      <%  
+                      end
+                    end
+                  %>
+                </div>
+            </div>
+            <% end %>
+
+      <!-- Survival benefit table -->
+      <% 
+        if @productBenefitsHash[currentProduct.productId+"SURVIVAL"] != nil
+          %>
+            <table class="illustrationtable" width="100%">
+              <tr class="illustrationtableheader" >
+                <td class="tabletext" colspan=2>
+                  <%= getLabelValue('SURVIVALBENEFIT')   %>
+                </td>  
+              </tr>
+              <%
+              survivalBenefits = @productBenefitsHash[currentProduct.productId+"SURVIVAL"]
+              
+              survivalBenefits.each do |benefit|              
+                %>
+                    <tr class="illustrationtablerow">
+                      <td class="tabletext" width="70%">  <%= getLabelValue(benefit.benefitLabelCd)   %> </td>
+                      <td class="tablenum" width="30%">
+                        <% if benefit.basisCd == "RATESA" %>
+                          <%= renderNumberFloor(benefit.benefitAmount.to_f * quotationProduct.baseSumAssured.to_f / 100.0)%> <%= getLabelValue('BAHT')%>
+                        <% elsif benefit.basisCd == "RATESA_THREE" %>
+                          <%= renderNumberFloor((benefit.benefitAmount.to_f * quotationProduct.baseSumAssured.to_f / 100.0).floor() * 3.0)%> <%= getLabelValue('BAHT')%>
+                        <% elsif benefit.basisCd == "RATESA_TERM" %>
+                          <%= renderNumberFloor( (benefit.benefitAmount.to_f * quotationProduct.baseSumAssured.to_f / 100.0).floor() * quotationProduct.productTerm.to_f)%> <%= getLabelValue('BAHT')%>
+                        <% elsif benefit.basisCd == "RATEPREMIUM" %>
+                          <%= renderNumber(benefit.benefitAmount.to_f * quotationProduct.modalPremium.to_f / 100.0)%> <%= getLabelValue('BAHT')%>
+                        <% elsif benefit.basisCd == "RATEANNUALPREMIUM" %>
+                          <%= renderNumber(benefit.benefitAmount.to_f * quotationProduct.baseAnnualPremium.to_f / 100.0)%> <%= getLabelValue('BAHT')%>
+                        <% elsif benefit.basisCd == "RATESA_VESTING" %>
+                          <%= renderNumberFloor( (quotationProduct.productTerm.to_f - quotationProduct.premiumPayingTerm.to_f) * (benefit.benefitAmount.to_f * quotationProduct.baseSumAssured.to_f / 100.0).floor() )%> <%= getLabelValue('BAHT')%>
+                        <% elsif benefit.basisCd == "RATESAPARTIALEN" %>
+                          <%= renderNumberFloor(benefit.benefitAmount.to_f * MobiSys::QuotationBO.getQuotationProductByProductId(@quotation, '10ECV').baseSumAssured.to_f / 100.0)%> <%= getLabelValue('BAHT')%>
+                        <% elsif benefit.basisCd == "FLAT" %>
+                          <%= renderNumber(benefit.benefitAmount.to_f)%> <%= getLabelValue('BAHT')%>
+                        <% elsif benefit.basisCd == "FLATVALUE" %>
+                          <%= benefit.benefitAmount.to_f%>
+                        <% elsif benefit.basisCd == "FLATYEAR" %>
+                          <%= renderNumber(benefit.benefitAmount.to_f)%> <%= getLabelValue('YEAR')%>
+                        <% elsif benefit.basisCd == "MESSAGE_EXISTS" %>
+                          ( <%= getLabelValue('IFANY')%> )
+                        <% elsif benefit.basisCd == "MESSAGE_FREE" %>
+                          ( <%= getLabelValue('FREE')%> )
+                        <% elsif benefit.basisCd == "MESSAGE" %>
+                          &nbsp;
+                        <% elsif benefit.basisCd.include? "RATEAP" 
+                            split = benefit.basisCd.split(";")
+                            
+                            if split.size == 2
+                              
+                              policyYears = split[1].split(",")
+                              rates = benefit.benefitAmount.to_f
+                              benefitValue = 0
+                               
+                              accumulatedPremiumValues = Array.new                              
+                              accumulatedPremium = 0
+                              accumulatedPremiumValues.push(accumulatedPremium)
+                              
+                              
+                              (1..quotationProduct.productTerm.to_i).each do |policyYear|
+                                premiumReceived = 0
+                                if policyYear <= quotationProduct.premiumPayingTerm.to_i
+                                  case quotationProduct.paymentFrequencyCd
+                                  when "YEARLY"
+                                    premiumReceived = quotationProduct.modalPremium.to_f
+                                  when "HALFYEARLY"
+                                    premiumReceived = quotationProduct.modalPremium.to_f * 2
+                                  when "QUARTERLY"
+                                    premiumReceived = quotationProduct.modalPremium.to_f * 4
+                                  when "MONTHLY"
+                                    premiumReceived = quotationProduct.modalPremium.to_f * 12
+                                  end
+                                end
+                                accumulatedPremium += premiumReceived.to_f
+                                
+                                accumulatedPremiumValues.push(0+accumulatedPremium) 
+                              end
+                              
+                              policyYears.each_with_index do |year, index|
+                                begin
+                                  benefitValue += (accumulatedPremiumValues[year.to_i].to_f * rates.to_f / 100.0).floor()
+                                rescue StandardError => se    
+                                  benefitValue += 0
+                                end
+                              end
+                              
+                              %>                            
+                            <%= renderNumberFloor(benefitValue.to_f)%> <%= getLabelValue('BAHT')%>    
+                              <%
+                            end
+                          %>                            
+                        <% end %>
+                      </td>
+                    </tr>
+                <% 
+              end
+              %>
+            </table>
+            <!-- End Survival benefit table -->
+            <br>
+          <%
+        end 
+      %>          
+
+      <!-- Death benefit table -->
+      <% 
+        if @productBenefitsHash[currentProduct.productId+"DEATH"] != nil
+          %>
+            <table class="illustrationtable" width="100%">
+              <tr class="illustrationtableheader" >
+                <td class="tabletext" colspan=2>
+                  <%= getLabelValue('DEATHBENEFIT')   %>
+                </td>  
+              </tr>
+          <%
+          deathBenefits = @productBenefitsHash[currentProduct.productId+"DEATH"]
+          
+          deathBenefits.each do |benefit|              
+            %>
+                <tr class="illustrationtablerow">
+                  <td class="tabletext" width="70%">  <%= getLabelValue(benefit.benefitLabelCd)   %> </td>
+                  <td class="tablenum" width="30%">   
+                    <% if benefit.basisCd == "RATESA" %>
+                      <%= renderNumberFloor(benefit.benefitAmount.to_f * quotationProduct.baseSumAssured.to_f / 100.0)%> <%= getLabelValue('BAHT')%>
+                    <% elsif benefit.basisCd == "RATESA_TERM" %>
+                      <%= renderNumberFloor( (benefit.benefitAmount.to_f * quotationProduct.baseSumAssured.to_f / 100.0).floor() * quotationProduct.productTerm.to_f)%> <%= getLabelValue('BAHT')%>
+                    <% elsif benefit.basisCd == "RATESA_THREE" %>
+                      <%= renderNumberFloor((benefit.benefitAmount.to_f * quotationProduct.baseSumAssured.to_f / 100.0).floor() * 3.0)%> <%= getLabelValue('BAHT')%>
+                    <% elsif benefit.basisCd == "RATEPREMIUM" %>
+                      <%= renderNumber(benefit.benefitAmount.to_f * quotationProduct.modalPremium.to_f / 100.0)%> <%= getLabelValue('BAHT')%>
+                    <% elsif benefit.basisCd == "RATEANNUALPREMIUM" %>
+                      <%= renderNumber(benefit.benefitAmount.to_f * quotationProduct.baseAnnualPremium.to_f / 100.0)%> <%= getLabelValue('BAHT')%>
+                    <% elsif benefit.basisCd == "RATESA_VESTING" %>
+                      <%= renderNumberFloor( (quotationProduct.productTerm.to_f - quotationProduct.premiumPayingTerm.to_f) * (benefit.benefitAmount.to_f * quotationProduct.baseSumAssured.to_f / 100.0).floor() )%> <%= getLabelValue('BAHT')%>
+                    <% elsif benefit.basisCd == "FLAT" %>
+                      <%= renderNumberFloor(benefit.benefitAmount.to_f)%> <%= getLabelValue('BAHT')%>
+                    <% elsif benefit.basisCd == "FLATVALUE" %>
+                      <%= renderNumberFloor(benefit.benefitAmount.to_f)%>
+                    <% elsif benefit.basisCd == "FLATYEAR" %>
+                      <%= renderNumberFloor(benefit.benefitAmount.to_f)%> <%= getLabelValue('YEAR')%>
+                    <% elsif benefit.basisCd == "MESSAGE_EXISTS" %>
+                      ( <%= getLabelValue('IFANY')%> )
+                    <% elsif benefit.basisCd == "MESSAGE_FREE" %>
+                      ( <%= getLabelValue('FREE')%> )
+                    <% end %>
+                  </td>
+                </tr>
+            <% 
+          end
+          %>
+            </table>
+            <!-- End Death benefit table -->
+            <br>
+          <%
+        end 
+      %>  
+
+      <!-- Accident benefits -->
+      <% 
+        if @productBenefitsHash[currentProduct.productId+"ACCIDENT"] != nil
+          %>
+            <table class="illustrationtable" width="100%">
+              <tr class="illustrationtableheader" >
+                <td class="tabletext" colspan=2>
+                  <%= getLabelValue('BENEFIT')   %>
+                </td>  
+              </tr>
+          <%
+          benefits = @productBenefitsHash[currentProduct.productId+"ACCIDENT"]
+          
+          benefits.each do |benefit|              
+            %>
+                <tr class="illustrationtablerow">
+                  <td class="tabletext" width="70%">  <%= getLabelValue(benefit.benefitLabelCd)   %> </td>
+                  <td class="tablenum" width="30%">   
+                    <% if benefit.basisCd == "RATESA" %>
+                      <%= renderNumberFloor(benefit.benefitAmount.to_f * quotationProduct.baseSumAssured.to_f / 100.0)%> <%= getLabelValue('BAHT')%>
+                    <% elsif benefit.basisCd == "RATESA_TERM" %>
+                      <%= renderNumberFloor( (benefit.benefitAmount.to_f * quotationProduct.baseSumAssured.to_f / 100.0).floor() * quotationProduct.productTerm.to_f)%> <%= getLabelValue('BAHT')%>
+                    <% elsif benefit.basisCd == "RATEPREMIUM" %>
+                      <%= renderNumber(benefit.benefitAmount.to_f * quotationProduct.modalPremium.to_f / 100.0)%> <%= getLabelValue('BAHT')%>
+                    <% elsif benefit.basisCd == "RATEANNUALPREMIUM" %>
+                      <%= renderNumber(benefit.benefitAmount.to_f * quotationProduct.baseAnnualPremium.to_f / 100.0)%> <%= getLabelValue('BAHT')%>
+                    <% elsif benefit.basisCd == "RATESA_VESTING" %>
+                      <%= renderNumberFloor( (quotationProduct.productTerm.to_f - quotationProduct.premiumPayingTerm.to_f) * (benefit.benefitAmount.to_f * quotationProduct.baseSumAssured.to_f / 100.0).floor() )%> <%= getLabelValue('BAHT')%>
+                    <% elsif benefit.basisCd == "FLAT" %>
+                      <%= renderNumberFloor(benefit.benefitAmount.to_f)%> <%= getLabelValue('BAHT')%>
+                    <% elsif benefit.basisCd == "FLATVALUE" %>
+                      <%= renderNumberFloor(benefit.benefitAmount.to_f)%>
+                    <% elsif benefit.basisCd == "FLATYEAR" %>
+                      <%= renderNumberFloor(benefit.benefitAmount.to_f)%> <%= getLabelValue('YEAR')%>
+                    <% elsif benefit.basisCd == "MESSAGE_EXISTS" %>
+                      ( <%= getLabelValue('IFANY')%> )
+                    <% elsif benefit.basisCd == "MESSAGE_FREE" %>
+                      ( <%= getLabelValue('FREE')%> )
+                    <% end %>
+                  </td>
+                </tr>
+            <% 
+          end
+          %>
+                 </table>
+                 <!-- End accident benefit table -->
+                 <br>
+               <%             
+        end 
+      %>  
+
+            <b> <%= getLabelValue('REMARK')   %></b><br>
+
+            <!-- Dividend benefit table -->
+            <% 
+              if @productBenefitsHash[currentProduct.productId+"DIVIDEND"] != nil
+                dividendBenefits = @productBenefitsHash[currentProduct.productId+"DIVIDEND"]
+                
+                dividendBenefits.each do |benefit|
+                %>
+                <%= getLabelValue(benefit.benefitLabelCd)   %><br>
+                <%
+                end
+                %>
+                <%
+              end
+            %>
+            
+            <%=getLabelValue("ROUNDINGDISCLAIMER")%> <br>
+
+          </div>
+              
+          <center><%=getLabelValue("LEGALDISCLAIMER")%></center> 
+        </div>
+      </div>
+
+    <%
+    end 
+  end 
+%>
+  
+<!-- end benefit pages for each base product -->
+        
+<!-- benefit pages for each rider-->          
+<% 
+@quotation.QuotationProductList.each do |quotationProduct|
+  currentProduct = @productHash[quotationProduct.productId] 
+  if currentProduct != nil && ( quotationProduct.productTypeCd == "RIDER" || quotationProduct.productTypeCd == "PA") && currentProduct.productId == @productId
+  %>
+
+    <div data-role="page" id="riderbenefit_<%=quotationProduct.productId%>">
+    
+      <div data-role="header" data-position="inline">
+         <h1><%= getLabelValue('RIDERBENEFITS')%> - <%= getLabelValue(quotationProduct.planCode+"LONG") %></h1>
+         <a href="<%= url_for :action => :illustration, :id=>@quotation.object%>" class="ui-btn-left" data-direction="reverse">
+           <%= getLabelValue('BACK')   %>
+         </a>
+      </div>
+      
+      <div data-role="content">
+        
+        <div data-role="table" class="illustrationdisplay">
+          <!-- Benefit table -->
+          <table class="illustrationtable" width="100%">
+            <tr class="illustrationtableheader" >
+              <td class="tabletext" colspan=2>
+                <%= getLabelValue('BENEFIT')   %>
+              </td>  
+            </tr>
+          
+          <!-- Accident benefits -->
+          <% 
+            if @productBenefitsHash[currentProduct.productId+"ACCIDENT"] != nil
+              benefits = @productBenefitsHash[currentProduct.productId+"ACCIDENT"]
+              
+              benefits.each do |benefit|              
+                %>
+                    <tr class="illustrationtablerow">
+                      <td class="tabletext" width="70%">  <%= getLabelValue(benefit.benefitLabelCd)   %> </td>
+                      <td class="tablenum" width="30%">   
+                        <% if benefit.basisCd == "RATESA" %>
+                          <%= renderNumberFloor(benefit.benefitAmount.to_f * quotationProduct.baseSumAssured.to_f / 100.0)%> <%= getLabelValue('BAHT')%>
+                        <% elsif benefit.basisCd == "RATESA_TERM" %>
+                          <%= renderNumberFloor( (benefit.benefitAmount.to_f * quotationProduct.baseSumAssured.to_f / 100.0).floor() * quotationProduct.productTerm.to_f)%> <%= getLabelValue('BAHT')%>
+                        <% elsif benefit.basisCd == "RATEPREMIUM" %>
+                          <%= renderNumber(benefit.benefitAmount.to_f * quotationProduct.modalPremium.to_f / 100.0)%> <%= getLabelValue('BAHT')%>
+                        <% elsif benefit.basisCd == "RATEANNUALPREMIUM" %>
+                          <%= renderNumber(benefit.benefitAmount.to_f * quotationProduct.baseAnnualPremium.to_f / 100.0)%> <%= getLabelValue('BAHT')%>
+                        <% elsif benefit.basisCd == "RATESA_VESTING" %>
+                          <%= renderNumberFloor( (quotationProduct.productTerm.to_f - quotationProduct.premiumPayingTerm.to_f) * (benefit.benefitAmount.to_f * quotationProduct.baseSumAssured.to_f / 100.0).floor() )%> <%= getLabelValue('BAHT')%>
+                        <% elsif benefit.basisCd == "FLAT" %>
+                          <%= renderNumberFloor(benefit.benefitAmount.to_f)%> <%= getLabelValue('BAHT')%>
+                        <% elsif benefit.basisCd == "FLATVALUE" %>
+                          <%= renderNumberFloor(benefit.benefitAmount.to_f)%>
+                        <% elsif benefit.basisCd == "FLATYEAR" %>
+                          <%= renderNumberFloor(benefit.benefitAmount.to_f)%> <%= getLabelValue('YEAR')%>
+                        <% elsif benefit.basisCd == "MESSAGE_EXISTS" %>
+                          ( <%= getLabelValue('IFANY')%> )
+                        <% elsif benefit.basisCd == "MESSAGE_FREE" %>
+                          ( <%= getLabelValue('FREE')%> )
+                        <% end %>
+                      </td>
+                    </tr>
+                <% 
+              end             
+            end 
+          %>  
+          
+          <!-- Death benefits -->
+          <% 
+            if @productBenefitsHash[currentProduct.productId+"DEATH"] != nil
+              benefits = @productBenefitsHash[currentProduct.productId+"DEATH"]
+              
+              benefits.each do |benefit|              
+                %>
+                    <tr class="illustrationtablerow">
+                      <td class="tabletext" width="70%">  <%= getLabelValue(benefit.benefitLabelCd)   %> </td>
+                      <td class="tablenum" width="30%">   
+                        <% if benefit.basisCd == "RATESA" %>
+                          <%= renderNumberFloor(benefit.benefitAmount.to_f * quotationProduct.baseSumAssured.to_f / 100.0)%> <%= getLabelValue('BAHT')%>
+                        <% elsif benefit.basisCd == "RATESA_TERM" %>
+                          <%= renderNumberFloor( (benefit.benefitAmount.to_f * quotationProduct.baseSumAssured.to_f / 100.0).floor() * quotationProduct.productTerm.to_f)%> <%= getLabelValue('BAHT')%>
+                        <% elsif benefit.basisCd == "RATEPREMIUM" %>
+                          <%= renderNumber(benefit.benefitAmount.to_f * quotationProduct.modalPremium.to_f / 100.0)%> <%= getLabelValue('BAHT')%>
+                        <% elsif benefit.basisCd == "RATEANNUALPREMIUM" %>
+                          <%= renderNumber(benefit.benefitAmount.to_f * quotationProduct.baseAnnualPremium.to_f / 100.0)%> <%= getLabelValue('BAHT')%>
+                        <% elsif benefit.basisCd == "RATESA_VESTING" %>
+                          <%= renderNumberFloor( (quotationProduct.productTerm.to_f - quotationProduct.premiumPayingTerm.to_f) * (benefit.benefitAmount.to_f * quotationProduct.baseSumAssured.to_f / 100.0).floor() )%> <%= getLabelValue('BAHT')%>
+                        <% elsif benefit.basisCd == "FLAT" %>
+                          <% if benefit.benefitAmount == nil || benefit.benefitAmount == "" %>
+                            -
+                          <% else %>
+                            <%= renderNumberFloor(benefit.benefitAmount.to_f)%> 
+                          <% end %>
+                          <%= getLabelValue('BAHT')%>
+                        <% elsif benefit.basisCd == "FLATVALUE" %>
+                          <%= renderNumberFloor(benefit.benefitAmount.to_f)%>
+                        <% elsif benefit.basisCd == "FLATYEAR" %>
+                          <%= renderNumberFloor(benefit.benefitAmount.to_f)%> <%= getLabelValue('YEAR')%>
+                        <% elsif benefit.basisCd == "MESSAGE_EXISTS" %>
+                          ( <%= getLabelValue('IFANY')%> )
+                        <% elsif benefit.basisCd == "MESSAGE_FREE" %>
+                          ( <%= getLabelValue('FREE')%> )
+                        <% end %>
+                      </td>
+                    </tr>
+                <% 
+              end             
+            end 
+          %>
+            
+          <!-- Survival benefits -->
+          <% 
+            if @productBenefitsHash[currentProduct.productId+"SURVIVAL"] != nil
+              benefits = @productBenefitsHash[currentProduct.productId+"SURVIVAL"]
+              
+              benefits.each do |benefit|              
+                %>
+                    <tr class="illustrationtablerow">
+                      <td class="tabletext" width="70%">  <%= getLabelValue(benefit.benefitLabelCd)   %> </td>
+                      <td class="tablenum" width="30%">   
+                        <% if benefit.basisCd == "RATESA" %>
+                          <%= renderNumberFloor(benefit.benefitAmount.to_f * quotationProduct.baseSumAssured.to_f / 100.0)%> <%= getLabelValue('BAHT')%>
+                        <% elsif benefit.basisCd == "RATESA_TERM" %>
+                          <%= renderNumberFloor( (benefit.benefitAmount.to_f * quotationProduct.baseSumAssured.to_f / 100.0).floor() * quotationProduct.productTerm.to_f)%> <%= getLabelValue('BAHT')%>
+                        <% elsif benefit.basisCd == "RATEPREMIUM" %>
+                          <%= renderNumber(benefit.benefitAmount.to_f * quotationProduct.modalPremium.to_f / 100.0)%> <%= getLabelValue('BAHT')%>
+                        <% elsif benefit.basisCd == "RATEANNUALPREMIUM" %>
+                          <%= renderNumber(benefit.benefitAmount.to_f * quotationProduct.baseAnnualPremium.to_f / 100.0)%> <%= getLabelValue('BAHT')%>
+                        <% elsif benefit.basisCd == "RATESA_VESTING" %>
+                          <%= renderNumberFloor( (quotationProduct.productTerm.to_f - quotationProduct.premiumPayingTerm.to_f) * (benefit.benefitAmount.to_f * quotationProduct.baseSumAssured.to_f / 100.0).floor() )%> <%= getLabelValue('BAHT')%>
+                        <% elsif benefit.basisCd == "FLAT" %>
+                          <%= renderNumberFloor(benefit.benefitAmount.to_f)%> <%= getLabelValue('BAHT')%>
+                        <% elsif benefit.basisCd == "FLATVALUE" %>
+                          <%= renderNumberFloor(benefit.benefitAmount.to_f)%>
+                        <% elsif benefit.basisCd == "FLATYEAR" %>
+                          <%= renderNumberFloor(benefit.benefitAmount.to_f)%> <%= getLabelValue('YEAR')%>
+                        <% elsif benefit.basisCd == "MESSAGE_EXISTS" %>
+                          ( <%= getLabelValue('IFANY')%> )
+                        <% elsif benefit.basisCd == "MESSAGE_FREE" %>
+                          ( <%= getLabelValue('FREE')%> )
+                        <% end %>
+                      </td>
+                    </tr>
+                <% 
+              end             
+            end 
+          %>  
+          </table>
+          <!-- End benefit table -->
+          <br>
+
+          <!-- Premium table -->
+          <!--
+          <table class="illustrationtable" width="100%">
+            <tr class="illustrationtablerow" >
+              <td class="tabletext" width="70%">
+                <%= getLabelValue('PREMIUM')   %>
+              </td>  
+              <td class="tablenum" width="30%">
+                <%= renderNumberFloor(quotationProduct.modalPremium)   %> <%= getLabelValue('BAHT')%>
+              </td>
+            </tr>
+          </table>
+          -->
+          <!-- end Premium table -->
+
+        </div>
+        <center><%=getLabelValue("LEGALDISCLAIMER")%></center>        
+      </div>
+    </div>
+  <%
+  end 
+end 
+%>
+<!-- end of benefit pages for each rider-->

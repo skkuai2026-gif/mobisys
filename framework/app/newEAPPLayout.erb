@@ -1,0 +1,396 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+	<head>
+	    <title>  <%= Rho::RhoConfig.app_name %> </title>
+
+
+	    <!-- VIEWPORT SETTINGS START -->
+	    <% is_bb6 = System::get_property('platform') == 'Blackberry' && (System::get_property('os_version').split('.')[0].to_i >= 6) %>
+	    <% if is_bb6 %>
+	        <meta name="viewport" content="width=device-width, height=device-height, initial-scale=1.0, maximum-scale=1.0, user-scalable=0"/>
+	    <% else %>
+	        <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0"/>
+	    <% end %>
+	    <!-- VIEWPORT SETTINGS END -->
+
+
+
+	    <!-- CONTENT TYPE SETTINGS START -->
+	    <% if System::get_property('platform') == 'WP7' %>
+	        <meta http-equiv="X-UA-Compatible" content="IE=9"/>
+	        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+	    <% end %>
+	    <!-- CONTENT TYPE SETTINGS END -->
+
+
+
+	    <!-- COMMON CSS CODE START -->
+	    <link type="text/css" rel="stylesheet" href="/public/css/Eapp/jquery.mobile-1.4.5.min.css">
+        <link type="text/css" rel="stylesheet" href="/public/css/jqmobile-patch.css">
+        <!-- COMMON CSS CODE END -->
+
+
+
+        <!-- PLATFORM SPECIFIC CSS CODE START -->
+        <% if System::get_property('platform') == 'APPLE' %>
+	        <link type="text/css" rel="stylesheet" href="/public/css/iphone.css"/>
+	        <link type="text/css" rel="stylesheet" href="/public/css/c2l-ios.css"/>
+	        <link type="text/css" rel="stylesheet" href="/public/css/fonts.css"/> 
+	        <link type="text/css" rel="stylesheet" href="/public/css/c2l.css"/>
+	        <link type="text/css" rel="stylesheet" href="/public/css/style.css"/>
+	        <style>
+	        #tabDetailsContainer,
+	        div[data-role="page"] {
+	        	-webkit-overflow-scrolling: touch;
+  				overflow-y: scroll;
+  				overflow-x: hidden;
+	        }
+	        ._css3m{display:none}
+	        </style>
+	    <% elsif System::get_property('platform') == 'ANDROID' %>
+	        <link type="text/css" rel="stylesheet" href="/public/css/android.css"/>
+	        <link type="text/css" rel="stylesheet" href="/public/css/c2l-android.css"/>
+	        <link type="text/css" rel="stylesheet" href="/public/css/fonts.css"/> 
+	        <link type="text/css" rel="stylesheet" href="/public/css/c2l.css"/>
+	        <link type="text/css" rel="stylesheet" href="/public/css/style.css"/>
+	        <style>._css3m{display:none}</style>
+	    <% elsif is_bb6 %>
+	        <link type="text/css" rel="stylesheet" href="/public/css/android.css"/>
+	    <% elsif System::get_property('platform') == 'Blackberry' %>
+	        <link type="text/css" rel="stylesheet" href="/public/css/blackberry.css"/>
+	    <% elsif System::get_property('platform') == 'WP7' %>
+	        <link type="text/css" rel="stylesheet" href="/public/css/windows_phone7.css"/>
+	    <% elsif System::get_property('webview_framework') =~ /^WEBKIT/ %>
+	        <link type="text/css" rel="stylesheet" href="/public/css/c2l-android.css"/>
+	        <link type="text/css" rel="stylesheet" href="/public/css/fonts.css"/> 
+	        <link type="text/css" rel="stylesheet" href="/public/css/c2l.css"/>
+	        <link type="text/css" rel="stylesheet" href="/public/css/style.css"/>
+	        <style type="text/css">
+	        ._css3m{display:none}
+	        a {
+	        	text-decoration: none;
+	        }
+	        </style>
+	    <% elsif System::get_property('platform') == 'WINDOWS' %>
+	        <link type="text/css" rel="stylesheet" href="/public/css/windows_mobile.css"/>
+	    <% end %>
+	    <!-- PLATFORM SPECIFIC CSS CODE END -->
+
+
+
+	    <!-- COMMON JAVASCRIPT CODE START -->
+	    <script type="text/javascript" charset="utf-8" src="/public/jquery/jquery-1.11.3.min.js"></script>
+        <script type="text/javascript" charset="utf-8" src="/public/jquery/jquery.json-2.5.1.min.js"></script>
+        <script type="text/javascript" charset="utf-8" src="/public/jqmobile/jquery.mobile-1.4.5.min.js"></script>
+		<script type="text/javascript" charset="utf-8" src="/public/js/encrypt.js?v=1.0"></script>
+		<!-- date -->
+        <script type="text/javascript" charset="utf-8" src="/public/date/dFormat.js"></script>
+        <!-- end date -->
+		<!-- c2l patch --> 
+        <script type="text/javascript" charset="utf-8" src="/public/js/jqueryMobile-c2l_patch.js"></script>
+        <!-- end c2l patch -->
+        <script type="text/javascript" charset="utf-8" src="/public/js/c2l.js"></script>
+        
+        <script type="text/javascript">
+            $(document).bind("mobileinit", function(){
+                // jQuery-Mobile init options initialization goes here. For example, you may
+                // enable automatically generated 'Back' buttons on headers this way:
+                //$.mobile.page.prototype.options.addBackBtn = true;
+
+                // You can disable (with false value) or change page loading message
+                $.mobile.loadingMessage = true;
+                $.mobile.loadingMessage = "<%= getLabelValue('loading') %>"; // it is default value
+
+                $.mobile.defaultPageTransition = "slide";
+                
+                // For documented init options look here:
+                // http://jquerymobile.com/demos/1.0.1/docs/api/globalconfig.html
+
+                // For poorly documented options search for ".prototype.options"
+                // in the jQuery Mobile source code
+
+                // Rhodes custom option!
+                // how long to wait transition end before "loading.." message will be shown
+                $.mobile.loadingMessageDelay = 300; // in ms
+                
+                //render type=date inputs
+                $.mobile.page.prototype.options.degradeInputs.date = false;
+            });
+
+
+
+			//Function to show loading message
+			function showLoadingMessage(){ 
+				var interval = setInterval(function(){
+					$.mobile.loading("show", {
+						text: "<%= getLabelValue('loading') %>",
+						textVisible: true,
+						theme: "b",
+					  	html: ""
+					});
+					clearInterval(interval);
+			    },1);
+			    if(!$('#shadow').hasClass('blocker'))
+    				$('#shadow').addClass('blocker'); 
+			}
+
+
+			//Function to hide loading message
+			function hideLoadingMessage(){
+				var interval = setInterval(function(){
+			        $.mobile.loading('hide');
+			        clearInterval(interval);
+			    },1);
+			    if($('#shadow').hasClass('blocker'))
+    				$('#shadow').removeClass('blocker');
+			}
+
+			//Code to show/hide loading message on every AJAX call and to prevent input of blacklisted characters
+			$(document).ready(function(){
+				$.ajaxPrefilter(function(options, _, jqXHR) {
+				    showLoadingMessage();
+				    jqXHR.done(function() {
+				        hideLoadingMessage();
+				    });
+				});
+				$('input').on('keypress', function (event) {
+				    var regex = new RegExp("[\\\\\\\]~`!#$%^&*\(\)+=\{\}|\"<>?/:;\[]+");
+				    var key = String.fromCharCode(!event.charCode ? event.which : event.charCode);
+				    if (regex.test(key)) {
+				       event.preventDefault();
+				       return false;
+				    }
+				});
+			    $(document).ajaxComplete(function(event, request, settings) {
+					$('input').on('keypress', function (event) {
+					    var regex = new RegExp("[\\\\\\\]~`!#$%^&*\(\)+=\{\}|\"<>?/:;\[]+");
+					    var key = String.fromCharCode(!event.charCode ? event.which : event.charCode);
+					    if (regex.test(key)) {
+					       event.preventDefault();
+					       return false;
+					    }
+					});
+				});
+			});
+            
+            function isTouchDevice(){
+              /* Added Android 3.0 honeycomb detection because touchscroll.js breaks
+                the built in div scrolling of android 3.0 mobile safari browser */
+              	if((navigator.userAgent.match(/android 3/i)) || (navigator.userAgent.match(/honeycomb/i)))
+                	return false;
+              	try{
+                	document.createEvent("TouchEvent");
+                	return true;
+              	}catch(e){
+                	return false;
+              	}
+            }
+            
+            function touchScroll(id){
+              	if(isTouchDevice()){ //if touch events exist...
+	                var el=document.getElementById(id);
+	                var scrollStartPosY=0;
+	                var scrollStartPosX=0;
+	            
+	                document.getElementById(id).addEventListener("touchstart", function(event) {
+						scrollStartPosY=this.scrollTop+event.touches[0].pageY;
+						scrollStartPosX=this.scrollLeft+event.touches[0].pageX;
+						//event.preventDefault(); // Keep this remarked so you can click on buttons and links in the div
+	                },false);
+            
+                	document.getElementById(id).addEventListener("touchmove", function(event) {
+						// These if statements allow the full page to scroll (not just the div) if they are
+						// at the top of the div scroll or the bottom of the div scroll
+						// The -5 and +5 below are in case they are trying to scroll the page sideways
+						// but their finger moves a few pixels down or up.  The event.preventDefault() function
+						// will not be called in that case so that the whole page can scroll.
+						if ((this.scrollTop < this.scrollHeight-this.offsetHeight &&
+						this.scrollTop+event.touches[0].pageY < scrollStartPosY-5) ||
+						(this.scrollTop != 0 && this.scrollTop+event.touches[0].pageY > scrollStartPosY+5))
+							event.preventDefault(); 
+						if ((this.scrollLeft < this.scrollWidth-this.offsetWidth &&
+						this.scrollLeft+event.touches[0].pageX < scrollStartPosX-5) ||
+						(this.scrollLeft != 0 && this.scrollLeft+event.touches[0].pageX > scrollStartPosX+5))
+							event.preventDefault(); 
+						this.scrollTop=scrollStartPosY-event.touches[0].pageY;
+						this.scrollLeft=scrollStartPosX-event.touches[0].pageX;
+					},false);
+              	}
+            }
+
+
+            //Function to setup a filter to map fields based on FieldTargetValueMap
+			function fieldTargetValueMapFilterSetup(mappingHash, filterable, object){
+				var mappingHash = JSON.parse(mappingHash);
+				var drivingField = object+"["+mappingHash.drivingField+"]";
+				var targetField = object+"["+mappingHash.targetField+"]";
+				var targetMap = mappingHash.targetMapList;
+
+				if($("[name='"+drivingField+"']").attr("type") == "radio"){
+					var selectedValue = $("[name='"+drivingField+"']:checked").val();
+				}
+				else {
+					var selectedValue = $("[name='"+drivingField+"']").val();	
+				}				
+				var optionString = "<option value=''>Select</option>";
+				var selectedTargetValue = $("select[name='"+targetField+"']").val();
+
+				//On load event mapping
+				if (filterable == "true" && targetMap[selectedValue]){
+					$.each(targetMap[selectedValue], function(lookupKey, lookupValue){
+						if (selectedTargetValue == lookupKey) {
+							optionString += "<option value='"+lookupKey+"' selected>"+lookupValue+"</option>";
+						}
+						else {
+							optionString += "<option value='"+lookupKey+"'>"+lookupValue+"</option>";
+						}
+					});
+					$("select[name='"+targetField+"']").html(optionString).trigger("create");
+				}
+				else if (targetMap[selectedValue]){
+					$("input[type='text'][name='"+targetField+"']").val(targetMap[selectedValue]);
+					
+					$("select[name='"+targetField+"']").val(targetMap[selectedValue]).trigger("refresh");
+
+					$("input[type='radio'][name='"+targetField+"']").prop('checked', false).trigger("create");
+					$("input[type='radio'][name='"+targetField+"'][value='"+targetMap[selectedValue]+"']").prop('checked', true).trigger("create");
+				}
+				else {
+					$("select[name='"+targetField+"']").html(optionString).trigger("create");
+				}
+
+
+				//On change event mapping
+				$("[name='"+drivingField+"']").change(function(){
+					selectedValue = $(this).val();
+					optionString = "<option value=''>Select</option>";
+					if (filterable == "true" && targetMap[selectedValue]){
+						$.each(targetMap[selectedValue], function(lookupKey, lookupValue){
+							optionString += "<option value='"+lookupKey+"'>"+lookupValue+"</option>";
+						});
+						$("select[name='"+targetField+"']").html(optionString).selectmenu("refresh");
+					}
+					else if (targetMap[selectedValue]){
+						$("input[type='text'][name='"+targetField+"']").val(targetMap[selectedValue]);
+						
+						$("select[name='"+targetField+"']").val(targetMap[selectedValue]).selectmenu("refresh");
+
+						$("input[type='radio'][name='"+targetField+"']").prop('checked', false).checkboxradio("refresh");
+						$("input[type='radio'][name='"+targetField+"'][value='"+targetMap[selectedValue]+"']").prop('checked', true).checkboxradio("refresh");
+					}
+					else {
+						$("select[name='"+targetField+"']").html(optionString).selectmenu("refresh");
+					}
+				});
+			}
+        </script>
+        <!-- COMMON JAVASCRIPT CODE END -->
+
+
+
+        <!-- PLATFORM SPECIFIC JAVASCRIPT CODE START -->
+        <% if System::get_property('platform') == 'WP7' %>
+	        <script type="text/javascript" charset="utf-8" src="/public/js/wp7.js"></script>
+          	<script type="text/javascript" charset="utf-8" src="/public/js/jquery-wp7-patch.js"></script>
+        <% end %>
+        <!-- PLATFORM SPECIFIC JAVASCRIPT CODE END -->
+	    
+	    
+
+	    <!-- ADDITIONAL LIBRARIES START -->
+	    <% if System::get_property('platform').downcase.include?("windows") %>
+	      	<link type="text/css" rel="stylesheet" href="/public/css/alertify.core.css" />
+	      
+	      	<script type="text/javascript" charset="utf-8" src="/public/js/alertify.min.js"></script>
+	      	<script type="text/javascript" charset="utf-8">
+	            function showDialog(title,message,type,autohide, mainPageId) {
+	                alertify.set({
+	                    labels : {ok:"<%= getLabelValue("OK") %>",cancel:"<%= getLabelValue("CANCEL")%>"},
+	                    delay : 5000,
+	                    buttonReverse : false,
+	                    buttonFocus   : "ok"
+	                });
+	                alertify.alert(message);
+	                returnValue = false;
+	            }
+	            function showConfirm(title,message,OK,CANCEL,url) {
+	                alertify.set({
+	                    labels : {ok:OK,cancel:CANCEL},
+	                    delay : 5000,
+	                    buttonReverse : false,
+	                    buttonFocus   : "ok"
+	                });
+	                alertify.confirm(message, function (e) {
+	                    if (e) {
+	                        $.get("/app/Menu/on_dismiss_popup1?button_id=ok&url="+url);
+	                    } else {
+	                        $.get("/app/Menu/on_dismiss_popup1?button_id=cancel&url="+url);
+	                    }
+	                });
+	                returnValue = false;
+	            }
+	            function applicationTimeOut(message) {
+	            	alertify.set({
+	            		labels : {ok:'OK'},
+	            		delay : 5000,
+	            		buttonReverse : false,
+	            		buttonFocus   : "ok"
+	            	});
+	            	alertify.alert(message, function() {
+	            		$.get("/app/AgentReg/dismissSessionPopup?button_title=OK");
+	            	});
+	            	returnValue = false;
+	            }
+	            function applicationRestart() {
+	            	alertify.set({
+	            		labels : {ok:'OK',cancel:'CANCEL'},
+	            		buttonReverse : false,
+	            		buttonFocus   : "ok"
+	            	});
+
+	            	alertify.alert("The application needs to restart in order to complete the setup process. Please start the application manually.", function() {
+	            		$.get("/app/AgentReg/exitCallback");
+	            	});
+	            	returnValue = false;
+	            }
+	      	</script>
+	    <% end %>
+
+	    <!-- R-Graph -->
+	    <script type="text/javascript" charset="utf-8" src="/public/js/RGraph/RGraph.bar.js" ></script>
+	    <script type="text/javascript" charset="utf-8" src="/public/js/RGraph/RGraph.hbar.js" ></script>
+	    <script type="text/javascript" charset="utf-8" src="/public/js/RGraph/RGraph.scatter.js" ></script>
+	    <script type="text/javascript" charset="utf-8" src="/public/js/RGraph/RGraph.common.annotate.js" ></script>
+	    <script type="text/javascript" charset="utf-8" src="/public/js/RGraph/RGraph.common.context.js" ></script>
+	    <script type="text/javascript" charset="utf-8" src="/public/js/RGraph/RGraph.common.dynamic.js" ></script>
+	    <script type="text/javascript" charset="utf-8" src="/public/js/RGraph/RGraph.common.effects.js" ></script>
+	    <script type="text/javascript" charset="utf-8" src="/public/js/RGraph/RGraph.common.resizing.js" ></script>
+	    <script type="text/javascript" charset="utf-8" src="/public/js/RGraph/RGraph.common.tooltips.js" ></script>
+	    <script type="text/javascript" charset="utf-8" src="/public/js/RGraph/RGraph.common.zoom.js" ></script>
+	    <script type="text/javascript" charset="utf-8" src="/public/js/RGraph/RGraph.drawing.circle.js" ></script>
+	    <script type="text/javascript" charset="utf-8" src="/public/js/RGraph/RGraph.drawing.image.js" ></script>
+	    <script type="text/javascript" charset="utf-8" src="/public/js/RGraph/RGraph.drawing.marker1.js" ></script>
+	    <script type="text/javascript" charset="utf-8" src="/public/js/RGraph/RGraph.drawing.marker2.js" ></script>
+	    <script type="text/javascript" charset="utf-8" src="/public/js/RGraph/RGraph.drawing.text.js" ></script>
+	    <script type="text/javascript" charset="utf-8" src="/public/js/RGraph/RGraph.drawing.xaxis.js" ></script>
+	    <script type="text/javascript" charset="utf-8" src="/public/js/RGraph/RGraph.drawing.yaxis.js" ></script>
+	    <script type="text/javascript" charset="utf-8" src="/public/js/RGraph/RGraph.drawing.rect.js" ></script>
+	    <script type="text/javascript" charset="utf-8" src="/public/js/RGraph/RGraph.line.js" ></script>
+	    <script type="text/javascript" charset="utf-8" src="/public/js/RGraph/RGraph.common.core.js" ></script>
+	    <script type="text/javascript" charset="utf-8" src="/public/js/RGraph/RGraph.pie.js" ></script>
+	    <script type="text/javascript" charset="utf-8" src="/public/js/RGraph/RGraph.common.key.js" ></script>
+	    <!-- end R-Graph -->
+	    
+	    <!-- JQuery simple dialog -->
+	    <link rel="stylesheet" type="text/css" href="/public/jquerysimpledialog/jquery.mobile.simpledialog.min.css"/>
+	    <script type="text/javascript" charset="utf-8" src="/public/jquerysimpledialog/jquery.mobile.simpledialog2.min.js"></script>
+	    <!-- End JQuery simple dialog -->
+	    <!-- ADDITIONAL LIBRARIES END -->
+	</head>
+
+	<body <% if is_bb6 %>data-do-fix-forms="true"<% elsif System::get_property('platform') == 'WP7' %> onload="wp7_change_forms_action_to_get()"<% end %> data-platform="<%= System::get_property('platform') %>">
+	    <!--  added below div to disable background -->
+	    <div id="shadow"></div> 
+	    <%= @content %>
+	</body>
+</html>

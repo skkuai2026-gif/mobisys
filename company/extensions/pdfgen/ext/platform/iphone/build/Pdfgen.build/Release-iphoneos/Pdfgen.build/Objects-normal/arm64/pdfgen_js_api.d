@@ -1,0 +1,24 @@
+dependencies: \
+  /Users/macbook/Documents/SUNLifePH/Nov_Release_MTP/mobisys/mobisys/extensions/pdfgen/ext/platform/iphone/Pdfgen_Prefix.pch \
+  /Users/macbook/Documents/SUNLifePH/Nov_Release_MTP/mobisys/mobisys/extensions/pdfgen/ext/shared/generated/pdfgen_js_api.cpp \
+  /Users/macbook/.rvm/gems/ruby-2.6.6/gems/rhodes-7.5.5_tejashree/rhodes-7.5.5/platform/shared/api_generator/js_helpers.h \
+  /Users/macbook/.rvm/gems/ruby-2.6.6/gems/rhodes-7.5.5_tejashree/rhodes-7.5.5/platform/shared/json/JSONIterator.h \
+  /Users/macbook/.rvm/gems/ruby-2.6.6/gems/rhodes-7.5.5_tejashree/rhodes-7.5.5/platform/shared/common/RhoStd.h \
+  /Users/macbook/.rvm/gems/ruby-2.6.6/gems/rhodes-7.5.5_tejashree/rhodes-7.5.5/platform/shared/common/RhoPort.h \
+  /Users/macbook/.rvm/gems/ruby-2.6.6/gems/rhodes-7.5.5_tejashree/rhodes-7.5.5/platform/shared/common/RhoDefs.h \
+  /Users/macbook/.rvm/gems/ruby-2.6.6/gems/rhodes-7.5.5_tejashree/rhodes-7.5.5/platform/shared/common/app_build_capabilities.h \
+  /Users/macbook/.rvm/gems/ruby-2.6.6/gems/rhodes-7.5.5_tejashree/rhodes-7.5.5/platform/shared/common/app_build_configs.h \
+  /Users/macbook/.rvm/gems/ruby-2.6.6/gems/rhodes-7.5.5_tejashree/rhodes-7.5.5/platform/shared/common/stat.h \
+  /Users/macbook/.rvm/gems/ruby-2.6.6/gems/rhodes-7.5.5_tejashree/rhodes-7.5.5/platform/shared/api_generator/Api.h \
+  /Users/macbook/.rvm/gems/ruby-2.6.6/gems/rhodes-7.5.5_tejashree/rhodes-7.5.5/platform/shared/logging/RhoLog.h \
+  /Users/macbook/.rvm/gems/ruby-2.6.6/gems/rhodes-7.5.5_tejashree/rhodes-7.5.5/platform/shared/logging/RhoLogConf.h \
+  /Users/macbook/.rvm/gems/ruby-2.6.6/gems/rhodes-7.5.5_tejashree/rhodes-7.5.5/platform/shared/common/RhoMutexLock.h \
+  /Users/macbook/.rvm/gems/ruby-2.6.6/gems/rhodes-7.5.5_tejashree/rhodes-7.5.5/platform/shared/common/RhoTime.h \
+  /Users/macbook/.rvm/gems/ruby-2.6.6/gems/rhodes-7.5.5_tejashree/rhodes-7.5.5/platform/shared/common/RhoThread.h \
+  /Users/macbook/.rvm/gems/ruby-2.6.6/gems/rhodes-7.5.5_tejashree/rhodes-7.5.5/platform/shared/common/IRhoThreadImpl.h \
+  /Users/macbook/.rvm/gems/ruby-2.6.6/gems/rhodes-7.5.5_tejashree/rhodes-7.5.5/platform/shared/common/AutoPointer.h \
+  /Users/macbook/.rvm/gems/ruby-2.6.6/gems/rhodes-7.5.5_tejashree/rhodes-7.5.5/platform/shared/common/RhoSystem.h \
+  /Users/macbook/.rvm/gems/ruby-2.6.6/gems/rhodes-7.5.5_tejashree/rhodes-7.5.5/platform/shared/common/RhoConf.h \
+  /Users/macbook/.rvm/gems/ruby-2.6.6/gems/rhodes-7.5.5_tejashree/rhodes-7.5.5/platform/shared/common/StringConverter.h \
+  /Users/macbook/.rvm/gems/ruby-2.6.6/gems/rhodes-7.5.5_tejashree/rhodes-7.5.5/platform/shared/logging/RhoLogCat.h \
+  /Users/macbook/.rvm/gems/ruby-2.6.6/gems/rhodes-7.5.5_tejashree/rhodes-7.5.5/platform/shared/common/RhoFatalError.h

@@ -1,0 +1,19 @@
+<%
+@filteredProducts.each do |filteredProduct|
+  plans = filteredProduct.riderPlanCode.split(",")
+  plans.each do |plan|
+  
+    %>
+    <option value="<%= plan %>"
+      <% 
+        if @planCode == plan
+          %>
+          selected
+          <%
+        end
+      %>
+    > <%= getLabelValue(plan) %></option>
+    <%
+  end
+end
+%>

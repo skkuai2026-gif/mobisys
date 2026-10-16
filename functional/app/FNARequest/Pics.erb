@@ -1,0 +1,113 @@
+<link rel="stylesheet" href="/public/css/FNA/c2l_EAPP.css">
+<div class="ui-header ui-bar-inherit" role="banner" data-role="header" style="background-color:#FFF;font-weight:bold;height:71px;"  >
+
+        <div data-role="header" id="header" data-position="inline" role="banner" class="ui-header ui-bar-inherit" style="   height: 74px;">
+            <a href="/app/FNARequest/search" rel="external" data-direction="reverse" data-role="none" class="ui-btn-left">
+               <img src="/public/images/FNA/icon_BackArrow-Red.png" style="width:30px;height:30px;">
+            </a>
+            <img src="/public/images/FNA/logo-sun-life-one-line.png" alt="Sun Life Financial" style="padding-top:8px;">
+        </div>
+</div>
+<form method="POST" action="<%= url_for :action => :submitPicsPage %>" name="picsPage" id="picsPage">
+<%= renderObject(@fnaRequest) %>
+<%= renderObject(@fnaProposer, @fnaRequest) %>
+
+<div class="illustrationdisplay" >
+    <div style="width:98%;color:black;" align="center">
+        <div style="border:0px solid black;text-align: justify;">
+            <br>
+            <div class="legend" style="margin-right: 0%;">
+                <label class="strongLabel" style="font-size:18px;">
+                    <%= getLabelValue('FNA_PICS_1') %>                    
+                </label>
+            </div>  
+            <%= getLabelValue('FNA_DECLARATION1') %>
+            <%= getLabelValue('FNA_DECLARATION2') %>
+            <%= getLabelValue('FNA_PICS') %>
+        </div>
+    </div>
+    <br>
+    <div style="width:100%;">
+        <div style="border:0px solid black;">
+            <%= renderCheckBox('consentFl', @fnaRequest.consentFl, "NO", @fnaRequest, 'onclick="nextOn()" class="ui-checkbox2" style="display:none;" ') %>
+            <%= renderLabel('consentFl', 'UNDERSTAND', 'icon-checkbox2', @fnaRequest, 'style="color:#333 !important;padding-left:36px !important;"') %>
+        </div>
+    </div>
+
+    <% @saveMarketingInfoFl = nil %>
+    <div style="width:100%;">
+        <div style="">
+            <%= renderCheckBox('marketingInfoFl', @fnaRequest.marketingInfoFl, "NO", @fnaRequest, 'class="ui-checkbox2" style="display:none;" onchange="saveVariable()" ') %>
+            <%= renderLabel('marketingInfoFl', 'UI_MKTNG_REJECT', 'icon-checkbox2', @fnaRequest, 'style="color:#333 !important;padding-left:36px !important;"') %>
+        </div>
+    </div>   
+    <br> 
+    <form>
+        <div class="" data-role="dualfieldcontain" style="width:100%;" align="center" >
+            <a href="#" id="myid" onclick="goToNewFna()" class="button_UI " style="text-align:center;">
+            <!-- <a href="#" id="myid" onclick="location.href='<%#= url_for :action => :newFNA%>';" class="button_UI " style="text-align:center;"> -->
+                <%= getLabelValue('CONTINUE_PICS_PAGE') %>
+            </a>
+        </div>
+    </form>
+</div>
+    <style >
+        .button_UI {
+            border-radius: 7px;
+            border-style: none;
+            color: #003946;
+            display: inline-block;
+            font-size: 14px !important;
+            max-width: 200px;
+            margin: 0;
+            padding: 10px 20px;
+            text-shadow: none;
+            font-weight: 700;
+            text-align: center;
+            line-height: 1.3;
+        }
+    </style>
+    <script type="text/javascript">
+        var selectedVal;
+        function nextOn(){
+            if ($('input[name="<%=getObjectMapping(@fnaRequest)%>[consentFl]"]').is(':checked')){
+                $('#myid').removeClass("ui-state-disabled");
+                $('#myid').css("color", "#003946");
+                $('#myid').css("background-color", "#edb41a");
+                $('#myid').css("border", "1px solid #edb41a");
+            }
+            if (!$('input[name="<%=getObjectMapping(@fnaRequest)%>[consentFl]"]').is(':checked')){
+                $('#myid').addClass("ui-state-disabled"); 
+                $('#myid').css("color", "#ffffff");
+                $('#myid').css("border", "1px solid #c8c8c8");
+                $('#myid').css("background-color", "#c8c8c8");
+            }          
+        }
+        function saveVariable(){
+
+            // alert($("input[id='<%=getObjectMapping(@fnaRequest)%>[marketingInfoFl]']").is(':checked'))
+
+            if ($("input[id='<%=getObjectMapping(@fnaRequest)%>[marketingInfoFl]']").is(':checked')){
+                selectedVal = "on";
+            }
+            if (!$("input[id='<%=getObjectMapping(@fnaRequest)%>[marketingInfoFl]']").is(':checked')){
+                 selectedVal = "";
+            }
+        }
+
+        function goToNewFna(){
+            $.ajax({
+                type: 'POST',
+                data: {'saveMarketingInfoFl' : selectedVal},
+                url: '/app/FNARequest/settingValue',
+                success: function(){
+                   location.href = '/app/FNARequest/newFNA';
+                }
+            });
+        }
+
+        $(document).ready(function() {
+            nextOn();
+        });
+    </script>
+</form>

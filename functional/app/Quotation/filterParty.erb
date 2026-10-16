@@ -1,0 +1,9 @@
+<%
+require 'CommonModules/mobisysbrowserhelper'
+
+@insuredPartyRefGuidArray.each do|insuredParty|
+%>
+  <option value="<%= insuredParty.cd%>" >
+    <%=(insuredParty.desc) %>
+  </option>
+<% end %>

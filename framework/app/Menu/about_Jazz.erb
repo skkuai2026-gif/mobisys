@@ -1,0 +1,80 @@
+<style>
+.project-content {
+	bottom: 30px;
+}
+</style>
+<%= headerTag(getLabelValue('ABOUT'), "", "","/app/Menu/landingPage") %>
+<div data-role="main" class="ui-content">
+	<div class="main-content-wrapper main-content-full">
+		<div class="project-content-bg">
+			<div class="div-with-border no-padding-bottom preferences-content">
+				<div class="content-fullform">
+					<div class="row-details">
+						<label class="col-left"><%= getLabelValue('PROGRAMVERSION') %>:</label>
+						<input class="input-controll" class="input-controll" type="text" disabled="disabled" placeholder="<%= getLabelValue('PROGRAMVERSION') %>" value="<%= @programVersion %>">
+					</div>
+
+					<div class="row-details">
+						<label class="col-left"><%= getLabelValue('DEVICEID') %>:</label>
+						<input class="input-controll" type="text" disabled="disabled" placeholder="<%= getLabelValue('DEVICEID') %>" value="<%= @deviceId %>">
+					</div>
+					
+					<div class="row-details">
+						<label class="col-left"><%= getLabelValue('OFFLINEMASTERDB') %>:</label>
+						<input class="input-controll" type="text" disabled="disabled" placeholder="<%= getLabelValue('OFFLINEMASTERDB') %>" value="<%= @offlineMasterDBVersion %>">
+					</div>
+					
+					<div class="row-details">
+						<label class="col-left"><%= getLabelValue('PROGRAMRELDATE') %>:</label>
+						<input class="input-controll" type="text" disabled="disabled" placeholder="<%= getLabelValue('PROGRAMRELDATE') %>" value="<%= @programReleaseDate %>">
+					</div>
+					
+					<div class="row-details">
+						<label class="col-left"><%= getLabelValue('LASTSYNC') %>:</label>
+						<input class="input-controll" type="text" disabled="disabled" placeholder="<%= getLabelValue('LASTSYNC') %>" value="<%= @lastPrimaryDataSync %>">
+					</div>
+					
+					<div class="row-details">
+						<label class="col-left"><%= getLabelValue('LASTSYNCUSER') %>:</label>
+						<input class="input-controll" type="text" disabled="disabled" placeholder="<%= getLabelValue('LASTSYNCUSER') %>" value="<%= @lastApplicationDataSync %>">
+					</div>
+					
+					<div class="row-details">
+						<label class="col-left"><%= getLabelValue('LASTCOLLATERALSYNCDATE') %>:</label>
+						<input class="input-controll" type="text" disabled="disabled" placeholder="<%= getLabelValue('LASTCOLLATERALSYNCDATE') %>" value="<%= @lastCollateralSyncDate %>">
+					</div>
+					
+					<div class="row-details">
+						<label class="col-left"><%= getLabelValue('ABLETOUSEUNTIL') %>:</label>
+						<input class="input-controll" type="text" disabled="disabled" placeholder="<%= getLabelValue('ABLETOUSEUNTIL') %>" value="<%= @useUpto %>">
+					</div>
+					
+					<div class="row-details">
+						<label class="col-left"><%= getLabelValue('AGENTID') %>:</label>
+						<input class="input-controll" type="text" disabled="disabled" placeholder="<%= getLabelValue('AGENTID') %>" value="<%= @agentId %>">
+					</div>
+					
+					<div class="row-details">
+						<label class="col-left"><%= getLabelValue('CHANNEL') %>:</label>
+						<input class="input-controll" type="text" disabled="disabled" placeholder="<%= getLabelValue('CHANNEL') %>" value="<%= @channel %>">
+					</div>
+					
+					<div class="row-details">
+						<label class="col-left"><%= getLabelValue('LICENSETYPE') %>:</label>
+						<input class="input-controll" type="text" disabled="disabled" placeholder="<%= getLabelValue('LICENSETYPE') %>" value="<%= @licenseType %>">
+					</div>
+					
+					<div class="row-details">
+						<label class="col-left"><%= getLabelValue('agentName') %>:</label>
+						<input class="input-controll" type="text" disabled="disabled" placeholder="<%= getLabelValue('AGENTNAME1') %>" value="<%= @agentName1 %>">
+					</div>
+					
+					<div class="row-details">
+						<label class="col-left"><%= getLabelValue('LOCATION') %>:</label>
+						<input class="input-controll" type="text" disabled="disabled" placeholder="<%= getLabelValue('LOCATION') %>" value="<%= @location %>">
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>

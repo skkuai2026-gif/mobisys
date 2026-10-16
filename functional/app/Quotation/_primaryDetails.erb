@@ -1,0 +1,43 @@
+<div class="illustrationdisplay">  
+    <div data-role="dualfieldcontain">
+        <% if @facetData[:renderQuotationrefnum] %>
+        <div class ="half">
+            <%= renderLabel('quotationRefNum', 'quotationRefNum', nil, @quotation)   %>
+            <%= renderInputField('quotationRefNum', @quotation.quotationRefNum, 'Sales illustration code', @quotation, ' maxlength="20"') %>
+        </div>
+        <% end %>
+        <div class ="half">
+            <%= renderLabel('quotationDt', 'quotationDt', nil, @quotation)   %>
+            <% if @facetData[:renderEditableQuotDt] %>
+                <%= renderDateField('quotationDt', @quotation.quotationDt, 'Date Of Birth', @quotation) %>  
+            <% else %>
+                <%= renderReadonlyDateField('quotationDt', @quotation.quotationDt, 'Date Of Birth', @quotation) %>  
+            <% end %>
+        </div>
+    </div>
+
+    <div data-role="dualfieldcontain">
+        <% if @facetData[:renderQuotAddtnlField2] %>
+        <div class ="half">
+            <%= renderLabel('quotAddtnlField2', 'quotAddtnlField2', nil, @quotation)   %>
+            <%= renderInputField('quotAddtnlField2', @quotation.quotAddtnlField2, 'quotAddtnlField2', @quotation) %>
+        </div>
+        <% end %>
+
+        <% if @facetData[:renderQuotAddtnlField3] %>
+        <div class ="half">
+            <%= renderLabel('quotAddtnlField3', 'quotAddtnlField3', nil, @quotation)   %>
+            <%= renderInputField('quotAddtnlField3', @quotation.quotAddtnlField3, 'quotAddtnlField3', @quotation) %>
+        </div>
+        <% end %>
+    </div>
+
+    <div data-role="dualfieldcontain">  
+        <% if @facetData[:renderQuotAddtnlField4] %>
+        <div class ="half">
+            <%= renderLabel('quotAddtnlField4', 'quotAddtnlField4', nil, @quotation)   %>
+            <%= renderInputField('quotAddtnlField4', @quotation.quotAddtnlField4, 'quotAddtnlField4', @quotation) %>
+        </div>
+        <% end %>
+    </div>
+</div>

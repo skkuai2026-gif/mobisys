@@ -1,0 +1,27 @@
+<div data-role="page">
+	<link rel="stylesheet" href="/public/css/Eapp/c2l_EAPP.css">
+	<link rel="stylesheet" href="/public/css/c2l_syncronize.css">
+
+	<script type="text/javascript">
+		function update_progress(percent){
+			var span = "<div id='progressBar' class='meter blue nostripes'><span style='width: "+parseInt(percent)+"%'></span></div>";
+			$('#tablediv').html(span);
+			return false;
+		}
+	</script>
+
+    <div data-role="header" id="header" data-position="inline">
+        <h1 style="margin:0 30%";><%= getLabelValue('genIllustration')%></h1>
+    </div>
+    <div data-role="content" style="-webkit-transform: none;">
+        <div class="illustrationdisplay" >
+            <div class="panelContent">
+                <div class="tiledisplay" id="tablediv">
+                    <div id="progressBar" class="meter blue nostripes">
+                        <span style="width: 1%"></span>
+                    </div>  
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,104 @@
+<script type="text/javascript">
+$(document).ready(function(){
+    $('#generateIllustrationButton').hide();
+    $('#generatePdfButton').hide();
+    $('#cancelButton').hide();
+    $('.illustrationCheckPanel').hide();
+
+    $('#showIllustrationPanel').click(function () {
+        $('#generateIllustrationButton').show();
+        $('#cancelButton').show();
+        $('.illustrationCheckPanel').show();
+        $(this).hide();
+        $('#showPdfPanel').hide();
+    });
+
+    $('#showPdfPanel').click(function () {
+        $('#generatePdfButton').show();
+        $('#cancelButton').show();
+        $('.illustrationCheckPanel').show();
+        $(this).hide();
+        $('#showIllustrationPanel').hide();
+    });
+
+    $('#cancelButton').click(function() {
+        $('#generateIllustrationButton').hide();
+        $('#generatePdfButton').hide();
+        $('#cancelButton').hide();
+        $('.illustrationCheckPanel').hide();
+        $(this).hide();
+        $('#showIllustrationPanel').show();
+        $('#showPdfPanel').show();
+        $("input:checkbox[name='illustrationCheck[]']:checked").prop("checked", false).checkboxradio('refresh');
+    });
+    
+    $('#generateIllustrationButton').click(function() {
+        if($("input:checkbox[name='illustrationCheck[]']:checked").length > 0) {
+            $('<div>').simpledialog2({
+                mode: 'button',
+                style: "width: 629px",
+                buttonPrompt: '<%= getLabelValue("GENERATE_CONFIRMATION", ["QUOTATION"])%>',
+                buttons : {
+                    '<%= getLabelValue("OK")%>': {
+                        click: function () {
+                            document.illustrationCheckForm.action = "getIllustrationOptions";
+                            document.illustrationCheckForm.submit();
+                        }
+                    },
+                    '<%= getLabelValue("CANCEL")%>': {
+                        click: function () { 
+                        },
+                        icon: "delete",
+                        theme: "c"
+                    }
+                }
+            });
+        }
+    });
+
+    $('#generatePdfButton').click(function() {
+        if($("input:checkbox[name='illustrationCheck[]']:checked").length > 0) {
+            $('<div>').simpledialog2({
+                mode: 'button',
+                style: "width: 629px",
+                buttonPrompt: '<%= getLabelValue("GENERATE_CONFIRMATION", ["QUOTATION"])%>',
+                buttons : {
+                    '<%= getLabelValue("OK")%>': {
+                        click: function () {
+                            // document.illustrationCheckForm.action = "getPdfOptions";
+                            document.illustrationCheckForm.action = "generatePdfs";
+                            document.illustrationCheckForm.submit();
+                        }
+                    },
+                    '<%= getLabelValue("CANCEL")%>': {
+                        click: function () { 
+                        },
+                        icon: "delete",
+                        theme: "c"
+                    }
+                }
+            });
+        }
+    });
+
+    $('input[type=text]').keypress(function (e) {
+        if (e.which == 13) {
+            $('#illustrationCheckForm').submit();
+            return false;
+        }
+    });
+
+    $('input[type=text]').change(function(){
+        $('#illustrationCheckForm').submit();
+    });
+
+    $('select').change(function(){
+        $('#illustrationCheckForm').submit();
+
+    });
+
+    $('#quotationDt').click(function(){
+        captureDate('Enter date', 'quotationDt');
+    });
+});
+</script>

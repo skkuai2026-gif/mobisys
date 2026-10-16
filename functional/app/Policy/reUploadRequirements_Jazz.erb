@@ -1,0 +1,25 @@
+<%= pageTagStart('e-application','Symbiosys - E-Application') %>
+	<input type="hidden" id="sym_current_Tab" value="tab_requirement">
+	<%= headerTag(getLabelValue('reuploadImages'), '', "","/app/Policy/searchProposal") %>
+	<div data-role="main" class="ui-content">
+	    <div class="main-content-wrapper main-content-full touch">
+			<%= formTagStart("requirementForm", "#{url_for :action => :reUploadImages, :id=> @policy.object}",@policy.object) %>
+				<div class="project-content-bg">
+	                <div class="div-with-border no-padding-bottom preferences-content">
+						<%= modelTagStart("policy", @policy) %>
+							<% if $rhoconfig[:application_view_mode] == "mobile" %>
+								<%= render :partial => "NBServiceDocumentMobile_Jazz" %>
+							<% else %>
+								<%= render :partial => "NBServiceDocument_Jazz" %>
+							<% end %>
+						<% modelTagEnd %>
+					</div>
+	            </div>
+	        <%= formTagEnd() %>
+		</div>
+	    <div class="footer-bg">
+	        <a href="#" name="save" onclick="javascript: reUploadRequirements();"><%= getLabelValue('SUBMIT') %></a>
+	    </div>
+	</div>
+<%= pageTagEnd %>
+<script type="text/javascript" charset="utf-8" src="/app/Policy/reUploadRequirements_Jazz.js"></script>

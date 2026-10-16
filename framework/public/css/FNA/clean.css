@@ -1,0 +1,370 @@
+/* ====================== LAYOUT ========================== */
+.divTable {
+    display: table;
+    width: 100%;
+    font-weight: normal;
+    margin-top: 5px;
+}
+
+.divTableRow {
+    display: table-row;
+}
+
+.divTableHeading {
+    background-color: #EEE;
+    display: table-header-group;
+}
+
+.divTableCell, .divTableHead {
+    display: table-cell;
+    padding: 3px 10px;
+}
+
+.divTableHeading {
+    background-color: #EEE;
+    display: table-header-group;
+    font-weight: bold;
+}
+
+.divTableFoot {
+    background-color: #EEE;
+    display: table-footer-group;
+    font-weight: bold;
+}
+
+.divTableBody {
+    display: table-row-group;
+}
+
+.headerLabel {
+    font-size: 12px !important;
+}
+
+.headerField {
+    font-size: 12px;
+    opacity: 0.7;
+}
+
+/* ===================== OVERRIDES ========================= */
+
+input.ui-input-text {
+    border: none !important;
+    background-color: initial !important;
+
+}
+
+label.ui-input-text {
+    margin: 15px 0px 15px 0px;
+    font-size: 14px;
+}
+
+.readonly {
+    background-color: initial !important;
+}
+
+/*input {*/
+/*border: none !important;*/
+/*}*/
+
+.ui-shadow-inset {
+    box-shadow: none !important;
+}
+
+.ui-shadow {
+    box-shadow: none !important;
+}
+
+.ui-corner-all {
+    border-radius: 0px !important;
+    -webkit-border-radius: 0px !important;
+}
+
+.half {
+    width: 45.5%;
+    padding: 2px 2% 0px 2%;
+    display: inline-block;
+}
+
+.full {
+    width: 95.5%;
+    padding: 2px 2% 0px 2%;
+}
+
+.ui-select {
+
+}
+
+.ui-btn-left {
+    width: 40px;
+}
+
+.input-field {
+
+    border-bottom: 1px solid #757575 !important;
+}
+
+.legend {
+    /*margin-left: 20px;*/
+    font-weight: normal;
+    margin-bottom: 10px;
+    height: auto !important;
+    /*border-bottom: none;*/
+    border-bottom: 2px solid #3E85C3;
+}
+
+.strongLabel {
+    color: black;
+    font-weight: normal !important;
+    font-size: 18px !important;
+}
+
+/* Select box */
+
+.ui-select div.ui-btn {
+    background-color: transparent !important;
+    border-style: none !important;
+    border-bottom: 1px solid #757575 !important;
+    font-weight: normal !important;
+    text-align: left;
+    padding: 15px;
+}
+
+.ui-disabled, .ui-state-disabled, button[disabled], .ui-select .ui-btn.ui-state-disabled {
+    /*Changed the behaviour of the UI when forms are disabled after signature (Removed border from the Chechbox)*/
+    /*background-color: transparent !important;*/
+    /*background-color: transparent ;*/
+    /*border-bottom: 1px solid #C8C8C8 !important;*/
+    /*border-bottom: 1px solid #C8C8C8 ;*/
+    color: #C8C8C8;
+}
+
+label.ui-btn {
+    background-color: transparent !important;
+    border-style: none !important;
+    font-weight: normal !important;
+    top: 26px;
+}
+input [type=checkbox]{top: 75% !important;}
+.ui-checkbox input[type=checkbox], input[type=radio] {
+    /*display: none; !important;*/
+  /*display: none; !important;*/
+}
+input[type=radio] {
+    display: none !important;
+    /*top: 40px;*/
+     top: 0px !important;
+    /* margin-right: 30px !important;*/
+}
+.ui-radio input[type=radio] {
+   /* margin-right: 50px !important;*/
+}*/
+
+.illustrationdisplay {
+    border-radius: 5px;
+    box-shadow: none;
+    font-size: 14px;
+}
+
+.ui-page-theme-a .ui-bar-inherit {
+    color: #003656;
+    /*border-bottom: 3px solid #3E85C3 !important;*/
+}
+
+.ui-alt-icon.ui-icon-minus:after, .ui-alt-icon .ui-icon-minus:after {
+    background-color: transparent;
+}
+
+.ui-alt-icon.ui-icon-plus:after, .ui-alt-icon .ui-icon-plus:after {
+    background-color: transparent;
+}
+
+.ui-alt-icon.ui-icon-carat-u:after, .ui-alt-icon .ui-icon-carat-u:after {
+    background-color: transparent;
+}
+
+.ui-icon-carat-d:after {
+    /*background-image: url("data:image/svg+xml;charset=US-ASCII,%3C%3Fxml%20version%3D%221.0%22%20encoding%3D%22iso-8859-1%22%3F%3E%3C!DOCTYPE%20svg%20PUBLIC%20%22-%2F%2FW3C%2F%2FDTD%20SVG%201.1%2F%2FEN%22%20%22http%3A%2F%2Fwww.w3.org%2FGraphics%2FSVG%2F1.1%2FDTD%2Fsvg11.dtd%22%3E%3Csvg%20version%3D%221.1%22%20id%3D%22Layer_1%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20xmlns%3Axlink%3D%22http%3A%2F%2Fwww.w3.org%2F1999%2Fxlink%22%20x%3D%220px%22%20y%3D%220px%22%20%20width%3D%2214px%22%20height%3D%2214px%22%20viewBox%3D%220%200%2014%2014%22%20style%3D%22enable-background%3Anew%200%200%2014%2014%3B%22%20xml%3Aspace%3D%22preserve%22%3E%3Cpolygon%20points%3D%2211.949%2C3.404%207%2C8.354%202.05%2C3.404%20-0.071%2C5.525%207%2C12.596%2014.07%2C5.525%20%22%2F%3E%3C%2Fsvg%3E");*/
+    background-size:15px;
+    width:npx;
+    height: npx; 
+    background-image: url(/public/images/FNA/DropDown_Chevron.png) !important;
+    background-color: transparent !important;
+}
+
+/*canvas.pad {
+    background-color: white !important;
+}*/
+/* removed important */
+canvas.pad {
+    background-color: white ;
+}
+
+.datepickerimg {
+    position: absolute;
+    top: 20px;
+    right: 0px;
+    width: 24px !important;
+    height: 24px !important;
+}
+
+/* Radio and Checkbox */
+
+.ui-radio .ui-btn.ui-radio-on:after {
+    background-image: none;
+    background-color: #fff;
+    border-width: 0px;
+    border-style: none;
+    background-image: url(/public/images/FNA/radio-selected.png);
+}
+
+.ui-icon-check:after, html .ui-btn.ui-checkbox-on.ui-checkbox-on:after, .ui-icon-check:after, html .ui-btn.ui-checkbox-off.ui-checkbox-off:after, .ui-radio .ui-btn.ui-radio-on:after, .ui-radio .ui-btn.ui-radio-off:after {
+    width: 17px;
+    height: 22px;
+    margin: -10px 10px 10px 0px;
+    background-size: 17px 17px;
+    background-color: transparent;
+    background-image: url(/public/images/FNA/radio-unselected.png);
+}
+
+
+.ui-icon-check:after, html  .ui-radio .ui-btn.ui-radio-off:after {
+    background-image: url(/public/images/FNA/radio-unselected.png);
+    opacity: 1;
+}
+
+.ui-icon-check:after, html  .ui-radio .ui-btn.ui-radio-on:after {
+    background-image: url(/public/images/FNA/radio-selected.png);
+    opacity: 1;
+}
+
+.ui-icon-check.icon-checkbox:after, html .ui-btn.ui-checkbox-on.ui-checkbox-on.icon-checkbox:after {
+    background-image: url(/public/images/FNA/Check-selected.png) !important;
+    top: 7px;
+}
+
+.ui-icon-check.icon-checkbox:after, html .ui-btn.ui-checkbox-off.ui-checkbox-off.icon-checkbox:after {
+    background-image: url(/public/images/FNA/Check-not-selected.png)  !important;
+    top: 7px;
+}
+
+
+.ui-icon-check.icon-checkbox2:after, html .ui-btn.ui-checkbox-on.ui-checkbox-on.icon-checkbox2:after {
+    background-image: url(/public/images/FNA/Check-selected.png) !important;
+    top: 18px;
+}
+
+.ui-icon-check.icon-checkbox2:after, html .ui-btn.ui-checkbox-off.ui-checkbox-off.icon-checkbox2:after {
+    background-image: url(/public/images/FNA/Check-not-selected.png)  !important;
+    top: 18px;
+}
+.ui-checkbox .icon-checkbox2{
+    top: -5px !important;
+    position: relative;
+}
+.ui-checkbox .ui-checkbox2{
+    margin-top:-22px ;
+}
+
+label.ui-checkbox-on, label.ui-checkbox-off {
+    font-size: 14px;
+    /*padding: 20px;*/
+   /* border: 1px solid #3E85C3 !important;*/
+    border-radius: 3px !important;
+    -webkit-border-radius: 3px !important;
+}
+
+label.ui-checkbox-on {
+    /*background-color: #FBEFCC !important;*/
+
+}
+
+label.ui-checkbox-off {
+}
+
+.ui-collapsible-content.ui-body-inherit {
+    background-color: white;
+}
+
+.ui-dual-field-contain .half .ui-select {
+    width: 68%;
+}
+
+@media (max-width: 1024px) and (min-width: 768px) {
+    .eapp-navbar li span {
+        display: block !important;
+    }
+}
+
+div.nav-icon {
+    height: 55px;
+    width: 55px;
+}
+.tabLinks.selected div.nav-icon {
+    background-color: white;
+    background-position: center center;
+    background-repeat: no-repeat;
+    -webkit-border-radius: 7em;
+    border-radius: 7em;
+}
+
+div.nav-icon img {
+    width: 36px !important;
+    height: 36px !important;
+    top: 17%;
+    position: relative;
+}
+
+div.nav-icon ~ span {
+    width: 100%;
+    text-align: center;
+}
+
+.tabLinks ~ img {
+    width: 36px !important;
+    height: 36px !important;
+    top: 17%;
+    position: relative;
+}
+.eapp-navbar li.navbar-seperator{
+    height: 55px;
+    margin: 10px 0px 0px 0px;
+}
+.navbar-seperator img{
+    top: 25%;
+    position: relative;
+    width: 24px;
+    height: 24px;
+}
+
+.errortab div.nav-icon:after{
+    content: '';
+    background-image: url('/public/images/FNA/error_list.png');
+    background-size: 17px 17px;
+    position: absolute;
+    top:0px;
+    right: 0px;
+    width: 17px;
+    height: 17px;
+}
+.ui-checkbox input, .ui-radio input {
+    left:8px !important;
+    top: 75%;
+    }
+
+.odd-tr{
+    background-color:#eeeeee;
+}
+
+.even-tr{
+    background-color:#f8f8f8;
+}
+
+.ui-radio input{
+    margin: 26px 0 0 -30px !important;
+}
+/*.single-select{
+    margin-left: 32px !important;
+}*/
+.ui-radio{
+    line-height: 0px;
+}

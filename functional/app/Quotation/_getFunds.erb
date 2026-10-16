@@ -1,0 +1,44 @@
+<% if @model.modelTypeCd == 'FIXEDMODEL' ||  @model.modelTypeCd == 'FIXEDMODELOVERRIDE' %>
+<% @quotationProductInvestmentFund.each_with_index do |fund, i| %>
+    <li class="ui-field-contain">
+        <%= renderObject(fund, @quotationProduct) %>
+        <%= renderHiddenField('expiryDt', fund.expiryDt, 'expiryDt', fund) %>
+        <%= renderHiddenField('fundTypeCd', fund.fundTypeCd, 'fundTypeCd', fund) %>
+        <%= renderHiddenField('maturityDt', fund.maturityDt, 'maturityDt', fund) %>
+        
+        <div class="ui-grid-c">
+            <div class="ui-block-a">
+                <% if @facetData[:renderFundcd] %>
+                    <%= renderLabel('fundCd', @fundDescHash[fund.fundCd], nil, fund)   %>
+                    <%= renderHiddenField('fundCd', fund.fundCd, 'fundCd', fund) %>
+                <% end %>
+            </div>
+            <div class="ui-block-b"> 
+                <% if @facetData[:renderAllocationperc] %> 
+                    <%= renderAmountField('allocationPerc', fund.allocationPerc, '', fund, 'maxlength="3"') %>
+                    <% if @modelFundType == "FIXEDMODEL" %>
+                        <script type="text/javascript">  
+                            setReadOnly($("input[name='<%= getObjectMapping(fund) %>[allocationPerc]']"),true);
+                        </script>
+                      <% end %> 
+                <% end %>
+            </div>
+            <div class="ui-block-c">
+                <% if @facetData[:renderTopupallocationperc] %>
+                    <%= renderAmountField('topupAllocationPerc', fund.topupAllocationPerc.to_i, '', fund, 'style="margin-left:5%;" maxlength="3"') %>
+                <% end %>
+            </div>
+           
+            <% if @showSearchFl == true %>
+              <div class="ui-block-d">
+                  <input type="button" data-inline="true" data-icon="delete" data-iconpos="notext" onclick="removeFund('<%= getObjectMapping(fund)%>');"/>
+              </div>
+            <% end %>
+    </li>
+<% end %>
+<% end %>
+<script type="text/javascript">
+  <% if @modelFundType == 'FIXEDMODEL' || @modelFundType == 'FIXEDMODELOVERRIDE' %>
+      $("#searchFundDiv").hide();   
+  <% end %>  
+</script>

@@ -1,0 +1,99 @@
+<div data-role="page">
+    <link rel="stylesheet" href="/public/css/Eapp/c2l_EAPP.css">
+    <script type="text/javascript" src="/public/js/Eapp/c2l_EAPP.js"></script>
+    <style type="text/css">
+        .rightAlign{
+            text-align:right !important;
+        }
+    </style>
+    <div data-role="header" id="header" data-position="inline"  >
+        <a href="<%= url_for :action => :illustration1, :id => @quotation.object %>" rel="external" id = "back" name="back" data-direction="reverse" data-role="none">
+            <img src="/public/images/SalesIllustration/icon_BackArrow-Red.png">
+        </a>
+        <h1 style="margin:0 30%";><%= getLabelValue('OUTPUTPREFERENCES')%></h1>
+    </div>
+    <div data-role="content" id="email" style="-webkit-transform: none;">  
+        <% if @view_email == "email" %>
+        	<form method="POST" name="emailForm" action="<%= url_for :action => :emailQuotation %>">
+		        <div class="illustrationdisplay" name="emailHeader">
+		            <div class="legend">
+		                <label class="strongLabel">
+		                    <%= getLabelValue('EMAILHEADER') %>
+		                    <a href="#" class="expandButton ui-icon-plus ui-btn-icon-notext ui-alt-icon ui-btn-inline"/></a>
+		                    <a href="#" class="collapseButton ui-icon-minus ui-btn-icon-notext ui-alt-icon ui-btn-inline"/></a>
+		                </label>
+		            </div>
+        <% elsif @view_email == "view" %>
+            <form method="POST" name="viewForm" action="<%= url_for :action => :calculateIllustration1 %>">
+		        <div class="illustrationdisplay" name="emailHeader">
+		            <div class="legend">
+		                <label class="strongLabel">
+		                    <%= getLabelValue('outputPrefDetail') %>
+		                    <a href="#" class="expandButton ui-icon-plus ui-btn-icon-notext ui-alt-icon ui-btn-inline"/></a>
+		                    <a href="#" class="collapseButton ui-icon-minus ui-btn-icon-notext ui-alt-icon ui-btn-inline"/></a>
+		                </label>
+		            </div>
+        <% elsif @view_email == "get_pdf" %>
+            <form method="POST" name="emailForm" action="<%= url_for :action => :get_pdf %>">  
+		        <div class="illustrationdisplay" name="emailHeader">
+		            <div class="legend">
+		                <label class="strongLabel">
+		                    <%= getLabelValue('outputPrefDetail') %>
+		                    <a href="#" class="expandButton ui-icon-plus ui-btn-icon-notext ui-alt-icon ui-btn-inline"/></a>
+		                    <a href="#" class="collapseButton ui-icon-minus ui-btn-icon-notext ui-alt-icon ui-btn-inline"/></a>
+		                </label>
+		            </div>  
+        <% end %> 
+                <div class="panelContent">
+                <%= renderObject(@outputPref) %>
+                <%= renderObject(@quotation) %>
+                    <% if @view_email == "email" %>
+                        
+                        <%= renderObject(@emailRequest) %>
+                        <div data-role="fieldcontain" style="width:85%">
+                            <%= renderLabel('toEmail','TO', 'rightAlign') %>
+                            <%= renderEmailField('toEmail',@emailRequest.toEmail,'To', @emailRequest) %>
+                        </div>
+                        <div data-role="fieldcontain" style="width:85%">
+                            <%= renderLabel('ccEmail','CC', 'rightAlign') %>
+                            <%= renderEmailField('ccEmail',@emailRequest.ccEmail,'Cc', @emailRequest) %>
+                            <%= renderHiddenField('entityGuid',@emailRequest.entityGuid,'entityGuid',@emailRequest) %>
+                            <%= renderHiddenField('entityNumber',@emailRequest.entityNumber,'entityNumber',@emailRequest) %>
+                            <%= renderHiddenField('entityName',@emailRequest.entityName,'entityName',@emailRequest) %>
+                            <%= renderHiddenField('outputPrefEntityGuid',@emailRequest.outputPrefEntityGuid,'outputPrefEntityGuid',@emailRequest) %>
+                        </div>
+                    <% end %>
+                    <%= render :partial => "captureOutputPreferences" %>  
+                    <% if @view_email == "email" or @view_email == "get_pdf" %>
+                        <div class="ui-grid-d">
+                            <div class="ui-block-a"></div>
+                            <div class="ui-block-b"></div>
+                            <div class="ui-block-c">
+                                <a href="#" name="email" data-role="button" data-theme="a" onclick="sendemail();">
+                                    <%= getLabelValue('SUBMIT')%>
+                                </a>
+                            </div>
+                            <div class="ui-block-d"></div>
+                            <div class="ui-block-e"></div>
+                        </div>
+                    <% elsif @view_email == "view" %>
+                        <div data-role="controlgroup">
+                            <div class="ui-grid-b">            
+                                <div class="ui-block-a"></div>
+                                <div class="ui-block-b"></div>
+                                <div class="ui-block-c">
+                                    <a href="#" name="view" data-role="button" data-theme="a" onclick="sendview();">
+                                        <%= getLabelValue('SUBMIT')%>
+                                    </a>
+                                </div>
+                                <div class="ui-block-d"></div>
+                                <div class="ui-block-e"></div>
+                            </div>
+                        </div>
+                    <% end %>
+                </div>
+            </div>
+        </form>   
+    </div> 
+</div>
+<%= render(:file => 'Quotation/captureOutputPreferencesAndEmailJS.erb')%>

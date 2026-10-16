@@ -1,0 +1,206 @@
+<div data-role="page">
+    <link rel="stylesheet" href="/public/css/c2l_dashboard.css">
+    <style type="text/css">
+    .ui-checkbox {
+        display: inline-block;
+        margin: 0px;
+    }
+
+    .removeLabel {
+        width: 0px;
+        padding-left: 1.2em;
+    }
+
+    .deletePanel {
+        height: 28px;
+    }
+
+    .headerRightButtons {
+        padding-right: 4em;
+        margin-top: 10px;
+    }
+
+    tr td {
+        height: 28px;
+    }
+    </style>
+    <div data-role="header" id="header" data-position="inline">
+        <a href="/app/Menu/eapp" rel="external" data-direction="reverse" data-role="none">
+            <img src="/public/images/SalesIllustration/icon_BackArrow-Red.png">
+        </a>
+        <h1><%= getLabelValue('SearchProposal') %></h1>
+        <% if @searchResult.length > 0 %>
+        <div class="ui-btn-right">
+            <div class="headerRightButtons">
+                <a data-role="button" id="showDeletePanel" href="#" style="min-width:100px;">
+                    <%= getLabelValue('delete') %>&nbsp;<%= getLabelValue('EAPP') %>
+                </a>
+                <a data-role="button" id="deleteButton" href="#" style="min-width:100px;">
+                    <%= getLabelValue('delete') %>
+                </a>
+                <a data-role="button" id="cancelButton" href="#" style="min-width:100px;">
+                    <%= getLabelValue('CANCEL')%>
+                </a>
+            </div>
+        </div>
+        <% end %>
+    </div>
+
+    <div data-role="content" id="content">
+        <form method="POST" action="/app/Policy/searchProposal" name="policySearchForm" id="policySearchForm" data-ajax="false">
+            <%= renderDateTimeJS %>
+            <table data-role="table" class="ui-responsive table-stroke">
+                <thead>
+                    <tr>
+                        <th data-priority="1" style="width:10%"><%= getLabelValue('proposalNum')%></th>
+                        <th data-priority="5" style="width:10%"><%= getLabelValue('policyNum')%></th>
+                        <th data-priority="2" style="width:25%"><%= getLabelValue('Product')%></th>
+                        <th data-priority="3" style="width:25%"><%= getLabelValue('proposerName')%></th>
+                        <th data-priority="4" style="width:10%"><%= getLabelValue('statusCd')%></th>
+                        <th data-priority="6" style="width:10%"><%= getLabelValue('proposalReceivedDt')%></th>
+                        <th data-priority="7" style="width:10%"></th>
+                        <% if @reUploadImages && @reUploadImages.value == 'YES' %>
+                            <th data-priority="8" style="width:10%"><%= getLabelValue('Re-upload Images')%></th> 
+                        <% end %>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td data-priority="1">
+                            <input name="proposalNum" id="proposalNum" value="<%= @params['proposalNum'] %>" type="search" placeholder="<%= getLabelValue('proposalNum')%>">
+                        </td>
+                        <td data-priority="5">
+                            <input name="policyNum" id="policyNum" value="<%= @params['policyNum'] %>" type="search" placeholder="<%= getLabelValue('policyNum')%>">
+                        </td>
+                        <td data-priority="2">
+                            <%= getLookup('DYNAMICLOOKUP', 'productSeq', @params['productSeq'], nil, @productLookup) %>
+                        </td>
+                        <td data-priority="3" id="proposerNameTD">
+                            <input name="proposerName" id="proposerName" value="<%= @params['proposerName'] %>" type="search" placeholder="<%= getLabelValue('proposerName')%>">
+                        </td>
+                        <td data-priority="4">
+                            <%= getLookup('DECISIONMASTER', 'uwDecisionCd', @params['uwDecisionCd'], nil) %>
+                        </td>
+                        <td data-priority="6">
+                            <input name="proposalReceivedDt" id="proposalReceivedDt" value="<%= @params['proposalReceivedDt'] %>" type="search" placeholder="<%= getLabelValue('proposalReceivedDt')%>" readonly="true">
+                        </td>
+                        <td data-priority="7"> 
+                        </td>
+                        <% if @reUploadImages && @reUploadImages.value == 'YES' %>
+                            <td data-priority="8"> 
+                            </td>
+                        <% end %>
+                    </tr>
+                    <% if @searchResult.length < 1 && !@params.empty? %>
+                        <tr><td colspan="6" style="text-align:center;">No Records</td></tr>
+                    <% else 
+                        @searchResult.each do |policy| %>
+                        <tr>
+                            <td>
+                                <a href="<%= url_for :action => :showProposal, :id => policy[:object] %>" rel="external"><%= policy[:proposalNum] %></a>
+                            </td>
+                            <td>
+                                <a href="<%= url_for :action => :showProposal, :id => policy[:object] %>" rel="external"><%= policy[:policyNum] %></a>
+                            </td>
+                            <td>
+                                <a href="<%= url_for :action => :showProposal, :id => policy[:object] %>" rel="external"><%= policy[:productName] %></a>
+                            </td>
+                            <td>
+                                <a href="<%= url_for :action => :showProposal, :id => policy[:object] %>" rel="external"><%= policy[:proposerName] %></a>
+                            </td>
+                            <td>
+                                <a href="<%= url_for :action => :showProposal, :id => policy[:object] %>" rel="external"><%= policy[:uwDecisionCd] %></a>
+                            </td>
+                            <td>
+                                <a href="<%= url_for :action => :showProposal, :id => policy[:object] %>" rel="external"><%= policy[:proposalReceivedDt] %></a>
+                            </td>
+                            <td>
+                               <div class="deletePanel">
+                                    <label class="removeLabel">
+                                        <input class="deleteCheck" type="checkbox" value="<%= policy[:object] %>" name="deleteCheck[]">
+                                    </label>
+                                </div> 
+                            </td>
+                            <% if @reUploadImages && @reUploadImages.value == 'YES' %>
+                                <td>
+                                    <% if policy[:policyNum].to_s != '' %>
+                                        <a href="#" data-role="button" style="font-size: 14px;" onclick="location.href='<%= url_for :controller => :Policy, :action => :reUploadImages, :id => policy[:object] %>';" >
+                                            <%= getLabelValue('Re-Upload Images') %>
+                                        </a>
+                                    <% end %>
+                                </td>
+                            <% end %>
+                        </tr>
+                    <%  end
+                    end %>
+                </tbody>
+            </table>
+        </form>
+    </div>
+</div>
+
+<script type="text/javascript">
+$(document).ready(function(){
+    $('#deleteButton').hide();
+    $('#cancelButton').hide();
+    $('.deletePanel').hide();
+
+    $('#showDeletePanel').click(function () {
+        $('#deleteButton').show();
+        $('#cancelButton').show();
+        $('.deletePanel').show();
+        $(this).hide();
+    });
+
+    $('#cancelButton').click(function(){
+        $('#deleteButton').hide();
+        $('#cancelButton').hide();
+        $('.deletePanel').hide();
+        $(this).hide();
+        $('#showDeletePanel').show();
+        $("input:checkbox[name='deleteCheck[]']:checked").prop("checked", false).checkboxradio('refresh');
+    });
+    
+    $('#deleteButton').click(function(){
+        if($("input:checkbox[name='deleteCheck[]']:checked").length > 0) {
+            $('<div>').simpledialog2({
+                mode: 'button',
+                style: "width: 629px",
+                buttonPrompt: '<%= getLabelValue("DELETE_CONFIRMATION", ["PROPOSAL"])%>',
+                buttons : {
+                    '<%= getLabelValue("OK")%>': {
+                        click: function () {
+                            $('#policySearchForm').submit();
+                        }
+                    },
+                    '<%= getLabelValue("CANCEL")%>': {
+                        click: function () { 
+                        },
+                        icon: "delete",
+                        theme: "c"
+                    }
+                }
+            });
+        }
+    });
+
+    $('input[type=text]').keypress(function (e) {
+        if (e.which == 13) {
+            $('#policySearchForm').submit();
+            return false;
+        }
+    });
+
+    $('input[type=text]').change(function(){
+        $('#policySearchForm').submit();
+    });
+
+    $('select').change(function(){
+        $('#policySearchForm').submit();
+    });
+
+    $('#proposalReceivedDt').click(function(){
+        captureDate('Enter date', 'proposalReceivedDt');
+    });
+});
+</script>

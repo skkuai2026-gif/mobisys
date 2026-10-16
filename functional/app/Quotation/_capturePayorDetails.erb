@@ -1,0 +1,17 @@
+<%= renderObject(@policyHolder, @quotation) %>
+<div name="payor">      
+    <div class="illustrationdisplay" name = "PayerInformation">
+        <div class="legend">
+            <label class="strongLabel">
+                <%= getLabelValue('policyProposerDetails') %>
+                <a href="#" class="scrollTopButton ui-icon-carat-u ui-btn-icon-notext ui-alt-icon ui-btn-inline"></a>
+                <a href="#" class="expandButton ui-icon-plus ui-btn-icon-notext ui-alt-icon ui-btn-inline"/></a>
+                <a href="#" class="collapseButton ui-icon-minus ui-btn-icon-notext ui-alt-icon ui-btn-inline"/></a>
+            </label>
+        </div>
+        <div class="panelContent">
+            <% @quotationParty = @policyHolder %>
+            <%= render :partial => "capturePartyDetails" %>
+        </div>
+    </div>
+</div>

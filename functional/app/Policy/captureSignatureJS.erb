@@ -1,0 +1,48 @@
+<script type="text/javascript">
+$("a[name='save']").click( function() {
+	submitForm();
+});
+
+
+function submitForm() {
+	$.ajax({                                    
+		url: "/app/Policy/submitSignature",
+		async: false,
+		method: 'POST',
+		data: $('#signatureForm').serialize(),
+		success: function(data) {
+			data = data.replace("\n","");
+			data = data.replace("\n","");
+			var strNew = '';
+			strNew = data;
+			if(data.indexOf("<li>") == -1){
+				$('span[id="errordiv"]').hide();
+			}
+			else{ 
+				$('span[id="errordiv"]').show();  
+			}
+			$('#totalErrorDiv').html(strNew);
+			$("#totalErrorDiv").trigger('create');
+		}
+	});
+}
+
+
+$(document).ready(function () {
+	$('.sigPad').signaturePad({drawOnly:true});
+
+	<% if $total_error['eAppSignature'] %>
+		$('span[id="errordiv"]').show();
+	<% end %>
+});
+
+
+$(document).delegate('#error_dialog', 'click', function() {
+	data = $("#totalErrorDiv").html();
+	$(this).simpledialog2({
+		mode : 'blank',
+		style: "width: 629",
+		blankContent : data +"<a rel='close' data-role='button' href='#'>Close</a>"
+	})
+});
+</script>

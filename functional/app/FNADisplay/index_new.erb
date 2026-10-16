@@ -1,0 +1,155 @@
+<html>
+    <head>
+        <meta charset="utf-8" />
+        <meta name="viewport" content="width=1024, maximum-scale=1, user-scalable=no" />
+        <meta name="mobile-web-app-capable" content="yes" />
+        <meta name="apple-mobile-web-app-capable" content="yes" />
+        <meta name="apple-mobile-web-app-status-bar-style" content="black" />
+        <link rel="apple-touch-icon" sizes="114x114" href="/public/static/skin/images/share/apple-touch-icon-114x114.png" />
+        
+		
+		<link rel="stylesheet" type="text/css" href="/public/static/lib/shadowbox/shadowbox.css">
+		<link rel="stylesheet" href="/public/static/skin/css/share/font-awesome.min.css">
+		<link rel="stylesheet" href="/public/static/skin/css/share/app.css" />
+		<link rel="stylesheet" href="/public/static/skin/css/share/footer.css" />
+		
+        <title>FWD-FNA Web App</title>
+        <script type="text/javascript" src="/public/static/js/app/min/lib-min.js"></script>
+		<script type="text/javascript" src="/public/static/data/config.json.js" ></script> 
+		
+		<!-- Cal -->
+		<script type="text/javascript" src="/public/static/data/calconfig.json.js" ></script>
+		<script type="text/javascript" src="/public/static/data/content.json.js" ></script>
+		<script type="text/javascript" src="/public/static/js/cal/cal.js" ></script>
+		
+		<!-- App -->
+		<script type="text/javascript" src="/public/static/js/app/tracking.js" ></script>
+		<script type="text/javascript" src="/public/static/js/app/app.js" ></script>
+		<script type="text/javascript" src="/public/static/js/app/template.js" ></script>
+		
+		<!-- Development version -->
+		<script type="text/javascript" src="/public/static/js/app/i18n.js" ></script>
+		<script type="text/javascript" src="/public/static/js/app/validator.js" ></script>
+		<script type="text/javascript" src="/public/static/js/app/model.js" ></script>
+		<script type="text/javascript" src="/public/static/js/app/collection.js" ></script>
+		<script type="text/javascript" src="/public/static/js/app/result.js" ></script>
+		<script type="text/javascript" src="/public/static/js/app/view/view.js" ></script>
+		<script type="text/javascript" src="/public/static/js/app/view/alert.js" ></script>
+		<script type="text/javascript" src="/public/static/js/app/view/pie-input.js" ></script>
+		<script type="text/javascript" src="/public/static/js/app/view/chart.js" ></script>
+		<script type="text/javascript" src="/public/static/js/app/view/input-panel.js" ></script>
+		<script type="text/javascript" src="/public/static/js/app/view/data-panel.js" ></script>
+		<script type="text/javascript" src="/public/static/js/app/view/scroller.js" ></script>
+		<script type="text/javascript" src="/public/static/js/app/router.js" ></script>
+		<script type="text/javascript" src="/public/static/js/app/testcase.js" ></script>
+		
+		<!-- Production version -->
+		<!--
+		<script type="text/javascript" src="/public/static/js/app/min/router-min.js" ></script>
+		-->
+		
+		<!-- Footer --> 
+		<script type="text/javascript" src="/public/static/js/app/view/footer.js" ></script>
+		
+	</head>
+	<body>
+		
+		<div id="input">
+			<div id="input-background" class="background content">
+				<div class="scroller">
+					<!--  Append backgroundView below -->
+				</div>
+			</div>
+			
+			<div id="data-panel" class="content left-panel">
+				<nav class="data-panel-menu">
+					<ul>
+						<!--  Append dataPanelMenu below -->
+					</ul>
+				</nav>
+				<section id="data-fields">
+					<div class="scroller">
+						<!--  Append dataPanelView below -->
+					</div>
+					<div id="data-control" class="fix-postion">
+						<a class="button float-right">Reset</a>
+						<a class="button float-right">Reset</a>
+					</div>
+				</section>
+			</div>
+			
+			<div id="input-panel" class="content">
+				<div class="scroller">
+					<!--  Append sectionView below -->
+				</div>
+			</div>
+		</div>		
+		
+		<!-- Result -->
+		<div id="result">
+			<div id="result-background" class="background content">
+			</div>
+			
+			<div id="result-panel" class="content left-panel">
+				<nav class="result-menu">
+					<ul>
+						<li class="life_protection menu1" data-section="life_protection"><a class="active"></a></li>
+						<li class="critical_illness_protection menu2" data-section="critical_illness_protection"><a></a></li>
+						<li class="retirement menu3" data-section="retirement"><a></a></li>
+						<li class="education menu4" data-section="education"><a></a></li>
+						<li class="overview menu0" data-section="overview"><a></a></li>
+						<li class="suggestions menu5" data-section="suggestions"><a></a></li>
+					</ul>
+				</nav>
+				<section id="result-fields">
+					<div class="scroller">
+					</div>
+					<div id="result-control" class="fix-postion"></div>
+				</section>
+			</div>
+			
+			<div id="result-chart" class="content">
+			</div>
+		</div>
+		
+		<div id="bar">
+			<div class="header bar">
+				<a href="/app/Menu/fna"><img class="back-app" src="/public/images/SalesIllustration/icon_BackArrow-Red.png"/></a>
+				<a class="button float-right" id="addRPQButton" href="<%= url_for :controller => :LeadRPQ, :action => :newRPQ, :id => @params['id'] %>" data-role="button" rel="external"><%= getLabelValue('ADDRPQ')%></a>
+				<div id="debug">
+					<!-- Append debugView below -->
+				</div>
+			</div>
+			<div class="footer bar">
+				<div id="footer-link"></div>
+				<div id="footer-icon">
+					<div id="footer-partner-icon"></div>
+					<div id="footer-fwd-icon"></div>
+				</div>
+			</div>
+		</div>
+		
+		<!-- SVG drop shadow effect for pie-input UI -->
+		<svg height="200" width="200">
+			<defs>
+				<filter id="shadow" x="-1" y="-1" width="3" height="3">
+					<feOffset result="offOut" in="SourceAlpha" dx="0" dy="0" />
+					<feColorMatrix result="matrixOut" in="offOut" type="matrix" 
+						values="0.2 0 0 0 0 
+								0 0.2 0 0 0 
+								0 0 0.2 0 0 
+								0 0 0 0.4 0" />
+						
+					<feGaussianBlur result="blurOut" in="matrixOut" stdDeviation="5" />
+					<feBlend in="SourceGraphic" in2="blurOut" mode="normal" />
+				</filter>
+			</defs>
+		</svg>
+		
+		<!-- Alert -->
+		<div id="alert">
+			
+		</div>
+		
+	</body>
+</html>

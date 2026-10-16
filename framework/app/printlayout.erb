@@ -1,0 +1,27 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+    <script src="/public/jquery/jquery-1.6.4.min.js" type="text/javascript"></script>
+    <script src="/public/jquery/jquery.json-2.3.min.js" type="text/javascript"></script>
+    <script src="/public/js/jquery-barcode.js" type="text/javascript"></script>
+    <link rel="stylesheet" href="/public/css/printlayout.css">
+    <title>  <%= Rho::RhoConfig.app_name %> </title>
+
+    <!-- R-Graph -->
+    <script type="text/javascript" src="/public/js/RGraph/RGraph.bar.js" ></script>
+    <script type="text/javascript" src="/public/js/RGraph/RGraph.line.js" ></script>
+    <script type="text/javascript" src="/public/js/RGraph/RGraph.common.core.js" ></script>
+    <script type="text/javascript" src="/public/js/RGraph/RGraph.pie.js" ></script>
+    <script type="text/javascript" src="/public/js/RGraph/RGraph.common.key.js" ></script>
+    <!-- end R-Graph -->
+
+</head>
+
+<body>
+    <%= @content %>
+</body>
+
+</html>

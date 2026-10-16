@@ -1,0 +1,60 @@
+<%@imageTransCollateral = Collateral.loadObject(:first,:conditions =>{:collateralCd => "IMAGETRANS"})%>
+<div id="tabLeafDiv">
+ <!-- Right Content panels -->   
+  <div id="contentpane_<%=@collateralRenderLevelDO.guid%>" class="rightcontentpane">   
+    <span class="bottomlayoutlevel1header"><%= @parentColRenderLevelDO.header1%></span>
+   	<hr>  
+   	<!-- List of Level 2 objects -->  
+   	<div id="level2list" class="toplayoutlevel2menudiv">  
+   	 	<div style="position: relative; left: 0; top: 0;">
+   	 	  <img src="<%=@collateralMap[@collateralRenderLevelDO.icon].fileName%>" alt="<%=@collateralMap[@collateralRenderLevelDO.icon].header%>" style="position: relative; top: 0; left: 0;height: 58px;">
+ 	  	 <%@parentColRenderLevelChildDOList.each_with_index do|parentColRenderLevelDO,index| %>
+   	 	    <% if @setLevelCd == parentColRenderLevelDO.levelCd %>
+   	 	  	  <img src="<%=@imageTransCollateral.fileName%>" style="position: absolute; top: 0px; left: <%= 5+(index*135)%>px; height:30px; width:120px;"/>
+   	 	  	<%else%>
+   	 	  	  <a href="javascript:doOnLevelClick('<%=parentColRenderLevelDO.levelCd%>','tabLeafDiv');">
+   	 	  	  	 <img src="<%=@imageTransCollateral.fileName%>" style="position: absolute; top: 0px; left: <%= 5+(index*135)%>px; height:30px; width:120px;"/> <!---height:55px; width:230px;--->
+   	 	  	  </a>
+   	 	  	<%end%>
+ 	  	 <%end%>
+   	 	</div>
+    </div>
+    <!-- Selected Level 2 object data -->
+   	<div class="toplayoutlevel2text">
+   	  <!-- level 2 text -->
+   	  <% if @collateralRenderLevelDO != nil %>
+        <%=@collateralRenderLevelDO.contentPart1 %>
+      <%end%>
+      <!-- level 3 children -->
+      <div data-role="collapsible-set">
+        <% collapsedFlag = false %>
+        <% @collateralRenderLevelChildDOList.each do |collateralRenderLevelChildDO| %>
+          <div data-role="collapsible" data-collapsed="<%=collapsedFlag%>">
+            <h3><span class="level2accordionheader"><%=collateralRenderLevelChildDO.header1 %></span></h3>
+            <div>
+             	<div class="level3text">
+             	  <% if collateralRenderLevelChildDO != nil %>
+             			<%=collateralRenderLevelChildDO.contentPart1 %>
+            		<%end%>
+            	</div>
+            	<center>
+            	  <img src="<%=@collateralMap[collateralRenderLevelChildDO.icon].fileName%>" alt="<%=@collateralMap[collateralRenderLevelChildDO.icon].header%>"style="width:50%"/>
+            	</center>
+            	<div class="level3text">
+            	  <% if collateralRenderLevelChildDO != nil %>
+             		 <%=collateralRenderLevelChildDO.contentPart2 %>
+            		<%end%>
+            	</div>
+            </div>
+          </div>
+            <% if (!collapsedFlag)
+              collapsedFlag = true 
+            end%>
+        <%end%>
+      </div>	
+    </div>
+    <script type="text/javascript">
+      $(".toplayoutlevel2text").enhanceWithin();
+    </script>
+  </div>
+</div>

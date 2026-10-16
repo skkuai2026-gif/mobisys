@@ -1,0 +1,51 @@
+<%= subPanelTagStart("PartyDetails",false) %>	
+	<%= prdFieldDataTag("#{partyPckg}",'roleCd') %>
+	<%= prdFieldDataTag("#{partyPckg}",'partyTypeCd,customerId','#none,#none') %>
+	<%
+		party.PartyRelationList.each do |partyRelation|
+	  		partyRelationObject =  partyRelation
+	  	end
+	  	if partyRelationObject
+	%>
+		<%= modelTagStart("", partyRelationObject, party) %>
+		<% modelTagEnd %>
+	<%
+		end
+	%>
+	<div id='<%= @tagName %>_corporateDetail'>
+		<%= render :partial => "NBCorporateDetail_Jazz", :locals => {:partyPckg => partyPckg, :facetkeyprefix=> facetkeyprefix} %>
+	</div>
+	<div id='<%= @tagName %>_individualDetail'>
+		<%= prdFieldDataTag("#{partyPckg}",'titleCd,otherTitle') %>
+
+		<%= subPanelTagStart("language1","false","",false) %>
+			<%= prdFieldDataTag("#{partyPckg}","firstName1,middleName1,lastName1,extensionName1","#none,MIDDLENAMEREQUIRED,#none,#none","firstName1,middleName1,lastName1,extensionName1") %>
+		<%= subPanelTagEnd %>
+
+		<%= subPanelTagStart("language2","false","MULTILINGUALPARTYNAME",false) %>
+			<%= prdFieldDataTag("#{partyPckg}","firstName2,middleName2,lastName2,extensionName2","MULTILINGUALPARTYNAME,MULTILINGUALPARTYNAME&MIDDLENAMEREQUIRED,MULTILINGUALPARTYNAME,MULTILINGUALPARTYNAME","firstName2,middleName2,lastName2,extensionName2") %>
+		<%= subPanelTagEnd %>
+
+		<%= prdFieldDataTag("#{partyPckg}","birthDt,age",'','birthDt,age') %>
+
+		<%= prdFieldDataTag("#{partyPckg}","genderCd,relationCd,otherRelation") %>
+
+		<%= prdFieldDataTag("#{partyPckg}","countryOfBirth,placeOfBirth") %>
+
+		<%= prdFieldDataTag("#{partyPckg}","maritalStatusCd") %>
+
+		<%= prdFieldDataTag("#{partyPckg}","motherMaidenFirstname,motherMaidenLastname") %>
+
+		<%= prdFieldDataTag("#{partyPckg}","smoker,nsap","#{facetkeyprefix}SMOKER,#{facetkeyprefix}NSAP") %>
+
+		<%= prdFieldDataTag("#{partyPckg}","fatherFirstName1,fatherMiddleName1,fatherLastName1") %>
+
+		<%= prdFieldDataTag("#{partyPckg}","coverageCountryCd,coverageCityCd","#{facetkeyprefix}COVERAGELOCATION") %>
+
+		<% unless MobiSys::BrowserHelper.renderPanel?("#{facetkeyprefix}SMOKER", $currentProduct) %>
+			<div style="display: none;">
+				<%= inputTag("smoker") %>
+			</div>
+		<% end %>
+	</div>
+<%= subPanelTagEnd %>

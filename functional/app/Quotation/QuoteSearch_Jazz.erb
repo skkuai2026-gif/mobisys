@@ -1,0 +1,20 @@
+<%= pageTagStart('add-sales-illustration','Symbiosys - Sales Illustration') %>
+	<%= headerTag("#{@insuranceType}SALESILLUSTRATION","search") %>
+	<%= formTagStart("Search","/app/Quotation/search") %>
+	<% 
+	if $rhoconfig[:tab_based_product_selection]
+		newQuotationLink = "/app/Quotation/newCaptureIllustration?insuranceTypeCd="+@insuranceType.to_s
+	else
+		newQuotationLink = "/app/Quotation/productPage"
+	end
+	%>
+		<div data-role="main" class="ui-content">
+			<%= menuTag('SALESILLUSTRATION',true) %>
+			<%= listSearchTag("SearchLifeIllustrationTab","","SearchProspectDO", true, true,"","","",newQuotationLink,'SEARCHEMAILSREQUESTED','/app/Quotation/searchEmailRequest',"","",true,"") %>
+			<input type="hidden" name="insuranceTypeCd" id="insuranceType" value='<%= @insuranceType %>'/>
+
+			<div data-role="popup" id="summaryPopUp" data-theme="a" class="ui-corner-all popup-wrapper"></div>
+	    </div>
+    <%= formTagEnd %>
+<%= pageTagEnd %>
+<script src="QuoteSearch_Jazz.js" type="text/javascript"></script>

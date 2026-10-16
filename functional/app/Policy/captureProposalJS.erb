@@ -1,0 +1,336 @@
+<script type="text/javascript">
+//Declarations needed for object mapping issues    
+var objectMapping = new Array();
+var objectCount = 0;
+var fundCount = 350;
+
+//Array to store tab order
+var eappTabOrder = [];
+
+//Array to store common request data to be sent on tab load
+var requestData = {
+	'policyObject': '<%= @policy.object.to_s %>'
+};
+
+//Array object consisting of additional tab specific request data to be sent on tab load
+var additionalData = {};
+
+additionalData["policyReplacement"] = {
+	'selectedProdSeq':'<%= @selectedProdSeq.to_s %>'
+};
+
+
+//Function to get birth date when age is entered
+function getDOB(age, fieldId) {
+ 	$.ajax({
+   		url: "/app/Policy/getBirthDt",
+   		data: {'age':age},
+     	async: false,
+        headers: {
+          'Transition-Enabled': false
+        },
+   		success: function(data) {
+     		$('input[name="'+ fieldId +'"]').val(data);
+   		}
+ 	});
+}
+
+
+//Function to get age when birth date is entered
+function getAge(birthDt, fieldId1, fieldId2, fieldId3) {
+ 	$.ajax({
+ 		url: "/app/Policy/getAge",
+     	data: {'birthDt': birthDt},
+     	async: false,
+        headers: {
+          'Transition-Enabled': false
+        },
+     	success: function(data) {
+           	ageParts = data.split("|");
+           	$('input[name="'+ fieldId1 +'"]').val(ageParts[0]);
+           	age = ageParts[0];
+          	if (age < 0) {
+          		$('<div>').simpledialog2({
+                    mode: 'button',
+                    style: "width: 629px",
+                    'headerClose': false,
+                    'buttonPrompt': '<%= getLabelValue("INVALID_DOB_DIALOG")%>',
+                    'buttons' : {
+                      	'<%= getLabelValue("OK")%>': {
+                        	click: function () {}
+                  		}
+            		}
+              	})
+              	$('input[name="'+ fieldId1 +'"]').val("");
+              	var birthDt = fieldId1.replace("age","birthDt");
+              	$('input[name="'+ birthDt +'"]').val("");
+            }
+           	try{
+             	$('input[name="'+ fieldId2 +'"]').val(ageParts[1]);
+             	$('input[name="'+ fieldId3 +'"]').val(ageParts[2]);
+           	} catch(e){}
+		}
+   	});
+ 	return age;
+}
+
+
+//Function to load list of all errors for the selected tab as well as for all tabs
+function getTabErrors() {
+	$(".errortab").each(function(){
+		$(this).removeClass("errortab");
+	});
+	
+	$.ajax({                                    
+		url: "/app/Policy/getTabErrors",
+		async: false,
+        headers: {
+          'Transition-Enabled': false
+        },
+		success: function(data) {
+			if (data!="null") {
+				var parsedJSON = JSON.parse(data);
+				var objectName = "";
+				var field = null;
+				var label = null;
+				var tabObject = null;
+				var errorsExist = false;
+
+    			/*Refresh Contents of the error dialog start*/
+				var errorData = "<ul>";
+				$.each(eappTabOrder, function(index, tabID) {
+					if (parsedJSON[tabID] != null && parsedJSON[tabID] != undefined){
+						var tabObject = parsedJSON[tabID];
+						if (!$.isEmptyObject(tabObject)) {
+							$("#"+tabID).parents('li').addClass("errortab");
+							errorData += "<li>" + $("#"+tabID).siblings("span").html().replace(/&nbsp;/g, '') + ":<ul>";
+							$.each(tabObject, function(objectClass, errorObject) {
+								objectClass = objectClass.replace("DO", "");
+								$.each(errorObject, function(guid, fieldObject) {
+								    if (!jQuery.isEmptyObject(fieldObject)) {
+								    	errorsExist = true;
+								    	$.each(fieldObject, function(fieldName, errorMessage) {
+								    		$.each(errorMessage, function(errIndex, message) {
+								    			errorData += "<li>" + message + "</li>";
+								    		});
+								    	});
+
+
+								    	/*Map labels of error fields to the error dialog start*/
+								    	//Get object id based on guid and classname
+							    		objectName = $("input[value='"+guid+"'][name*='[guid]'][name*='"+objectClass+"']").attr('name');
+							    		if (objectName != undefined) {
+									    	$.each(fieldObject, function(fieldName, errorMessage) {
+									    		//Get field based on object id and fieldname
+									    		field = $("[name='"+objectName.replace("guid", fieldName)+"']");
+									    		if (field.length != 0) {
+									    			//Add info icon and click event listeners to label
+									    			if (objectClass == "ServiceQuestionResponse") {
+									    				label = $("div[for='"+objectName.replace("guid", fieldName)+"'] div.ui-grid-a");
+									    				if (label.length != 0) {
+									    					label.append("<a href='#' class='ui-btn error_icon ui-btn-icon-notext ui-corner-all ui-btn-inline ui-alt-icon' style='border-style:none;'></a>");
+									    				}
+									    				else {
+									    					label = $("div[for='"+objectName.replace("guid", fieldName)+"']");
+									    					label.append("<a href='#' class='ui-btn error_icon ui-btn-icon-notext ui-corner-all ui-btn-inline ui-alt-icon' style='border-style:none;'></a>");
+									    				}
+									    				label = label.find("a");
+									    			}
+									    			else {
+									    				label = $("label[for='"+objectName.replace("guid", fieldName)+"']");
+										    			label.addClass("ui-alt-icon");
+										    			label.addClass("error_icon");
+										    			label.addClass("ui-btn-icon-notext");
+										    			label.addClass("error-field");
+									    			}
+
+									    			//Make a list of field errors
+                                    				var fieldErrors = "";
+                                    				$.each(errorMessage, function(errIndex, message) {
+                                        				fieldErrors += "<li>" + message + "</li>";
+                                    				});
+
+									    			label.click(function(){
+									    				$("#singleErrorDiv").html("<ul>" + fieldErrors + "</ul>");
+									    				if (typeof $.mobile.sdCurrentDialog === 'undefined') {
+															$("<div>").simpledialog2({
+																mode : 'blank',
+																blankContent : $("#singleErrorDiv").html() + "<a rel='close' data-role='button' href='#'>Close</a>"
+															});
+														}
+									    			});
+									    		}
+									    	});
+										}
+										/*Map labels of error fields to the error dialog end*/
+								    }
+								});
+							});
+							errorData += "</ul></li>";
+						}
+						delete parsedJSON[tabID];
+					}
+				});
+				
+				$.each(parsedJSON, function(tabID, tabObject) {
+					if (!$.isEmptyObject(tabObject)) {
+						errorData += "<li>" + tabID + ":<ul>";
+						$.each(tabObject, function(objectClass, errorObject) {
+							objectClass = objectClass.replace("DO", "");
+							$.each(errorObject, function(guid, fieldObject) {
+							    if (!jQuery.isEmptyObject(fieldObject)) {
+							    	errorsExist = true;
+							    	$.each(fieldObject, function(fieldName, errorMessage) {
+							    		$.each(errorMessage, function(errIndex, message) {
+							    			errorData += "<li>" + message + "</li>";
+							    		});
+							    	});
+							    }
+							});
+						});
+						errorData += "</ul></li>";
+					}
+				});
+				
+				errorData += "</ul>";
+				$("#totalErrorDiv").html(errorData);
+				if (errorsExist) {
+					$('span[id="errordiv"]').show();
+				}
+    			/*Refresh Contents of the error dialog end*/
+			}
+		}
+	});
+}
+
+
+//Function to load tab data, refresh all errors and change tab images
+function changeTab(clickObject) {
+	var dataURL = clickObject.data("url");
+	//Append additional data params
+	if (clickObject.data("addl-params-key")) {
+		requestData = $.extend(requestData, additionalData[clickObject.data("addl-params-key")]);
+	}
+
+	/*Change selected & unselected tab-button images start*/
+	$(".selected>img").each(function(){
+		oldImageSrc = $(this).attr('src').substring(0,$(this).attr('src').indexOf(".")-2) + "." + $(this).attr('src').split(".")[1];
+		$(this).attr('src', oldImageSrc);
+	});
+  	$(".eapp-navbar li>a").removeClass("selected");
+	clickObject.addClass("selected");
+	str = ".selected>img";
+	newImageSrc = $(str).attr('src').split(".")[0] + "-o." + $(str).attr('src').split(".")[1];
+	$(str).attr('src', newImageSrc);
+	/*Change selected & unselected tab-button images end*/
+
+
+	/*Load tab content start*/
+	$.ajax({                                    
+		url: "/app/Policy/"+dataURL,
+		data: requestData,
+		async: false,
+        headers: {
+          'Transition-Enabled': false
+        },
+		success: function(data) {
+			$("#tabDetailsContainer").html(data);
+			$("#tabDetailsContainer").trigger('create');
+
+			$(document).ready(function(){
+				$('.scrollTopButton').click(function() {
+					$("html, body").animate({ scrollTop: 0 }, "slow");
+			    });
+
+			    $('.expandButton').hide();
+
+			    $('.collapseButton').click(function() {
+			    	$(this).parents(".legend").siblings(".panelContent").hide();
+			    	$(this).hide();
+			    	$(this).siblings('.expandButton').show();
+			    });
+
+			    $('.expandButton').click(function() {
+			    	$(this).parents(".legend").siblings(".panelContent").show();
+			    	$(this).hide();
+			    	$(this).siblings('.collapseButton').show();
+			    });
+
+			    <% if @policy.policyNum.to_s != "" %>
+					setReadOnly($('input[type="text"]'), true);
+					setReadOnly($('input[type="tel"]'), true);
+					setReadOnly($('input[type="num"]'), true);
+					setReadOnly($('input[type="email"]'), true);
+				    $('select').selectmenu('disable').trigger("refresh");
+				    $('input[type="radio"]').checkboxradio('disable').trigger("refresh");
+				    $('input[type="checkbox"]').checkboxradio('disable').trigger("refresh");
+				    $('input[type="button"]').off('click');
+				    $('input[type="button"]').button('disable').trigger("refresh");
+				    $('a[href="#clear"]').hide();
+				<% end %>    
+			});
+
+			getTabErrors();
+		}
+	});
+	/*Load tab content end*/
+}
+
+
+$(document).ready(function() {
+	$(".eapp-navbar ul li a").each(function(){
+		eappTabOrder.push($(this).attr("id"));
+	});
+
+	<% if @set_req_tab %>
+		changeTab($("a[data-url='getRequirements']"));
+	<% else %>	
+		changeTab($("a[data-url='getAgentDetails']"));
+	<% end %>	
+
+	$(".tabLinks").click(function(){
+		<% if @policy.policyNum.to_s == "" %>
+      		submitForm();
+  		<% end %>
+		changeTab($(this));
+	});
+
+	$("a#paymentGateWay").hide();
+	<% if @gatewayFlag %>
+		$("a#paymentGateWay").show();
+	<% end %>
+
+	$('#error_dialog').click(function(){
+		if (typeof $.mobile.sdCurrentDialog === 'undefined') {
+			$("<div>").simpledialog2({
+				mode : 'blank',
+				blankContent : $("#totalErrorDiv").html() +"<a rel='close' data-role='button' href='#'>Close</a>"
+			});
+		}
+	});
+
+	$("a[name='paymentGateWay']").click( function() {
+		submitForm();
+		document.policyForm.action = "executePaymentGateWay";
+		document.policyForm.submit();                            
+	});
+
+	$("a[name='save']").click(function() {
+		submitForm();
+		document.policyForm.action = "executeSave";
+		document.policyForm.submit();
+	});
+	
+  	$("a[name='capturesign']").click( function() {
+		submitForm();
+      	document.policyForm.action = "captureSignature";
+      	document.policyForm.submit();                            
+  	});
+
+	$("a[name='submit']").click(function() {
+		submitForm();
+		document.policyForm.action = "executeSubmit";
+		document.policyForm.submit();
+	});
+});
+</script>

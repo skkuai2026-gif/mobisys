@@ -1,0 +1,113 @@
+function tab_premiumSummary_pageTabLoaded() {
+    $('.main-content-wrapper').siblings('.footer-bg').hide();
+    // $('#summaryPopUp').css('min-height','0px');
+    saveAndPrevButton = $('.section-tab li .ui-link').eq(-2).attr('href');
+    $('#saveAndPrevButton').attr('href', saveAndPrevButton);
+    $('a.summaryTabView').css('width',$('#footerDivision').val());
+}
+
+
+// function evaluateRider(object){
+//     console.log("inside")
+//     fieldName = object.id.split('_').pop();
+//     var riderObjectId = object.id.replace(fieldName,"object");
+//     var riderSelectedId = object.id.replace(fieldName,"selected-0");
+//     var riderPartyRefGuidId = object.id.replace(fieldName,"insuredPartyRefGuid");
+//     var riderPartyRoleCdId = object.id.replace(fieldName,"partyRoleCd");
+//     var riderObject = $('#'+riderObjectId).val();
+//     var partyRefGuid = $('#'+riderPartyRefGuidId).val();
+//     var partyRoleCd = $('#'+riderPartyRoleCdId).val();
+//     var accordionKey = $(object).parents('div[name="riderAutoPopulation"]').attr('id').replace('riderAutoPopulationDiv','');
+    
+//     //on unchecking rider empty all corresponding fields
+//     if (!$('#'+riderSelectedId).is(':checked')){
+//         $('#'+riderObjectId).parents('tr').find('input[type!=hidden][type!=radio][type!=checkbox]').val('');
+//         $('#'+riderObjectId).parents('tr').find('select').val('');
+//     }
+
+//     $('div#riderAutoPopulationDiv'+accordionKey+' select').selectmenu('enable');
+//     $('div#riderAutoPopulationDiv'+accordionKey+' input[type!=hidden]').removeAttr("disabled");
+//     $('div#riderAutoPopulationDiv'+accordionKey+' input[type!=hidden]').removeAttr("readonly");
+//     $('div#riderAutoPopulationDiv'+accordionKey+' input[type!=hidden]').removeClass("readonly");
+
+//     var riderInitialCount = $('#riderInitialCount'+accordionKey).val()
+//     $.ajax({
+//         url: "/app/Quotation/evaluateRider",
+//         method: 'POST',
+//         data: $('#sales_illustration_form').serialize() + "&riderObject="+riderObject +"&partyRefGuid="+partyRefGuid+"&riderInitialCount="+riderInitialCount+"&partyRoleCd="+partyRoleCd+"&accordionKey="+accordionKey,
+//         success: function(data){
+//             console.log(data)
+//             $("div[data-role='popup']:not(#error-list):not(#summaryPopUp)").remove();
+//             temp = JSON.parse(data);
+//             impactedLifeAccordions = temp.impactedLifeAccordions.split(',');
+//             htmlContentOfImpactedLives = temp.html;
+//             $.each(impactedLifeAccordions, function(index, accordion_key) {
+//                 htmlContent = htmlContentOfImpactedLives[accordion_key];
+//                 $('div#riderAutoPopulationDiv'+accordion_key).html(htmlContent);
+//                 $('div#riderAutoPopulationDiv'+accordion_key).trigger('create');
+
+//                 var ridersPlanOptions = document.querySelectorAll('div#riderAutoPopulationDiv'+accordionKey+' select[id*="_riderDetails_productPlanOptionCd"]');
+//                 for(var l = 0; l < ridersPlanOptions.length; l++){
+//                     riderDetails_productPlanOptionCd_onFocus(ridersPlanOptions[l]);
+//                 }
+                
+//                 var riders = document.querySelectorAll('div#riderAutoPopulationDiv'+accordionKey+' [id*="_riderDetails_productSeq"]');
+//                 for(var i = 0; i < riders.length; i++){
+//                     var riderId = riders[i].getAttribute('id');
+//                     console.log(riderId)
+//                     var riderPrefix = riderId.replace('_productSeq','');
+//                     var riderPremiumSAFlField = riderId.replace('productSeq','premiumSAFl');
+//                     riderPremiumSAFl = $('#' + riderPremiumSAFlField).val(); 
+//                     console.log(riderPrefix)
+//                     if ($('#'+riderPrefix+'_selected-0').is(':checked')){
+//                         $('#'+riderId).parents('tr').find('select').selectmenu().selectmenu('enable');
+//                         $('#'+riderId).parents('tr').find('input[type!=hidden][type!=checkbox]').removeClass('readonly');
+//                         $('#'+riderId).parents('tr').find('a').removeClass('readonly');
+//                         $('#'+riderId).parents('tr').find('input[type!=hidden][type!=checkbox]').removeAttr('readonly');
+//                         enableDisableFormFields(riderPrefix + '_',riderPremiumSAFl, true); 
+//                     }
+//                     else{
+//                         $('#'+riderId).parents('tr').find('select').selectmenu().selectmenu('disable');
+//                         $('#'+riderId).parents('tr').find('input[type!=hidden][type!=checkbox]').addClass('readonly');
+//                         $('#'+riderId).parents('tr').find('a').addClass('readonly');
+//                         $('#'+riderId).parents('tr').find('input[type!=hidden][type!=checkbox]').attr('readonly');
+//                     }
+//                 }
+
+//                 var riderDisableField = document.querySelectorAll('div#riderAutoPopulationDiv'+accordionKey+' input[id*="_riderDetails_riderDisableField"]');
+//                 for(var i = 0; i < riderDisableField.length; i++){
+//                     selectedId = riderDisableField[i].id.replace('riderDisableField','selected-0') 
+//                     if (riderDisableField[i].value == 'YES'){
+//                         $('#'+selectedId).checkboxradio().checkboxradio('disable');
+//                     }
+//                     else{
+//                         $('#'+selectedId).checkboxradio().checkboxradio('enable');
+//                     }
+//                 }
+//                 setReadOnlyProductExtraFields(false,'RIDER',accordionKey);
+//                 currentTotalPremium = $('.currentTotalPremium').val();
+//                 $('#displayCurrentTotalPremium').text(currentTotalPremium);
+//                 if (typeof window["attachMaskAll"] === "function") {
+//                     attachMaskAll();
+//                 }
+//             });
+//         }
+//     });
+// }
+
+/*Basic tab related functions*/
+// function quotation_tripTypeCd_onFocus(object) {
+//     loadLookupData(object.getAttribute("data-lookupkey"), {}, object.id);
+// }
+
+// function quotation_maxTripPeriod_onFocus(object) {
+//     loadLookupData(object.getAttribute("data-lookupkey"), {}, object.id);
+// }
+
+// function quotation_travelGeographyCd_onFocus(object) {
+//     loadLookupData(object.getAttribute("data-lookupkey"), {}, object.id);
+// }
+
+// function quotation_visitPurposeCd_onFocus(object) {
+//     loadLookupData(object.getAttribute("data-lookupkey"), {}, object.id);
+// } 

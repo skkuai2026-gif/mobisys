@@ -1,0 +1,7 @@
+<% if @navbarIds != '' %>
+	<%= navbarTagStart(@navbarIds,@navbarLabels) %>
+		<div id="questionnaire-container">
+			<%= render(:partial => 'CommonModules/renderQuestionnaire_Jazz', :locals => { :questionnaireId => "lifeQuestionnaire"}) %>
+		</div>
+	<%= navbarTagEnd %>
+<% end %>

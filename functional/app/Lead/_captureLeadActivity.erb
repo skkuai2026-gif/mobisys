@@ -1,0 +1,30 @@
+<%= renderHiddenField('statusCd' , @leadActivity.statusCd, 'Lead Activity Status', @leadActivity) %>
+<%= renderHiddenField('updateActivityFlag' , @leadActivity.updateActivityFlag, 'UpdateActivityFlag', @leadActivity) %> 
+<%= renderHiddenField('calendarId' , @leadActivity.calendarId, 'Calendar Id', @leadActivity) %>
+
+<div class="illustrationdisplay">
+	<div data-role="dualfieldcontain">
+		<div class="half">
+			<%= renderLabel('type', 'activityType', 'mandatory', @leadActivity)   %>
+			<%= getLookup('ACTIVITYTYPE', 'type', @leadActivity.type, @leadActivity)   %>
+		</div>
+	</div>   
+
+	<div data-role="dualfieldcontain">
+		<%= renderLabel('description', 'description', nil, @leadActivity, ' style="width:13.8%" ')   %>
+		<%= renderInputField('description', @leadActivity.description, 'Description', @leadActivity, ' maxlength="120" style="width:79.4%" ') %>
+	</div>
+
+	<div data-role="dualfieldcontain">
+		<div class="half">
+			<%= renderLabel('activityDt', 'activityDt', 'mandatory', @leadActivity)   %> 
+			<%= renderDateTimeField('activityDt', @leadActivity.activityDt, 'Activity Date', @leadActivity) %>
+
+		</div>
+		<div class="half">
+			<%= renderLabel('closureDate', 'closureDate', 'mandatory', @leadActivity)   %> 
+			<%= renderDateTimeField('closureDate', @leadActivity.closureDate, 'Closure Date', @leadActivity) %>
+		</div>
+	</div>
+</div>
+<%= render(:partial => 'captureLeadActivityJS')%>

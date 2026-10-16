@@ -1,0 +1,66 @@
+<%= panelTagStart(false) %>
+	<%= subPanelTagStart("policyProposerDetails","false") %>
+		<%= modelTagStart("proposerQuotationParty", @policyHolder, @quotation) %>
+			<% partyPckg = 'PolicyProposerDO' %>
+			<div id="displayProposer">
+				<div id="proposerPartyType">
+					<%= prdFieldDataTag("#{partyPckg}",'partyTypeCd','PROPOSERCANBECORPORATE') %>
+				</div>
+
+				<div id="ProposerBasic">
+					<%= prdFieldDataTag("#{partyPckg}","title,otherTitle",'','titleCd') %>
+
+					<%= subPanelTagStart("language1","false","",false) if @renderMultiLanguagePanel%>
+						<%= prdFieldDataTag("#{partyPckg}","firstname,middlename,lastname,extensionName",'#none,MIDDLENAMEREQUIRED,#none,#none','firstName1,middleName1,lastName1,extensionName1') %>
+					<% if @renderMultiLanguagePanel%>
+						<div class="labelHeader breakLine"></div>
+					<%= subPanelTagEnd %>
+					<% end %>
+
+					<%= subPanelTagStart("language2","false","MULTILINGUALPARTYNAME",false) %>
+						<%= prdFieldDataTag("#{partyPckg}","firstname2,middlename2,lastname2,extensionName2",'#none,MIDDLENAMEREQUIRED,#none,#none','firstName2,middleName2,lastName2,extensionName2') %>
+						<div class="labelHeader breakLine"></div>
+					<%= subPanelTagEnd %>
+
+					<%= prdFieldDataTag("#{partyPckg}","dob,age" , '' , 'birthDt,age') %>
+
+					<%= prdFieldDataTag("#{partyPckg}","genderCd,relationCd,otherRelation", '' , '') %>
+
+					<% if @quotation.insuranceTypeCd == 'TRAVEL' || @quotation.insuranceTypeCd == 'HEALTH'%>
+						<%= prdFieldDataTag("#{partyPckg}","industryCd,natureOfDuty,occupationCd,smoker",'PROPOSEROCCUPATION,#none,#none,PROPOSERSMOKER','industryCd,natureOfDuty,occupationClass,smoker') %>
+					<% else %>
+						<%= prdFieldDataTag("#{partyPckg}","industryCd,natureOfDuty,occupationCd" , 'PROPOSEROCCUPATION' , 'industryCd,natureOfDuty,occupationClass') %>
+						<%= prdFieldDataTag("#{partyPckg}","smoker,nsap",'PROPOSERSMOKER,PROPOSERNSAP','') %>
+					<% end %>
+
+					<%= prdFieldDataTag("#{partyPckg}","coverageCountryCd,coverageCityCd" , 'PROPOSERCOVERAGELOCATION' , '') %>
+				</div>
+
+				<div id="corporate">
+					<%= prdFieldDataTag("#{partyPckg}","corporateName,corporateName2" , 'PROPOSERCANBECORPORATE,PROPOSERCANBECORPORAT&MULTILINGUALPARTYNAME' , 'corporateName1,corporateName2') %>
+				</div>
+
+				<div id="ProposerBasicDetail">
+					<%= prdFieldDataTag("#{partyPckg}","contactNum,emailAddress" , '' , '') %>
+				</div>
+				<input type="hidden" id="partyTypeCd" value='<%= @policyHolder.partyTypeCd%>'/>
+			</div>	
+			<div style="display: none;">
+				<%= inputTag("roleCd") %>
+			
+				<% if !MobiSys::BrowserHelper.renderPanel?("PRIMARYSMOKER", $currentProduct) %>
+					<%= inputTag("smoker") %>
+				<% end %>
+				<% if !MobiSys::BrowserHelper.renderPanel?("PROPOSERCANBECORPORATE", $currentProduct) %>
+					<%= puts "inside the facet" %> 
+					<%= inputTag("partyTypeCd") %>
+				<% end %>
+
+			</div>
+		<% modelTagEnd %>
+	<%= subPanelTagEnd %>
+<%= panelTagEnd %>
+
+<%= setupFilterUsingFieldTargetValueMap('TitleGenderSI', false, "proposerQuotationParty") %>
+<%= setupFilterUsingFieldTargetValueMap('CoverageCountryCity', true, "proposerQuotationParty") %>
+<%= setupFilterUsingFieldTargetValueMap('RelationGender', true, "proposerQuotationParty") %>

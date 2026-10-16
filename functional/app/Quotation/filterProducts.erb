@@ -1,0 +1,25 @@
+<!-- <i><b>Age: </b></i> <%= @age%> </br>
+<i><b>Gender: </b></i> <%= @genderCd%> </br>
+<i><b>Occupation class: </b></i> <%= @occupationClass%> </br>
+<%= @sql %></BR>
+--> 
+<%
+  require 'CommonModules/mobisysbrowserhelper'
+  
+  @filteredProducts.each do |filteredProduct|
+    %>
+    <option value="<%= filteredProduct.planCode %>"    
+      <% 
+        if @planCode == filteredProduct.planCode
+          %>
+          selected
+          <%
+        end
+      %>
+    >
+      <%= getLabelValue(filteredProduct.planCode) %>
+    </option>
+
+    <%
+  end
+%>

@@ -1,0 +1,280 @@
+<!-- submission -->
+<form method="POST" action="<%= url_for :action => :submitDeclaration %>" name="Declaration" id="Declaration">
+<%= renderObject(@fnaRequest) %>
+<%= renderObject(@fnaProposer, @fnaRequest) %>
+<link rel="stylesheet" href="/public/css/jquery.signaturepad.css" >
+<script type="text/javascript" src="/public/js/jquery.signaturepad.js"></script>
+<input type="hidden"  id ="statuscode" name="statuscode" value="<%= @fnaRequest.addtnField1Str %>"/>
+<input type="hidden"  id ="showSignature" name="showSignature" value=""/>
+
+    <div class="illustrationdisplay" >
+        <br>
+        <br> 
+        <div style="margin:0% 2% 0% 0%;text-align: justify;">
+            <%= getLabelValue('FNA_DECLARATION') %>
+            <br><br>
+			<%= getLabelValue('FNA_PICS_1') %>
+			<br>
+            <%= getLabelValue('FNA_DECLARATION1') %>
+          
+            <%= getLabelValue('FNA_DECLARATION2') %>
+       
+            <%= getLabelValue('FNA_PICS') %>
+            <br>
+            <br>
+            <%= renderCheckBox('marketingInfoFl', @fnaRequest.marketingInfoFl, nil, @fnaRequest, 'class="ui-checkbox2" style="display:none;"') %>
+            <%= renderLabel('marketingInfoFl', 'UI_MKTNG_REJECT', 'icon-checkbox2', @fnaRequest,  'style="color:#333 !important;padding-left:36px !important;"') %>
+        </div>
+        <br>       
+    </div>   
+
+    <div class="illustrationdisplay" >
+        <div class="legend" style="width:98%;">
+            <label class="strongLabel" style="font-size:18px;display:inline-block;">
+                <%= getLabelValue('APPLICANTSIGN') %>                    
+            </label>
+        </div>
+
+        <div style="margin-left: 20px;margin-right: 25px;border:0px solid black;">
+            <%= renderLabel('FNA_PREVIEW_WARNING', 'FNA_PREVIEW_WARNING', 'mandatory ' , @fnaRequest, 'style="font-size:14px !important; font-weight:normal;"') %>
+        </div>
+
+        <div class="ui-dual-field-contain ui-body ui-br" data-role="dualfieldcontain">
+            <div class="half">
+                <div class="group">
+                    <%= renderLabel('APPLICANTNAME', 'APPLICANTNAME', 'mandatory ', @fnaProposer, 'style="top:-10px !important;width: 55%;"') %>
+                    <% fullname=@fnaProposer.getEntityDesc.to_s %> 
+                    <%= renderInputField('fullname', fullname ,'fullname', nil, ' maxlength="30" pattern="/([^\s])" class="material-input " readonly="true"') %>
+                </div>
+            </div>
+            <div class="half">
+                <div class="group">
+                    <%= renderLabel('applicantSignDt', 'APPLICANTSIGNEDDATE', 'mandatory ' , @fnaRequest) %>
+                    <%= renderInputField('applicantSignDt', @fnaRequest.applicantSignDt, 'applicantSignDt', @fnaRequest, 'pattern="/([^\s])" class="material-input" readonly="true" ') %>
+                    <!-- <img src="/public/images/FNA/datepicker.png" class="datepickerimg" onclick="captureDate('Enter date', $(this).siblings('input').attr('name'));"> -->
+                </div>
+            </div>
+        </div>
+
+        <div class="ui-dual-field-contain ui-body ui-br" data-role="dualfieldcontain" style="padding: 0% 2%">    
+            <%= renderLabel('APPLICANTSIGN', 'APPLICANTSIGN', 'mandatory ' , @fnaRequest) %>
+            <br>   <br>                
+            <% if @fnaRequest.statusCd.to_s == "FNAPENDING" %>
+                <%= renderSignatureInlineFieldForFNA('applicantSignature', @fnaRequest, returnAppHeightWeight('screen_width', 0.50), returnAppHeightWeight('screen_height', 0.35) ,"true")%>
+            <% elsif @fnaRequest.statusCd.to_s == "FNASIGNED" %>
+                <div class="article image overlay" ></div>
+                <style type="text/css">                                 
+                    .article {
+                      width: 90%;
+                      height:350px;
+                      border:1px solid grey;
+                      display: inline-block;
+                      vertical-align: top;
+                      margin-top: 10px;
+                      position: relative;
+                      color:white;
+                    }
+                    .image {
+                       
+                      background-image: url('<%= @fnaRequest.applicantSignature %>');
+                      background-repeat: no-repeat;
+                      height: 350px;
+                    }
+                    .overlay:before{
+                      position: absolute;
+                      content:" ";
+                      top:0;
+                      left:0;
+                      width:100%;
+                      height:100%;
+                      display: block;
+                      z-index:0;
+                      background-color: rgba(0,0,0,0.4);
+                    }
+                </style>
+            <% else %>
+                <%  if @pageLanguage == "en" %>
+                    <%= concatStr = ""
+                        if System::get_property('platform') == 'APPLE'
+                            concatStr += "<img src=\"/public/images/FNA/English_large.png\" width=\"800px\">"
+                        else
+                            concatStr += "<img src=\"/public/images/FNA/English_large.png\">"
+                        end
+                    %>
+                    <!-- <img src="/public/images/FNA/English_large.png" width="800px"> -->
+                <% else %>
+                    <%= concatStr = ""
+                        if System::get_property('platform') == 'APPLE'
+                            concatStr += "<img src=\"/public/images/FNA/chinese_large.png\" width=\"800px\">"
+                        else
+                            concatStr += "<img src=\"/public/images/FNA/chinese_large.png\">"
+                        end
+                    %>   
+                    <!-- <img src="/public/images/FNA/chinese_large.png" width="800px"> -->
+                <% end %>
+            <% end %>    
+        </div>
+
+        <br>        
+
+        <div class="legend" style="width:98%;">
+            <label class="strongLabel" style="font-size:18px;display:inline-block;">
+                <%= getLabelValue('CONSULTANTSIGN') %>                    
+            </label>
+        </div>
+        <div class="ui-dual-field-contain ui-body ui-br" data-role="dualfieldcontain">
+            <div class="half">
+                <div class="group">
+                    <%= renderLabel('CONSULTANTNAME', 'CONSULTANTNAME', 'mandatory ', @fnaRequest, 'style="top:-10px !important;width: 55%;"') %>
+                    <%  agentName1 = AgentReg.getCurrentAgentReg.agentName1 %>
+                    <%= renderInputField('agentName1', agentName1 ,'agentName1', nil, ' maxlength="30" pattern="/([^\s])" class="material-input " readonly="true"') %>
+                </div>
+            </div>
+            
+            <div class="half">
+                <div class="group">
+                    <%= renderLabel('agentSignDt', 'CONSULTANTSIGNEDDATE', 'mandatory ', @fnaRequest) %>
+                    <%= renderInputField('agentSignDt', @fnaRequest.agentSignDt, 'agentSignDt', @fnaRequest, 'pattern="/([^\s])" class="material-input" readonly="true"') %>         
+                    <!-- <img src="/public/images/FNA/datepicker.png" class="datepickerimg" onclick="captureDate('Enter date', $(this).siblings('input').attr('name'));"> -->
+               </div>
+            </div>
+        </div>
+
+        <div class="ui-dual-field-contain ui-body ui-br" data-role="dualfieldcontain" style="padding: 0% 2%">   
+            <%= renderLabel('CONSULTANTSIGN', 'CONSULTANTSIGN', 'mandatory ' , @fnaRequest) %>
+            <br>   <br>   
+            <% if @fnaRequest.statusCd.to_s == "FNAPENDING" %>
+                <%= renderSignatureInlineFieldForFNA('agentSignature', @fnaRequest, returnAppHeightWeight('screen_width', 0.50), returnAppHeightWeight('screen_height', 0.35) ,"true")%>
+            <% elsif @fnaRequest.statusCd.to_s == "FNASIGNED" %> 
+                <div class="article_agent image_agent overlay_agent" ></div>
+                <style type="text/css">                                 
+                    .article_agent {
+                      width: 90%;
+                      height:350px;
+                      border:1px solid grey;
+                      display: inline-block;
+                      vertical-align: top;
+                      margin-top: 10px;
+                      position: relative;
+                      color:white;
+                    }
+                    .image_agent {                
+                      background-image: url('<%= @fnaRequest.agentSignature %>');
+                      background-repeat: no-repeat;
+                      height:350px;
+                    }
+                    .overlay_agent:before{
+                      position: absolute;
+                      content:" ";
+                      top:0;
+                      left:0;
+                      width:100%;
+                      height:100%;
+                      display: block;
+                      z-index:0;
+                      background-color: rgba(0,0,0,0.4);
+                    }
+                </style>
+            <% else %>
+                <%  if @pageLanguage == "en" %>
+                    <%= concatStr = ""
+                        if System::get_property('platform') == 'APPLE'
+                            concatStr += "<img src=\"/public/images/FNA/English_large.png\" width=\"800px\">"
+                        else
+                            concatStr += "<img src=\"/public/images/FNA/English_large.png\">"
+                        end
+                    %>
+                    <!-- <img src="/public/images/FNA/English_large.png" width="546px"> -->
+                <% else %>
+                    <%= concatStr = ""
+                        if System::get_property('platform') == 'APPLE'
+                            concatStr += "<img src=\"/public/images/FNA/chinese_large.png\" width=\"800px\">"
+                        else
+                            concatStr += "<img src=\"/public/images/FNA/chinese_large.png\">"
+                        end
+                    %>   
+                    <!-- <img src="/public/images/FNA/chinese_large.png" width="546px"> -->
+                <% end %>
+            <% end %>    
+        </div>
+    <br>
+    <br>
+    </div>
+
+    <!--  <div class="" data-role="dualfieldcontain">
+        <div class="half"  align="left">
+            <div class="group">
+                <a href="#" id="previousTab"  class="button_UI ui-link ui-btn selected"  style="height:20px;border-radius: 10px !important;" onclick="previousTab()">
+                    <%#= getLabelValue('PREVIOUS') %>
+                </a>
+
+            </div>
+        </div>
+
+        <div class="half" align="right">
+            <div class="group" >
+                <%# if @fnaRequest.statusCd.to_s == "FNASIGNED" || @fnaRequest.statusCd.to_s == "FNASUBMIT" || @fnaRequest.statusCd.to_s == "SYNCDONE" %>
+                    <a href="#"  id="nextTab"  class="button_UI ui-link ui-btn selected"  style="height:20px;border-radius: 10px !important;" onclick="nextTab()" >
+                        <%#= getLabelValue('NEXT') %> 
+                    </a> 
+                <%# end %>
+            </div>
+        </div>
+    </div>  -->   
+    <style >
+        .button_UI {
+            background-color:#efbc33!important;
+            border-radius: 7px;
+            border-style: none;
+            color: #003946 !important;
+            display: inline-block;
+            font-size: 14px !important;
+            max-width: 200px;
+            margin: 0;
+            text-shadow: none !important;
+            font-weight: 700;
+            text-align: center;
+            line-height: 1.3;
+            /*padding: .8em 1.5em !important;*/
+            width: 100px;
+            height: 20px;
+        }
+        
+        .sigNav a, .sigNav a:link, .sigNav a:visited{
+            text-decoration: none;
+        }
+    </style>
+    
+<%= render(:partial => 'FNADeclarationJS')%>
+</form>
+
+ <div class="" data-role="dualfieldcontain" align="">
+        <div class="">
+            <div class="group" style="font-size: 14px;">
+                <%= getLabelValue('INSTRUCTION_TEXT_ESIGNATURE') %>
+            </div>
+        </div>     
+    </div>
+
+
+
+
+   <!--   <div class="" data-role="dualfieldcontain">
+        <div class="half"  align="left">
+            <div class="group">
+                <a href="#" id="previousTab"  class="button_UI ui-link ui-btn selected"  style="" onclick="previousTab()">
+                    <%#= getLabelValue('PREVIOUS') %>
+                </a>
+
+            </div>
+        </div>
+         <%# if @fnaRequest.addtnField1Str == "FNASIGNED" || @fnaRequest.addtnField1Str == "FNASUBMIT" %>
+        <div class="half" align="right">
+            <div class="group" >
+                <a href="#"  id="nextTab"  class="button_UI ui-link ui-btn selected"  style="" onclick="nextTab()" >
+                    <%#= getLabelValue('NEXT') %> 
+                </a>   
+            </div>
+        </div>
+        <%# end %>
+    </div> -->

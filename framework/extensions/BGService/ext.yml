@@ -1,0 +1,17 @@
+entry: Init_BGService_extension
+javaentry: com.bgservice.BGService
+libraries: ["BGService"]
+android:
+  source_list: ext/platform/android/ext_java.files
+  exttype: rakefile
+  rhodes_listener: com.rho.bgservice.BGServiceRhoListener
+  manifest_changes: ext/platform/android/ApplicationManifestAdds.erb
+wp8:
+  csharp_impl: yes
+  root_namespace: rho
+
+project_paths:
+  wp8: ext/platform/wp8/BGServiceLib.vcxproj
+  wm: ext/platform/wm/BGService.vcproj
+  
+xml_api_paths: ext/BGService.xml

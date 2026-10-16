@@ -1,0 +1,12 @@
+<%= renderObject(@quotationParty, @quotation) %>
+<li name='<%= getObjectMapping(@quotationParty) %>'>
+    <fieldset style= 'margin-left: 97%;'>
+        <a value=<%= getLabelValue('REMOVE')%> href="#" onclick="removeSupplementLife('<%= getObjectMapping(@quotationParty) %>')"><img src="/public/images/SalesIllustration/closebutton.png"></a>
+    </fieldset>
+    <%= renderHiddenField('object', @quotationParty.object, 'object', @quotationParty) %>
+    <%= renderHiddenField('removed', @quotationParty.removed, 'removed', @quotationParty) %>
+    <%= render :partial => "capturePartyDetails" %>
+
+    <hr class="horizontalline"/>
+</li>
+<%= render :partial => "addSupplementLifeJS" %>

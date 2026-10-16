@@ -1,0 +1,11 @@
+<%= pageTagStart('Search Lead Activity','Symbiosys - Leads') %>
+<%= headerTag("pendingActList","","","/app/Lead/search") %>
+<%= formTagStart("activitySearchForm","#{url_for :action => :activityList}") %>
+<div data-role="main" class="ui-content">
+	<%= menuTag('LEADS',true) %>
+	<input type="hidden" id="index" name="index" value="<%= @index.to_i %>">
+	<%= searchTag("leadName,type,activityDt,closureDate","SearchLeadActivityDO", @searchResultList, true, true,'Edit','icon-change-status','/app/Lead/{#object}/showLeadActivity','','','', true, "DAILY,WEEKLY,MONTHLY", "javascript: typechange('DAILY'),javascript: typechange('WEEKLY'),javascript: typechange('MONTHLY')", "javascript: indexchange('PREVIOUS'),javascript: indexchange('NEXT')",@mesg) %>
+</div>
+<%= formTagEnd %>
+<%= pageTagEnd %>
+<script type="text/javascript" charset="utf-8" src="/app/Lead/activityList_Jazz.js"></script>

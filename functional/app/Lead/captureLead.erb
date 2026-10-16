@@ -1,0 +1,357 @@
+<div data-role="page" data-url="<%= Rho::RhoConfig.start_path %>/">
+	<link rel="stylesheet" href="/public/css/Eapp/c2l_EAPP.css">
+	<script type="text/javascript" src="/public/js/Eapp/c2l_EAPP.js"></script>
+	<style type="text/css">
+		#header {
+			background-color:#FFF;
+			background-repeat: repeat-x;
+			border-radius: 4px;
+			box-shadow: 0 1px 0 rgba(255, 255, 255, 0.15) inset, 0 1px 5px rgba(0, 0, 0, 0.075);
+			height: 4em;
+		}
+
+		#header > img {
+			margin: 0.5em 0 0 1em;
+			width: 8%;
+		}
+
+		#header a img {
+			margin: 0.9em;
+		}
+
+		#header h1 {
+			font-size: 1.5em;
+			padding: 0.7em 0;
+		}
+		.headerRightButtons {
+			padding-right: 4em;
+		}
+		#errordiv {
+			position: absolute;
+			right: 0;
+			top: 0;
+		}
+		.getAddressButton {
+			position: relative;
+		}
+	</style>
+	
+
+	<div data-role="header" id="header" data-position="inline">
+		<a href="/app/Menu/leads" rel="external" data-direction="reverse" data-role="none">
+			<img src="/public/images/SalesIllustration/icon_BackArrow-Red.png" width="70%">
+		</a>
+
+		<h1 style="margin:0 30%";><%= getLabelValue('CAPTURELEAD') %></h1>    
+		
+		<% unless @lead.statusCd == "CLOSED" %>
+		<div class="ui-btn-right">
+			<div class="headerRightButtons">
+				<a href="#" name="close" data-role="button" style="font-size: 12px;">
+					<%= getLabelValue('CLOSELEAD')%>
+				</a>
+				<a href="#" name="save" data-role="button" style="font-size: 12px;">
+					<%= getLabelValue('SAVEVALIDATE')%>
+				</a>
+
+				<% if @lead.statusCd != "PENDING" %>
+				<a href="#" name="addfna" data-role="button" style="font-size: 12px;">
+					<%= getLabelValue('ADDFNA')%>
+				</a>
+				<!-- <a href="#" name="addgraphicalfna" data-role="button" style="font-size: 12px;">
+					<%#= getLabelValue('Graphical FNA')%>
+				</a> -->
+				<% end %>
+			</div>
+
+			<span id='errordiv' style="display:none"> 
+				<a href="#" name="error_dialog" id="error_dialog" style="min-width:100px; bottom: 10px;">
+					<img src="/public/images/SalesIllustration/error_list.png">
+				</a>
+			</span>
+		</div>
+		<% end %>
+	</div>
+
+
+	<div data-role="content" id="capture" style="-webkit-transform: none;">
+		<div id='totalErrorDiv' style="display:none">
+			<% if !$total_error.empty? %>
+			<%= renderErrorList($total_error) %>
+			<% end %>
+		</div>
+		<form method="POST" action="<%= url_for :action => :executeSubmit %>" name="leadForm" style="margin-bottom: 250px!important;">
+			<%= renderObject(@lead) %>
+
+			<%= renderHiddenField('statusCd' , @lead.statusCd, 'Lead Status', @lead) %>
+			<%= renderHiddenField('closureNotes' , @lead.closureNotes, 'Closure notes', @lead) %>
+			<%= renderHiddenField('addActivityFlag' , @lead.addActivityFlag, 'Add Activity Flag', @lead) %>
+			<%= renderHiddenField('activityToBeUpdated' , @lead.activityToBeUpdated, 'Activity To Be Updated', @lead) %>
+			<%= renderHiddenField('leadId' , @lead.leadId, 'leadId', @lead)%>
+			<%= renderHiddenField('contactId' , @lead.contactId, 'Contact Id', @lead)%>
+
+			<div class="illustrationdisplay">
+				<div data-role="navbar" id="lead-activity-bar">
+					<ul style="width: 98%;">
+						<li id="leadInfoLi">
+							<a href="#" class="unselectedTab" onclick="changeLeadTab('leadInfoContainer')"><%=getLabelValue('LEADINFORMATION')%></a>
+						</li>
+						<li id="activityInfoLi">
+							<a href="#" class="unselectedTab" onclick="changeLeadTab('activityInfoContainer')"><%=getLabelValue('ACTIVITYINFORMATION')%></a>
+						</li>
+					</ul>
+				</div>
+			</div>
+
+
+			<div id="leadInfoContainer">
+				<div class="illustrationdisplay">
+					<div class="panelContent">
+						<div data-role="dualfieldcontain">
+							<div class="half">
+								<%= renderLabel('title', 'title', nil, @lead) %>
+								<%= getLookup('TITLE', 'title', @lead.title, @lead) %> 
+							</div>
+						</div>
+
+						<div data-role="dualfieldcontain">
+							<div class="half">
+								<%= renderLabel('firstname', 'firstName', 'mandatory', @lead)   %>
+								<%= renderInputField('firstname', @lead.firstname, 'FirstName', @lead, ' maxlength="30"') %>
+							</div>
+							<div class ="half">
+								<%= renderLabel('middlename', 'middleName', nil, @lead)   %>
+								<%= renderInputField('middlename', @lead.middlename, 'MiddleName', @lead, ' maxlength="30"') %>
+							</div>
+						</div>
+
+						<div data-role="dualfieldcontain">
+							<div class="half">
+								<%= renderLabel('lastname', 'lastName', 'mandatory', @lead)   %>
+								<%= renderInputField('lastname', @lead.lastname, 'LastName', @lead, ' maxlength="30"') %>
+							</div>
+						</div>
+
+						<div data-role="dualfieldcontain">
+							<div class="half">
+								<%= renderLabel('genderCd', 'genderCd', nil, @lead)    %>
+								<%= renderRadioButton('genderCd', @lead.genderCd, "#{getObjectMapping(@lead)}_male", 'MALE', @lead) %>
+								<%= renderLabel("#{getObjectMapping(@lead)}_male", 'Male', 'radioWidth', nil)   %>
+								<%= renderRadioButton('genderCd', @lead.genderCd, "#{getObjectMapping(@lead)}_female", 'FEMALE', @lead) %>
+								<%= renderLabel("#{getObjectMapping(@lead)}_female", 'Female', 'radioWidth', nil)   %>     
+							</div>
+							<div class="half">
+								<%= renderLabel('maritalStatus', 'maritalStatusCd', nil, @lead) %> 
+								<%= getLookup('MARITALSTATUS', 'maritalStatus', @lead.maritalStatus, @lead)   %> 
+							</div>
+						</div>
+
+						<div data-role="dualfieldcontain">
+							<div class="half">
+								<%= renderLabel('dob', 'birthDt', nil, @lead)   %>
+								<%= renderDateField('dob', @lead.dob, 'Date Of Birth', @lead) %>
+							</div>
+							<div class="half">
+								<%= renderLabel('age', 'age', nil, @lead) %>
+								<%= renderCountField('age', @lead.age, '', @lead) %>
+								<%= renderLabel('age','YEAR') %>
+							</div>
+						</div>
+
+						<div data-role="dualfieldcontain">
+							<div class="half"> 
+								<%= renderLabel('source', 'source', nil, @lead)   %>
+								<%= getLookup('LEADSOURCE', 'leadSource', @lead.leadSource, @lead) %>
+							</div> 
+							<div class="half">
+								<%= renderLabel('leadSourceOther', 'OTHER', nil, @lead)   %>
+								<%= renderInputField('leadSourceOther', @lead.leadSourceOther, 'Lead Source Other', @lead, 'maxlength="60"') %>
+							</div>
+						</div> 
+
+						<div data-role="dualfieldcontain">
+							<div class="half">
+								<%= renderLabel('identityTypeCd', 'identityTypeCd', nil, @lead) %>
+								<%= getLookup('IDENTITYTYPE', 'identityTypeCd', @lead.identityTypeCd, @lead)   %>
+							</div>
+							<div class="half">
+								<%= renderLabel('idNumber', 'identityNum', nil, @lead)   %>
+								<%= renderInputField('idNumber', @lead.idNumber, 'IDNumber', @lead, 'maxlength="20"') %>
+							</div>
+						</div>
+
+						<div data-role="dualfieldcontain">
+							<div class="half">
+								<%= renderLabel('occupationCd', 'occupationTypeCd', nil, @lead) %> 
+								<%= getLookup('OCCUPATIONTYPE', 'occupationCd', @lead.occupationCd, @lead) %>
+							</div>
+							<div class="half">
+								<%= renderLabel('incomeGroup', 'income', nil, @lead) %>
+								<%= getLookup('INCOMEGROUP', 'incomeGroup', @lead.incomeGroup, @lead)   %>
+							</div>
+						</div>
+
+						<div data-role="dualfieldcontain">
+							<div class="half">
+								<%= renderLabel('industryCd', 'industryCd', nil, @lead) %>
+								<%= getLookup('DYNAMICLOOKUP','industryCd',@lead.industryCd, @lead, @industries) %>
+							</div>
+							<div class="half">
+								<%= renderLabel('natureofDutyId', 'natureOfDuty', nil, @lead) %>
+								<span class="natureOfDutyLookup" name="natureOfDutyLookup">	
+									<%= getLookup('DYNAMICLOOKUP','natureofDutyId',@lead.natureofDutyId, @lead, @natureOfDutyLookups)%>
+								</span>
+							</div>
+						</div>	
+
+						<div data-role="dualfieldcontain">
+							<div class ="half">
+								<%= renderLabel('nationality', 'citizenshipCd', nil, @lead) %>
+								<%= getLookup('CITIZENSHIP', 'nationality', @lead.nationality, @lead)   %>
+							</div>
+						</div>
+					</div>
+				</div>
+
+
+				<div class="illustrationdisplay">
+					<div class="legend">
+						<label class="strongLabel">
+							<%= getLabelValue('CONTACTINFORMATION') %>
+							<a href="#" class="scrollTopButton ui-icon-carat-u ui-btn-icon-notext ui-alt-icon ui-btn-inline"></a>
+							<a href="#" class="expandButton ui-icon-plus ui-btn-icon-notext ui-alt-icon ui-btn-inline"/></a>
+							<a href="#" class="collapseButton ui-icon-minus ui-btn-icon-notext ui-alt-icon ui-btn-inline"/></a>
+						</label>
+					</div>
+
+					<div class="panelContent">
+						<div data-role="dualfieldcontain">
+							<div class="half">
+								<%= renderLabel('residence', 'contactResi', nil, @lead) %> 
+								<%= renderTelephoneField('residenceNumber', @lead.residenceNumber, 'Residence Number', @lead, "maxlength='15'") %>
+							</div>
+							<div class="half">
+								<%= renderLabel('office', 'contactOffice', nil, @lead) %> 
+								<%= renderTelephoneField('officeNumber', @lead.officeNumber, 'Office Number', @lead, ' maxlength="15"') %>
+							</div>
+						</div>
+
+						<div data-role="dualfieldcontain">
+							<div class="half">
+								<%= renderLabel('mobile', 'contactMobile', nil, @lead) %> 
+								<%= renderTelephoneField('mobileNumber', @lead.mobileNumber, 'Mobile Number', @lead, "maxlength='15'") %>
+
+							</div>
+							<div class="half">
+								<%= renderLabel('emailAddress', 'emailID', nil, @lead)   %>
+								<%= renderEmailField('emailAddress', @lead.emailAddress, 'Email address', @lead, "maxlength='30'") %>
+							</div>
+						</div>
+
+						<div data-role="dualfieldcontain">
+							<div class="half">
+								<%= renderLabel('callTimings', 'callTimings', nil, @lead) %>
+								<%= renderLabel('from', 'from', nil, @lead, 'style="width: 50px;"') %>:
+								<%= renderTimeField('fromTime', @lead.fromTime, 'From Time', @lead, 'style="width: 150px;"') %>
+							</div>
+							<div class="half">
+								<%= renderLabel('to', 'to', nil, @lead) %>:
+								<%= renderTimeField('toTime', @lead.toTime, 'To Time', @lead, 'style="width: 150px;"') %>
+							</div>
+						</div>
+					</div>
+				</div>
+
+
+				<div class="illustrationdisplay">
+					<div class="legend">
+						<label class="strongLabel">
+							<%= getLabelValue('ADDRESSINFORMATION') %>
+							<% if $rhoconfig.has_key?(:get_address_from_geo) and $rhoconfig[:get_address_from_geo]=='YES'%>
+								<a href="#" id="getAddress" class="getAddressButton ui-icon-location ui-btn-icon-notext ui-alt-icon ui-btn-inline"></a>
+							<% end %>
+							<a href="#" class="scrollTopButton ui-icon-carat-u ui-btn-icon-notext ui-alt-icon ui-btn-inline"></a>
+							<a href="#" class="expandButton ui-icon-plus ui-btn-icon-notext ui-alt-icon ui-btn-inline"></a>
+							<a href="#" class="collapseButton ui-icon-minus ui-btn-icon-notext ui-alt-icon ui-btn-inline"></a>
+						</label>
+					</div>
+
+					<div class="panelContent">
+						<div data-role="dualfieldcontain">
+							<%= renderLabel('address1', 'addressLine1', nil, @lead, ' style="width:13.8%" ')   %>
+							<%= renderInputField('address1', @lead.address1, 'Address 1', @lead, ' maxlength="120" style="width:79.4%" ') %>
+						</div>
+
+						<div data-role="dualfieldcontain">
+							<%= renderLabel('address2', 'addressLine2', nil, @lead, ' style="width:13.8%" ')   %>
+							<%= renderInputField('address2', @lead.address2, 'Address 2', @lead, ' maxlength="120" style="width:79.4%" ') %>
+						</div>
+
+						<div data-role="dualfieldcontain">
+							<%= renderLabel('address3', 'addressLine3', nil, @lead, ' style="width:13.8%" ')   %>
+							<%= renderInputField('address3', @lead.address3, 'Address 3', @lead, ' maxlength="120" style="width:79.4%" ') %>
+						</div>
+
+						<div data-role="dualfieldcontain">
+							<%= renderLabel('address4', 'addressLine4', nil, @lead, ' style="width:13.8%" ')   %>
+							<%= renderInputField('address4', @lead.address4, 'Address 4', @lead, ' maxlength="120" style="width:79.4%" ') %>
+						</div>
+
+						<div data-role="dualfieldcontain">
+							<div class="half">
+								<%= renderLabel('country', 'countryCd', nil, @lead)   %>
+								<%= getLookup('COUNTRY','country', @lead.country, @lead) %>
+							</div>
+							<div class="half">
+								<%= renderLabel('pincode', 'pinCode', nil, @lead)   %>
+								<%= renderInputField('pincode', @lead.pincode, 'Pincode', @lead, 'maxlength="6"') %>
+							</div>
+						</div>
+
+						<div data-role="dualfieldcontain">
+							<div class="half">
+								<%= renderLabel('state', 'stateCd', nil, @lead)   %>
+								<span class="districtLookUpData" name="districtLookUpData">
+									<% if @districtLookUps.empty? %>
+									<%= renderInputField('state', @lead.state, 'District', @lead, ' maxlength="30"') %>
+									<% else %>
+									<%= getLookup('DYNAMICLOOKUP','state', @lead.state, @lead , @districtLookUps) %>
+									<% end %>
+								</span>
+							</div>
+							<div class="half">
+								<%= renderLabel('city', 'cityCd', nil, @lead)   %>
+								<span class="cityLookUpData" name="cityLookUpData">
+									<% if @cityLookUps.empty? %>
+									<%= renderInputField('city', @lead.city, 'City', @lead, ' maxlength="30"') %>
+									<% else %>
+									<%= getLookup('DYNAMICLOOKUP','city', @lead.city, @lead, @cityLookUps) %>
+									<% end %>
+								</span>
+							</div>
+						</div>
+					</div>	
+				</div>
+			</div>
+
+
+
+			<div id="activityInfoContainer">
+				<% if @lead.statusCd != "CLOSED" %>
+				<div class="ui-grid-b">
+					<div class="ui-block-a"></div>
+					<div class="ui-block-b">
+						<input type="button" value="<%= getLabelValue('ADDACTIVITY')%>" id="addActivity" data-role="button">
+					</div>
+					<div class="ui-block-c"></div>
+				</div>
+				<% end %>	
+				
+				<div id="leadActivityList" data-role='collapsibleset'>
+					<%= @leadActivity_form %>
+				</div>
+			</div>
+		</form>
+	</div>
+</div>
+<%= render(:file => 'Lead/captureLeadJS.erb')%>

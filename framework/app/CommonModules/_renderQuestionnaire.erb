@@ -1,0 +1,11 @@
+<link rel="stylesheet" href="/public/css/c2l_questionnaire.css">
+<div class="illustrationdisplay">
+	<%= renderObject(@questionContainer) %>
+	<%= renderHiddenField("entityGuid", @questionContainer.entityGuid, nil, @questionContainer) %>
+	<%= renderHiddenField("policyGuid", @questionContainer.policyGuid, nil, @questionContainer) %>
+	<%= renderHiddenField("entityTypeCd", @questionContainer.entityTypeCd, nil, @questionContainer) %>
+	<% @finalQuestions.each do |questionnaireHash| %>
+    	<%= renderQuestionnaire(questionnaireHash, nil, @questionContainer, @responseHash, @quotationParty, @quotation, @baseProduct) %>
+	<% end %>
+</div>
+<%= render(:partial => 'CommonModules/renderQuestionnaireJS') %>

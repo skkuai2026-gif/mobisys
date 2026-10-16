@@ -1,0 +1,8 @@
+<%
+require 'CommonModules/mobisysbrowserhelper'
+@lifeArray.each do|life|
+%>
+  <option value="<%= life.cd %>">
+    <%= getLabelValue(life.desc) %>
+  </option>
+<% end %>

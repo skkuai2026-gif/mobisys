@@ -1,0 +1,132 @@
+<div class="illustrationdisplay" style="width: 96%;">
+    <% saLabel = renderProductLabel('SALABEL', @product) %>
+	<% annualPremiumLabel = renderProductLabel('ANNUALPREMIUMLABEL', @product) %>
+	<% if @policy.quotationRefGuid.to_s == "" && @riderAutoPopulationReqFlag != "YES" %>
+		<fieldset style= 'margin-left: 97%;'>
+		   <input type="button" data-inline="true" data-icon="delete" data-iconpos="notext" onclick="removeRider('<%= getObjectMapping(@rider) %>', '<%= @rider.object %>');">
+		</fieldset>
+	<% end %>
+	<%= renderHiddenField('productId', @rider.productId, nil, @rider) %>
+	<%= renderHiddenField('productVersion', @rider.productVersion, nil, @rider) %>
+	<%= renderHiddenField('productFamilyCd', @rider.productFamilyCd, nil, @rider) %>
+	<%= renderHiddenField('premiumSAFl', @rider.premiumSAFl, nil, @rider) %>
+	<% if @riderAutoPopulationReqFlag == "YES" %>
+        <%= renderHiddenField('productSeq', @rider.productSeq, 'productSeq', @rider) %>
+    <% end %>
+	<% if @facetData[:renderProductSeq] || @facetData[:renderProductPlanOptionCd] %>
+		<div data-role="dualfieldcontain">
+			<% if @facetData[:renderProductSeq] %>
+			  	<div class="half">
+			  		<% if @riderAutoPopulationReqFlag != "YES" %>
+				   		<%= renderLabel('productSeq', 'productCd', nil, @rider) %>
+				   		<%= getLookup('DYNAMICLOOKUP', 'productSeq', @rider.productSeq.to_s, @rider, @ridersLookup) %>
+				   	<% else %>
+				   		<%= renderCheckBox('selected', @rider.selected, nil, @rider) %>
+                            <%= renderLabel('selected', @riderHash[@rider.productSeq], nil, @rider, 'style="width: 100%;"') %>
+                            <% if @riderDisableField[@rider.object] == 'YES' %>
+                                <script>
+                                    $('input[name="<%= getObjectMapping(@rider)%>[selected]"]').checkboxradio().checkboxradio('disable');
+                                </script>
+                            <% end %>
+				   	<% end %>
+			  	</div>
+		  	<% end %>
+
+		  	<% if @facetData[:renderProductPlanOptionCd] %>
+			  	<div class="half">  
+			   		<%= renderLabel('productPlanOptionCd', 'productPlanOptionCd', nil, @rider) %>
+			   		<% if @riderAutoPopulationReqFlag == "YES" %>
+			   			<%= getLookup('DYNAMICLOOKUP', 'productPlanOptionCd', @rider.productPlanOptionCd, @rider, @planLookups[@rider.productSeq.to_s + '|' + @policyProductInsured.roleCd]) %>
+			   		<% else %>
+			   			<%= getLookup('DYNAMICLOOKUP', 'productPlanOptionCd', @rider.productPlanOptionCd, @rider, @planLookups) %>
+			   		<% end %>
+			  	</div>
+		  	<% end %>
+		</div>
+	<% end %>	
+
+
+	<% if @facetData[:renderPartyRoleCd] || @facetData[:renderInsuredPartyRefGuid] %>
+		<div data-role="dualfieldcontain">
+			<% if @facetData[:renderPartyRoleCd] %>
+				<div class="half">
+					<%= renderLabel('roleCd', 'partyRoleCd', nil, @policyProductInsured) %>
+					<%= getLookup('RIDERPARTYROLE', 'roleCd', @policyProductInsured.roleCd, @policyProductInsured, nil) %>
+				</div>
+			<% else %>	
+				<%= renderHiddenField('roleCd', @policyProductInsured.roleCd, nil, @policyProductInsured) %>
+		  	<% end %>
+
+		  	<% if @facetData[:renderInsuredPartyRefGuid] %>
+				<div class="half">
+					<%= renderLabel('insuredPartyRefGuid', 'insuredPartyRefGuid', nil, @policyProductInsured) %>
+					<%= getLookup('DYNAMICLOOKUP', 'insuredPartyRefGuid', @policyProductInsured.insuredPartyRefGuid, @policyProductInsured, @supplementaryIdLookup) %>
+				</div>
+		  	<% end %>
+		</div>
+	<% else %>	
+		<%= renderHiddenField('roleCd', @policyProductInsured.roleCd, nil, @policyProductInsured) %>
+	<% end %>
+
+
+	<% if @facetData[:renderProductTerm] || @facetData[:renderPremiumPayingTerm] %>
+		<div data-role="dualfieldcontain">
+		  	<% if @facetData[:renderProductTerm] %>
+				<div class="half">
+					<%= renderLabel('productTerm', 'productTerm', nil, @rider) %>
+					<%= renderAmountField('productTerm', @rider.productTerm, 'productTerm', @rider, 'maxlength="3"') %>
+				</div>
+		  	<% end %>
+
+		  	<% if @facetData[:renderPremiumPayingTerm] %>
+				<div class="half">
+					<%= renderLabel('premiumPayingTerm', 'premiumPayingTerm', nil, @rider) %>
+					<%= renderAmountField('premiumPayingTerm', @rider.premiumPayingTerm, 'premiumPayingTerm', @rider, 'maxlength="3"') %>
+				</div>
+		  	<% end %>
+		</div>
+	<% end %>
+
+
+	<% if @facetData[:renderBaseSumAssured] || @facetData[:renderCoi] %>
+		<div data-role="dualfieldcontain">
+		  	<% if @facetData[:renderBaseSumAssured] %>
+				<div class="half">
+					<%= renderLabel('baseSumAssured', saLabel, nil, @rider) %>
+					<%= renderAmountField('baseSumAssured', @rider.baseSumAssured, 'baseSumAssured', @rider, 'style="min-width:200px;" maxlength="20"') %>
+					<%= attachMask("#{getObjectMapping(@rider)}[baseSumAssured]") %>
+				</div>
+		  	<% end %>
+				
+		  	<% if @facetData[:renderCoi] %>
+				<div class="half">
+					<%= renderLabel('coi', 'coi', nil, @rider) %>
+					<%= renderAmountField('coi', @rider.coi, 'COI', @rider, 'style="min-width:200px;" maxlength="20"') %>
+					<%= attachMask("#{getObjectMapping(@rider)}[coi]") %>
+		 		</div>
+		  	<% end %>
+		</div>
+	<% end %>
+
+
+	<% if @facetData[:renderBaseAnnualPremium] || @facetData[:renderModalPremium] %>
+		<div data-role="dualfieldcontain">
+		  	<% if @facetData[:renderBaseAnnualPremium] %>
+				<div class="half">
+		            <%= renderLabel('baseAnnualPremium', annualPremiumLabel, nil, @rider) %>
+		            <%= renderAmountField('baseAnnualPremium', @rider.baseAnnualPremium, 'baseAnnualPremium', @rider, 'style="min-width:200px;" maxlength="20"') %>
+		            <%= attachMask("#{getObjectMapping(@rider)}[baseAnnualPremium]") %>
+				</div>
+		  	<% end %>
+
+		  	<% if @facetData[:renderModalPremium] %>
+				<div class="half">
+					<%= renderLabel('modalPremium', 'modalPremium', nil, @rider) %>
+					<%= renderAmountField('modalPremium', @rider.modalPremium, 'BASEMODALPREMIUM', @rider, 'style="min-width:200px;" maxlength="20"') %>
+					<%= attachMask("#{getObjectMapping(@rider)}[modalPremium]") %>
+				</div>
+		  	<% end %>
+		</div>
+	<% end %>
+</div>
+<%= render :partial => "addRiderDetailsJS" %>

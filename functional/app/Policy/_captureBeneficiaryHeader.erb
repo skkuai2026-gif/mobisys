@@ -1,0 +1,6 @@
+<h3 class="beneHeaderDetails<%= @beneficiaryCount %>">
+	<span class="numberSpan"><%= (@visibleBeneficiaryCount.to_i + 1)%></span> <%= renderLabel('beneficiaryHeader', 'beneficiaryHeader')%>
+</h3>
+<fieldset style='margin-left: 92%; margin-top: 2%; position: absolute; z-index: 500;'>
+	<input type="button" data-inline="true" data-icon="delete" data-iconpos="notext" onclick="deleteBeneficiary('<%= @beneficiaryCount %>');">
+</fieldset>

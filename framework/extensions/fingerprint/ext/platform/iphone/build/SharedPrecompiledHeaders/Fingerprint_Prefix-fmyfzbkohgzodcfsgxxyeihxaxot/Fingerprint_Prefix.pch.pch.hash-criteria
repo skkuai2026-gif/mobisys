@@ -1,0 +1,25 @@
+-x
+c
+-arch
+armv7
+-std=c99
+-fpascal-strings
+-Os
+-isysroot
+/Applications/Xcode.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS11.3.sdk
+-miphoneos-version-min=3.0
+-g
+-fembed-bitcode-marker
+-iquote
+-iquote
+-I/Users/C2lBiz/Documents/Source/ImageReader/extensions/fingerprint/ext/platform/iphone/build/Release-iphoneos/include
+-I/Users/C2lBiz/.rvm/gems/ruby-2.3.4/gems/rhodes-6.0.43/platform/shared/common
+-I/Users/C2lBiz/.rvm/gems/ruby-2.3.4/gems/rhodes-6.0.43/platform/shared/rubyext
+-I/Users/C2lBiz/.rvm/gems/ruby-2.3.4/gems/rhodes-6.0.43/platform/shared/ruby/include
+-I/Users/C2lBiz/.rvm/gems/ruby-2.3.4/gems/rhodes-6.0.43/platform/shared/ruby/iphone
+-I/Users/C2lBiz/.rvm/gems/ruby-2.3.4/gems/rhodes-6.0.43/platform/shared
+-F/Users/C2lBiz/Documents/Source/ImageReader/extensions/fingerprint/ext/platform/iphone/build/Release-iphoneos
+arm-apple-darwin17.5.0
+"4.2.1 Compatible Apple LLVM 9.1.0 (clang-902.0.39.1)"
+SDK_PRODUCT_BUILD_VERSION=15E217
+15E217

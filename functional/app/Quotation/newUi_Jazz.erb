@@ -1,0 +1,156 @@
+<script type="text/javascript">
+	var meta = $("meta[name=viewport]");
+    meta.removeAttr('content');
+    if(application_view_mode == "mobile"){
+    	meta.attr('content', "width=1024, initial-scale=0, maximum-scale=10, user-scalable=yes");
+	}
+    else{
+    	meta.attr('content', "width=device-width, maximum-scale=10, user-scalable=yes");
+    }
+</script>
+<style>
+.content-fullform {
+	padding:0px 0px 0px 0px;
+}
+.ui-header .ui-title {
+	margin-right: 0;
+	margin-left: 0;
+}
+.div-with-border {
+	bottom: 30px;
+}
+body {
+	font-size : 1em !important;
+}
+.ui-popup-active{
+	width: 60%;
+}
+.div-with-border {
+	bottom: 80px;
+}
+.main-content-full {
+	bottom: 0;
+}
+</style>
+<%= pageTagStart("header") %>
+<%= headerTag(MobiSys::CommonUtil.replacePlaceHolders(LabelValue.getLabel('BENEFITILLUSTRATION', $quotationIO.outputPreferencesDO.languageCd.downcase),[$quotationIO.baseDO.quotationRefNum.to_s]), "edit","", "#{url_for :action => :show, :id => $quotationIO.baseDO.object}") %>
+<%= formTagStart("view_illustration_form","/app/Quotation/saveSignature") %>
+	<div data-role="main" class="ui-content">
+		<div class="main-content-wrapper main-content-full touch">
+			<div class="project-content-bg">
+			<%= panelTagStart %>
+				<div class="div-with-border no-padding-bottom preferences-content">
+					<div class="content-fullform">
+						<%
+						counter = 1
+						limit = 1000
+						signatureCount = 50
+						$quotationIO.htmlContent.each do |htmlContent|
+							htmlContent.each_pair do |pageNumber, page|
+								if counter <= limit 
+									header_str = ""
+									if page["name"].to_s != ""
+										header_str = getLabelValue("#{page["name"]}")
+									else
+										header_str = LabelValue.getLabel("Page", $quotationIO.outputPreferencesDO.languageCd.downcase) + " #{pageNumber}"
+									end
+							%>
+							<%= subPanelTagStart(header_str, false) %>
+							<%= page["content"] %>
+							<% 
+								if $rhoconfig[:captureSignOnSIOutput] && page["signature"].to_s != "" && $quotationIO.baseDO.quoteStatusCd != MobiSys::QuotationBO::ACCEPTED && $quotationIO.baseDO.quoteStatusCd != MobiSys::QuotationBO::SYNCDONE
+									@signature_form = ''
+									@signature_form << captureSignatureOnOutput(page["signature"],$quotationIO.baseDO,signatureCount)
+									signatureCount = signatureCount + 1
+							%>
+									<%= @signature_form %>
+								
+								<% end %>
+							<%= subPanelTagEnd %>
+							<% 
+								end
+								counter += 1
+							end
+						end
+						%>
+					</div>
+				</div>
+			<%= panelTagEnd %>
+			</div>
+		</div>
+		<div class="footer-bg">
+	       	<a href="javascript:saveSignature();" rel="external"><%= getLabelValue("ACCEPTILLUSTRATION") %></a>
+	    </div>
+		<input type="hidden" name="quoteStatusCd" id="quoteStatusCd" value='<%= $quotationIO.baseDO.quoteStatusCd %>'/>
+		<input type="hidden" name="captureSignOnSIOutput" id="captureSignOnSIOutput" value='<%= $rhoconfig[:captureSignOnSIOutput].to_s %>'/>
+		<input type="hidden" name="quotationObject" id="quotationObject" value='<%= $quotationIO.baseDO.object %>'/>
+	</div>
+	<%= formTagEnd %>
+<%= pageTagEnd %>
+<script type="text/javascript">
+	function saveSignature()
+	{
+		isValid = true;
+		var formSerialized = $('#view_illustration_form').serializeHash();
+		if(formSerialized.SignatureContainer != undefined && formSerialized.SignatureContainer != null){
+			for (var index in formSerialized.SignatureContainer.ServiceSignature) {	
+				var serviceSignature = formSerialized.SignatureContainer.ServiceSignature[index];
+				if ($('#captureSignature' + serviceSignature.signatureTypeCd + '_signature').val()==""){
+					isValid = false;
+					break;
+				}
+				else{
+					serviceSignature.signature = $('#captureSignature' + serviceSignature.signatureTypeCd + '_signature').val();
+				}
+			}
+		}
+		if (isValid){
+			$.ajax({
+				url: '/app/Quotation/saveSignature',
+				method: 'POST', 
+				data: {'formData':formSerialized,'captureSignatureOnOutput':true},
+				success: function(data) {
+				}
+			});
+		}
+		else{
+			 // showDialog("Warning", "Please complete all signatures.", 'warning', 0, 'capture');
+			 raiseAlert("ERR_PLZCOMPLETE_SIGNATURE",[],locale);
+		}
+
+
+	} 
+	$(document).ready(function(){
+		if (($('#quoteStatusCd').val()=="ACCEPTED" || $('#quoteStatusCd').val()=="SYNCDONE") || $('#captureSignOnSIOutput').val()!="true"){
+			$('.footer-bg').hide();
+		}else{
+			$('.footer-bg').show();
+		}
+		initializeSignaturePopup();
+	});
+	$(document).unbind('keydown').bind('keydown', function (event) {
+        var doPrevent = false;
+        if (event.keyCode === 8) {
+            var d = event.srcElement || event.target;
+            if ((d.tagName.toUpperCase() === 'INPUT' && (
+                     d.type.toUpperCase() === 'TEXT' ||
+                     d.type.toUpperCase() === 'PASSWORD' || 
+                     d.type.toUpperCase() === 'FILE' || 
+                     d.type.toUpperCase() === 'SEARCH' || 
+                     d.type.toUpperCase() === 'EMAIL' || 
+                     d.type.toUpperCase() === 'NUMBER' || 
+                     d.type.toUpperCase() === 'DATE' )
+                 ) || 
+                 d.tagName.toUpperCase() === 'TEXTAREA') {
+                doPrevent = d.readOnly || d.disabled;
+            }
+            else {
+                doPrevent = true;
+            }
+        }
+
+        if (doPrevent) {
+            event.preventDefault();
+        }
+    });
+</script>

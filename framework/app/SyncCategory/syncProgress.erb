@@ -1,0 +1,78 @@
+<div data-role="page">
+	<link rel="stylesheet" href="/public/css/c2l_syncronize.css">
+	<script type="text/javascript">
+		function dosomething(html){
+			$('#tablediv').html(html);
+			return false;
+		}
+
+		function update_progress(percent,processed,total,entityName,recordsProcessed,recordsReceived){
+			var span ="";
+			if(recordsReceived ==0) {
+				span = "<%= getLabelValue('STARTINGSYNC')%> <div id='progressBar' class='meter blue nostripes'><span style='width: "+parseInt(percent)+"%'></span></div>";
+			}
+			else {
+				span = "<%= getLabelValue('PROCESSING')%> " + recordsProcessed + "/" + recordsReceived + " Records <div id='progressBar' class='meter blue nostripes'><span style='width: "+parseInt(percent)+"%'></span></div>";
+			}
+
+			$('#tablediv').html(span);
+
+			if(entityName != "" && recordsProcessed==0) {
+				$( "#"+ entityName.toLowerCase() + " span img").addClass("icon-progress").attr("src","/public/images/icon_progress.gif");
+				$("#syncEntitiesDiv").animate({scrollTop: $("#"+ entityName.toLowerCase()).position().top},'slow');
+
+				$("ul#syncEntitiesList").children('li').each(function(){
+					if ($(this).attr("id")!=entityName.toLowerCase() && $(this).find("span img").hasClass("icon-progress")) {
+						$(this).find("span img").removeClass("icon-progress").addClass("icon-check").attr("src","/public/images/icon_check.png");
+					}
+				});
+			}
+			return false;
+		}
+
+		function downloadFile(){
+			var span = "<%= getLabelValue('DOWNLOADINGMASTERFILE') %><br><img src='/public/images/SalesIllustration/loading.gif'/ width='100%'>";
+			$('#tablediv').html(span);
+			return false;
+		}
+
+		function collateralFileDownload(percent,processed,total,entityName,recordsProcessed,recordsReceived){
+			if(recordsReceived ==0) {
+				span = "<%= getLabelValue('DOWNLOADINGCOLLATERALFILES')%> <div id='progressBar' class='meter blue nostripes'><span style='width: "+parseInt(percent)+"%'></span></div>";
+			}
+			else {
+				span = "<%= getLabelValue('DOWNLOADINGCOLLATERALFILES')%> " + recordsProcessed + "/" + recordsReceived + " Records <div id='progressBar' class='meter blue nostripes'><span style='width: "+parseInt(percent)+"%'></span></div>";
+			}
+
+			$('#tablediv').html(span);
+			return false;
+		}
+	</script>
+	<link rel="stylesheet" href="/public/css/c2l_dashboard.css">
+	<div data-role="header" id="header" data-position="inline">
+  		<h1><%= getLabelValue('SYNC') %></h1>
+	</div>
+	
+	<div data-role="content" id="content">
+  		<div class="container-fluid">
+    		<div class="row">
+      			<img style="display:none;" src="/public/images/icon_progress.gif"> <img style="display:none;" src="/public/images/icon_check.png">
+       			<div class="tiledisplay col-xs-11 col-sm-9 col-md-7" id="tablediv">
+        			<%= getLabelValue('STARTINGSYNC')%>
+        			<div id="progressBar" class="meter blue nostripes">
+          				<span style="width: 1%"></span>
+    				</div>  
+      			</div>
+      			<div id="syncEntitiesDiv" class="col-xs-10 col-md-3 listHeight">
+        			<ul class="ui-listview" id="syncEntitiesList">
+          				<% $syncEntities.each_with_index do |syncEntity, index| %>
+          					<li id="<%= syncEntity.entityName.downcase %>">
+            					<%= index+1 %>. <%= syncEntity.entityName %><span><img src=""></span>
+          					</li>
+          				<% end %>
+        			</ul> 
+      			</div>
+      		</div>
+  		</div>
+	</div>
+</div>

@@ -1,0 +1,12 @@
+<%= subPanelTagStart("#{getLabelValue('initialPayment')} #{@initialPaymentCount}") %>
+<div class='add-section'>
+	<% gridID = "grid_#{@initialPaymentCount}_firstPremPolicyPaymentDtl" %>
+    <%= modelTagStart(gridID, @inwardDetail, @inward,@initialPaymentCount) %>
+        <i class='close-add-section icon-close' onClick='javascript:catchevent(this);' id='<%=gridID%>_removed'></i>
+        <%= prdFieldDataTag("InwardDetailsDO",'paymentMethodCd,paymentSubTypeCd,micrNum,accountName,bankCd,bankBranch,instrumentDt,inwardNum,inwardAmount') %>
+        <span id='<%=gridID%>_qrcode' class="qrcode"><img style="height: 200px;width: 200px;" src="/public/jazz/images/qrcode.png"></span>
+        <%= setupFilterUsingFieldTargetValueMap('PAYMENTMETHOD', true, gridID) %>
+    <% modelTagEnd %>
+	<%= MobiSys::BrowserHelper.attachMaskAll %>
+</div>
+<%= subPanelTagEnd %>

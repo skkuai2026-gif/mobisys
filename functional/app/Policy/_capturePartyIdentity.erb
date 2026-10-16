@@ -1,0 +1,97 @@
+<div name="partyIdentity">
+  <%= renderHiddenField('removed', @partyIdentity1.removed, 'removed', @partyIdentity1) %>
+  <%= renderHiddenField('removed', @partyIdentity2.removed, 'removed', @partyIdentity2) %>
+  
+	<div class="illustrationdisplay">
+		<div class="legend">
+			<label class="strongLabel">
+				<%= getLabelValue('identityHeader') %>
+				<a href="#" class="scrollTopButton ui-icon-carat-u ui-btn-icon-notext ui-alt-icon ui-btn-inline"/>
+				<a href="#" class="expandButton ui-icon-plus ui-btn-icon-notext ui-alt-icon ui-btn-inline"/>
+				<a href="#" class="collapseButton ui-icon-minus ui-btn-icon-notext ui-alt-icon ui-btn-inline"/>
+			</label>
+		</div>
+
+		<div class="panelContent">
+			<div data-role="dualfieldcontain">
+				<% if @facetData[:renderIdentityTypeCd] %>
+					<div class="half">
+						<%= renderLabel('identityTypeCd', 'identityTypeCd', nil, @partyIdentity1)   %>
+						<%= getLookup('IDENTITYTYPE','identityTypeCd',@partyIdentity1.identityTypeCd, @partyIdentity1) %>
+					</div>
+				<% end %>
+				<% if @facetData[:renderIdentityNum] %>
+					<div class="half">
+						<%= renderLabel('identityNum', 'identityNum', nil, @partyIdentity1)   %>
+						<%= renderInputField('identityNum', @partyIdentity1.identityNum, 'IdentityNum', @partyIdentity1, ' maxlength="150"') %>
+					</div>
+				<% end %>
+			</div>
+
+			<div data-role="dualfieldcontain">
+				<% if @facetData[:renderIssuingAuthority] %>
+					<div class="half">
+						<%= renderLabel('issuingAuthority', 'issuingAuthority', nil, @partyIdentity1)   %>
+						<%= renderInputField('issuingAuthority', @partyIdentity1.issuingAuthority, 'IssuingAuthority', @partyIdentity1, ' maxlength="150"') %>
+					</div>
+				<% end %>
+			</div>
+
+			<div data-role="dualfieldcontain">
+				<% if @facetData[:renderIssueDt] %>
+					<div class="half">
+						<%= renderLabel('issueDt', 'issueDt', nil, @partyIdentity1)   %>
+		            	<%= renderDateField('issueDt', @partyIdentity1.issueDt, 'Issued date', @partyIdentity1, nil) %>
+					</div>
+				<% end %>
+				<% if @facetData[:renderExpiryDt] %>
+					<div class="half">
+						<%= renderLabel('expiryDt', 'expiryDt', nil, @partyIdentity1)   %>
+		            	<%= renderDateField('expiryDt', @partyIdentity1.expiryDt, 'Expired date', @partyIdentity1, nil) %>
+					</div>
+				<% end %>
+			</div>
+
+
+			<div data-role="dualfieldcontain">
+				<% if @facetData[:renderIdentityTypeCd] %>
+					<div class="half">
+						<%= renderLabel('identityTypeCd', 'identityTypeCd', nil, @partyIdentity2)   %>
+						<%= getLookup('IDENTITYTYPE','identityTypeCd',@partyIdentity2.identityTypeCd, @partyIdentity2) %>
+					</div>
+				<% end %>
+				<% if @facetData[:renderIdentityNum] %>
+					<div class="half">
+						<%= renderLabel('identityNum', 'identityNum', nil, @partyIdentity2)   %>
+						<%= renderInputField('identityNum', @partyIdentity2.identityNum, 'IdentityNum', @partyIdentity2, ' maxlength="150"') %>
+					</div>
+				<% end %>
+			</div>
+
+			<div data-role="dualfieldcontain">
+				<% if @facetData[:renderIssuingAuthority] %>
+					<div class="half">
+						<%= renderLabel('issuingAuthority', 'issuingAuthority', nil, @partyIdentity2)   %>
+						<%= renderInputField('issuingAuthority', @partyIdentity2.issuingAuthority, 'IssuingAuthority', @partyIdentity2, ' maxlength="150"') %>
+					</div>
+				<% end %>
+			</div>
+
+			<div data-role="dualfieldcontain">
+				<% if @facetData[:renderIssueDt] %>
+					<div class="half">
+						<%= renderLabel('issueDt', 'issueDt', nil, @partyIdentity2)   %>
+		            	<%= renderDateField('issueDt', @partyIdentity2.issueDt, 'Issued date', @partyIdentity2, nil) %>
+					</div>
+				<% end %>
+				<% if @facetData[:renderExpiryDt] %>
+					<div class="half">
+						<%= renderLabel('expiryDt', 'expiryDt', nil, @partyIdentity2)   %>
+		            	<%= renderDateField('expiryDt', @partyIdentity2.expiryDt, 'Expired date', @partyIdentity2, nil) %>
+					</div>
+				<% end %>
+			</div>
+		</div>
+	</div>
+</div>
+<%= render :partial => "capturePartyIdentityJS" %>

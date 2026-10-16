@@ -1,0 +1,153 @@
+<script>
+
+    function getQuotationProductExtraDO(){
+        $('select[name="<%=getObjectMapping(@baseProduct)%>[productId]"]').selectmenu('enable');
+        $.ajax({
+            url: "/app/Quotation/getQuotationProductExtraDO",
+            data: {'form': $('#quotationForm').serializeHash()},
+            async: false,
+            success: function(data){
+                $('div[name="quotationProductExtraDiv"]').children().hide();
+                $('div[name="quotationProductExtraDiv"] input[id*="removed"]').val("YES");
+                $('div[name="quotationProductExtraDiv"]').html(data);
+                $('div[name="quotationProductExtraDiv"]').trigger('create');
+            }
+        });
+    }
+
+    function refreshLoadingSection(){
+        $.ajax({
+            url: "/app/Quotation/refreshLoadingSection",
+            method: 'POST',
+            data: $('#quotationForm').serialize(),
+            success: function(data) {
+                $('div[name="quotationProductExtraDiv"]').html(data);
+                $('div[name="quotationProductExtraDiv"]').trigger('create');
+            }
+        });
+    }
+
+    function getRiderExtraDO(fieldName){
+        if (fieldName.match(/partyRoleCd/g) == 'partyRoleCd')
+        {
+            riderObject = fieldName.replace("partyRoleCd", "object");
+            rider = fieldName.replace("[partyRoleCd]", "")
+            selected = fieldName.replace("partyRoleCd", "selected")
+            productSeq = fieldName.replace("partyRoleCd", "productSeq")
+        }
+        else if (fieldName.match(/insuredPartyRefGuid/g) == 'insuredPartyRefGuid')
+        {
+            riderObject = fieldName.replace("insuredPartyRefGuid", "object"); 
+            rider = fieldName.replace("[insuredPartyRefGuid]", "")
+            selected = fieldName.replace("insuredPartyRefGuid", "selected")
+            productSeq = fieldName.replace("insuredPartyRefGuid", "productSeq")
+        }
+        else if (fieldName.match(/productSeq/g) == 'productSeq')
+        {
+            riderObject = fieldName.replace("productSeq", "object"); 
+            rider = fieldName.replace("[productSeq]", "")
+            selected = fieldName.replace("productSeq", "selected")
+            productSeq = fieldName
+        }
+        riderObject = $('input[name="'+riderObject+'"]').val();
+
+        if ($('input[name="'+selected+'"]').is(':checked')  || ( $('select[name="'+productSeq+'"]').val() != undefined && $('select[name="'+productSeq+'"]').val() != ''))
+        {
+            $.ajax({
+                url: "/app/Quotation/getRiderExtraDO",
+                data: {'riderObject':riderObject, 'form': $('#quotationForm').serializeHash()},
+                async: false,
+                success: function(data){
+                    $('div[name="riderExtraDiv'+rider+'"]').children().hide();
+                    $('div[name="riderExtraDiv'+rider+'"] input[id*="removed"]').val("YES");
+                    $('div[name="riderExtraDiv'+rider+'"]').html(data);
+                    $('div[name="riderExtraDiv'+rider+'"]').trigger('create');
+                }
+            });
+        }
+        else
+        {
+            $('div[name="riderExtraDiv'+rider+'"]').children().hide();
+            $('div[name="riderExtraDiv'+rider+'"] input[id*="removed"]').val("YES");
+        }
+        setUnselectedRiders(selected)
+    }
+
+    function setUnselectedRiders(selected){
+        productSeq = selected.replace("selected", "productSeq");
+        productSeqValue = $('input[name="'+productSeq+'"]').val();
+        unselectedRiders = $('input[name="<%=getObjectMapping(@quotation)%>[unselectedRiders]"]').val();
+        if (!$('input[name="'+selected+'"]').is(':checked'))
+        {
+            if (unselectedRiders == '')
+            {
+                unselectedRiders = productSeqValue;
+            }
+            else
+            {
+                unselectedRiders = unselectedRiders + ',' + productSeqValue;
+            }
+        }
+        else
+        {
+            riderArr = unselectedRiders.split(',');
+            riderArrToremove = unselectedRiders.split(',');
+            length = riderArr.length;
+            for(var k=0;k<length;k++){
+                if(riderArr[k] == productSeqValue)
+                {
+                    riderArrToremove.splice(k,1);
+                    break;
+                }
+            }
+            unselectedRiders = riderArrToremove.toString();
+        }
+        $('input[name="<%= getObjectMapping(@quotation)%>[unselectedRiders]"]').val(unselectedRiders);
+    }
+
+    $(document).ready(function(){
+        <% @quotationProductExtras.each_with_index do |quotationProdExtra, index | %>
+            setReadOnly($("input[name='<%= getObjectMapping(quotationProdExtra) %>[decisionCd]']"), true);      
+            loadingTypeCd ='<%= quotationProdExtra.loadingTypeCd%>'
+            extraTypeCd = '<% quotationProdExtra.extraTypeCd %>'
+            if ((loadingTypeCd == "FLAT") || (loadingTypeCd == "BOTH") || (loadingTypeCd == "EITHER"))
+            {
+                setReadOnly($("input[name='<%= getObjectMapping(quotationProdExtra) %>[extraFlatAmt]']"), false); 
+                setReadOnly($("input[name='<%= getObjectMapping(quotationProdExtra) %>[extraFlatDuration]']"), false);  
+            }
+            else
+            {
+                setReadOnly($("input[name='<%= getObjectMapping(quotationProdExtra) %>[extraFlatAmt]']"), true); 
+                setReadOnly($("input[name='<%= getObjectMapping(quotationProdExtra) %>[extraFlatDuration]']"), true); 
+            }
+            if ((loadingTypeCd == "PERCENTAGE") || (loadingTypeCd == "BOTH") || (loadingTypeCd == "EITHER"))
+            {
+                setReadOnly($("input[name='<%= getObjectMapping(quotationProdExtra) %>[extraPercent]']"), false); 
+                setReadOnly($("input[name='<%= getObjectMapping(quotationProdExtra) %>[extraPercDuration]']"), false);  
+            }
+            else
+            {
+                setReadOnly($("input[name='<%= getObjectMapping(quotationProdExtra) %>[extraPercent]']"), true); 
+                setReadOnly($("input[name='<%= getObjectMapping(quotationProdExtra) %>[extraPercDuration]']"), true);  
+            }
+
+                 //Mark fields mandatory based on Validation Metadata
+            <% 
+            if @mandatoryFields
+                if @mandatoryFields[quotationProdExtra]
+                    @mandatoryFields[quotationProdExtra].each do |field| 
+            %>
+                    $("label[for='<%=getObjectMapping(quotationProdExtra)%>[<%= field %>]']").append('<label for=" *" class="mandatory1">&nbsp;*</label>');
+            <% 
+                    end
+                end
+              
+            end
+            %>
+        <% end %>       
+
+        $("a[name='save']").click(function(){
+            refreshLoadingSection();
+        });
+    });
+</script>

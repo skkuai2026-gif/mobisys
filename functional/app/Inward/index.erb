@@ -1,0 +1,73 @@
+<div data-role="page">
+
+  <div data-role="header" data-position="inline">
+    <h1><%=getLabelValue("SEARCHRECEIPT")%></h1>
+    <a href="/app/Menu/receipting" class="ui-btn-left" data-direction="reverse" <%= "data-ajax='false'" if is_bb6 %>>
+      <%= getLabelValue('BACK')   %>
+    </a>
+  </div>
+
+  <div data-role="content">
+      <div class="illustrationdisplay">
+        <form method="POST" action="<%= url_for :action => :search %>" name="receiptSearchForm">
+            <div data-role="fieldcontain" >
+                <label for="search" class="label"><%= getLabelValue('SEARCHINPUT')   %></label>
+                <input type="search" name="search" id="Searchname" value="<%= @params['search'] %>" />
+            </div>
+            <% 
+              if @params['search'] != nil
+                %>
+                  
+                    <table class="searchtable" width="100%">
+                      <tr class="searchtableheader" >
+                         <td width="70%">
+                            <%= getLabelValue('RECEIPTREFNUM')   %>
+                         </td>
+                         <td width="25%">
+                            <%= getLabelValue('STATUS')   %>
+                         </td>
+                         <td>&nbsp;
+                         </td>
+                      </tr>
+                      
+                  <%  
+                    i=0
+                    @inwards.each_with_index do |inward, index|
+                      if inward != nil
+                          if (index%2 == 0)
+                          %>
+                            <tr class = "search1">
+                          <% else %>
+                            <tr class = "search2">
+                          <% end %>
+                            
+                              <td class="tabletext">
+                                <a href="#" onclick="location.href='<%= url_for :action => :show, :id => inward.object %>';">                    
+                                  <div style="height:100%;width:100%">&nbsp;<%= inward.receiptRefNum %>&nbsp;</div>
+                                </a>                   
+                              </td>
+                              <td class="tabletext">
+                                <a href="#" onclick="location.href='<%= url_for :action => :show, :id => inward.object %>';">
+                                  <div style="height:100%;width:100%">&nbsp;<%= inward.inwardStatusCd %>&nbsp;</div>
+                                </a>
+                              </td>
+                              <td class="tablenum">
+                                <a href="#" onclick="location.href='<%= url_for :action => :show, :id => inward.object %>';">
+                                  <div style="height:100%;width:100%">&gt;</div>
+                                </a>
+                              </td>
+                          </tr>
+                        <%
+                      end
+                    end
+                  %>
+                    </table>
+                  </div>
+                <%
+              end 
+            %>
+        </form>
+      </div>
+  </div>
+
+</div>

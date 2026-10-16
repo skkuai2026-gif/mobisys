@@ -1,0 +1,64 @@
+<div data-role="page">
+
+  <div data-role="header" data-position="inline">
+    <h1>New <%= @level0.title %></h1>
+    <a href="<%= url_for :action => :index %>" class="ui-btn-left" data-icon="back" data-direction="reverse">
+      Cancel
+    </a>
+  </div>
+
+  <div data-role="content">
+    <form method="POST" action="<%= url_for :action => :create %>">
+      <input type="hidden" name="id" value="<%= @level0.object %>"/>
+
+      
+          <div data-role="fieldcontain">
+            <label for="level0[levelCd]" class="fieldLabel">Levelcd</label>
+            <input type="text" id="level0[levelCd]" name="level0[levelCd]" <%= placeholder("Levelcd") %> />
+          </div>
+      
+          <div data-role="fieldcontain">
+            <label for="level0[name1]" class="fieldLabel">Name1</label>
+            <input type="text" id="level0[name1]" name="level0[name1]" <%= placeholder("Name1") %> />
+          </div>
+      
+          <div data-role="fieldcontain">
+            <label for="level0[name2]" class="fieldLabel">Name2</label>
+            <input type="text" id="level0[name2]" name="level0[name2]" <%= placeholder("Name2") %> />
+          </div>
+      
+          <div data-role="fieldcontain">
+            <label for="level0[icon]" class="fieldLabel">Icon</label>
+            <input type="text" id="level0[icon]" name="level0[icon]" <%= placeholder("Icon") %> />
+          </div>
+      
+          <div data-role="fieldcontain">
+            <label for="level0[layout]" class="fieldLabel">Layout</label>
+            <input type="text" id="level0[layout]" name="level0[layout]" <%= placeholder("Layout") %> />
+          </div>
+
+          <div data-role="fieldcontain">
+            <label for="level0[sortOrder]" class="fieldLabel">Sort order</label>
+            <input type="text" id="level0[sortOrder]" name="level0[sortOrder]" <%= placeholder("Sort order") %> />
+          </div>
+          
+          <div data-role="fieldcontain">
+            <label for="level0[menu]" class="fieldLabel">Menu</label>
+            <input type="text" id="level0[menu]" name="level0[menu]" value="<%= @level0.menu %>" <%= placeholder( "Menu" ) %> />
+          </div>
+
+          <div data-role="fieldcontain">
+            <label for="level0[landingPage]" class="fieldLabel">Landing page</label>
+            <input type="text" id="level0[landingPage]" name="level0[landingPage]" value="<%= @level0.landingPage %>" <%= placeholder( "Landing page" ) %> />
+          </div>
+          
+          <div data-role="fieldcontain">
+            <label for="level0[text]" class="fieldLabel">Text</label>
+            <input type="text" id="level0[text]" name="level0[text]" value="<%= @level0.text %>" <%= placeholder( "Text" ) %> />
+          </div>
+
+      <input type="submit" value="Create"/>
+    </form>
+  </div>
+
+</div>

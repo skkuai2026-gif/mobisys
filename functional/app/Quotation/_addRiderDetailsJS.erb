@@ -1,0 +1,81 @@
+<script>
+$(document).ready(function(){
+    var readOnlyArray = []
+    $('select[name="<%=getObjectMapping(@rider)%>[productSeq]"]').change(
+        function()
+        {
+            for( var index in readOnlyArray)
+            {
+                fieldName = readOnlyArray[index]
+                $('[name*="' + fieldName + '"]').prop('disabled', false);
+            }
+            readOnlyArray = []
+            productSeq = this.value;
+            if (productSeq != null)
+            {
+                $.ajax({
+                    url: "/app/Quotation/getReadOnlyFields",
+                    data: {'productSeq':productSeq},
+                    success: function(data){
+                        data = data.replace("<div>","");
+                        data = data.replace("</div>","");
+                        if(data != "")
+                        {  
+                            fields = data.split(",")
+                            for (var index in fields)
+                            {
+                                fieldName='<%=getObjectMapping(@rider)%>[' + fields[index] + ']';
+                                readOnlyArray.push(fieldName)
+                                $('[name*="' + fieldName + '"]').prop('disabled', true);
+                            }
+                        }
+                    }
+                });
+            }
+        }
+    );
+    
+    $('input[name="<%=getObjectMapping(@rider)%>[productTerm]"]').change( function(){
+        if (isNaN(this.value))
+        {
+            showDialog("", "<%= getLabelValue('VALID_PROD_TERM_RIDER')%>", 'warning', 0, 'capture');
+            this.value = this.value.replace(/[^0-9.]/g, '');  
+        }
+    }); 
+
+    $('input[name="<%=getObjectMapping(@rider)%>[premiumPayingTerm]"]').change( function(){
+        if (isNaN(this.value))
+        {
+            showDialog("", "<%= getLabelValue('VALID_PPTERM')%>", 'warning', 0, 'capture');
+            this.value = this.value.replace(/[^0-9.]/g, '');  
+        }
+    }); 
+
+    $('input[name="<%=getObjectMapping(@rider)%>[modalPremium]"]').change( function(){
+        if (isNaN(this.value))
+        {
+            showDialog("", "<%= getLabelValue('VALID_MODAL_PRE_RIDER')%>", 'warning', 0, 'capture');
+            this.value = this.value.replace(/[^0-9.]/g, '');  
+        }
+    });
+
+    $('select[name*="<%=getObjectMapping(@rider)%>[insuredPartyRefGuid]"]').selectmenu('disable');
+
+    //Mark fields mandatory based on Validation Metadata
+    <% 
+    if @mandatoryFields
+        if @mandatoryFields[@rider]
+            @mandatoryFields[@rider].each do |field| 
+    %>
+            $("label[for='<%=getObjectMapping(@rider)%>[<%= field %>]']").append('<label for=" *" class="mandatory1">&nbsp;*</label>');
+    <% 
+            end
+        end
+      
+    end
+    %>
+
+});
+
+</script>
+

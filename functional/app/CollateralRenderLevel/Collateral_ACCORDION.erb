@@ -1,0 +1,76 @@
+<style>
+.main-content-wrapper{
+background-color: white;
+}
+</style>
+
+<% if @parentColRenderLevelDO!=nil %>
+	<div class="leftnavigation">
+		<div class="level1header">
+		 <label class="level1label0"><%=@parentColRenderLevelDO.header1%></label>
+           <br>
+         <label class="level1label1"><%=@parentColRenderLevelDO.header2%></label>
+		</div>
+	  <div class="sec-nav">
+		    <% @parentColRenderLevelChildDOList.each do|parentColRenderLevelDO| %>
+			    <% if @setLevelCd == parentColRenderLevelDO.levelCd %>
+			    	<% if parentColRenderLevelDO.header1.size < 30 %>
+			    	    <li class="sec-nav-li-selected">
+			             <%= parentColRenderLevelDO.header1%>
+			            </li>
+			        <% else %>
+			            <li class="sec-nav-li-selected-small">
+			             <%= parentColRenderLevelDO.header1%>
+			            </li>
+			        <%end%>
+			    <%else%>
+				    <a href="javascript:doOnLevelClick('<%=parentColRenderLevelDO.levelCd%>','rootDiv');">
+				      <% if (parentColRenderLevelDO.header1.size < 30) %>           
+				           <li class="sec-nav-li">
+				             <%= parentColRenderLevelDO.header1 %>
+				           </li>
+				        <% else %>          
+				            <li class="sec-nav-li-small">
+				             <%= parentColRenderLevelDO.header1 %>
+				            </li>
+				        <% end %>
+				    </a>
+			    <%end%>
+			<%end%>
+	   </div>
+	 </div>
+<%end%>
+
+<div id="contentpane_<%=@collateralRenderLevelDO.guid%>" class="rightcontentpane">
+	<div class = "accordionview">
+	   <span class="level2header"><%=@collateralRenderLevelDO.header1%></span> <br/>
+	    <div class="level2text">
+	      <% if @collateralRenderLevelDO != nil %>
+	         <%=@collateralRenderLevelDO.contentPart1 %>
+	       <%end%>
+	    </div>
+	   <div data-role="collapsible-set">
+	    	<% collapsedFlag = true %>
+	    	<% @collateralRenderLevelChildDOList.each do |collateralRenderLevelChildDO| %>
+	    	   <div data-role="collapsible" data-collapsed="<%=collapsedFlag%>">
+	    	   	 <h3><span class="level2accordionheader"><%=collateralRenderLevelChildDO.header1 %></span></h3>
+	    	   	  <table width=100%>
+		    	   	  	<tr>
+		    	   	  	   <td valign="top" width="*">
+		    	   	  	       <div class="level2text">
+		    	   	  	           <%=collateralRenderLevelChildDO.contentPart1%>
+		    	   	  	       </div>
+		    	   	  	   </td>
+		    	   	  	</tr>
+	    	   	    </table>
+	    	   	</div>
+	    	   	<% if (!collapsedFlag)
+	               collapsedFlag = true
+	    		end%>
+	    	<%end%>
+	     </div>
+	</div>
+	<script type="text/javascript">
+      $(".accordionview").enhanceWithin();
+    </script>
+</div>

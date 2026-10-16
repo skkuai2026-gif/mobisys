@@ -1,0 +1,7 @@
+ext/platform/android/generated/jni/DocumentPicker.cpp
+ext/platform/android/generated/jni/documentpicker_ruby_wrap.cpp
+ext/platform/android/generated/jni/documentpicker_js_wrap.cpp
+ext/platform/android/jni/DocumentPicker_impl.cpp
+ext/shared/generated/documentpicker_api_init.cpp
+ext/shared/generated/documentpicker_js_api.cpp
+ext/shared/generated/documentpicker_ruby_api.c

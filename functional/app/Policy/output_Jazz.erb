@@ -1,0 +1,282 @@
+<style type="text/css">
+p.circle img {
+	width: 32px;
+	max-width: 110%;
+}
+li {
+	font-size: 14px;
+}
+</style>
+
+<%= pageTagStart("output") %>
+	<%= headerTag(getLabelValue('policyResult')) %>
+	<div data-role="main" class="ui-content">
+		<div class="main-content-wrapper main-content-full">
+			<div class="project-content-bg">
+				<div class="div-with-border no-padding-bottom preferences-content">
+					<div class="content-fullform">  
+						<h4><%= getLabelValue('policyNum') %> : <%= @policy.policyNum %></h4>
+						<% if !@reUploadImages %>
+							<h4><%= getLabelValue('uwDecisionCd') %> : <%= @uwDecisionCd %></h4>
+						<% end %>
+
+						<% if @facetData[:showResults] %>
+							<% if @facetData[:PolicyUWResultExclusion] && @exclusionList.size > 0 %>
+								<h4><%= getLabelValue('Exclusion') %> :</h4>
+							    <div class='table-section'>
+							    	<table data-role='table' class='ui-responsive'>
+							    		<thead>
+							    			<tr>
+							    			<% ["partyName","productName","eventCd","benefitName","causeCd","icdCd","Action"].each do |column| %>
+							    			<th><%= getLabelValue(column) %></th>
+							    			<% end %>
+							    			</tr>
+							    		</thead>
+							    		<tbody>
+							    			<% @exclusionList.each_with_index do |exclusion, index| %>
+							    				<tr>
+							    					<% ["partyName","productName","eventCd","benefitName","causeCd","icdCd"].each do |key| %>
+							    						<td><%= exclusion[key.to_sym] %></td>
+							    					<% end %>
+							    					<td><a href="#exclusionExtra" data-rel="popup" class="ui-btn ui-mini ui-btn-inline" data-transition="pop" data-position-to="window" data-popupID="exclusion<%= index %>">View More</a>
+							    					</td>
+							    				</tr>
+							    			<% end %>
+							    		</tbody>
+							    	</table>
+							    </div>
+							    <div data-role="popup" id="exclusionExtra" data-theme="a" class="ui-corner-all popup-wrapper">
+							    	<div class="popup-close-cust">
+										<a href="#" data-rel="back" class="icon-close"></a>
+									</div><br>
+									<div class='table-section'>
+										<table data-role="table" id="temp-table" data-mode="reflow" class="ui-responsive table-stroke">
+									        <thead>
+									            <tr>
+								                <% if @facetData[:renderReasonCd] %>
+									                <th><%= getLabelValue('reasonCd') %></th>
+								                <% end %>
+								                <% if @facetData[:renderRemarksKey] %>
+									                <th><%= getLabelValue('remarksKey') %></th>
+								                <% end %>
+								                <% if @facetData[:renderExclusionTypeCd] %>
+									                <th><%= getLabelValue('exclusionTypeCd') %></th>
+								                <% end %>
+								                <% if @facetData[:renderExclLoadingTypeCd] %>
+									                <th><%= getLabelValue('exclLoadingTypeCd') %></th>
+								                <% end %>
+								                <% if @facetData[:renderExclValue] %>
+									                <th><%= getLabelValue('exclValue')  %></th>
+								                <% end %>
+								                <% if @facetData[:renderExclPeriodTypeCd] %>
+									                <th><%= getLabelValue('exclPeriodTypeCd')  %></th>
+								                <% end %>
+								                <% if @facetData[:renderExclDuration] %>
+									                <th><%= getLabelValue('exclDuration')  %></th>
+								                <% end %>
+								                <% if @facetData[:renderExclPeriodUnit] %>
+									                <th><%= getLabelValue('exclPeriodUnit') %></th>
+								                <% end %>
+									            </tr>
+									        </thead>
+									        <tbody>
+									            <% @exclusionList.each_with_index do |exclusion, index| %>
+										            <tr id="exclusion<%= index %>">
+										            	<% if @facetData[:renderReasonCd] %>
+											                <td><%= exclusion[:reasonCd] %></td>
+									                	<% end %>
+								                		<% if @facetData[:renderRemarksKey] %>
+											                <td><%= exclusion[:remarksKey] %></td>
+									                	<% end %>
+								                		<% if @facetData[:renderExclusionTypeCd] %>
+											                <td><%= exclusion[:exclusionTypeCd] %></td>
+									                	<% end %>
+								                		<% if @facetData[:renderExclLoadingTypeCd] %>
+											                <td><%= exclusion[:exclLoadingTypeCd] %></td>
+									                	<% end %>
+								                		<% if @facetData[:renderExclValue] %>
+											                <td><%= exclusion[:exclValue] %></td>
+									                	<% end %>
+								                		<% if @facetData[:renderExclPeriodTypeCd] %>
+											                <td><%= exclusion[:exclPeriodTypeCd] %></td>
+									                	<% end %>
+								                		<% if @facetData[:renderExclDuration] %>
+											                <td><%= exclusion[:exclDuration] %></td>
+									                	<% end %>
+								                		<% if @facetData[:renderExclPeriodUnit] %>
+											                <td><%= exclusion[:exclPeriodUnit] %></td>
+									                	<% end %>
+										            </tr>
+							                	<% end %>
+									        </tbody>
+									    </table>
+									</div>
+								</div>
+							<% end %>
+
+							<% if @facetData[:PolicyUWResultLoading] && @coverageLoadingList.size > 0 %>
+								<h4><%= getLabelValue('Coverage & Loading') %> :</h4>
+								<div class='table-section'>
+							    	<table data-role='table' class='ui-responsive'>
+							    		<thead>
+							    			<tr>
+							    			<% ["partyName","productName","productPlanOptionCd","baseSumAssured","productTerm","premiumPayingTerm","modalPremium","extraPremium","Action"].each do |column| %>
+							    			<th><%= getLabelValue(column) %></th>
+							    			<% end %>
+							    			</tr>
+							    		</thead>
+							    		<tbody>
+							    			<% @coverageLoadingList.each_with_index do |coverageLoading, index| %>
+							    				<tr>
+							    					<% ["partyName","productName","productPlanOptionCd","baseSumAssured","productTerm","premiumPayingTerm","modalPremium","extraPremium"].each do |key| %>
+							    						<td><%= coverageLoading[key.to_sym] %></td>
+							    					<% end %>
+							    					<td><a href="#loadingExtra" data-rel="popup" class="ui-btn ui-mini ui-btn-inline" data-transition="pop" data-position-to="window" data-popupID="loading<%= index %>">View More</a></td>
+							    				</tr>
+							    			<% end %>
+							    		</tbody>
+							    	</table>
+							    </div>
+							    <div data-role="popup" id="loadingExtra" data-theme="a" class="ui-corner-all popup-wrapper">
+							    	<div class="popup-close-cust">
+										<a href="#" data-rel="back" class="icon-close"></a>
+									</div><br>
+									<div class='table-section'>
+										<table data-role="table" id="temp-table" data-mode="reflow" class="ui-responsive table-stroke">
+									        <thead>
+									            <tr>
+							                		<% if @facetData[:renderExtraTypeCd] %>
+										                <th style="border-right-color: white;"><%= getLabelValue('extraTypeCd') %></th>
+									                <% end %>
+							                		<% if @facetData[:renderLoadingTypeCd] %>
+										                <th style="border-right-color: white;"><%= getLabelValue('loadingTypeCd') %></th>
+									                <% end %>
+							                		<% if @facetData[:renderExtraFlatAmt] %>
+										                <th style="border-right-color: white;"><%= getLabelValue('flatExtra') %></th>
+									                <% end %>
+							                		<% if @facetData[:renderExtraFlatDuration] %>
+										                <th style="border-right-color: white;"><%= getLabelValue('flatExtraDuration') %></th>
+									                <% end %>
+							                		<% if @facetData[:renderExtraPercent] %>
+										                <th style="border-right-color: white;"><%= getLabelValue('extraPercent')  %></th>
+									                <% end %>
+							                		<% if @facetData[:renderExtraPercDuration] %>
+										                <th><%= getLabelValue('flatExtraDuration') %></th>
+									                <% end %>
+									            </tr>
+									        </thead>
+									        <tbody>
+									            <% 
+									            @coverageLoadingList.each_with_index do |coverageLoading, index|
+									            	coverageLoading[:policyProductExtra].each do |policyProductExtra|
+									            %>		
+										            <tr class="loading<%= index %>">
+										                <% if @facetData[:renderExtraTypeCd] %>
+										                	<td><%= policyProductExtra[:extraTypeCd] %></td>
+										                <% end %>
+								                		<% if @facetData[:renderLoadingTypeCd] %>
+										                	<td><%= policyProductExtra[:loadingTypeCd] %></td>
+										                <% end %>
+								                		<% if @facetData[:renderExtraFlatAmt] %>
+										                	<td><%= policyProductExtra[:extraFlatAmt] %></td>
+										                <% end %>
+								                		<% if @facetData[:renderExtraFlatDuration] %>
+										                	<td><%= policyProductExtra[:extraFlatDuration] %></td>
+										                <% end %>
+								                		<% if @facetData[:renderExtraPercent] %>
+										                	<td><%= policyProductExtra[:extraPercent] %></td>
+										                <% end %>
+								                		<% if @facetData[:renderExtraPercDuration] %>
+										                	<td><%= policyProductExtra[:extraPercDuration] %></td>
+										                <% end %>
+										            </tr>
+									            <% 
+									            	end
+									            end	
+									            %>
+									        </tbody>
+									    </table>
+									</div>
+								</div>
+							<% end %>
+
+							<% if @facetData[:PolicyUWResultDocument] && @requirementList.size > 0 %>
+								<h4><%= getLabelValue('requirements') %> :</h4>
+								<div class='table-section'>
+							    	<table data-role='table' class='ui-responsive'>
+							    		<thead>
+							    			<tr>
+							    			<% ["Customer","docCategoryCd","documentCd","documentStatusCd"].each do |column| %>
+							    			<th><%= getLabelValue(column) %></th>
+							    			<% end %>
+							    			</tr>
+							    		</thead>
+							    		<tbody>
+							    			<% @requirementList.each_with_index do |requirement, index| %>
+							    				<tr>
+						    						<td><%= requirement[:partyName] %></td>
+						    						<td><%= requirement[:docCategoryCd] %></td>
+						    						<td><%= requirement[:documentCd] %></td>
+							    					<% if requirement[:documentStatusCd] == "RECEIVED" %>
+							    						<td><p class="circle"><img src="/public/jazz/images/progress-completed.png"></p></td>
+							    					<% else %>
+							    						<td><p class="circle"><img src="/public/jazz/images/progress-pending.png"></p></td>
+							    					<% end %>
+							    				</tr>
+							    			<% end %>
+							    		</tbody>
+							    	</table>
+							    </div>
+							<% end %>
+						<% end %>
+
+						<% if @taskExceptionsList != nil && !@taskExceptionsList.empty? %>
+							<% if @policy.policyNum.to_s == "" %>
+							    <h4><%= getLabelValue('exceptions')%> :</h4>
+							<% end %>
+							<div>
+						    	<ul>
+									<% @taskExceptionsList.each do |taskException| %>
+										<li><%= taskException.exceptionMessage %></li>
+									<% end %>
+								</ul>
+						    </div>
+						<% end %>
+
+						<% if @staticMessage.to_s != "" %>
+							<h4><%= getLabelValue('remarks')%> :</h4>
+							<div>
+						    	<ul>
+									<li><%= getLabelValue(@staticMessage) %></li>
+								</ul>
+						    </div>
+						<% end %>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class="footer-bg">
+			<!-- <%# if @facetData[:showResults] && (@facetData[:PolicyUWResultExclusion] || @facetData[:PolicyUWResultLoading] || @facetData[:PolicyUWResultDocument]) %>
+				<a href="<%= url_for :action => :showProposal, :id => @policy.object.to_s, :query => {:submit => '', :response => 'ACCEPT'} %>" style="width:50%;" rel="external"><%= getLabelValue("ACCEPT") %></a>
+				<a href="<%= url_for :action => :showProposal, :id => @policy.object.to_s, :query => {:submit => '', :response => 'DECLINE'} %>" style="width:50%;" rel="external"><%= getLabelValue("DECLINE") %></a>
+			<%# elsif @reUploadImages %>
+			    <a href="<%= url_for :action => :searchProposal %>" rel="external"><%= getLabelValue("OK") %></a> -->
+			<%# else %>
+				<a href="<%= url_for :action => :showProposal, :id => @policy.object.to_s, :query => {:submit => ''} %>" rel="external"><%= getLabelValue("OK") %></a>
+			<%# end %>
+		</div>
+	</div>
+<%= pageTagEnd %>
+<script type="text/javascript">
+	$(document).ready(function(){
+		$("table td:has(a)").css("width","7em");
+
+		$("a[data-rel='popup']").click(function(){
+			$("#exclusionExtra tbody tr").hide();
+			$("#exclusionExtra tbody tr#"+$(this).attr("data-popupID")).show();
+
+			$("#loadingExtra tbody tr").hide();
+			$("#loadingExtra tbody tr."+$(this).attr("data-popupID")).show();
+		});
+	});
+</script>

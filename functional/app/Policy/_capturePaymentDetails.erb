@@ -1,0 +1,324 @@
+<div class="illustrationdisplay">
+	<div class="legend"><%= renderLabel('paymentDetails','paymentDetails','strongLabel')%></div>
+  	<br>
+  	<div data-role="navbar" id="initial-renewal-refund-bar">
+	    <ul style="width: 98%;">
+      		<li id="initialPaymentContainerLi">
+      			<a href="#" class="unselectedTab" onclick="changePaymentTab('initialPaymentContainer')"><%= getLabelValue('initialPayment')%></a>
+      		</li>
+      		<% if @facetData[:renderRenewalPanel] %>  
+	      		<li id="renewalPaymentContainerLi">
+	      			<a href="#" class="unselectedTab" onclick="changePaymentTab('renewalPaymentContainer')"><%= getLabelValue('renewalPayment')%></a>
+	      		</li>
+      		<% end %>
+      		<% if @facetData[:renderRefundPanel] %>  
+	      		<li id="refundPaymentContainerLi">
+	      			<a href="#" class="unselectedTab" onclick="changePaymentTab('refundPaymentContainer')"><%= getLabelValue('refundPayment')%></a>
+	      		</li>
+      		<% end %>
+	    </ul>
+  	</div>
+</div>
+
+<form method="POST" action="<%= url_for :action => :submitPaymentDetails %>" name="paymentForm" id="paymentForm">
+	<!-- Rendering of objects (Has to be defined inside form tag to be considered)Start -->
+	<%= renderObject(@policy) %>
+
+	<%= renderObject(@inward) %>
+	<%= renderObject(@inwardPolicy, @inward) %>
+	<!-- Rendering of objects End -->
+	
+	<%= renderHiddenField('formName', 'paymentForm', 'formName') %>
+	<%= renderHiddenField('inwardStatusCd', @inward.inwardStatusCd, 'inwardStatusCd', @inward) %>
+	<%= renderHiddenField('inwardTypeCd', @inward.inwardTypeCd, 'inwardTypeCd', @inward) %>
+	<%= renderHiddenField('inwardSubTypeCd', @inward.inwardSubTypeCd, 'inwardSubTypeCd', @inward) %>
+	<%= renderHiddenField('inwardDt', @inward.inwardDt, 'inwardDt', @inward) %>
+	<%= renderHiddenField('agentId', @inward.agentId, 'agentId', @inward) %>
+
+	<%= renderHiddenField('policyNum', @inwardPolicy.policyNum, 'policyNum', @inwardPolicy) %>
+
+  	<!-- Tab for initial payment begins-->
+  	<div id="initialPaymentContainer"> 
+		<% if @facetData[:renderInwardPayerTypeCd] || @facetData[:renderInwardPayerPartyRefGuid] %>
+	  		<div class="illustrationdisplay">
+				<div data-role="dualfieldcontain">
+					<% if @facetData[:renderInwardPayerTypeCd] %>
+				        <div class="half">
+				    	    <%= renderLabel('payerTypeCd', 'payerTypeCd', nil, @inward) %> 
+				            <%= getLookup('PAYERTYPECD', 'payerTypeCd', @inward.payerTypeCd, @inward, nil) %>
+				      	</div>
+					<% end %>	
+					<% if @facetData[:renderInwardPayerPartyRefGuid] %>
+				        <div class="half">
+				            <span class = "<%= getObjectMapping(@inward)%>[refGuidLookup]" name="<%= getObjectMapping(@inward)%>[refGuidLookup]">	
+								<%= getLookup('DYNAMICLOOKUP', 'payerPartyRefGuid', @inward.payerPartyRefGuid, @inward, @supplementaryIdLookup) %>
+							</span>
+				      	</div>
+					<% end %>	
+			    </div>
+			</div>
+		<% end %>	
+
+	    <div id="initialAgent">
+	    </div>
+
+	    <div id="initialPayer" name="initialPayer">
+	    	<div class="legend">
+				<label class="strongLabel">
+					<%= getLabelValue('payerDetail') %>
+					<a href="#" class="expandButton ui-icon-plus ui-btn-icon-notext ui-alt-icon ui-btn-inline"/>
+					<a href="#" class="collapseButton ui-icon-minus ui-btn-icon-notext ui-alt-icon ui-btn-inline"/>
+				</label>
+			</div>
+
+			<div class="panelContent">
+	    		<%= @inwardPayer_form %>
+			</div>
+		</div><br>
+  		   	
+    	<fieldset class="ui-grid-b">
+	      	<div class="ui-block-a-equi"></div>
+	      	<div class="ui-block-b-equi"> 
+            	<input type="button" value="<%= getLabelValue('addInitialpayment')%>" id="addIniPayentMethod" data-role="button" data-theme="a"> 
+	      	</div>
+	    	<div class="ui-block-c-equi"> </div>
+	    </fieldset>
+
+	    <div class="allInitialPayments" data-role='collapsibleset'>
+	  		<%= @inwardDetail_form %>
+		</div>
+  	</div>
+  	<!-- End of initial payment Tab-->
+
+
+	<% if @facetData[:renderRenewalPanel] %>
+		<%= renderObject(@renewalPayment) %>
+		<%= renderObject(@renewalPayment, @policy) %>
+
+		<%= renderObject(@renewalFinancialAccount) %>
+
+	  	<!-- Tab for renewal payment begins-->
+	  	<div id="renewalPaymentContainer">
+	  		<%= renderHiddenField('paymentInstructionTypeCd', @renewalPayment.paymentInstructionTypeCd, 'paymentInstructionTypeCd', @renewalPayment) %>
+	  		<%= renderHiddenField('partyFinAccRefGuid', @renewalPayment.partyFinAccRefGuid, 'partyFinAccRefGuid', @renewalPayment) %>
+	  		<%= renderHiddenField('paymentMethodCd', @renewalFinancialAccount.paymentMethodCd, 'paymentMethodCd', @renewalFinancialAccount) %>
+			<% if @facetData[:renderRenewalPayerTypeCd] || @facetData[:renderRenewalPayerPartyRefGuid] %>
+	  			<div class="illustrationdisplay">
+					<div data-role="dualfieldcontain">
+						<% if @facetData[:renderRenewalPayerTypeCd] %>
+					        <div class="half">
+					    	    <%= renderLabel('payerTypeCd', 'payerTypeCd', nil, @renewalPayment) %> 
+					            <%= getLookup('PARTYSAMEAS', 'payerTypeCd', @renewalPayment.payerTypeCd, @renewalPayment, nil) %>
+					      	</div>
+					    <% end %>
+						<% if @facetData[:renderRenewalPayerPartyRefGuid] %>
+					        <div class="half">
+					            <span class = "<%= getObjectMapping(@renewalPayment)%>[refGuidLookup]" name="<%= getObjectMapping(@renewalPayment)%>[refGuidLookup]">
+									<%= getLookup('DYNAMICLOOKUP', 'payerPartyRefGuid', @renewalPayment.payerPartyRefGuid, @renewalPayment, @supplementaryIdLookup) %>
+								</span>	
+					      	</div>
+					    <% end %>
+				    </div>   
+				</div>
+			<% end %> 
+
+		    <div id="renewalAgent">
+		    </div>
+
+		    <div id="renewalPayer" name="renewalPayer">
+		    	<div class="legend">
+					<label class="strongLabel">
+						<%= getLabelValue('payerDetail') %>
+						<a href="#" class="expandButton ui-icon-plus ui-btn-icon-notext ui-alt-icon ui-btn-inline"/>
+						<a href="#" class="collapseButton ui-icon-minus ui-btn-icon-notext ui-alt-icon ui-btn-inline"/>
+					</label>
+				</div>
+
+				<div class="panelContent">
+		    		<%= @renewalPayer_form %>
+				</div>
+			</div><br><br>
+
+	  		<div class="illustrationdisplay">
+				<% if @facetData[:renderRenewalPaymentMethodCd] || @facetData[:renderRenewalMicrNum] %>
+					<div data-role="dualfieldcontain">
+						<% if @facetData[:renderRenewalPaymentMethodCd] %>
+							<div class="half">            
+								<%= renderLabel('paymentMethodCd', 'paymentMethodCd', nil, @renewalPayment) %>
+								<%= getLookup('RENEWALPAYMENTMETHOD', 'paymentMethodCd', @renewalPayment.paymentMethodCd, @renewalPayment) %>
+							</div>
+						<% end %>
+						<% if @facetData[:renderRenewalMicrNum] %>
+							<div class="half">            
+								<%= renderLabel('micrNum', 'micrNum', nil, @renewalFinancialAccount) %>
+								<%= renderInputField('micrNum', @renewalFinancialAccount.micrNum, 'micrNum', @renewalFinancialAccount, 'maxlength="90"') %>
+							</div>
+						<% end %>
+					</div>
+				<% end %>
+
+				
+				<% if @facetData[:renderRenewalBankCd] || @facetData[:renderRenewalBranchName] || @facetData[:renderRenewalCardTypeCd] %>
+					<div data-role="dualfieldcontain">
+						<% if @facetData[:renderRenewalBankCd] %>
+							<div class="half">
+								<%= renderLabel('bankCd', 'bankCd', nil, @renewalFinancialAccount) %>
+								<% if @facetData[:renderRenewalMicrNum] %>
+									<%= renderInputField('bankCd', @renewalFinancialAccount.bankCd, 'bankCd', @renewalFinancialAccount) %>
+								<% else %>
+									<%= getLookup('DYNAMICLOOKUP', 'bankCd', @renewalFinancialAccount.bankCd, @renewalFinancialAccount, @bankLookup) %>
+								<% end %>
+							</div>
+						<% end %>
+						<% if @facetData[:renderRenewalBranchName] %>
+							<div class="half">
+								<%= renderLabel('branchName', 'bankBranch', nil, @renewalFinancialAccount) %>
+								<% if @facetData[:renderRenewalMicrNum] %>
+									<%= renderInputField('branchName', @renewalFinancialAccount.branchName, 'branchName', @renewalFinancialAccount) %>
+								<% else %>
+									<span class = "<%= getObjectMapping(@renewalFinancialAccount)%>[branchLookup]" name="<%= getObjectMapping(@renewalFinancialAccount)%>[branchLookup]">	
+										<%= getLookup('DYNAMICLOOKUP', 'branchName', @renewalFinancialAccount.branchName, @renewalFinancialAccount, @renewalBranchLookup) %>
+									</span>	
+								<% end %>
+							</div>
+						<% end %>
+						<% if @facetData[:renderRenewalCardTypeCd] %>
+							<div class="half">
+								<%= renderLabel('cardTypeCd', 'cardTypeCd', nil, @renewalFinancialAccount) %>
+								<%= getLookup('CARDTYPE', 'cardTypeCd', @renewalFinancialAccount.cardTypeCd, @renewalFinancialAccount) %>
+							</div>
+						<% end %>
+					</div>
+				<% end %>
+
+
+				<% if @facetData[:renderRenewalAccountName] || @facetData[:renderRenewalAccountNum] %>
+					<div data-role="dualfieldcontain" >
+						<% if @facetData[:renderRenewalAccountName] %>
+							<div class ="half">
+								<%= renderLabel('accountName', 'accountName', nil, @renewalFinancialAccount) %>
+								<%= renderInputField('accountName', @renewalFinancialAccount.accountName, 'accountName', @renewalFinancialAccount, 'maxlength="90"') %>
+							</div>  
+						<% end %>
+						<% if @facetData[:renderRenewalAccountNum] %>
+							<div class ="half">
+								<%= renderLabel('accountNum', 'accountNum', nil, @renewalFinancialAccount) %>
+								<%= renderNumericField('accountNum', @renewalFinancialAccount.accountNum, 'accountNum', @renewalFinancialAccount, 'maxlength="30"') %> 
+							</div>
+						<% end %>
+					</div>
+				<% end %>
+
+
+				<% if @facetData[:renderRenewalCardExpiryYear] || @facetData[:renderRenewalCardExpiryMnth] %>
+					<div data-role="dualfieldcontain" >
+						<% if @facetData[:renderRenewalCardExpiryYear] %>
+							<div class ="half">
+								<%= renderLabel('cardExpiryYear', 'cardExpiryYear', nil, @renewalFinancialAccount) %>
+								<%= getLookup('YEARS', 'cardExpiryYear', @renewalFinancialAccount.cardExpiryYear, @renewalFinancialAccount) %>
+							</div>  
+						<% end %>
+						<% if @facetData[:renderRenewalCardExpiryMnth] %>
+							<div class ="half">
+								<%= renderLabel('cardExpiryMnth', 'cardExpiryMnth', nil, @renewalFinancialAccount) %>
+								<%= getLookup('MONTHS', 'cardExpiryMnth', @renewalFinancialAccount.cardExpiryMnth, @renewalFinancialAccount) %>
+							</div>
+						<% end %>
+					</div>
+				<% end %>
+	  		</div> 
+	  	</div> 	
+	  	<!-- End of renewal payment Tab -->
+	<% end %>  	
+</form>
+
+<% if @facetData[:renderRefundPanel] %> 
+	<form method="POST" action="<%= url_for :action => :submitPaymentDetails %>" name="refundForm" id="refundForm">
+		<!-- Rendering of objects (Has to be defined inside form tag to be considered)Start -->
+		<%= renderObject(@policy) %>
+
+		<%= renderObject(@refundPayment) %>
+		<%= renderObject(@refundPayment, @policy) %>
+		<%= renderObject(@refundPayer, @policy) %>
+		<%= renderObject(@refundFinancialAccount, @refundPayer) %>
+		<!-- Rendering of objects End -->
+
+		<%= renderHiddenField('formName', 'refundForm', 'formName') %>
+
+	  	<!-- Tab for refund payment begins-->
+	  	<div id="refundPaymentContainer">
+	  		<%= renderHiddenField('paymentInstructionTypeCd', @refundPayment.paymentInstructionTypeCd, 'paymentInstructionTypeCd', @refundPayment) %>
+	  		<%= renderHiddenField('partyFinAccRefGuid', @refundPayment.partyFinAccRefGuid, 'partyFinAccRefGuid', @refundPayment) %>
+	  		<%= renderHiddenField('payerPartyRefGuid', @refundPayment.payerPartyRefGuid, 'payerPartyRefGuid', @refundPayment) %>
+	  		<%= renderHiddenField('payerTypeCd', @refundPayment.payerTypeCd, 'payerTypeCd', @refundPayment) %>
+	  		<%= renderHiddenField('paymentMethodCd', @refundFinancialAccount.paymentMethodCd, 'paymentMethodCd', @refundFinancialAccount) %>
+	  		<div class="illustrationdisplay">
+				<% if @facetData[:renderRefundPaymentMethodCd] || @facetData[:renderRefundMicrNum] %>
+					<div data-role="dualfieldcontain">
+						<% if @facetData[:renderRefundPaymentMethodCd] %>
+							<div class="half">            
+								<%= renderLabel('paymentMethodCd', 'paymentMethodCd', nil, @refundPayment) %>
+								<%= getLookup('REFUNDPAYMENTMETHOD', 'paymentMethodCd', @refundPayment.paymentMethodCd, @refundPayment) %>
+							</div>
+						<% end %>
+						<% if @facetData[:renderRefundMicrNum] %>
+							<div class="half">            
+								<%= renderLabel('micrNum', 'micrNum', nil, @refundFinancialAccount) %>
+								<%= renderInputField('micrNum', @refundFinancialAccount.micrNum, 'micrNum', @refundFinancialAccount, 'maxlength="90"') %>
+							</div>
+						<% end %>
+					</div>
+				<% end %>
+
+				
+				<% if @facetData[:renderRefundBankCd] || @facetData[:renderRefundBranchName] %>
+					<div data-role="dualfieldcontain">
+						<% if @facetData[:renderRefundBankCd] %>
+							<div class="half">
+								<%= renderLabel('bankCd', 'bankCd', nil, @refundFinancialAccount) %>
+								<% if @facetData[:renderRefundMicrNum] %>
+									<%= renderInputField('bankCd', @refundFinancialAccount.bankCd, 'bankCd', @refundFinancialAccount) %>
+								<% else %>
+									<%= getLookup('DYNAMICLOOKUP', 'bankCd', @refundFinancialAccount.bankCd, @refundFinancialAccount, @bankLookup) %>
+								<% end %>
+							</div>
+						<% end %>
+						<% if @facetData[:renderRefundBranchName] %>
+							<div class="half">
+								<%= renderLabel('branchName', 'bankBranch', nil, @refundFinancialAccount) %>
+								<% if @facetData[:renderRefundMicrNum] %>
+									<%= renderInputField('branchName', @refundFinancialAccount.branchName, 'branchName', @refundFinancialAccount) %>
+								<% else %>
+									<span class = "<%= getObjectMapping(@refundFinancialAccount)%>[branchLookup]" name="<%= getObjectMapping(@refundFinancialAccount)%>[branchLookup]">	
+										<%= getLookup('DYNAMICLOOKUP', 'branchName', @refundFinancialAccount.branchName, @refundFinancialAccount, @refundBranchLookup) %>
+									</span>
+								<% end %>
+							</div>
+						<% end %>
+					</div>
+				<% end %>
+
+
+				<% if @facetData[:renderRefundAccountName] || @facetData[:renderRefundAccountNum] %>
+					<div data-role="dualfieldcontain" >
+						<% if @facetData[:renderRefundAccountName] %>
+							<div class ="half">
+								<%= renderLabel('accountName', 'accountName', nil, @refundFinancialAccount) %>
+								<%= renderInputField('accountName', @refundFinancialAccount.accountName, 'accountName', @refundFinancialAccount, 'maxlength="90"') %>
+							</div> 
+						<% end %> 
+						<% if @facetData[:renderRefundAccountNum] %>
+							<div class ="half">
+								<%= renderLabel('accountNum', 'accountNum', nil, @refundFinancialAccount) %>
+								<%= renderNumericField('accountNum', @refundFinancialAccount.accountNum, 'accountNum', @refundFinancialAccount, 'maxlength="30"') %> 
+							</div>
+						<% end %>
+					</div>
+				<% end %>
+	  		</div> 
+	  	</div>
+	  	<!-- End of refund payment Tab -->
+	</form>
+<% end %>	
+
+<%= render :partial => "capturePaymentDetailsJS" %>

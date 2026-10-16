@@ -1,0 +1,181 @@
+<div data-role="page" data-url="<%= Rho::RhoConfig.start_path %>/">
+<form method="POST" action="<%= url_for :action => :execute %>" name="needAnalysisForm">
+    <div data-role="header" data-position="inline">
+      <h1><%= getLabelValue('NEEDANALYSISQ') %></h1>    
+      <a href="/app/Menu/leads" class="ui-btn-left" data-direction="reverse">
+        <%= getLabelValue('BACK')   %>
+      </a>  
+    </div>
+    
+    <div data-role="content" id="capture" style="-webkit-transform: none;">     
+    <%= renderObject(@needAnalysis) %>
+    <% @wrapperQuestionSets.each do |key, wrapperQuestionSet| 
+      puts "in loop 1" 
+      @name = ""
+      @dataElementCd = "" %>
+      <%= renderLegend(wrapperQuestionSet.questionSetCd, wrapperQuestionSet.header) %>
+      <div class='illustrationdisplay' name = '<%= wrapperQuestionSet.questionSetCd %>'>
+        <%
+          @questionSetCd = ""
+          @questionSetCounter = 0
+          @currentQuestionSet = ""
+          @countForCurrentMain = 0
+          @count = 0
+          
+          @needAnalysis.ServiceQuestionList.each_with_index { |serviceQuestion, i|
+            questionSetQuestion = @questionSetHM[serviceQuestion.questionCd]
+            puts ">>> #{@questionSetHM[serviceQuestion.questionCd]}"
+            puts "Question Set Question #{questionSetQuestion}"
+            puts ">>>Question Set Question Question Set Code : #{questionSetQuestion.questionSetCd} "
+            parentQuestion = @questionSetHM[questionSetQuestion.questionSetCd]
+            if questionSetQuestion.parentQuestionSeq != nil && questionSetQuestion.parentQuestionSeq != ""
+              puts"Parent Question : #{@questionSetHM[questionSetQuestion.questionSetCd]}"
+              @name = @parentname + "_" + @dataElementCd  
+              puts "name of child : #{@name}"
+            else
+              @currentMain = @countForCurrentMain
+              @count = @count + 1
+              @dataElementCd = questionSetQuestion.dataElementCd
+              puts "Date Element Code of parent : #{@dataElementCd}"
+              @name = questionSetQuestion.questionCd
+              @parentname = @name
+              puts "name of parent : #{@name}"
+            end 
+            puts "Question Set Code : #{questionSetQuestion.questionSetCd}" 
+            if @questionSetCd != questionSetQuestion.questionSetCd
+              if @questionSetCd !=""
+                @questionSetCounter = @questionSetCounter + 1%>
+                </div>
+              <%end  
+            @questionSetCd = questionSetQuestion.questionSetCd
+            end
+            if @currentQuestionSet != @questionSetCd
+          %>
+          <div class = '<%= @questionSetCounter %>' name = '<%= @questionSetCounter %>'>
+            <% @currentQuestionSet = @questionSetCd
+            end %>
+              <%= renderObject(serviceQuestion, @needAnalysis) %>
+              <%= renderHiddenField('referenceObject', serviceQuestion.referenceObject, 'Reference Object', serviceQuestion) %>
+              <%= renderHiddenField('questionSetCd', serviceQuestion.questionSetCd, 'Question Set Cd', serviceQuestion) %>
+              <%= renderHiddenField('questionCd', serviceQuestion.questionCd, 'Question Cd', serviceQuestion) %>
+              <%= renderHiddenField('dataElementCd', serviceQuestion.dataElementCd, 'Data element Cd', serviceQuestion) %>  
+      
+                <div data-role="fieldcontain" class ='reflexive_<%= @name %>' name="reflexive_<%= @name %>">
+                <% if @name == "questionSetQuestion.questionCd" %>
+                  <%= renderQuestionnaireLabel('response', questionSetQuestion.questionCd, nil, serviceQuestion) %>
+                <% else %>
+                  <%= renderReflexiveQuestionnaireLabel('response', questionSetQuestion.questionCd, nil, serviceQuestion) %>
+                <% end %>
+      
+                    
+                  <% if questionSetQuestion.inputTypeCd == 'COUNT' %>
+                  
+                    <%= renderQuestionnaireCountField( 'response', serviceQuestion.response, '', serviceQuestion) %>
+                    
+                  <% elsif questionSetQuestion.inputTypeCd == 'AMOUNT' %>
+                    <%= renderPreciseQuestionnaireAmountField( 'response', serviceQuestion.response, '', serviceQuestion) %>
+                    
+                  <% elsif questionSetQuestion.inputTypeCd == 'COMBO' %>
+                  
+                    <% elementCd = serviceQuestion.questionCd + '_' + serviceQuestion.dataElementCd %>
+                    <%= getQuestionnaireLookup( questionSetQuestion.lookupCd, 'response', serviceQuestion.response, serviceQuestion, nil, " onchange=\""+elementCd+"Changed(this);\"") %>
+                    
+                    <script type="text/javascript">
+                      function <%= questionSetQuestion.questionCd + "_" + questionSetQuestion.dataElementCd %>Changed(obj){
+                        if (obj.value == "YES")
+                        {
+                          $(".reflexive_<%= elementCd %>").show();
+                        }
+                        else
+                        {
+                          $(".reflexive_<%= elementCd %>").hide();
+                        }
+                      }
+                    </script>
+                      
+                  <% else %>
+                    <%= renderQuestionnaireInputField( 'response', serviceQuestion.response, '', serviceQuestion) %>
+                    
+                  <% end %>
+                </div>
+                  <!-- for reflexive questions -->
+                  <% if @name != questionSetQuestion.questionCd %>
+                    <script type="text/javascript">
+                        <% @temp = @count - 1 %>
+                        if ($("select[name='NeedAnalysis[ServiceQuestion][<%= @currentMain %>][response]']").val() == "YES")
+                        {
+                          $(".reflexive_<%= @name %>").show();
+                        }
+                        else
+                        {
+                          $(".reflexive_<%= @name %>").hide();
+                        }
+                    </script>
+                  <% end %>
+                  <% @countForCurrentMain = @countForCurrentMain + 1 %>
+           <% } %>
+      </div>
+    <% end %>
+    <div class ='nextButton'>
+    <a href="javascript:showNext();" name="showNextButton" data-role="button" style="max-width:100px;"><%= getLabelValue('NEXT')%></a>
+    </div>
+    <div class ='submitButton'>
+    <a href="javascript:submitForm();" name="submitButton" data-role="button" style="max-width:100px;"><%= getLabelValue('SUBMIT')%></a>
+    </div>
+    </div>
+</form>
+<script  type="text/javascript">
+
+$(".submitButton").hide();
+
+count = 0
+$("." + count).show();
+temp = count;
+while(temp <= <%= @questionSetCounter %>)
+{
+  temp = temp + 1
+  $("." + temp).hide();  
+}
+
+  
+function showNext()
+{
+  $("." + count).hide();
+  count = count + 1;
+  $("." + count).show();
+  if(count == <%= @questionSetCounter %>)
+  {
+    $(".nextButton").hide();
+    $(".submitButton").show();  
+  }
+}
+  
+  
+function submitForm()
+{
+  document.needAnalysisForm.submit();
+}    
+    
+$('img[name*="collapse"]').click( function(){
+  divName = this.name.replace("collapse_","");
+  val = $('input[name="state_'+divName+'"]').val();
+  // # replace image
+  if(val == "+")
+  {
+    $('input[name="state_'+divName+'"]').val('-');
+    $('img[name="collapse_'+divName+'"]').attr("src","/public/images/SalesIllustration/less.jpg");
+    $('div[name="'+divName+'"]').show();          
+  }
+  else // # val == "-"
+  {
+    $('input[name="state_'+divName+'"]').val('+');
+    $('img[name="collapse_'+divName+'"]').attr("src","/public/images/SalesIllustration/more.jpg");
+    $('div[name="'+divName+'"]').hide();
+  }
+      
+      
+});
+
+</script>
+ 
+</div>

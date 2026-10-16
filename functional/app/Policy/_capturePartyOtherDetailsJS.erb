@@ -1,0 +1,19 @@
+<script type="text/javascript">
+$(document).ready(function(){
+	var communicationPreference = $('select[name="<%=getObjectMapping(@party)%>[communicationPreference]"]').val();
+	if(communicationPreference == null || communicationPreference == ""){
+		$('select[name="<%=getObjectMapping(@party)%>[communicationPreference]"]').val("E").change();
+	}
+
+
+	//Mark fields mandatory based on Validation Metadata
+	<% 
+	if @mandatoryFields != nil && @mandatoryFields[@policy] != nil
+		@mandatoryFields[@policy].each do |field| %>
+			$("label[for='<%=getObjectMapping(@policy)%>[<%= field %>]']").append('<label for=" *" class="mandatory1">&nbsp;*</label>');
+	<% 
+		end
+	end 
+	%>
+});
+</script>

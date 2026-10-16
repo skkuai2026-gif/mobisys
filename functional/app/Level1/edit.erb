@@ -1,0 +1,73 @@
+<div data-role="page">
+
+  <div data-role="header" data-position="inline">
+    <h1>Edit <%= @level1.levelCd %></h1>
+    <a href="<%= url_for :action => :show, :id => @level1.object %>" class="ui-btn-left" data-icon="back" data-direction="reverse">
+      Cancel
+    </a>
+    <a href="<%= url_for :action => :delete, :id => @level1.object %>" class="ui-btn-right" data-icon="delete" data-direction="reverse">
+      Delete
+    </a>
+  </div>
+
+  <div data-role="content">
+    <form method="POST" action="<%= url_for :action => :update %>">
+      <input type="hidden" name="id" value="<%= @level1.object %>"/>
+      
+          <div data-role="fieldcontain">
+            <label for="level1[levelCd]" class="fieldLabel">Levelcd</label>
+            <input type="text" id="level1[levelCd]" name="level1[levelCd]" value="<%= @level1.levelCd %>" <%= placeholder( "Levelcd" ) %> />
+          </div>
+      
+          <div data-role="fieldcontain">
+            <label for="level1[name]" class="fieldLabel">Name</label>
+            <input type="text" id="level1[name]" name="level1[name]" value="<%= @level1.name %>" <%= placeholder( "Name" ) %> />
+          </div>
+      
+          <div data-role="fieldcontain">
+            <label for="level1[icon]" class="fieldLabel">Icon</label>
+            <input type="text" id="level1[icon]" name="level1[icon]" value="<%= @level1.icon %>" <%= placeholder( "Icon" ) %> />
+          </div>
+          
+          <div data-role="fieldcontain">
+            <label for="level1[text]" class="fieldLabel">Text</label>
+            <input type="text" id="level1[text]" name="level1[text]" value="<%= @level1.text %>" <%= placeholder( "Text" ) %> />
+          </div>
+          
+          <div data-role="fieldcontain">
+            <label for="level1[layout]" class="fieldLabel">Layout</label>
+            <input type="text" id="level1[layout]" name="level1[layout]" value="<%= @level1.layout%>" <%= placeholder( "Layout" ) %> />
+          </div>
+          
+          <div data-role="fieldcontain">
+            <label for="level1[sortOrder]" class="fieldLabel">Sort order</label>
+            <input type="text" id="level1[sortOrder]" name="level1[sortOrder]" value="<%= @level1.sortOrder %>" <%= placeholder( "Sort order" ) %> />
+          </div>
+              
+          <div data-role="fieldcontain">
+            <label for="level1[collateralView]" class="fieldLabel">Collateral view</label>
+            <input type="text" id="level1[collateralView]" name="level1[collateralView]" value="<%= @level1.collateralView %>" <%= placeholder( "Collateral view" ) %> />
+          </div>
+
+          <div data-role="fieldcontain">
+            <label for="level1[level0_levelCd]" class="fieldLabel">Level0 Reference</label>
+            <select name="level1[level0_levelCd]">
+              <% 
+                @level0s.each do |level0|
+                  %>
+                    <option value="<%= level0.levelCd%>"
+                      <%= "selected" if level0.levelCd == @level1.level0_levelCd%>
+                    >
+                        <%=level0.name1%>&nbsp;<%=level0.name2%>
+                    </option>
+                  <%
+                end
+              %>
+            </select>
+          </div>
+      
+      <input type="submit" value="Update"/>
+    </form>
+  </div>
+
+</div>

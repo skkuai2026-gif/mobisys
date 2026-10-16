@@ -1,0 +1,12 @@
+<%= modelTagStart(questionnaireId, @questionContainer) %>
+	<%= renderHiddenField("entityGuid", @questionContainer.entityGuid, nil, @questionContainer) %>
+	<%= renderHiddenField("policyGuid", @questionContainer.policyGuid, nil, @questionContainer) %>
+	<%= renderHiddenField("entityTypeCd", @questionContainer.entityTypeCd, nil, @questionContainer) %>
+	<% $policyModelList = [] %>
+	<% @finalQuestions.each do |questionnaireHash| %>
+		<%= renderQuestionnaire(questionnaireHash, nil, @questionContainer, @responseHash, @quotationParty, @quotation, @baseProduct, true, @policy) %>
+	<% end %>
+	<% $policyModelList = nil %>
+<% modelTagEnd %>
+
+<script type="text/javascript" charset="utf-8" src="/app/CommonModules/_renderQuestionnaire_Jazz.js"></script>

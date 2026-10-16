@@ -1,0 +1,127 @@
+source_name|attrib|object|value
+Comparator|comparatorId|1|1
+Comparator|categoryCd|1|Protection Plans
+Comparator|productCd|1|eProtect
+Comparator|competitorCd|1|ICICI Pru
+Comparator|competitorProductCd|1|iCare
+Comparator|collateralCd|1|c2picare
+Comparator|versionId|1|1
+Comparator|comparatorId|2|2
+Comparator|categoryCd|2|Protection Plans
+Comparator|productCd|2|eProtect
+Comparator|competitorCd|2|Aegon Religare
+Comparator|competitorProductCd|2|iTerm
+Comparator|collateralCd|2|c2piterm
+Comparator|versionId|2|1
+Comparator|comparatorId|3|3
+Comparator|categoryCd|3|Protection Plans
+Comparator|productCd|3|eProtect
+Comparator|competitorCd|3|Met Life
+Comparator|competitorProductCd|3|MetProtect
+Comparator|collateralCd|3|c2pmp
+Comparator|versionId|3|1
+Comparator|comparatorId|4|4
+Comparator|categoryCd|4|Protection Plans
+Comparator|productCd|4|eProtect
+Comparator|competitorCd|4|Kotak Life
+Comparator|competitorProductCd|4|epreferred
+Comparator|collateralCd|4|c2lep
+Comparator|versionId|4|1
+Comparator|comparatorId|5|5
+Comparator|categoryCd|5|Wealth Plans
+Comparator|productCd|5|Sampoorna Samriddhi
+Comparator|competitorCd|5|Birla Sunlife
+Comparator|competitorProductCd|5|Vision
+Comparator|collateralCd|5|ssv
+Comparator|versionId|5|1
+Comparator|comparatorId|6|6
+Comparator|categoryCd|6|Wealth Plans
+Comparator|productCd|6|Sampoorna Samriddhi
+Comparator|competitorCd|6|LIC
+Comparator|competitorProductCd|6|Jeevan Anand
+Comparator|collateralCd|6|ssja
+Comparator|versionId|6|1
+Comparator|comparatorId|7|7
+Comparator|categoryCd|7|Wealth Plans
+Comparator|productCd|7|CREST
+Comparator|competitorCd|7|ICICI Pru
+Comparator|competitorProductCd|7|Pinnacle Super
+Comparator|collateralCd|7|crestps
+Comparator|versionId|7|1
+Comparator|comparatorId|8|8
+Comparator|categoryCd|8|Wealth Plans
+Comparator|productCd|8|CREST
+Comparator|competitorCd|8|Birla Sunlife
+Comparator|competitorProductCd|8|Platinum Advantage plan
+Comparator|collateralCd|8|crestpap
+Comparator|versionId|8|1
+Comparator|comparatorId|9|9
+Comparator|categoryCd|9|Wealth Plans
+Comparator|productCd|9|CREST
+Comparator|competitorCd|9|Reliance
+Comparator|competitorProductCd|9|Highest NAV Advantage Plan
+Comparator|collateralCd|9|cresthnap
+Comparator|versionId|9|1
+Comparator|comparatorId|10|10
+Comparator|categoryCd|10|Wealth Plans
+Comparator|productCd|10|CREST
+Comparator|competitorCd|10|Bajaj Allianz
+Comparator|competitorProductCd|10|Max Advantage Plan
+Comparator|collateralCd|10|crestmap
+Comparator|versionId|10|1
+Comparator|comparatorId|11|11
+Comparator|categoryCd|11|Wealth Plans
+Comparator|productCd|11|CREST
+Comparator|competitorCd|11|SBI Life
+Comparator|competitorProductCd|11|Smart Performer
+Comparator|collateralCd|11|crestsp
+Comparator|versionId|11|1
+Comparator|comparatorId|12|12
+Comparator|categoryCd|12|Childrens Plans
+Comparator|productCd|12|Childrens Plan Double Benefit
+Comparator|competitorCd|12|LIC
+Comparator|competitorProductCd|12|Jeevan Ankur
+Comparator|collateralCd|12|cpdbja
+Comparator|versionId|12|1
+Comparator|comparatorId|13|13
+Comparator|categoryCd|13|Protection Plans
+Comparator|productCd|13|Premium Guaranteed Plan
+Comparator|competitorCd|13|ICICI Pru
+Comparator|competitorProductCd|13|Life Guard Plan
+Comparator|collateralCd|13|pgplgp
+Comparator|versionId|13|1
+Comparator|comparatorId|14|14
+Comparator|categoryCd|14|Protection Plans
+Comparator|productCd|14|Premium Guaranteed Plan
+Comparator|competitorCd|14|Bajaj Allianz
+Comparator|competitorProductCd|14|Term Care Plan
+Comparator|collateralCd|14|pgptcp
+Comparator|versionId|14|1
+Comparator|comparatorId|15|15
+Comparator|categoryCd|15|Wealth Plans
+Comparator|productCd|15|Progrowth Flexi
+Comparator|competitorCd|15|Reliance
+Comparator|competitorProductCd|15|Classic Life II
+Comparator|collateralCd|15|pfcl
+Comparator|versionId|15|1
+Comparator|comparatorId|16|16
+Comparator|categoryCd|16|Wealth Plans
+Comparator|productCd|16|New Money Back Plan
+Comparator|competitorCd|16|ICICI Pru
+Comparator|competitorProductCd|16|Cash Back
+Comparator|collateralCd|16|nmbpcb
+Comparator|versionId|16|1
+Comparator|comparatorId|17|17
+Comparator|categoryCd|17|Wealth Plans
+Comparator|productCd|17|New Money Back Plan
+Comparator|competitorCd|17|LIC
+Comparator|competitorProductCd|17|Money Back policy
+Comparator|collateralCd|17|nmbpmbp
+Comparator|versionId|17|1
+Comparator|comparatorId|18|18
+Comparator|categoryCd|18|Wealth Plans
+Comparator|productCd|18|New Money Back Plan
+Comparator|competitorCd|18|TATA AIG
+Comparator|competitorProductCd|18|21-year money saver
+Comparator|collateralCd|18|nmbpms
+Comparator|versionId|18|1

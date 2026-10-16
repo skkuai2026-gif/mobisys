@@ -1,0 +1,70 @@
+<div data-role="table" class="illustrationdisplay">
+<table class="illustrationtable" width="100%">
+  <tr class="illustrationtableheader" >
+     <td rowspan="2">
+       <%= getLabelValue('POLICYYEAR')   %>
+     </td>
+    <td rowspan="2">
+      <%= getLabelValue('PDFBALANCE')   %>
+    </td>
+     <td colspan="3">
+       <%= getLabelValue('DEATHBENEFIT1')   %>
+     </td>
+     <td colspan="3">
+       <%= getLabelValue('CURRENTVALUE')   %>
+     </td>
+    <td rowspan="2">
+      <%= getLabelValue('PREMIUM')   %>
+    </td>
+   </tr>
+   <tr class="illustrationtableheader">
+     <td >
+       <%= getLabelValue('GUARANTEED')   %>
+     </td>
+    <td >
+      <%= getLabelValue('NONGUARANTEED')   %>
+    </td>
+    <td >
+      <%= getLabelValue('TOTAL')   %>
+    </td>
+    <td >
+      <%= getLabelValue('GUARANTEED')   %>
+    </td>
+   <td >
+     <%= getLabelValue('NONGUARANTEED')   %>
+   </td>
+   <td >
+     <%= getLabelValue('TOTAL')   %>
+   </td>
+
+   </tr>
+   
+  <%  
+    @benefitTable.each_with_index do |benefitRow, index| 
+    
+      if benefitRow != nil
+        %>      
+          <tr class="illustrationtablerow">
+            <td class="tablenum"> <%= renderNumber(benefitRow["policyYear"]) %> </td>
+        
+            <td class="tablenum"> 
+              <% if benefitRow["pdfAmount"].to_i > 0 %> 
+                <%= renderNumber(benefitRow["pdfAmount"])%>
+              <% end %>            
+            </td>
+            
+            <td class="tablenum"> <%= renderNumber(benefitRow["gBenefitAmount"])%> </td>                    
+            <td class="tablenum"> <%= renderNumber(benefitRow["ngBenefitAmount"])%> </td>
+            <td class="tablenum"> <%= renderNumber(benefitRow["totalBenefitAmount"])%> </td>
+            <td class="tablenum"> <%= renderNumber(benefitRow["gCashValue"])%> </td>                    
+            <td class="tablenum"> <%= renderNumber(benefitRow["ngCashValue"])%> </td>
+            <td class="tablenum"> <%= renderNumber(benefitRow["totalCashValue"])%> </td>
+            <td class="tablenum"> <%= renderNumber(benefitRow["accumulatedPremium"])%> </td>
+            
+          </tr>
+        <%
+      end
+    end 
+  %>
+</table>
+</div>

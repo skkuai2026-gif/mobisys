@@ -1,0 +1,24 @@
+<script type="text/javascript">
+$(document).ready(function(){
+	//Mark fields mandatory based on Validation Metadata
+	<% 
+	if @mandatoryFields
+		if @mandatoryFields[@partyIdentity1]
+			@mandatoryFields[@partyIdentity1].each do |field| 
+	%>
+				$("label[for='<%=getObjectMapping(@partyIdentity1)%>[<%= field %>]']").append('<label for=" *" class="mandatory1">&nbsp;*</label>');
+	<% 
+			end 
+		end
+
+		if @mandatoryFields[@partyIdentity2]
+			@mandatoryFields[@partyIdentity2].each do |field| 
+	%>
+				$("label[for='<%=getObjectMapping(@partyIdentity2)%>[<%= field %>]']").append('<label for=" *" class="mandatory1">&nbsp;*</label>');
+	<% 
+			end
+		end
+	end
+	%>
+});
+</script>
